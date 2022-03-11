@@ -32,3 +32,9 @@ final headingStyle = TextStyle(
   color: Colors.black,
   height: 1.5,
 );
+
+final boldHeading = TextStyle(
+    fontSize: 22.sp, fontWeight: FontWeight.w600, color: Colors.black);
+
+final regularDarkText = TextStyle(
+    fontSize: 16.0.sp, fontWeight: FontWeight.w600, color: Colors.black);

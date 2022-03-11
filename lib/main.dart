@@ -5,6 +5,8 @@ import 'package:fluttergistshop/theme.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 
+import 'screens/shops/add_edit_shop.dart';
+
 void main() {
   runApp(const MyApp());
 }

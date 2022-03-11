@@ -16,7 +16,7 @@ class ShopShortDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onPressed,
+      onTap: onPressed,
       child: Row(
         children: [
           SizedBox(
@@ -50,7 +50,7 @@ class ShopShortDetailCard extends StatelessWidget {
                   ),
                   maxLines: 2,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 Text(
                   product!.description.toString(),
                   softWrap: true,
@@ -62,14 +62,14 @@ class ShopShortDetailCard extends StatelessWidget {
                   ),
                   maxLines: 2,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 10.h),
                 Text.rich(
                   TextSpan(
                       text: "$currencySymbol${product!.discountPrice}    ",
                       style: TextStyle(
-                        color: primarycolor,
+                        color: secondaryColor,
                         fontWeight: FontWeight.w700,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                       children: [
                         TextSpan(
@@ -78,7 +78,7 @@ class ShopShortDetailCard extends StatelessWidget {
                             color: kTextColor,
                             decoration: TextDecoration.lineThrough,
                             fontWeight: FontWeight.normal,
-                            fontSize: 11,
+                            fontSize: 11.sp,
                           ),
                         ),
                       ]),

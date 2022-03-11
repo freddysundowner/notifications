@@ -15,6 +15,8 @@ dependencies:
   flutter_screenutil: ^5.3.1
   ionicons: ^0.1.2
   http: ^0.13.4
+  firebase_auth:
+  cached_network_image: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +27,12 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+
+  fonts:
+    - family: Muli
+      fonts:
+        - asset: assets/fonts/muli/Muli.ttf
+        - asset: assets/fonts/muli/Muli-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/muli/Muli-Light.ttf
+          weight: 300

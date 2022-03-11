@@ -15,3 +15,6 @@ const MaterialColor primarycolor = const MaterialColor(
     900: const Color(0Xff33546D),
   },
 );
+
+const kTextColor = Color(0xFF757575);
+const secondaryColor = Color(0xFFef6635);

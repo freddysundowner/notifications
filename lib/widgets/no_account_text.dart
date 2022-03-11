@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/screens/auth/sign_up_screen.dart';
+import 'package:fluttergistshop/screens/auth/signup.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 

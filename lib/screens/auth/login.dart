@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
-import 'package:fluttergistshop/screens/auth/forgot_password_screen.dart';
+import 'package:fluttergistshop/screens/auth/forgot_password.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';

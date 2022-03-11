@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/screens/auth/home/home_page.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
+
+import 'screens/home/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.grey[50],
             bottomAppBarColor: Colors.grey[50],
           ),
-          home: HomePage(),
+          home: const HomePage(),
         );
       }
     );

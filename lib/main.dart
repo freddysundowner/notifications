@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttergistshop/screens/auth/login.dart';
-import 'package:fluttergistshop/screens/auth/register.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/screens/shops/shop_view.dart';
+import 'package:fluttergistshop/theme.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 
@@ -14,14 +15,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'GistShop',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: primarycolor,
-      ),
-      home: Register(),
-    );
+    return ScreenUtilInit(
+        designSize: Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: () => GetMaterialApp(
+              title: appName,
+              debugShowCheckedModeBanner: false,
+              theme: theme(),
+              home: ShopView(),
+            ));
   }
 }
 

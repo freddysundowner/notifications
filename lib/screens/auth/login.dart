@@ -1,86 +1,138 @@
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/screens/auth/forgot_password_screen.dart';
 import 'package:fluttergistshop/utils/utils.dart';
+import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ionicons/ionicons.dart';
 
 class Login extends StatelessWidget {
-  final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
+  final TextEditingController emailFieldController = TextEditingController();
+  final TextEditingController passwordFieldController = TextEditingController();
+
   final AuthController authController = Get.put(AuthController());
+  final _formLoginkey = GlobalKey<FormState>();
 
   Login({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
-            Center(
-              child: Text(
-                "GistShop",
-                style: TextStyle(fontSize: 30),
-              ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.sp),
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(height: 20.h),
+                Text(
+                  "Welcome Back",
+                  style: headingStyle,
+                ),
+                Text(
+                  "Sign in with your email and password",
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20.h),
+                Form(
+                  key: _formLoginkey,
+                  child: Column(
+                    children: [
+                      buildEmailFormField(),
+                      SizedBox(height: 30.h),
+                      buildPasswordFormField(),
+                      SizedBox(height: 30.h),
+                      buildForgotPasswordWidget(context),
+                      SizedBox(height: 30.h),
+                      Obx(() => Text(
+                            authController.error.value,
+                            style: TextStyle(color: Colors.red),
+                          )),
+                      DefaultButton(
+                        text: "Sign in",
+                        press: signInButtonCallback,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                NoAccountText(),
+                SizedBox(height: 20.h),
+              ],
             ),
-            Spacer(),
-            Padding(
-                padding: EdgeInsets.all(10),
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: new BorderRadius.circular(10.0),
-                        border: Border.all(color: Colors.grey, width: 0.4)),
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                        child: TextFormField(
-                            controller: email,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              labelText: 'Email',
-                            ))))),
-            Padding(
-                padding: EdgeInsets.all(10),
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: new BorderRadius.circular(10.0),
-                        border: Border.all(color: Colors.grey, width: 0.4)),
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                        child: TextFormField(
-                          controller: password,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: 'Password',
-                          ),
-                        )))),
-            Obx(() => Text(
-                  authController.error.value,
-                  style: TextStyle(color: Colors.red),
-                )),
-            SizedBox(
-              height: 20,
-            ),
-            InkWell(
-                onTap: () {
-                  authController.error.value = "";
-                  if (email.text.isEmpty || password.text.isEmpty) {
-                    authController.error.value = "All fields are required";
-                    return;
-                  }
-                },
-                child: Button(text: "Login")),
-            Spacer(),
-          ],
+          ),
         ),
       ),
     );
+  }
+
+  Row buildForgotPasswordWidget(BuildContext context) {
+    return Row(
+      children: [
+        Spacer(),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => ForgotPasswordScreen());
+          },
+          child: Text(
+            "Forgot Password",
+            style: TextStyle(
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildPasswordFormField() {
+    return TextFormField(
+      controller: passwordFieldController,
+      obscureText: true,
+      decoration: InputDecoration(
+        hintText: "Enter your password",
+        labelText: "Password",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.lock),
+      ),
+      validator: (value) {
+        if (passwordFieldController.text.isEmpty) {
+          return kPassNullError;
+        } else if (passwordFieldController.text.length < 8) {
+          return kShortPassError;
+        }
+        return null;
+      },
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+    );
+  }
+
+  Widget buildEmailFormField() {
+    return TextFormField(
+      controller: emailFieldController,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        hintText: "Enter your email",
+        labelText: "Email",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Ionicons.mail_open),
+      ),
+      validator: (value) {
+        if (emailFieldController.text.isEmpty) {
+          return kEmailNullError;
+        } else if (!emailValidatorRegExp.hasMatch(emailFieldController.text)) {
+          return kInvalidEmailError;
+        }
+        return null;
+      },
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+    );
+  }
+
+  Future<void> signInButtonCallback() async {
+    if (_formLoginkey.currentState!.validate()) {
+    } else {}
   }
 }

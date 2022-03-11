@@ -8,7 +8,7 @@ ThemeData theme() {
     bottomAppBarColor: Colors.grey[50],
     scaffoldBackgroundColor: Colors.white,
     fontFamily: "Muli",
-    primarySwatch: Colors.deepOrange,
+    primarySwatch: primarycolor,
     appBarTheme: appBarTheme(),
     textTheme: textTheme(),
     inputDecorationTheme: inputDecorationTheme(),

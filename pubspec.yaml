@@ -27,9 +27,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/icons/
-
   fonts:
     - family: Muli
       fonts:
@@ -41,3 +38,4 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icons/

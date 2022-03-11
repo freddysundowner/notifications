@@ -1,9 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
-import 'package:ionicons/ionicons.dart';
 
 import '../../utils/utils.dart';
 
@@ -30,14 +29,14 @@ class ShopView extends StatelessWidget {
               decoration: BoxDecoration(color: primarycolor),
               child: Row(
                 children: [
-                  new Container(
+                  Container(
                       width: 100.0,
                       height: 100.0,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: new DecorationImage(
+                          image: DecorationImage(
                               fit: BoxFit.fill,
-                              image: new CachedNetworkImageProvider(
+                              image: CachedNetworkImageProvider(
                                   "https://i.imgur.com/BoN9kdC.png")))),
                   Container(
                     margin: EdgeInsets.only(left: 20),

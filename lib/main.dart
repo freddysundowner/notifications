@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttergistshop/screens/auth/login.dart';
-import 'package:fluttergistshop/screens/auth/register.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/theme.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
+
+import 'screens/home/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,39 +17,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: Size(360, 690),
+        designSize: const Size(360, 690),
         minTextAdapt: true,
         splitScreenMode: true,
         builder: () => GetMaterialApp(
               title: appName,
               debugShowCheckedModeBanner: false,
               theme: theme(),
-              home: ShopView(),
+              home: const HomePage(),
             ));
   }
-}
-
-// This widget is the root of your application.
-@override
-Widget build(BuildContext context) {
-  return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: () {
-        return GetMaterialApp(
-          title: 'GistShop',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: primarycolor,
-            backgroundColor: Colors.grey[50],
-            bottomAppBarColor: Colors.grey[50],
-          ),
-          home: const HomePage(),
-        );
-      }
-  );
-}
 }
 
 class MyHomePage extends StatefulWidget {

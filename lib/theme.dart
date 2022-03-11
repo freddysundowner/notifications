@@ -4,6 +4,8 @@ import 'package:fluttergistshop/utils/utils.dart';
 
 ThemeData theme() {
   return ThemeData(
+    backgroundColor: Colors.grey[50],
+    bottomAppBarColor: Colors.grey[50],
     scaffoldBackgroundColor: Colors.white,
     fontFamily: "Muli",
     primarySwatch: Colors.deepOrange,
@@ -11,7 +13,7 @@ ThemeData theme() {
     textTheme: textTheme(),
     inputDecorationTheme: inputDecorationTheme(),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    snackBarTheme: SnackBarThemeData(
+    snackBarTheme: const SnackBarThemeData(
       backgroundColor: Colors.black,
       contentTextStyle: TextStyle(
         color: Colors.white,
@@ -23,11 +25,11 @@ ThemeData theme() {
 InputDecorationTheme inputDecorationTheme() {
   OutlineInputBorder outlineInputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(28),
-    borderSide: BorderSide(color: kTextColor),
+    borderSide: const BorderSide(color: kTextColor),
     gapPadding: 10,
   );
   return InputDecorationTheme(
-    contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
     enabledBorder: outlineInputBorder,
     focusedBorder: outlineInputBorder,
     border: outlineInputBorder,
@@ -35,7 +37,7 @@ InputDecorationTheme inputDecorationTheme() {
 }
 
 TextTheme textTheme() {
-  return TextTheme(
+  return const TextTheme(
     bodyText1: TextStyle(
       color: kTextColor,
       fontSize: 16,
@@ -48,7 +50,7 @@ TextTheme textTheme() {
 }
 
 AppBarTheme appBarTheme() {
-  return AppBarTheme(
+  return const AppBarTheme(
     color: Colors.white,
     elevation: 0,
     systemOverlayStyle: SystemUiOverlayStyle.light,

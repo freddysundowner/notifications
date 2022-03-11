@@ -538,7 +538,12 @@ class HomePage extends StatelessWidget {
                           SizedBox(
                             height: 0.03.sh,
                           ),
-                          Button(text: "Finish", width: 0.9.sw)
+                          InkWell(
+                            onTap: () {
+                              Get.back();
+                              Get.back();
+                            },
+                              child: Button(text: "Finish", width: 0.9.sw))
                         ],
                       ),
                     );
@@ -596,7 +601,7 @@ class HomePage extends StatelessWidget {
                                   crossAxisCount: 3,
                                   childAspectRatio: 0.99,
                                 ),
-                                itemCount: 9,
+                                itemCount: 19,
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
@@ -608,14 +613,14 @@ class HomePage extends StatelessWidget {
                                           padding: EdgeInsets.all(8.0),
                                           child: Center(
                                             child: CircleAvatar(
-                                              radius: 40,
+                                              radius: 35,
                                               backgroundImage: NetworkImage(
                                                   "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"
                                               ),
                                             )
                                           ),
                                         ),
-
+                                        Text("User name", style: TextStyle(color: Colors.black87, fontSize: 16.sp),)
                                       ],
                                     ),
                                   );
@@ -625,7 +630,11 @@ class HomePage extends StatelessWidget {
                             height: 0.02.sh,
                           ),
 
-                          Button(text: "Continue", width: 0.9.sw)
+                          InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                              child: Button(text: "Continue", width: 0.9.sw))
                         ],
                       ),
                     );

@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
               title: appName,
               debugShowCheckedModeBanner: false,
               theme: theme(),
-              home: const HomePage(),
+              home: HomePage(),
             ));
   }
 }

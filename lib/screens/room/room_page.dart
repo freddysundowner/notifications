@@ -13,7 +13,8 @@ class RoomPage extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text("Title"),
+        title: const Text("Title", style: TextStyle(color: Colors.white),),
+        centerTitle: false,iconTheme:  const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
       bottomNavigationBar: BottomAppBar(

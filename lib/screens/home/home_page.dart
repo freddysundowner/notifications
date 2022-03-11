@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:get/get.dart';
@@ -31,10 +32,15 @@ class HomePage extends StatelessWidget {
             SizedBox(
               width: 0.05.sw,
             ),
-            const Icon(
-              Ionicons.notifications,
-              color: Colors.grey,
-              size: 30,
+            InkWell(
+              onTap: () {
+                Get.to(const ActivitiesPage());
+              },
+              child: const Icon(
+                Ionicons.notifications,
+                color: Colors.grey,
+                size: 30,
+              ),
             ),
             SizedBox(
               width: 0.05.sw,

@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
+import 'package:fluttergistshop/screens/products/full_product.dart';
+import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
+import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../../utils/utils.dart';
 
@@ -61,6 +65,9 @@ class ShopView extends StatelessWidget {
                   ),
                   Spacer(),
                   InkWell(
+                    onTap: () {
+                      Get.to(() => NewShop());
+                    },
                     child: Icon(
                       Icons.edit,
                       color: Colors.white,
@@ -79,6 +86,14 @@ class ShopView extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        elevation: 4,
+        hoverColor: Colors.green,
+        splashColor: Colors.green,
+        onPressed: () {},
+        backgroundColor: Colors.pink,
+      ),
     );
   }
 
@@ -94,7 +109,10 @@ class ShopView extends StatelessWidget {
       },
       child: ShopShortDetailCard(
         product: product,
-        onPressed: () {},
+        onPressed: () {
+          print("v");
+          Get.to(() => FullProduct(product: product));
+        },
       ),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {

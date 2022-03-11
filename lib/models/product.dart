@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fluttergistshop/utils/constants.dart';
+
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
 
 String productToJson(Product data) => json.encode(data.toJson());
@@ -9,6 +11,7 @@ class Product {
   String? id;
   String name;
   int? price;
+  String? htmlprice;
   int? quantity;
   int? discountPrice;
   String? shopId;
@@ -22,6 +25,7 @@ class Product {
     this.id,
     required this.name,
     this.price,
+    this.htmlprice,
     this.discountPrice,
     this.quantity,
     this.shopId,
@@ -50,6 +54,7 @@ class Product {
         "_id": id,
         "name": name,
         "price": price,
+        "price": currencySymbol + htmlprice.toString(),
         "quantity": quantity,
         "discountPrice": discountPrice,
         "shopId": shopId,
@@ -70,6 +75,8 @@ List<Product> getProducts() {
   productone.price = 1;
   productone.discountPrice = 1;
   productone.quantity = 1;
+  productone.htmlprice = currencySymbol + " 1";
+
   productone.description = "this is the descrription";
   product.add(productone);
 
@@ -79,6 +86,7 @@ List<Product> getProducts() {
   producttwo.id = "2";
   producttwo.discountPrice = 1;
   producttwo.price = 1;
+  producttwo.htmlprice = currencySymbol + " 1";
   producttwo.quantity = 1;
   producttwo.description = "this is the descrription 2";
   product.add(producttwo);
@@ -90,6 +98,8 @@ List<Product> getProducts() {
   productthree.discountPrice = 1;
   productthree.price = 1;
   productthree.quantity = 1;
+  productthree.htmlprice = currencySymbol + " 1";
+
   productthree.description = "this is the descrription 3";
   product.add(productthree);
 

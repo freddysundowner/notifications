@@ -6,7 +6,6 @@ import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/theme.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
+import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
-import '../shops/my_products.dart';
-
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  TextEditingController titleFieldController = TextEditingController();
+
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +38,15 @@ class HomePage extends StatelessWidget {
             SizedBox(
               width: 0.05.sw,
             ),
-            const Icon(
-              Ionicons.notifications,
-              color: Colors.grey,
-              size: 30,
+            InkWell(
+              onTap: () {
+                Get.to(const ActivitiesPage());
+              },
+              child: const Icon(
+                Ionicons.notifications,
+                color: Colors.grey,
+                size: 30,
+              ),
             ),
             SizedBox(
               width: 0.05.sw,
@@ -238,10 +244,77 @@ class HomePage extends StatelessWidget {
                       ),
                       Align(
                           alignment: Alignment.centerRight,
-                          child: Text(
-                            "+  Add Title",
-                            style:
-                                TextStyle(color: Colors.red, fontSize: 16.sp),
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return SimpleDialog(
+                                      title: Text(
+                                        "Add a title for your room",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16.sp),
+                                      ),
+                                      children: [
+                                        TextField(
+                                          controller: titleFieldController,
+                                          autofocus: true,
+                                          keyboardType: TextInputType.text,
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            hintText:
+                                                "How would you describe your room?",
+                                          ),
+                                          style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.back();
+                                                },
+                                                child: Text(
+                                                  "Cancel".toUpperCase(),
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 16.sp),
+                                                ),
+
+                                              ),
+                                              SizedBox(width: 0.03.sw,),
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.back();
+                                                },
+                                                child: Text(
+
+                                                  "Okay".toUpperCase(),
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 16.sp),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Text(
+                              "+  Add Title",
+                              style:
+                                  TextStyle(color: Colors.red, fontSize: 16.sp),
+                            ),
                           )),
                       SizedBox(
                         height: 0.03.sh,
@@ -572,7 +645,12 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         height: 0.03.sh,
                       ),
-                      Button(text: "Finish", width: 0.9.sw)
+                      InkWell(
+                          onTap: () {
+                            Get.back();
+                            Get.back();
+                          },
+                          child: Button(text: "Finish", width: 0.9.sw))
                     ],
                   ),
                 );
@@ -631,7 +709,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 3,
                               childAspectRatio: 0.99,
                             ),
-                            itemCount: 9,
+                            itemCount: 19,
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {},
@@ -641,11 +719,17 @@ class HomePage extends StatelessWidget {
                                       padding: EdgeInsets.all(8.0),
                                       child: Center(
                                           child: CircleAvatar(
-                                        radius: 40,
+                                        radius: 35,
                                         backgroundImage: NetworkImage(
                                             "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
                                       )),
                                     ),
+                                    Text(
+                                      "User name",
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 16.sp),
+                                    )
                                   ],
                                 ),
                               );
@@ -654,7 +738,11 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         height: 0.02.sh,
                       ),
-                      Button(text: "Continue", width: 0.9.sw)
+                      InkWell(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Button(text: "Continue", width: 0.9.sw))
                     ],
                   ),
                 );

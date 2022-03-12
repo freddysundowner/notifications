@@ -2,14 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/api_calls.dart';
+import 'package:fluttergistshop/services/database.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
+  Rxn<UserModel> usermodel = Rxn<UserModel>();
+  UserModel? get currentuser => usermodel.value;
   final TextEditingController emailFieldController = TextEditingController();
   final TextEditingController passwordFieldController = TextEditingController();
   final TextEditingController fnameFieldController = TextEditingController();
@@ -50,13 +55,14 @@ class AuthController extends GetxController {
     }
   }
 
-  Future authenticated() async {
+  Future authenticate() async {
     try {
       isLoading(true);
       Map<String, dynamic> login = new Authenticate(
               email: emailFieldController.text,
               password: passwordFieldController.text)
           .toJson();
+      print(login);
       Map<String, dynamic> user = await ApiCalls.authenticate(login, "login");
       Helper.debug(user["success"]);
       if (user["success"] == false) {
@@ -94,5 +100,28 @@ class AuthController extends GetxController {
     FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+  }
+
+  handleAuth() {
+    return FutureBuilder(
+      future: ApiCalls.getUserById(),
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            backgroundColor: primarycolor,
+            body: Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+        if (snapshot.hasData == true) {
+          usermodel.value = snapshot.data as UserModel?;
+          return HomePage();
+        }
+        return Login();
+      },
+    );
   }
 }

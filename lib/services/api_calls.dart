@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/services/api.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 
@@ -6,6 +8,7 @@ import 'helper.dart';
 class ApiCalls {
   static Future<Map<String, dynamic>> authenticate(data, String type) async {
     Helper.debug("data $data");
+    Helper.debug("type $type");
     var response;
     if (type == "register") {
       response = await Api.callApi(
@@ -16,5 +19,15 @@ class ApiCalls {
     }
     Helper.debug("response $response");
     return response;
+  }
+
+  static Future<UserModel> getUserById() async {
+    Helper.debug(
+        "url ${config.users + FirebaseAuth.instance.currentUser!.uid}");
+    var response = await Api.callApi(
+        method: config.get,
+        endpoint: config.users + FirebaseAuth.instance.currentUser!.uid);
+
+    return UserModel.fromJson(response);
   }
 }

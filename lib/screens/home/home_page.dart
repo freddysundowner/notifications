@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/home_controller.dart';
+import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
+import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatelessWidget {
   TextEditingController titleFieldController = TextEditingController();
+
+  final HomeController _homeController = Get.put(HomeController());
 
   HomePage({Key? key}) : super(key: key);
 
@@ -61,7 +67,9 @@ class HomePage extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(top: 10.0, ),
+          padding: const EdgeInsets.only(
+            top: 10.0,
+          ),
           child: SizedBox(
             height: 0.18.sh,
             child: Column(
@@ -82,7 +90,8 @@ class HomePage extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "Create a room",
-                            style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                            style:
+                                TextStyle(fontSize: 18.sp, color: Colors.white),
                           ),
                         ),
                       ),
@@ -97,199 +106,228 @@ class HomePage extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 0.008.sh,),
+                SizedBox(
+                  height: 0.008.sh,
+                ),
                 buildCurrentRoom(context),
               ],
             ),
           ),
         ),
-        body: ListView.builder(
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Get.to(const RoomPage());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.black12),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black12,
-                            spreadRadius: 0.1,
-                            blurRadius: 0.5,
-                            offset: Offset(0, 5), // changes position of shadow
-                          ),
-                        ]),
-                    child: Column(
+        body: Container(
+          child: Obx(() {
+            if (_homeController.isLoading.isFalse) {
+              return buildIndividualRoomCard();
+            } else {
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: Colors.black87,
+              ));
+            }
+          }),
+        ));
+  }
+
+  buildIndividualRoomCard() {
+    printOut("Home rooms ${_homeController.roomsList}");
+    return Obx(() => ListView.builder(
+        itemCount: _homeController.roomsList.length,
+        itemBuilder: (context, index) {
+          RoomModel roomModel =
+              RoomModel.fromJson(_homeController.roomsList.elementAt(index));
+
+          return InkWell(
+            onTap: () {
+              Get.to(const RoomPage());
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.black12),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        spreadRadius: 0.1,
+                        blurRadius: 0.5,
+                        offset: Offset(0, 5), // changes position of shadow
+                      ),
+                    ]),
+                child: Column(
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            const Text(
-                              "1",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(width: 0.006.sw),
-                            const Icon(
-                              Ionicons.people,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
-                            SizedBox(width: 0.03.sw),
-                            const Text(
-                              "2",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(width: 0.006.sw),
-                            const Icon(
-                              Ionicons.chatbubble_outline,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
-                          ],
+                        Text(
+                          roomModel.hostIds!.length.toString(),
+                          style: const TextStyle(color: Colors.grey),
                         ),
-                        SizedBox(
-                          height: 0.1.sh,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 2,
-                              itemBuilder: (context, index) {
-                                return const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                                    ));
-                              }),
+                        SizedBox(width: 0.006.sw),
+                        const Icon(
+                          Ionicons.people,
+                          color: Colors.grey,
+                          size: 20,
                         ),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "trial",
-                            style: TextStyle(color: Colors.red),
-                          ),
+                        SizedBox(width: 0.03.sw),
+                        Text(
+                          roomModel.userIds!.length.toString(),
+                          style: const TextStyle(color: Colors.grey),
                         ),
-                        SizedBox(
-                          height: 0.01.sh,
-                        ),
-                        Divider(
-                          color: Colors.grey[200],
-                          height: 0.001.sh,
-                        ),
-                        SizedBox(
-                          height: 0.01.sh,
-                        ),
-                        SizedBox(
-                          height: 0.12.sh,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 2,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.white),
-                                    child: Center(
-                                      child: Image.network(
-                                        "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png",
-                                        height: 0.08.sh,
-                                        width: 0.12.sw,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
+                        SizedBox(width: 0.006.sw),
+                        const Icon(
+                          Ionicons.chatbubble_outline,
+                          color: Colors.grey,
+                          size: 20,
                         ),
                       ],
                     ),
-                  ),
+                    SizedBox(
+                      height: 0.1.sh,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: roomModel.hostIds?.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: roomModel.hostIds?[index].profilePhoto ==
+                                        null
+                                    ? const CircleAvatar(
+                                        backgroundImage: AssetImage(
+                                            "assets/icons/profile_placeholder.png"))
+                                    : CircleAvatar(
+                                        backgroundImage: NetworkImage(imageUrl +
+                                            roomModel
+                                                .hostIds![index].profilePhoto!),
+                                      ));
+                          }),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        roomModel.title!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.01.sh,
+                    ),
+                    Divider(
+                      color: Colors.grey[200],
+                      height: 0.001.sh,
+                    ),
+                    SizedBox(
+                      height: 0.01.sh,
+                    ),
+                    SizedBox(
+                      height: 0.12.sh,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: roomModel.productIds![0].images!.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.white),
+                                child: Center(
+                                  child: Image.network(
+                                    imageUrl + roomModel.productIds![0].images![index],
+                                    height: 0.08.sh,
+                                    width: 0.12.sw,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ],
                 ),
-              );
-            }));
+              ),
+            ),
+          );
+        }));
   }
 
   InkWell buildCurrentRoom(BuildContext context) {
     return InkWell(
-                onTap: () {
-                  Get.to(const RoomPage());
-                },
-                child: Container(
-                  decoration: const BoxDecoration(
-                      color: Colors.black12,
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+      onTap: () {
+        Get.to(const RoomPage());
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+            color: Colors.black12,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Stack(
+                children: const [
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+                    radius: 20,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Stack(
-                          children: const [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                              radius: 20,
-                            ),
-
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Image.asset("assets/icons/leave_room.png", height: 0.1.sh, width: 0.07.sw,),
-                            SizedBox(
-                              width: 0.01.sw,
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                showRaisedHandsBottomSheet(context);
-                              },
-                              icon: const Icon(
-                                Ionicons.hand_right,
-                                color: Colors.black54,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.01.sw,
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                showInviteFriendsBottomSheet(context);
-                              },
-                              icon: const Icon(
-                                Icons.add_box,
-                                color: Colors.black54,
-                                size: 30,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.009.sw,
-                            ),
-                            IconButton(
-                              onPressed: () {
-                              },
-                              icon: const Icon(
-                                Ionicons.mic,
-                                color: Colors.black54,
-                                size: 30,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                ],
+              ),
+              Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/leave_room.png",
+                    height: 0.1.sh,
+                    width: 0.07.sw,
+                  ),
+                  SizedBox(
+                    width: 0.01.sw,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showRaisedHandsBottomSheet(context);
+                    },
+                    icon: const Icon(
+                      Ionicons.hand_right,
+                      color: Colors.black54,
+                      size: 30,
                     ),
                   ),
-                ),
-              );
+                  SizedBox(
+                    width: 0.01.sw,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showInviteFriendsBottomSheet(context);
+                    },
+                    icon: const Icon(
+                      Icons.add_box,
+                      color: Colors.black54,
+                      size: 30,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 0.009.sw,
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Ionicons.mic,
+                      color: Colors.black54,
+                      size: 30,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
@@ -349,12 +387,15 @@ class HomePage extends StatelessWidget {
                                             hintText:
                                                 "How would you describe your room?",
                                           ),
-                                          style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.sp),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
                                             children: [
                                               InkWell(
                                                 onTap: () {
@@ -367,15 +408,15 @@ class HomePage extends StatelessWidget {
                                                           .primaryColor,
                                                       fontSize: 16.sp),
                                                 ),
-
                                               ),
-                                              SizedBox(width: 0.03.sw,),
+                                              SizedBox(
+                                                width: 0.03.sw,
+                                              ),
                                               InkWell(
                                                 onTap: () {
                                                   Get.back();
                                                 },
                                                 child: Text(
-
                                                   "Okay".toUpperCase(),
                                                   style: TextStyle(
                                                       color: Theme.of(context)

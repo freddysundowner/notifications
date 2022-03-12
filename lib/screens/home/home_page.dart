@@ -269,12 +269,15 @@ class HomePage extends StatelessWidget {
                                             hintText:
                                                 "How would you describe your room?",
                                           ),
-                                          style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.sp),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
                                             children: [
                                               InkWell(
                                                 onTap: () {
@@ -287,15 +290,15 @@ class HomePage extends StatelessWidget {
                                                           .primaryColor,
                                                       fontSize: 16.sp),
                                                 ),
-
                                               ),
-                                              SizedBox(width: 0.03.sw,),
+                                              SizedBox(
+                                                width: 0.03.sw,
+                                              ),
                                               InkWell(
                                                 onTap: () {
                                                   Get.back();
                                                 },
                                                 child: Text(
-
                                                   "Okay".toUpperCase(),
                                                   style: TextStyle(
                                                       color: Theme.of(context)

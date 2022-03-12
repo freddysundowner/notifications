@@ -19,7 +19,6 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    signOut();
   }
 
   Future loginUser() async {

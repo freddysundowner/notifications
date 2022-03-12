@@ -17,8 +17,6 @@ class Product {
   String? shopId;
   String? ownerId;
   String? description;
-  DateTime? createdAt;
-  DateTime? updatedAt;
 
   Product({
     required this.images,
@@ -31,8 +29,6 @@ class Product {
     this.shopId,
     this.ownerId,
     this.description,
-    this.createdAt,
-    this.updatedAt,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -45,8 +41,6 @@ class Product {
         shopId: json["shopId"],
         ownerId: json["ownerId"],
         description: json["description"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -60,8 +54,6 @@ class Product {
         "shopId": shopId,
         "ownerId": ownerId,
         "description": description,
-        "createdAt": createdAt!.toIso8601String(),
-        "updatedAt": updatedAt!.toIso8601String(),
       };
 }
 

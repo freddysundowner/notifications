@@ -4,6 +4,9 @@ import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
+import 'components/show_friends_to_invite.dart';
+import 'components/show_room_raised_hands.dart';
+
 class RoomPage extends StatelessWidget {
   const RoomPage({Key? key}) : super(key: key);
 
@@ -71,7 +74,7 @@ class RoomPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      showInviteFriendsBottomSheet(context);
+
                     },
                     icon: const Icon(
                       Ionicons.mic,
@@ -158,173 +161,7 @@ class RoomPage extends StatelessWidget {
     );
   }
 
-  Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      backgroundColor: Colors.grey[200],
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(15),
-        topRight: Radius.circular(15),
-      )),
-      builder: (context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return DraggableScrollableSheet(
-              initialChildSize: 0.5,
-              expand: false,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Ionicons.people,
-                            color: Colors.grey,
-                          ),
-                          Text(
-                            "Invite friends",
-                            style:
-                                TextStyle(color: Colors.grey, fontSize: 14.sp),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 0.03.sh,
-                      ),
-                      SizedBox(
-                        height: 0.4.sh,
-                        child: GridView.builder(
-                            shrinkWrap: true,
-                            // physics: ScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              childAspectRatio: 0.9,
-                            ),
-                            itemCount: 19,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                                    radius: 30,
-                                  ),
-                                  SizedBox(
-                                    height: 0.01.sh,
-                                  ),
-                                  Text(
-                                    "User name",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 14.sp),
-                                  ),
-                                ],
-                              );
-                            }),
-                      ),
-                    ],
-                  ),
-                );
-              });
-        });
-      },
-    );
-  }
 
-  Future<dynamic> showRaisedHandsBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      backgroundColor: Colors.grey[200],
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(15),
-        topRight: Radius.circular(15),
-      )),
-      builder: (context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return DraggableScrollableSheet(
-              initialChildSize: 0.5,
-              expand: false,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Ionicons.hand_left_sharp,
-                            color: Colors.black,
-                          ),
-                          SizedBox(
-                            width: 0.01.sw,
-                          ),
-                          Text(
-                            "Raised hands",
-                            style: TextStyle(
-                                color: Colors.black87, fontSize: 16.sp),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 0.01.sh,
-                      ),
-                      SizedBox(
-                        height: 0.4.sh,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                                          radius: 20,
-                                        ),
-                                        SizedBox(
-                                          width: 0.02.sw,
-                                        ),
-                                        Text(
-                                          "User name",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14.sp),
-                                        ),
-                                      ],
-                                    ),
-                                    const Icon(
-                                      Ionicons.add_circle,
-                                      color: Colors.black54,
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
-                  ),
-                );
-              });
-        });
-      },
-    );
-  }
 }
 
 class RoomUser extends StatelessWidget {

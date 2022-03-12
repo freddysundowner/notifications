@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
+import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
+import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:get/get.dart';
@@ -59,37 +61,46 @@ class HomePage extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                onTap: () {
-                  showRoomTypeBottomSheet(context);
-                },
-                child: Container(
-                  width: 0.6.sw,
-                  height: 0.07.sh,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Theme.of(context).primaryColor),
-                  child: Center(
-                    child: Text(
-                      "Create a room",
-                      style: TextStyle(fontSize: 18.sp, color: Colors.white),
+          padding: const EdgeInsets.only(top: 10.0, ),
+          child: SizedBox(
+            height: 0.18.sh,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showRoomTypeBottomSheet(context);
+                      },
+                      child: Container(
+                        width: 0.6.sw,
+                        height: 0.07.sh,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Theme.of(context).primaryColor),
+                        child: Center(
+                          child: Text(
+                            "Create a room",
+                            style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    SizedBox(
+                      width: 0.1.sw,
+                    ),
+                    const Icon(
+                      Ionicons.chatbox_outline,
+                      color: Colors.grey,
+                      size: 35,
+                    )
+                  ],
                 ),
-              ),
-              SizedBox(
-                width: 0.1.sw,
-              ),
-              const Icon(
-                Ionicons.chatbox_outline,
-                color: Colors.grey,
-                size: 35,
-              )
-            ],
+                SizedBox(height: 0.008.sh,),
+                buildCurrentRoom(context),
+              ],
+            ),
           ),
         ),
         body: ListView.builder(
@@ -204,6 +215,81 @@ class HomePage extends StatelessWidget {
                 ),
               );
             }));
+  }
+
+  InkWell buildCurrentRoom(BuildContext context) {
+    return InkWell(
+                onTap: () {
+                  Get.to(const RoomPage());
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.black12,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Stack(
+                          children: const [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+                              radius: 20,
+                            ),
+
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Image.asset("assets/icons/leave_room.png", height: 0.1.sh, width: 0.07.sw,),
+                            SizedBox(
+                              width: 0.01.sw,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                showRaisedHandsBottomSheet(context);
+                              },
+                              icon: const Icon(
+                                Ionicons.hand_right,
+                                color: Colors.black54,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 0.01.sw,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                showInviteFriendsBottomSheet(context);
+                              },
+                              icon: const Icon(
+                                Icons.add_box,
+                                color: Colors.black54,
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 0.009.sw,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                              },
+                              icon: const Icon(
+                                Ionicons.mic,
+                                color: Colors.black54,
+                                size: 30,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
   }
 
   Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {

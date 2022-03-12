@@ -27,7 +27,16 @@ class Api {
 
   static _callGet({required Uri url}) async {
     try {
-      final response = await client.get(url);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("access_token");
+      Map<String, String> headers = {};
+      if (token != null) {
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer " + token
+        };
+      }
+      final response = await client.get(url, headers: headers);
       return jsonDecode(response.body);
     } catch (e) {
       return null;
@@ -40,13 +49,15 @@ class Api {
       String? token = prefs.getString("access_token");
       Map<String, String> headers = {};
       if (token != null) {
-        headers = {'Content-Type': 'application/json', 'auth-token': token};
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer " + token
+        };
       }
-      Helper.debug("url ${url}");
       final response = await client.post(url, body: body, headers: headers);
       return jsonDecode(response.body);
     } catch (e) {
-      Helper.debug("error ${e.toString()}");
+      Helper.debug("error _callPost ${e}");
       return null;
     }
   }

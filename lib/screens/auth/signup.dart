@@ -10,7 +10,7 @@ import '../../utils/utils.dart';
 class SignUpScreen extends StatelessWidget {
   final _formSingupKey = GlobalKey<FormState>();
 
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   void dispose() {}

@@ -9,3 +9,4 @@ var delete = "DELETE";
 //END POINTS
 const authenticatation = api_url + "authenticate";
 const register = api_url + "registerv1";
+const users = api_url + "users/";

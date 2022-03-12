@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
 
 class Login extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
   final _formLoginkey = GlobalKey<FormState>();
 
   Login({Key? key}) : super(key: key);
@@ -131,7 +131,7 @@ class Login extends StatelessWidget {
     if (_formLoginkey.currentState!.validate()) {
       String snackbarMessage = "";
       try {
-        var login = authController.authenticated();
+        var login = authController.authenticate();
         await showDialog(
           context: context,
           builder: (context) {

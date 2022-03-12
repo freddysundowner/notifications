@@ -32,8 +32,8 @@ class Authenticate {
   Map<String, dynamic> toJson() => {
         "email": email,
         "password": password,
-        "userName": userName,
-        "firstName": firstName,
-        "lastName": lastName,
+        "userName": userName ?? "",
+        "firstName": firstName ?? "",
+        "lastName": lastName ?? "",
       };
 }

@@ -33,15 +33,15 @@ class RoomModel {
 
   List<Product>? productIds;
   List<OwnerId>? hostIds = [];
-  List<OwnerId>? userIds;
-  List<OwnerId>? raisedHands;
-  List<dynamic>? speakerIds;
-  List<dynamic>? invitedIds;
+  List<OwnerId>? userIds = [];
+  List<OwnerId>? raisedHands = [];
+  List<dynamic>? speakerIds = [];
+  List<dynamic>? invitedIds = [];
   bool? status;
-  List<dynamic>? productImages;
+  List<dynamic>? productImages = [];
   String? id;
   OwnerId? ownerId;
-  String? title;
+  String? title = "";
   ShopId? shopId;
   int? productPrice;
   DateTime? createdAt;
@@ -50,17 +50,17 @@ class RoomModel {
   dynamic? token;
 
   factory RoomModel.fromJson(Map<String, dynamic> json) => RoomModel(
-    productIds: json["productIds"] == null ? null : List<Product>.from(json["productIds"].map((x) => Product.fromJson(x))),
-    hostIds: json["hostIds"] == null ? null : List<OwnerId>.from(json["hostIds"].map((x) => OwnerId.fromJson(x))),
-    userIds: json["userIds"] == null ? null : List<OwnerId>.from(json["userIds"].map((x) => OwnerId.fromJson(x))),
-    raisedHands: json["raisedHands"] == null ? null : List<OwnerId>.from(json["raisedHands"].map((x) => OwnerId.fromJson(x))),
-    speakerIds: json["speakerIds"] == null ? null : List<dynamic>.from(json["speakerIds"].map((x) => x)),
-    invitedIds: json["invitedIds"] == null ? null : List<dynamic>.from(json["invitedIds"].map((x) => x)),
-    status: json["status"] == null ? null : json["status"],
-    productImages: json["productImages"] == null ? null : List<dynamic>.from(json["productImages"].map((x) => x)),
-    id: json["_id"] == null ? null : json["_id"],
+    productIds: json["productIds"] == null ? [] : List<Product>.from(json["productIds"].map((x) => Product.fromJson(x))),
+    hostIds: json["hostIds"] == null ? [] : List<OwnerId>.from(json["hostIds"].map((x) => OwnerId.fromJson(x))),
+    userIds: json["userIds"] == null ? [] : List<OwnerId>.from(json["userIds"].map((x) => OwnerId.fromJson(x))),
+    raisedHands: json["raisedHands"] == null ? [] : List<OwnerId>.from(json["raisedHands"].map((x) => OwnerId.fromJson(x))),
+    speakerIds: json["speakerIds"] == null ? [] : List<dynamic>.from(json["speakerIds"].map((x) => x)),
+    invitedIds: json["invitedIds"] == null ? [] : List<dynamic>.from(json["invitedIds"].map((x) => x)),
+    status: json["status"],
+    productImages: json["productImages"] == null ? [] : List<dynamic>.from(json["productImages"].map((x) => x)),
+    id: json["_id"],
     ownerId: json["ownerId"] == null ? null : OwnerId.fromJson(json["ownerId"]),
-    title: json["title"] ?? " ",
+    title: json["title"] ?? "",
     shopId: json["shopId"] == null ? null : ShopId.fromJson(json["shopId"]),
     productPrice: json["productPrice"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),

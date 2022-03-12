@@ -12,9 +12,9 @@ class RoomAPI {
     return jsonDecode(rooms);
   }
 
-  getRoomById(String uid) async {
+  getRoomById(String roomId) async {
     var room =
-        await DbBase().databaseRequest(roomById + uid, DbBase().getRequestType);
+        await DbBase().databaseRequest(roomById + roomId, DbBase().getRequestType);
     return jsonDecode(room);
   }
 }

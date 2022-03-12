@@ -120,18 +120,16 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        body: Container(
-          child: Obx(() {
-            if (_homeController.isLoading.isFalse) {
-              return buildIndividualRoomCard();
-            } else {
-              return const Center(
-                  child: CircularProgressIndicator(
-                color: Colors.black87,
-              ));
-            }
-          }),
-        ));
+        body: Obx(() {
+          if (_homeController.isLoading.isFalse) {
+            return buildIndividualRoomCard();
+          } else {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.black87,
+            ));
+          }
+        }));
   }
 
   buildIndividualRoomCard() {
@@ -143,8 +141,10 @@ class HomePage extends StatelessWidget {
               RoomModel.fromJson(_homeController.roomsList.elementAt(index));
 
           return InkWell(
-            onTap: () {
+            onTap: () async {
               Get.to(RoomPage(roomId: roomModel.id!,));
+
+              await _homeController.fetchRoom(roomModel.id!);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),

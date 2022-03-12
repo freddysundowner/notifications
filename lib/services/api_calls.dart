@@ -17,13 +17,10 @@ class ApiCalls {
       response = await Api.callApi(
           method: config.post, endpoint: config.authenticatation, body: data);
     }
-    Helper.debug("response $response");
     return response;
   }
 
   static Future<UserModel> getUserById() async {
-    Helper.debug(
-        "url ${config.users + FirebaseAuth.instance.currentUser!.uid}");
     var response = await Api.callApi(
         method: config.get,
         endpoint: config.users + FirebaseAuth.instance.currentUser!.uid);

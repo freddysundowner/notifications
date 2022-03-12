@@ -5,7 +5,6 @@ import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/api_calls.dart';
-import 'package:fluttergistshop/services/database.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';

@@ -131,7 +131,7 @@ class Login extends StatelessWidget {
     if (_formLoginkey.currentState!.validate()) {
       String snackbarMessage = "";
       try {
-        var login = authController.loginUser();
+        var login = authController.authenticated();
         await showDialog(
           context: context,
           builder: (context) {

@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../utils/utils.dart';
 
 class SignUpScreen extends StatelessWidget {
   final _formSingupKey = GlobalKey<FormState>();
-  final TextEditingController emailFieldController = TextEditingController();
-  final TextEditingController namesFieldController = TextEditingController();
-  final TextEditingController usernameFieldController = TextEditingController();
-  final TextEditingController passwordFieldController = TextEditingController();
-  final TextEditingController confirmPasswordFieldController =
-      TextEditingController();
+
+  final AuthController authController = Get.put(AuthController());
 
   @override
-  void dispose() {
-    emailFieldController.dispose();
-    passwordFieldController.dispose();
-    confirmPasswordFieldController.dispose();
-  }
+  void dispose() {}
 
   @override
   Widget build(BuildContext context) {
@@ -44,38 +38,20 @@ class SignUpScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 10.sm),
                     child: Column(
                       children: [
-                        TextFormField(
-                          controller: emailFieldController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            hintText: "Enter your email",
-                            labelText: "Email",
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            suffixIcon: Icon(Ionicons.mail_open),
-                          ),
-                          validator: (value) {
-                            if (emailFieldController.text.isEmpty) {
-                              return kEmailNullError;
-                            } else if (!emailValidatorRegExp
-                                .hasMatch(emailFieldController.text)) {
-                              return kInvalidEmailError;
-                            }
-                            return null;
-                          },
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                        ),
+                        buildEmailFormField(),
                         SizedBox(height: 30.sp),
                         TextFormField(
-                          controller: namesFieldController,
-                          keyboardType: TextInputType.emailAddress,
+                          controller: authController.fnameFieldController,
+                          keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            hintText: "Enter your username",
-                            labelText: "Username",
+                            hintText: "Enter your firstname",
+                            labelText: "First Name",
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             suffixIcon: Icon(Icons.supervised_user_circle),
                           ),
                           validator: (value) {
-                            if (namesFieldController.text.isEmpty) {
+                            if (authController
+                                .fnameFieldController.text.isEmpty) {
                               return kUsernameNullError;
                             }
                             return null;
@@ -84,17 +60,37 @@ class SignUpScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 30.sp),
                         TextFormField(
-                          controller: usernameFieldController,
-                          keyboardType: TextInputType.emailAddress,
+                          controller: authController.lnameFieldController,
+                          keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                            hintText: "Enter Full Names",
-                            labelText: "Full names",
+                            hintText: "Enter your lastname",
+                            labelText: "Last Name",
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             suffixIcon: Icon(Icons.supervised_user_circle),
                           ),
                           validator: (value) {
-                            if (usernameFieldController.text.isEmpty) {
-                              return kFnamesNullError;
+                            if (authController
+                                .lnameFieldController.text.isEmpty) {
+                              return kUsernameNullError;
+                            }
+                            return null;
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                        ),
+                        SizedBox(height: 30.sp),
+                        TextFormField(
+                          controller: authController.usernameFieldController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            hintText: "Enter your username",
+                            labelText: "Username",
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            suffixIcon: Icon(Icons.supervised_user_circle),
+                          ),
+                          validator: (value) {
+                            if (authController
+                                .usernameFieldController.text.isEmpty) {
+                              return kUsernameNullError;
                             }
                             return null;
                           },
@@ -107,7 +103,7 @@ class SignUpScreen extends StatelessWidget {
                         SizedBox(height: 40.sp),
                         DefaultButton(
                           text: "Sign up",
-                          press: signUpButtonCallback,
+                          press: () => signUpButtonCallback(context),
                         ),
                       ],
                     ),
@@ -129,7 +125,7 @@ class SignUpScreen extends StatelessWidget {
 
   Widget buildConfirmPasswordFormField() {
     return TextFormField(
-      controller: confirmPasswordFieldController,
+      controller: authController.confirmPasswordFieldController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: "Re-enter your password",
@@ -138,12 +134,13 @@ class SignUpScreen extends StatelessWidget {
         suffixIcon: Icon(Icons.lock),
       ),
       validator: (value) {
-        if (confirmPasswordFieldController.text.isEmpty) {
+        if (authController.confirmPasswordFieldController.text.isEmpty) {
           return kPassNullError;
-        } else if (confirmPasswordFieldController.text !=
-            passwordFieldController.text) {
+        } else if (authController.confirmPasswordFieldController.text !=
+            authController.passwordFieldController.text) {
           return kMatchPassError;
-        } else if (confirmPasswordFieldController.text.length < 8) {
+        } else if (authController.confirmPasswordFieldController.text.length <
+            8) {
           return kShortPassError;
         }
         return null;
@@ -154,7 +151,7 @@ class SignUpScreen extends StatelessWidget {
 
   Widget buildEmailFormField() {
     return TextFormField(
-      controller: emailFieldController,
+      controller: authController.emailFieldController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: "Enter your email",
@@ -163,9 +160,10 @@ class SignUpScreen extends StatelessWidget {
         suffixIcon: Icon(Ionicons.mail_open),
       ),
       validator: (value) {
-        if (emailFieldController.text.isEmpty) {
+        if (authController.emailFieldController.text.isEmpty) {
           return kEmailNullError;
-        } else if (!emailValidatorRegExp.hasMatch(emailFieldController.text)) {
+        } else if (!emailValidatorRegExp
+            .hasMatch(authController.emailFieldController.text)) {
           return kInvalidEmailError;
         }
         return null;
@@ -176,7 +174,7 @@ class SignUpScreen extends StatelessWidget {
 
   Widget buildPasswordFormField() {
     return TextFormField(
-      controller: passwordFieldController,
+      controller: authController.passwordFieldController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: "Enter your password",
@@ -185,10 +183,8 @@ class SignUpScreen extends StatelessWidget {
         suffixIcon: Icon(Icons.lock),
       ),
       validator: (value) {
-        if (passwordFieldController.text.isEmpty) {
+        if (authController.passwordFieldController.text.isEmpty) {
           return kPassNullError;
-        } else if (passwordFieldController.text.length < 8) {
-          return kShortPassError;
         }
         return null;
       },
@@ -196,7 +192,31 @@ class SignUpScreen extends StatelessWidget {
     );
   }
 
-  Future<void> signUpButtonCallback() async {
-    if (_formSingupKey.currentState!.validate()) {}
+  Future<void> signUpButtonCallback(BuildContext context) async {
+    if (_formSingupKey.currentState!.validate()) {
+      String snackbarMessage = "";
+      try {
+        var register = authController.register();
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return AsyncProgressDialog(
+              register,
+              message: Text("Creating account"),
+              onError: (e) {
+                snackbarMessage = e.toString();
+              },
+            );
+          },
+        );
+        snackbarMessage = authController.error.value;
+      } finally {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+    } else {}
   }
 }

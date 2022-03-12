@@ -224,7 +224,7 @@ class HomePage extends StatelessWidget {
                       height: 0.12.sh,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: roomModel.productIds![0].images!.length,
+                          itemCount: roomModel.productIds![0].images.length,
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(5.0),
@@ -235,7 +235,7 @@ class HomePage extends StatelessWidget {
                                     color: Colors.white),
                                 child: Center(
                                   child: Image.network(
-                                    imageUrl + roomModel.productIds![0].images![index],
+                                    imageUrl + roomModel.productIds![0].images[index],
                                     height: 0.08.sh,
                                     width: 0.12.sw,
                                     fit: BoxFit.fill,

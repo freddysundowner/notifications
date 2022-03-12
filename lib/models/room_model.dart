@@ -142,14 +142,14 @@ class ShopId {
   String? description;
 
   factory ShopId.fromJson(Map<String, dynamic> json) => ShopId(
-    id: json["_id"] == null ? null : json["_id"],
-    image: json["image"] == null ? null : json["image"],
-    description: json["description"] == null ? null : json["description"],
+    id: json["_id"],
+    image: json["image"],
+    description: json["description"],
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
     "image": image,
-    "description": description == null ? null : description,
+    "description": description,
   };
 }

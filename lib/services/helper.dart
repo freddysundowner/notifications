@@ -13,4 +13,11 @@ class Helper {
       child: Center(child: child),
     );
   }
+
+  static debug(
+    data, {
+    bool show = true,
+  }) {
+    if (show) print(data);
+  }
 }

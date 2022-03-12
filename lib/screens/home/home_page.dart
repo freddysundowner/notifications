@@ -26,9 +26,14 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).backgroundColor,
           elevation: 0,
-          leading: const Icon(
-            Ionicons.search,
-            color: Colors.grey,
+          leading: InkWell(
+            onTap: () {
+              Get.to(() => ShopSearchResults());
+            },
+            child: const Icon(
+              Ionicons.search,
+              color: Colors.grey,
+            ),
           ),
           actions: [
             Image.asset(
@@ -408,6 +413,7 @@ class HomePage extends StatelessWidget {
                                                           .primaryColor,
                                                       fontSize: 16.sp),
                                                 ),
+
                                               ),
                                               SizedBox(
                                                 width: 0.03.sw,
@@ -417,6 +423,7 @@ class HomePage extends StatelessWidget {
                                                   Get.back();
                                                 },
                                                 child: Text(
+
                                                   "Okay".toUpperCase(),
                                                   style: TextStyle(
                                                       color: Theme.of(context)

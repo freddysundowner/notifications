@@ -26,55 +26,43 @@ class ShopView extends StatelessWidget {
       body: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.sm, vertical: 20.sm),
-              decoration: BoxDecoration(color: primarycolor),
-              child: Row(
+                width: 100.0,
+                height: 100.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: CachedNetworkImageProvider(
+                            "https://i.imgur.com/BoN9kdC.png")))),
+            Container(
+              margin: EdgeInsets.only(left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: CachedNetworkImageProvider(
-                                  "https://i.imgur.com/BoN9kdC.png")))),
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Fred Shop",
-                          style:
-                              TextStyle(fontSize: 21.sp, color: Colors.black),
-                        ),
-                        Text(
-                          "description here",
-                          style:
-                              TextStyle(fontSize: 15.sp, color: Colors.white),
-                        ),
-                        Text("email here",
-                            style:
-                                TextStyle(fontSize: 13.sp, color: Colors.white))
-                      ],
-                    ),
+                  Text(
+                    "Fred Shop",
+                    style: TextStyle(fontSize: 21.sp, color: Colors.black),
                   ),
-                  Spacer(),
-                  InkWell(
-                    onTap: () {
-                      Get.to(() => NewShop());
-                    },
-                    child: Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 30.sm,
-                    ),
-                  )
+                  Text(
+                    "description here",
+                    style: TextStyle(fontSize: 15.sp, color: Colors.white),
+                  ),
+                  Text("email here",
+                      style: TextStyle(fontSize: 13.sp, color: Colors.white))
                 ],
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Get.to(() => NewShop());
+              },
+              child: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: 30.sm,
               ),
             ),
             Text("Products", style: headingStyle),

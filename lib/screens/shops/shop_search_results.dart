@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
+import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/widgets/search_field.dart';
+import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
 
@@ -32,16 +34,15 @@ class ShopSearchResults extends StatelessWidget {
                       onSubmit: (c) {},
                     ),
                   ),
-                  SizedBox(
-                    height: 200.h,
-                    child: Column(
-                      children: products
-                          .map((e) => ShopShortDetailCard(
-                                product: e,
-                                onPressed: () {},
-                              ))
-                          .toList(),
-                    ),
+                  Column(
+                    children: products
+                        .map((e) => ShopShortDetailCard(
+                              product: e,
+                              onPressed: () {
+                                Get.to(() => ShopView());
+                              },
+                            ))
+                        .toList(),
                   ),
                   SizedBox(height: 60.h),
                 ],

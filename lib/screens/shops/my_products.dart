@@ -7,7 +7,7 @@ import 'package:fluttergistshop/widgets/widgets.dart';
 
 import '../../utils/utils.dart';
 
-class ShopSearchResults extends StatelessWidget {
+class MyProducts extends StatelessWidget {
   Future<void> refreshPage() {
     return Future<void>.value();
   }
@@ -33,13 +33,10 @@ class ShopSearchResults extends StatelessWidget {
                     style: TextStyle(fontSize: 12),
                   ),
                   SizedBox(height: 30.h),
-                  SizedBox(
-                    height: 200.h,
-                    child: Column(
-                      children: products
-                          .map((e) => buildProductDismissible(e, context))
-                          .toList(),
-                    ),
+                  Column(
+                    children: products
+                        .map((e) => buildProductDismissible(e, context))
+                        .toList(),
                   ),
                   SizedBox(height: 60.h),
                 ],

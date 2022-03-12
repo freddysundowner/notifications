@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "268154715648",
+    "project_id": "gistshop-673b1",
+    "storage_bucket": "gistshop-673b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268154715648:android:784100d430bd4bc747e2e5",
+        "android_client_info": {
+          "package_name": "com.gistshop.gistshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "268154715648-cd6f0uamo1dhgkv1e86gsgod2janbn9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC24WcdW7Aif9kNzam3HNceJn3A11FFch8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "268154715648-cd6f0uamo1dhgkv1e86gsgod2janbn9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

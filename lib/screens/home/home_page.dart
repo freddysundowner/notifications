@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+
+import '../shops/my_products.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,9 +18,14 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).backgroundColor,
           elevation: 0,
-          leading: const Icon(
-            Ionicons.search,
-            color: Colors.grey,
+          leading: InkWell(
+            onTap: () {
+              Get.to(() => ShopSearchResults());
+            },
+            child: const Icon(
+              Ionicons.search,
+              color: Colors.grey,
+            ),
           ),
           actions: [
             Image.asset(
@@ -299,11 +307,13 @@ class HomePage extends StatelessWidget {
                         height: 0.04.sh,
                       ),
                       InkWell(
-                        onTap: (){
-
-                          showProductBottomSheet(context);
-                        },
-                          child: Button(text: "Proceed", width: 0.8.sw,))
+                          onTap: () {
+                            showProductBottomSheet(context);
+                          },
+                          child: Button(
+                            text: "Proceed",
+                            width: 0.8.sw,
+                          ))
                     ],
                   ),
                 );
@@ -329,8 +339,8 @@ class HomePage extends StatelessWidget {
           return DraggableScrollableSheet(
               initialChildSize: 0.5,
               expand: false,
-              builder:
-                  (BuildContext productContext, ScrollController scrollController) {
+              builder: (BuildContext productContext,
+                  ScrollController scrollController) {
                 return Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -343,16 +353,18 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         height: 0.02.sh,
                       ),
-                      Text("Choose product", style: TextStyle(
-                        color: Colors.black87, fontSize: 16.sp
-                      ),),
+                      Text(
+                        "Choose product",
+                        style:
+                            TextStyle(color: Colors.black87, fontSize: 16.sp),
+                      ),
                       SizedBox(
                         height: 0.01.sh,
                       ),
                       SizedBox(
                         height: 0.35.sh,
                         child: GridView.builder(
-                          scrollDirection: Axis.vertical,
+                            scrollDirection: Axis.vertical,
                             shrinkWrap: true,
                             // physics: ScrollPhysics(),
                             gridDelegate:
@@ -374,7 +386,9 @@ class HomePage extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(5),
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
                                         child: Center(
                                           child: Image.network(
                                             "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png",
@@ -384,7 +398,13 @@ class HomePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      Center(child: Text("Product name", style: TextStyle(color: Colors.black54, fontSize: 12.sp),))
+                                      Center(
+                                          child: Text(
+                                        "Product name",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 12.sp),
+                                      ))
                                     ],
                                   ),
                                 ),
@@ -407,143 +427,157 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          )),
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      )),
       builder: (context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return DraggableScrollableSheet(
-                  initialChildSize: 0.8,
-                  expand: false,
-                  builder:
-                      (BuildContext productContext, ScrollController scrollController) {
-                    return Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Container(
-                            color: Theme.of(productContext).primaryColor,
-                            height: 0.01.sh,
-                            width: 0.15.sw,
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              showAddCoHostBottomSheet(context);
-                            },
+          return DraggableScrollableSheet(
+              initialChildSize: 0.8,
+              expand: false,
+              builder: (BuildContext productContext,
+                  ScrollController scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Theme.of(productContext).primaryColor,
+                        height: 0.01.sh,
+                        width: 0.15.sw,
+                      ),
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showAddCoHostBottomSheet(context);
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.people,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(
+                              width: 0.01.sw,
+                            ),
+                            Text(
+                              "Add a Co-host",
+                              style: TextStyle(
+                                  color: Colors.grey, fontSize: 16.sp),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      Text(
+                        "Product A images",
+                        style:
+                            TextStyle(color: Colors.black87, fontSize: 16.sp),
+                      ),
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      SizedBox(
+                        height: 0.35.sh,
+                        child: GridView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            // physics: ScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 0.99,
+                            ),
+                            itemCount: 9,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {},
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.white),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Image.network(
+                                          "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png",
+                                          height: 0.1.sh,
+                                          width: 0.2.sw,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 0.05.sh,
+                            width: 0.3.sw,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    spreadRadius: 0.1,
+                                    blurRadius: 0.5,
+                                    offset: Offset(
+                                        0, 5), // changes position of shadow
+                                  ),
+                                ]),
                             child: Row(
                               children: [
-                                const Icon(Icons.people, color: Colors.grey,),
-                                SizedBox(width: 0.01.sw,),
-                                Text("Add a Co-host", style: TextStyle(color: Colors.grey, fontSize: 16.sp),),
+                                Image.asset(
+                                  "assets/icons/wallet_icon.png",
+                                  color: Colors.grey,
+                                  width: 0.1.sw,
+                                  height: 0.03.sh,
+                                ),
+                                SizedBox(
+                                  height: 0.04.sh,
+                                  child: const VerticalDivider(
+                                    width: 0.001,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 0.03.sw,
+                                ),
+                                Text(
+                                  "20",
+                                  style: TextStyle(
+                                      color: Colors.black54, fontSize: 16.sp),
+                                ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          Text("Product A images", style: TextStyle(
-                              color: Colors.black87, fontSize: 16.sp
-                          ),),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          SizedBox(
-                            height: 0.35.sh,
-                            child: GridView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                // physics: ScrollPhysics(),
-                                gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 0.99,
-                                ),
-                                itemCount: 9,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
-                                          color: Colors.white
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Center(
-                                            child: Image.network(
-                                              "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png",
-                                              height: 0.1.sh,
-                                              width: 0.2.sw,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 0.05.sh,
-                                width: 0.3.sw,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        spreadRadius: 0.1,
-                                        blurRadius: 0.5,
-                                        offset: Offset(0, 5), // changes position of shadow
-                                      ),
-                                    ]
-                                ),
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      "assets/icons/wallet_icon.png",
-                                      color: Colors.grey,
-                                      width: 0.1.sw,
-                                      height: 0.03.sh,
-                                    ),
-                                    SizedBox(
-                                      height: 0.04.sh,
-                                      child: const VerticalDivider(
-                                        width: 0.001,
-                                      ),
-                                    ),
-                                    SizedBox(width: 0.03.sw,),
-                                    Text("20", style: TextStyle(color: Colors.black54, fontSize: 16.sp),),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 0.03.sh,
-                          ),
-                          Button(text: "Finish", width: 0.9.sw)
-                        ],
+                        ),
                       ),
-                    );
-                  });
-            });
+                      SizedBox(
+                        height: 0.03.sh,
+                      ),
+                      Button(text: "Finish", width: 0.9.sw)
+                    ],
+                  ),
+                );
+              });
+        });
       },
     );
   }
@@ -555,82 +589,77 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          )),
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      )),
       builder: (context) {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
-              return DraggableScrollableSheet(
-                  initialChildSize: 0.8,
-                  expand: false,
-                  builder:
-                      (BuildContext productContext, ScrollController scrollController) {
-                    return Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Container(
-                            color: Theme.of(productContext).primaryColor,
-                            height: 0.01.sh,
-                            width: 0.15.sw,
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          Text("Add Co-hosts", style: TextStyle(
-                              color: Colors.black87, fontSize: 16.sp
-                          ),),
-                          SizedBox(
-                            height: 0.01.sh,
-                          ),
-
-                          SizedBox(
-                            height: 0.55.sh,
-                            child: GridView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                // physics: ScrollPhysics(),
-                                gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 0.99,
-                                ),
-                                itemCount: 9,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-
-                                    },
-                                    child: Column(
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Center(
-                                            child: CircleAvatar(
-                                              radius: 40,
-                                              backgroundImage: NetworkImage(
-                                                  "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"
-                                              ),
-                                            )
-                                          ),
-                                        ),
-
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-
-                          Button(text: "Continue", width: 0.9.sw)
-                        ],
+          return DraggableScrollableSheet(
+              initialChildSize: 0.8,
+              expand: false,
+              builder: (BuildContext productContext,
+                  ScrollController scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Theme.of(productContext).primaryColor,
+                        height: 0.01.sh,
+                        width: 0.15.sw,
                       ),
-                    );
-                  });
-            });
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      Text(
+                        "Add Co-hosts",
+                        style:
+                            TextStyle(color: Colors.black87, fontSize: 16.sp),
+                      ),
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
+                      SizedBox(
+                        height: 0.55.sh,
+                        child: GridView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            // physics: ScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 0.99,
+                            ),
+                            itemCount: 9,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {},
+                                child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Center(
+                                          child: CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: NetworkImage(
+                                            "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+                                      )),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      Button(text: "Continue", width: 0.9.sw)
+                    ],
+                  ),
+                );
+              });
+        });
       },
     );
   }

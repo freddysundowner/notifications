@@ -8,9 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
 
 class Login extends StatelessWidget {
-  final TextEditingController emailFieldController = TextEditingController();
-  final TextEditingController passwordFieldController = TextEditingController();
-
   final AuthController authController = Get.put(AuthController());
   final _formLoginkey = GlobalKey<FormState>();
 
@@ -52,7 +49,7 @@ class Login extends StatelessWidget {
                           )),
                       DefaultButton(
                         text: "Sign in",
-                        press: signInButtonCallback,
+                        press: () => signInButtonCallback(context),
                       ),
                     ],
                   ),
@@ -89,7 +86,7 @@ class Login extends StatelessWidget {
 
   Widget buildPasswordFormField() {
     return TextFormField(
-      controller: passwordFieldController,
+      controller: authController.passwordFieldController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: "Enter your password",
@@ -98,10 +95,8 @@ class Login extends StatelessWidget {
         suffixIcon: Icon(Icons.lock),
       ),
       validator: (value) {
-        if (passwordFieldController.text.isEmpty) {
+        if (authController.passwordFieldController.text.isEmpty) {
           return kPassNullError;
-        } else if (passwordFieldController.text.length < 8) {
-          return kShortPassError;
         }
         return null;
       },
@@ -111,7 +106,7 @@ class Login extends StatelessWidget {
 
   Widget buildEmailFormField() {
     return TextFormField(
-      controller: emailFieldController,
+      controller: authController.emailFieldController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         hintText: "Enter your email",
@@ -120,9 +115,10 @@ class Login extends StatelessWidget {
         suffixIcon: Icon(Ionicons.mail_open),
       ),
       validator: (value) {
-        if (emailFieldController.text.isEmpty) {
+        if (authController.emailFieldController.text.isEmpty) {
           return kEmailNullError;
-        } else if (!emailValidatorRegExp.hasMatch(emailFieldController.text)) {
+        } else if (!emailValidatorRegExp
+            .hasMatch(authController.emailFieldController.text)) {
           return kInvalidEmailError;
         }
         return null;
@@ -131,8 +127,31 @@ class Login extends StatelessWidget {
     );
   }
 
-  Future<void> signInButtonCallback() async {
+  Future<void> signInButtonCallback(BuildContext context) async {
     if (_formLoginkey.currentState!.validate()) {
+      String snackbarMessage = "";
+      try {
+        var login = authController.loginUser();
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return AsyncProgressDialog(
+              login,
+              message: Text("Signing in to your account"),
+              onError: (e) {
+                snackbarMessage = e.toString();
+              },
+            );
+          },
+        );
+        snackbarMessage = authController.error.value;
+      } finally {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
     } else {}
   }
 }

@@ -6,6 +6,7 @@ import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
+import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/button.dart';
@@ -143,7 +144,7 @@ class HomePage extends StatelessWidget {
 
           return InkWell(
             onTap: () {
-              Get.to(const RoomPage());
+              Get.to(RoomPage(roomId: roomModel.id!,));
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -261,7 +262,7 @@ class HomePage extends StatelessWidget {
   InkWell buildCurrentRoom(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(const RoomPage());
+        Get.to(RoomPage(roomId: '',));
       },
       child: Container(
         decoration: const BoxDecoration(

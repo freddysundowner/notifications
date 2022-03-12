@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -8,7 +9,11 @@ import 'components/show_friends_to_invite.dart';
 import 'components/show_room_raised_hands.dart';
 
 class RoomPage extends StatelessWidget {
-  const RoomPage({Key? key}) : super(key: key);
+
+  final RoomController _roomController = Get.put(RoomController());
+  String roomId;
+
+  RoomPage({Key? key, required this.roomId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

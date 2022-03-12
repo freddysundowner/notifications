@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DbBase {
   var postRequestType = "POST";
   var getRequestType = "GET";
-  var patchRequestType = "PATCH";
+  var patchRequestType = "PUT";
   var deleteRequestType = "DELETE";
 
   databaseRequest(
@@ -27,6 +27,8 @@ class DbBase {
     };
 
     var request = http.Request(type, Uri.parse(link));
+
+    printOut("${request.method} ${request.url}");
 
     if ( body != null ) {
       request.body = json.encode(body);

@@ -35,8 +35,8 @@ class RoomModel {
   List<OwnerId>? hostIds = [];
   List<OwnerId>? userIds = [];
   List<OwnerId>? raisedHands = [];
-  List<dynamic>? speakerIds = [];
-  List<dynamic>? invitedIds = [];
+  List<OwnerId>? speakerIds = [];
+  List<OwnerId>? invitedIds = [];
   bool? status;
   List<dynamic>? productImages = [];
   String? id;
@@ -54,11 +54,11 @@ class RoomModel {
     hostIds: json["hostIds"] == null ? [] : List<OwnerId>.from(json["hostIds"].map((x) => OwnerId.fromJson(x))),
     userIds: json["userIds"] == null ? [] : List<OwnerId>.from(json["userIds"].map((x) => OwnerId.fromJson(x))),
     raisedHands: json["raisedHands"] == null ? [] : List<OwnerId>.from(json["raisedHands"].map((x) => OwnerId.fromJson(x))),
-    speakerIds: json["speakerIds"] == null ? [] : List<dynamic>.from(json["speakerIds"].map((x) => x)),
-    invitedIds: json["invitedIds"] == null ? [] : List<dynamic>.from(json["invitedIds"].map((x) => x)),
+    speakerIds: json["speakerIds"] == null ? [] : List<OwnerId>.from(json["speakerIds"].map((x) => OwnerId.fromJson(x))),
+    invitedIds: json["invitedIds"] == null ? [] : List<OwnerId>.from(json["invitedIds"].map((x) => OwnerId.fromJson(x))),
     status: json["status"],
     productImages: json["productImages"] == null ? [] : List<dynamic>.from(json["productImages"].map((x) => x)),
-    id: json["_id"],
+    id: json["_id"] ?? "",
     ownerId: json["ownerId"] == null ? null : OwnerId.fromJson(json["ownerId"]),
     title: json["title"] ?? "",
     shopId: json["shopId"] == null ? null : ShopId.fromJson(json["shopId"]),

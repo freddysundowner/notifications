@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/home_controller.dart';
+import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/services/end_points.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 Future<dynamic> showRaisedHandsBottomSheet(BuildContext context) {
@@ -41,47 +45,67 @@ Future<dynamic> showRaisedHandsBottomSheet(BuildContext context) {
                           ],
                         ),
                         SizedBox(
-                          height: 0.01.sh,
+                          height: 0.02.sh,
                         ),
                         SizedBox(
                           height: 0.4.sh,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: 10,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                                            radius: 20,
-                                          ),
-                                          SizedBox(
-                                            width: 0.02.sw,
-                                          ),
-                                          Text(
-                                            "User name",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 14.sp),
-                                          ),
-                                        ],
+                          child: GetBuilder<HomeController>(
+                            builder: (_hc) {
+                              return ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: _hc.currentRoom.value.raisedHands!.length,
+                                  itemBuilder: (context, index) {
+
+                                    OwnerId user = _hc.currentRoom.value.raisedHands!.elementAt(index);
+
+                                    return InkWell(
+                                      onTap: () {
+                                        Get.back();
+                                        _hc.removeUserFromRaisedHands(user);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                        user.profilePhoto ==
+                                            null
+                                            ? const CircleAvatar(
+                                            radius: 25,
+                                            backgroundImage: AssetImage(
+                                                "assets/icons/profile_placeholder.png"))
+                                            : CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage: NetworkImage(
+                                              imageUrl +
+                                                  user.profilePhoto!),
+                                        ),
+                                                SizedBox(
+                                                  width: 0.02.sw,
+                                                ),
+                                                Text(
+                                                  "${user.firstName} ${user.lastName}",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 14.sp),
+                                                ),
+                                              ],
+                                            ),
+                                            const Icon(
+                                              Ionicons.add_circle,
+                                              color: Colors.black54,
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                      const Icon(
-                                        Ionicons.add_circle,
-                                        color: Colors.black54,
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }),
+                                    );
+                                  });
+                            }
+                          ),
                         ),
                       ],
                     ),

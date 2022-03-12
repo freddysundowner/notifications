@@ -23,7 +23,7 @@ class RoomPage extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title:  Text(
+        title: Text(
           _homeController.currentRoom.value.title!,
           style: const TextStyle(color: Colors.white),
         ),
@@ -118,17 +118,17 @@ class RoomPage extends StatelessWidget {
                     ),
                     _homeController.currentRoom.value.speakerIds!.isNotEmpty
                         ? Column(
-                       children: [
-                         RoomUser("Speakers"),
-                         SizedBox(
-                           width: 0.9.sw,
-                           child: const Divider(
-                             color: Colors.black12,
-                           ),
-                         ),
-                       ],
-                     ): Container(),
-
+                            children: [
+                              RoomUser("Speakers"),
+                              SizedBox(
+                                width: 0.9.sw,
+                                child: const Divider(
+                                  color: Colors.black12,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
                     RoomUser("Audience"),
                   ],
                 ),
@@ -159,36 +159,40 @@ class RoomPage extends StatelessWidget {
         ),
         SizedBox(
           height: 0.12.sh,
-          child: GetBuilder<HomeController>(
-
-            builder: (_hc) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 8.0),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _hc.currentRoom.value.productIds!.elementAt(0).images.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.white),
-                          child: Center(
-                            child: Image.network(
-                              imageUrl + _hc.currentRoom.value.productIds!.elementAt(0).images.elementAt(index),
-                              height: 0.08.sh,
-                              width: 0.12.sw,
-                              fit: BoxFit.fill,
-                            ),
+          child: GetBuilder<HomeController>(builder: (_hc) {
+            return Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 8.0),
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _hc.currentRoom.value.productIds!
+                      .elementAt(0)
+                      .images
+                      .length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white),
+                        child: Center(
+                          child: Image.network(
+                            imageUrl +
+                                _hc.currentRoom.value.productIds!
+                                    .elementAt(0)
+                                    .images
+                                    .elementAt(index),
+                            height: 0.08.sh,
+                            width: 0.12.sw,
+                            fit: BoxFit.fill,
                           ),
                         ),
-                      );
-                    }),
-              );
-            }
-          ),
+                      ),
+                    );
+                  }),
+            );
+          }),
         ),
       ],
     );
@@ -203,8 +207,6 @@ class RoomUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RoomModel roomModel = _homeController.currentRoom.value;
-
     return Column(
       children: [
         Align(
@@ -223,82 +225,92 @@ class RoomUser extends StatelessWidget {
         SizedBox(
           height: 0.02.sh,
         ),
-        GetBuilder<HomeController>(
-            builder: (_dx) => GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                // physics: ScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  childAspectRatio: 1.0,
-                ),
-                itemCount: _dx.currentRoom.value.hostIds!.length,
-                itemBuilder: (context, index) {
-                  RoomModel room = _dx.currentRoom.value;
+        GetBuilder<HomeController>(builder: (_dx) {
+          List<OwnerId> user = title == "Hosts"
+              ? _dx.currentRoom.value.hostIds!
+              : title == "Speakers"
+                  ? _dx.currentRoom.value.speakerIds!
+                  : _dx.currentRoom.value.userIds!;
+          return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              // physics: ScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 1.0,
+              ),
+              itemCount: user.length,
+              itemBuilder: (context, index) {
+                RoomModel room = _dx.currentRoom.value;
 
-                  return InkWell(
-                    onTap: () {
-                      showUserBottomSheet(context);
-                    },
-                    child: Column(
-                      children: [
-                        title == "Hosts"
-                            ? Stack(children: [
-                                Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: room.hostIds![index].profilePhoto ==
-                                            null
-                                        ? const CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                                "assets/icons/profile_placeholder.png"))
-                                        : CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                imageUrl +
-                                                    room.hostIds![index]
-                                                        .profilePhoto!),
-                                          )),
-                                Container(
-                                  margin: const EdgeInsets.only(right: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  child: const Icon(
-                                    Ionicons.star,
-                                    color: Colors.redAccent,
-                                    size: 12,
-                                  ),
-                                  padding: const EdgeInsets.all(1),
-                                )
-                              ])
-                            : Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: room.hostIds![index].profilePhoto == null
-                                    ? const CircleAvatar(
-                                        backgroundImage: AssetImage(
-                                            "assets/icons/profile_placeholder.png"))
-                                    : CircleAvatar(
-                                        backgroundImage: NetworkImage(imageUrl +
-                                            room.hostIds![index].profilePhoto!),
-                                      )),
-                        SizedBox(
-                          height: 0.01.sh,
-                        ),
-                        Center(
-                            child: Text(
-                          room.hostIds![index].userName!,
-                          style:
-                              TextStyle(color: Colors.black, fontSize: 14.sp),
-                        ))
-                      ],
-                    ),
-                  );
-                })),
+                return InkWell(
+                  onTap: () {
+                    showUserBottomSheet(context, user.elementAt(index));
+                  },
+                  child: Column(
+                    children: [
+                      title == "Hosts"
+                          ? Stack(children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: user.elementAt(index).profilePhoto ==
+                                          null
+                                      ? const CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: AssetImage(
+                                              "assets/icons/profile_placeholder.png"))
+                                      : CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: NetworkImage(
+                                              imageUrl +
+                                                  user
+                                                      .elementAt(index)
+                                                      .profilePhoto!),
+                                        )),
+                              Container(
+                                margin: const EdgeInsets.only(right: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: const Icon(
+                                  Ionicons.star,
+                                  color: Colors.redAccent,
+                                  size: 12,
+                                ),
+                                padding: const EdgeInsets.all(1),
+                              )
+                            ])
+                          : Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: user.elementAt(index).profilePhoto == null
+                                  ? const CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: AssetImage(
+                                          "assets/icons/profile_placeholder.png"))
+                                  : CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: NetworkImage(imageUrl +
+                                          user.elementAt(index).profilePhoto!),
+                                    )),
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
+                      Center(
+                          child: Text(
+                        user.elementAt(index).userName!,
+                        style: TextStyle(color: Colors.black, fontSize: 14.sp),
+                      ))
+                    ],
+                  ),
+                );
+              });
+        }),
       ],
     );
   }
 
-  Future<dynamic> showUserBottomSheet(BuildContext context) {
+  Future<dynamic> showUserBottomSheet(BuildContext context, OwnerId user) {
     return showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -322,11 +334,16 @@ class RoomUser extends StatelessWidget {
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                            radius: 35,
-                          ),
+                          user.profilePhoto == null
+                              ? const CircleAvatar(
+                                  radius: 35,
+                                  backgroundImage: AssetImage(
+                                      "assets/icons/profile_placeholder.png"))
+                              : CircleAvatar(
+                                  radius: 35,
+                                  backgroundImage: NetworkImage(
+                                      imageUrl + user.profilePhoto!),
+                                ),
                           SizedBox(
                             width: 0.1.sw,
                           ),
@@ -334,7 +351,7 @@ class RoomUser extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Full name",
+                                "${user.firstName} ${user.lastName}",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 18.sp),
                               ),
@@ -342,7 +359,7 @@ class RoomUser extends StatelessWidget {
                                 height: 0.01.sh,
                               ),
                               Text(
-                                "User name",
+                                "${user.userName}",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 18.sp),
                               )
@@ -371,20 +388,42 @@ class RoomUser extends StatelessWidget {
                     SizedBox(
                       height: 0.03.sh,
                     ),
-                    Container(
-                      height: 0.07.sh,
-                      width: 0.9.sw,
-                      decoration: BoxDecoration(
-                          color: primarycolor,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                        child: Text(
-                          "Move to audience".toUpperCase(),
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 16.sp),
-                        ),
-                      ),
-                    ),
+                    Obx(() {
+                      return !_homeController.currentRoom.value.hostIds!
+                              .contains(user)
+                          ? InkWell(
+                              onTap: () async {
+                                Get.back();
+                                if (!_homeController
+                                    .currentRoom.value.speakerIds!
+                                    .contains(user)) {
+                                  _homeController.addUserToSpeaker(user);
+                                }  else {
+                                  _homeController.removeUserFromSpeaker(user);
+                                }
+
+                              },
+                              child: Container(
+                                height: 0.07.sh,
+                                width: 0.9.sw,
+                                decoration: BoxDecoration(
+                                    color: primarycolor,
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Center(
+                                  child: Text(
+                                    !_homeController
+                                            .currentRoom.value.speakerIds!
+                                            .contains(user)
+                                        ? "Move to speakers".toUpperCase()
+                                        : "Move to audience".toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16.sp),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container();
+                    }),
                   ],
                 );
               });

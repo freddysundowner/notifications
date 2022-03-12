@@ -82,4 +82,55 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> addUserToSpeaker(OwnerId user) async {
+
+    currentRoom.value.speakerIds!.add(user);
+    currentRoom.value.userIds!.remove(user);
+
+    currentRoom.refresh();
+
+    //Add user to speakers
+    await RoomAPI().updateRoomById({
+      "speakerIds": [user.id]
+    }, currentRoom.value.id!);
+    //Remove user from audience
+    await RoomAPI().removeUserFromAudienceInRoom({
+      "users": [user.id]
+    }, currentRoom.value.id!);
+  }
+
+  Future<void> removeUserFromSpeaker(OwnerId user) async {
+
+    currentRoom.value.speakerIds!.remove(user);
+    currentRoom.value.userIds!.add(user);
+
+    currentRoom.refresh();
+
+    //Add user to speakers
+    await RoomAPI().updateRoomById({
+      "userIds": [user.id]
+    }, currentRoom.value.id!);
+    //Remove user from audience
+    await RoomAPI().removeUserFromSpeakerInRoom({
+      "speakerIds": [user.id]
+    }, currentRoom.value.id!);
+  }
+
+  Future<void> removeUserFromRaisedHands(OwnerId user) async {
+
+    currentRoom.value.speakerIds!.add(user);
+    currentRoom.value.raisedHands!.remove(user);
+
+    currentRoom.refresh();
+
+    //Add user to speakers
+    await RoomAPI().updateRoomById({
+      "speakerIds": [user.id]
+    }, currentRoom.value.id!);
+    //Remove user from audience
+    await RoomAPI().removeUserFromSpeakerInRoom({
+      "speakerIds": [user.id]
+    }, currentRoom.value.id!);
+  }
+
 }

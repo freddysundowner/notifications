@@ -17,7 +17,7 @@ class DbBase {
       String link, String type, {Map<String, dynamic>? body}) async {
 
     _tryConnection();
-
+    try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = "eyJhbGciOiJIUzI1NiJ9.Z3JhY2VAZ21haWwuY29t.UkGGW9q_ejUXJiFJyJRzWtvXG68y6NWx5WvR4n6T_z8";
 
@@ -36,17 +36,24 @@ class DbBase {
 
     request.headers.addAll(headers);
 
+    printOut(request.toString());
 
-    http.StreamedResponse response = await request.send();
+      http.StreamedResponse response = await request.send();
 
 
-    if (response.statusCode == 404) {
+      if (response.statusCode == 404) {
 
-    //  AuthAPI().getToken();
+        //  AuthAPI().getToken();
 
+        printOut("Error 404");
+
+      }
+
+      return response.stream.bytesToString();
+    } catch(e, s) {
+      printOut("Error on api $e $s");
     }
 
-    return response.stream.bytesToString();
   }
 
 

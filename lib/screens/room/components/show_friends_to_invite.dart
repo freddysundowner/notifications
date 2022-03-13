@@ -64,30 +64,45 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                       itemCount: _dx.allUsers.length,
                                       itemBuilder: (context, index) {
                                         UserModel user = UserModel.fromJson(_dx.allUsers.elementAt(index));
-                                        return Column(
-                                          children: [
-                                            user.profilePhoto ==
-                                                null
-                                                ? const CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: AssetImage(
-                                                    "assets/icons/profile_placeholder.png"))
-                                                : CircleAvatar(
-                                              radius: 30,
-                                              backgroundImage: NetworkImage(
-                                                  imageUrl +
-                                                      user
-                                                          .profilePhoto!),
-                                            ),
-                                            SizedBox(
-                                              height: 0.01.sh,
-                                            ),
-                                            Text(
-                                              user.userName!,
-                                              style: TextStyle(
-                                                  color: Colors.black, fontSize: 14.sp),
-                                            ),
-                                          ],
+                                        return InkWell(
+                                          onTap: (){
+                                            if (_homeController.toInviteUsers.contains(user)) {
+                                              _homeController.toInviteUsers.remove(user);
+                                            } else {
+                                              _homeController.toInviteUsers.add(user);
+                                            }
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Obx((){
+                                                  return Center(
+                                                    child:  user.profilePhoto == null ? CircleAvatar(
+                                                        radius: 35,
+                                                        backgroundColor: Colors.transparent,
+                                                        foregroundImage: _homeController.toInviteUsers.contains(user) ? const AssetImage(
+                                                            "assets/icons/picked.png") : null,
+                                                        backgroundImage: const AssetImage(
+                                                            "assets/icons/profile_placeholder.png"))
+                                                        : CircleAvatar(
+                                                      radius: 35,
+                                                      backgroundColor: Colors.transparent,
+                                                      foregroundImage: _homeController.toInviteUsers.contains(user) ? const AssetImage(
+                                                          "assets/icons/picked.png") : null,
+                                                      backgroundImage: NetworkImage(
+                                                          imageUrl + user.profilePhoto!),
+                                                    ),);
+                                                }
+                                              ),
+                                              SizedBox(
+                                                height: 0.01.sh,
+                                              ),
+                                              Text(
+                                                user.userName!,
+                                                style: TextStyle(
+                                                    color: Colors.black, fontSize: 14.sp),
+                                              ),
+                                            ],
+                                          ),
                                         );
                                       });}
                               )

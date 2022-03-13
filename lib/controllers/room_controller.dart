@@ -1,9 +1,17 @@
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/screens/room/room_page.dart';
+import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+
+import 'auth_controller.dart';
 
 class RoomController extends GetxController {
   var isLoading = false.obs;
@@ -12,6 +20,21 @@ class RoomController extends GetxController {
   var isCurrentRoomLoading = false.obs;
   var roomsList = [].obs;
   var currentRoom = RoomModel().obs;
+  var isCreatingRoom = false.obs;
+  var newRoom = RoomModel().obs;
+  var toInviteUsers = [].obs;
+
+  var newRoomTitle = "".obs;
+  var newRoomType = "public".obs;
+  var agoraToken = "".obs;
+  var roomPickedProductId = "".obs;
+  var roomPickedProductPrice = "".obs;
+  var roomHosts = <UserModel>[].obs;
+  var roomShopId =  "".obs;
+  var roomProductImages = [].obs;
+
+  var userProducts = [].obs;
+  var userProductsLoading = false.obs;
 
   @override
   void onInit() {
@@ -24,42 +47,102 @@ class RoomController extends GetxController {
     printOut(roomsList.length);
   }
 
-  Future<void> fetchRooms() async {
+  Future<void> createRoom() async {
+    try {
+      roomHosts.add(Get.find<AuthController>().usermodel.value!);
+      isCreatingRoom.value = true;
 
+      Get.defaultDialog(title: "Creating room",
+        content: Column(
+          children: const [
+            Text("We are creating your room"),
+            SizedBox(height: 0.07,),
+            CircularProgressIndicator()
+          ],
+        ), barrierDismissible: false);
+
+      var hosts = [];
+      for (var element in roomHosts) {hosts.add(element.id);}
+
+      var roomData = {
+        "title":  " ",
+        "roomType": newRoomType.value,
+        "productIds": [roomPickedProductId.value],
+        "hostIds": hosts,
+        "userIds": [],
+        "raisedHands": [],
+        "speakerIds": [],
+        "invitedIds": [],
+        "shopId": "61f951020019c849882d6819",
+        "status": true,
+        "productPrice": roomPickedProductPrice.value,
+        "productImages": roomProductImages
+      };
+
+      var rooms = await RoomAPI().createARoom(roomData);
+
+      printOut("room created $rooms");
+
+      if (rooms != null) {
+        var roomId = rooms["_id"];
+        agoraToken.value = await RoomAPI().generateAgoraToken(roomId, "0");
+
+        printOut("room token ${agoraToken.value}");
+
+        await RoomAPI().updateRoomById({"token": agoraToken.value}, roomId);
+
+
+        await fetchRoom(roomId);
+        Get.back();
+        Get.to(RoomPage(roomId: roomId));
+
+      } else {
+
+        Get.back();
+        Get.snackbar("", "Error creating your room");
+      }
+      
+      isCreatingRoom.value = false;
+
+      update();
+    } catch (e, s) {
+      Get.back();
+      printOut("Error creating room in controller $e $s");
+      isCreatingRoom.value = false;
+    }
+  }
+
+  Future<void> fetchRooms() async {
     try {
       isLoading.value = true;
 
-      var rooms = await RoomAPI()
-          .getAllRooms();
+      var rooms = await RoomAPI().getAllRooms();
 
       if (rooms != null) {
         roomsList.value = rooms;
-      }else{
+      } else {
         roomsList.value = [];
       }
       roomsList.refresh();
       isLoading.value = false;
 
       update();
-    }catch(e) {
+    } catch (e) {
       printOut(e);
       isLoading.value = false;
     }
   }
 
   Future<void> fetchUserCurrentRoom() async {
-
     try {
       isLoading.value = true;
 
-      var room = await RoomAPI()
-          .getRoomById("61fb9094d59efb5046a99946");
+      var room = await RoomAPI().getRoomById("61fb9094d59efb5046a99946");
 
       if (room != null) {
         currentRoom.value = RoomModel.fromJson(room);
       }
-
-    }finally {
+    } finally {
       isLoading.value = false;
     }
   }
@@ -70,8 +153,7 @@ class RoomController extends GetxController {
     try {
       isCurrentRoomLoading.value = true;
 
-      var roomResponse = await RoomAPI()
-          .getRoomById(roomId);
+      var roomResponse = await RoomAPI().getRoomById(roomId);
 
       if (roomResponse != null) {
         currentRoom.value = RoomModel.fromJson(roomResponse);
@@ -79,19 +161,16 @@ class RoomController extends GetxController {
       isCurrentRoomLoading.value = false;
       update();
       printOut("Room $roomResponse");
-
-    }catch(e) {
-      printOut("Error getting individual room " + e.toString() );
+    } catch (e) {
+      printOut("Error getting individual room " + e.toString());
       isCurrentRoomLoading.value = false;
     }
   }
 
   Future<void> addUserToRoom(OwnerId user) async {
-
     if (!currentRoom.value.hostIds!.contains(user) &&
         !currentRoom.value.speakerIds!.contains(user) &&
         !currentRoom.value.userIds!.contains(user)) {
-
       currentRoom.value.userIds!.add(user);
 
       currentRoom.refresh();
@@ -100,12 +179,10 @@ class RoomController extends GetxController {
       await RoomAPI().updateRoomById({
         "userIds": [user.id]
       }, currentRoom.value.id!);
-
     }
   }
 
   Future<void> addUserToSpeaker(OwnerId user) async {
-
     currentRoom.value.speakerIds!.add(user);
     currentRoom.value.userIds!.remove(user);
 
@@ -122,7 +199,6 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
-
     currentRoom.value.raisedHands!.add(user);
 
     Get.snackbar('', "You have raised your hand");
@@ -133,11 +209,9 @@ class RoomController extends GetxController {
     await RoomAPI().updateRoomById({
       "raisedHands": [user.id]
     }, currentRoom.value.id!);
-
   }
 
   Future<void> removeUserFromSpeaker(OwnerId user) async {
-
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.add(user);
 
@@ -154,7 +228,6 @@ class RoomController extends GetxController {
   }
 
   Future<void> removeUserFromRaisedHands(OwnerId user) async {
-
     currentRoom.value.speakerIds!.add(user);
     currentRoom.value.raisedHands!.remove(user);
 
@@ -171,7 +244,6 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -186,29 +258,53 @@ class RoomController extends GetxController {
         "users": [user.id]
       }, currentRoom.value.id!);
     }
-
   }
 
   Future<void> fetchAllUsers() async {
 
-    try {
-      allUsersLoading.value = true;
+    if (allUsers.isEmpty) {
+      try {
+        allUsersLoading.value = true;
 
-      var users = await UserAPI()
-          .getAllUsers();
+        var users = await UserAPI().getAllUsers();
 
-      if (users != null) {
-        allUsers.value = users;
-      }else{
-        allUsers.value = [];
+        if (users != null) {
+          allUsers.value = users;
+        } else {
+          allUsers.value = [];
+        }
+        allUsers.refresh();
+        allUsersLoading.value = false;
+
+        update();
+      } catch (e) {
+        printOut(e);
+        allUsersLoading.value = false;
       }
-      allUsers.refresh();
-      allUsersLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUserProducts() async {
+    try {
+      userProductsLoading.value = true;
+
+      var products = await ProductPI()
+          .getUserProducts(Get.find<AuthController>().usermodel.value!.id!);
+
+      printOut("products $products");
+
+      if (products != null) {
+        userProducts.value = products;
+      } else {
+        userProducts.value = [];
+      }
+      userProducts.refresh();
+      userProductsLoading.value = false;
 
       update();
-    }catch(e) {
+    } catch (e) {
       printOut(e);
-      allUsersLoading.value = false;
+      userProductsLoading.value = false;
     }
   }
 

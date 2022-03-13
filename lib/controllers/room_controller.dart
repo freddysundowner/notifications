@@ -2,6 +2,7 @@ import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
 class RoomController extends GetxController {
@@ -118,6 +119,21 @@ class RoomController extends GetxController {
     await RoomAPI().removeUserFromAudienceInRoom({
       "users": [user.id]
     }, currentRoom.value.id!);
+  }
+
+  Future<void> addUserToRaisedHands(OwnerId user) async {
+
+    currentRoom.value.raisedHands!.add(user);
+
+    Get.snackbar('', "You have raised your hand");
+
+    currentRoom.refresh();
+
+    //Add user to raisedHands
+    await RoomAPI().updateRoomById({
+      "raisedHands": [user.id]
+    }, currentRoom.value.id!);
+
   }
 
   Future<void> removeUserFromSpeaker(OwnerId user) async {

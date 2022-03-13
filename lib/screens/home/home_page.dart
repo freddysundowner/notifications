@@ -340,8 +340,14 @@ class HomePage extends StatelessWidget {
                     width: 0.01.sw,
                   ),
                   IconButton(
-                    onPressed: () {
-                      showRaisedHandsBottomSheet(context);
+                    onPressed: () async {
+
+                      if (_homeController.currentRoom.value.hostIds!.contains(currentUser)) {
+                        showRaisedHandsBottomSheet(context);
+                      } else {
+                        await _homeController.addUserToRaisedHands(currentUser);
+                      }
+
                     },
                     icon: const Icon(
                       Ionicons.hand_right,

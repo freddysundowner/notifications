@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
-import 'package:fluttergistshop/controllers/home_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/styles.dart';
@@ -12,7 +12,7 @@ import 'components/show_friends_to_invite.dart';
 import 'components/show_room_raised_hands.dart';
 
 class RoomPage extends StatelessWidget {
-  final HomeController _homeController = Get.find<HomeController>();
+  final RoomController _homeController = Get.find<RoomController>();
 
   OwnerId currentUser = OwnerId(
       id: Get.find<AuthController>().usermodel.value!.id,
@@ -171,7 +171,7 @@ class RoomPage extends StatelessWidget {
         ),
         SizedBox(
           height: 0.12.sh,
-          child: GetBuilder<HomeController>(builder: (_hc) {
+          child: GetBuilder<RoomController>(builder: (_hc) {
             return Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 8.0),
               child: ListView.builder(
@@ -213,7 +213,7 @@ class RoomPage extends StatelessWidget {
 
 class RoomUser extends StatelessWidget {
   String title;
-  final HomeController _homeController = Get.find<HomeController>();
+  final RoomController _homeController = Get.find<RoomController>();
 
   RoomUser(this.title, {Key? key}) : super(key: key);
 
@@ -237,7 +237,7 @@ class RoomUser extends StatelessWidget {
         SizedBox(
           height: 0.02.sh,
         ),
-        GetBuilder<HomeController>(builder: (_dx) {
+        GetBuilder<RoomController>(builder: (_dx) {
           List<OwnerId> user = title == "Hosts"
               ? _dx.currentRoom.value.hostIds!
               : title == "Speakers"
@@ -401,14 +401,18 @@ class RoomUser extends StatelessWidget {
                       height: 0.03.sh,
                     ),
                     Obx(() {
-                      return !_homeController.currentRoom.value.hostIds!
-                              .contains(user)
+                      RoomModel room = _homeController.currentRoom.value;
+
+                      return user.id !=
+                                    Get.find<AuthController>()
+                                        .usermodel
+                                        .value!
+                                      .id &&
+                              !room.hostIds!.contains(user)
                           ? InkWell(
                               onTap: () async {
                                 Get.back();
-                                if (!_homeController
-                                    .currentRoom.value.speakerIds!
-                                    .contains(user)) {
+                                if (!room.speakerIds!.contains(user)) {
                                   _homeController.addUserToSpeaker(user);
                                 } else {
                                   _homeController.removeUserFromSpeaker(user);

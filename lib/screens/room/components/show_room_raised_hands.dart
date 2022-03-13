@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/home_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:get/get.dart';
@@ -49,7 +49,7 @@ Future<dynamic> showRaisedHandsBottomSheet(BuildContext context) {
                         ),
                         SizedBox(
                           height: 0.4.sh,
-                          child: GetBuilder<HomeController>(
+                          child: GetBuilder<RoomController>(
                             builder: (_hc) {
                               return ListView.builder(
                                   shrinkWrap: true,

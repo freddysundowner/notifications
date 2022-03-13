@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/home_controller.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
@@ -16,7 +17,15 @@ import 'package:ionicons/ionicons.dart';
 class HomePage extends StatelessWidget {
   TextEditingController titleFieldController = TextEditingController();
 
-  final HomeController _homeController = Get.put(HomeController());
+  final RoomController _homeController = Get.put(RoomController());
+  OwnerId currentUser = OwnerId(
+      id: Get.find<AuthController>().usermodel.value!.id,
+      bio: Get.find<AuthController>().usermodel.value!.bio,
+      email: Get.find<AuthController>().usermodel.value!.email,
+      firstName: Get.find<AuthController>().usermodel.value!.firstName,
+      lastName: Get.find<AuthController>().usermodel.value!.lastName,
+      userName: Get.find<AuthController>().usermodel.value!.userName,
+      profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
   HomePage({Key? key}) : super(key: key);
 
@@ -77,48 +86,62 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.only(
             top: 10.0,
           ),
-          child: SizedBox(
-            height: 0.18.sh,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+          child: Obx(() {
+              return SizedBox(
+                height: _homeController.currentRoom.value.id != null ? 0.18.sh : 0.1.sh,
+                child: Column(
                   children: [
-                    InkWell(
-                      onTap: () {
-                        showRoomTypeBottomSheet(context);
-                      },
-                      child: Container(
-                        width: 0.6.sw,
-                        height: 0.07.sh,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Theme.of(context).primaryColor),
-                        child: Center(
-                          child: Text(
-                            "Create a room",
-                            style:
-                                TextStyle(fontSize: 18.sp, color: Colors.white),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showRoomTypeBottomSheet(context);
+                          },
+                          child: Container(
+                            width: 0.6.sw,
+                            height: 0.07.sh,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Theme.of(context).primaryColor),
+                            child: Center(
+                              child: Text(
+                                "Create a room",
+                                style:
+                                    TextStyle(fontSize: 18.sp, color: Colors.white),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          width: 0.1.sw,
+                        ),
+                        const Icon(
+                          Ionicons.chatbox_outline,
+                          color: Colors.grey,
+                          size: 35,
+                        ),
+                        SizedBox(
+                          width: 0.02.sw,
+                        ),
+                      ],
                     ),
                     SizedBox(
-                      width: 0.1.sw,
+                      height: 0.008.sh,
                     ),
-                    const Icon(
-                      Ionicons.chatbox_outline,
-                      color: Colors.grey,
-                      size: 35,
-                    )
+
+                    Obx(() {
+                        if (_homeController.currentRoom.value.id != null) {
+                          return buildCurrentRoom(context);
+                        } else {
+                          return Container();
+                        }
+                      }
+                    ),
                   ],
                 ),
-                SizedBox(
-                  height: 0.008.sh,
-                ),
-                buildCurrentRoom(context),
-              ],
-            ),
+              );
+            }
           ),
         ),
         body: Obx(() {
@@ -146,6 +169,17 @@ class HomePage extends StatelessWidget {
               Get.to(RoomPage(roomId: roomModel.id!,));
 
               await _homeController.fetchRoom(roomModel.id!);
+
+              OwnerId currentUser = OwnerId(
+                  id: Get.find<AuthController>().usermodel.value!.id,
+                  bio: Get.find<AuthController>().usermodel.value!.bio,
+                  email: Get.find<AuthController>().usermodel.value!.email,
+                  firstName: Get.find<AuthController>().usermodel.value!.firstName,
+                  lastName: Get.find<AuthController>().usermodel.value!.lastName,
+                  userName: Get.find<AuthController>().usermodel.value!.userName,
+                  profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
+
+              await _homeController.addUserToRoom(currentUser);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -261,9 +295,10 @@ class HomePage extends StatelessWidget {
   }
 
   InkWell buildCurrentRoom(BuildContext context) {
+    RoomModel room = _homeController.currentRoom.value;
     return InkWell(
       onTap: () {
-        Get.to(RoomPage(roomId: '',));
+        Get.to(RoomPage(roomId: room.id!,));
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -276,20 +311,30 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Stack(
-                children: const [
-                  CircleAvatar(
+                children: [
+                  room.hostIds!.elementAt(0).profilePhoto == null
+                      ? const CircleAvatar(
+                      radius: 25,
+                      backgroundImage: AssetImage(
+                          "assets/icons/profile_placeholder.png"))
+                      : CircleAvatar(
+                    radius: 25,
                     backgroundImage: NetworkImage(
-                        "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                    radius: 20,
+                        imageUrl + room.hostIds!.elementAt(0).profilePhoto!),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  Image.asset(
-                    "assets/icons/leave_room.png",
-                    height: 0.1.sh,
-                    width: 0.07.sw,
+                  InkWell(
+                    onTap: () async {
+                      await _homeController.leaveRoom(currentUser);
+                    },
+                    child: Image.asset(
+                      "assets/icons/leave_room.png",
+                      height: 0.1.sh,
+                      width: 0.07.sw,
+                    ),
                   ),
                   SizedBox(
                     width: 0.01.sw,

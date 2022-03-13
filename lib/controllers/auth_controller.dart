@@ -33,7 +33,7 @@ class AuthController extends GetxController {
   Future register() async {
     try {
       isLoading(true);
-      Map<String, dynamic> auth = new Authenticate(
+      Map<String, dynamic> auth = Authenticate(
         email: emailFieldController.text,
         password: passwordFieldController.text,
         userName: usernameFieldController.text,

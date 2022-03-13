@@ -1,10 +1,13 @@
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/room_api.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:get/state_manager.dart';
 
 class RoomController extends GetxController {
   var isLoading = false.obs;
+  var allUsersLoading = false.obs;
+  var allUsers = [].obs;
   var isCurrentRoomLoading = false.obs;
   var roomsList = [].obs;
   var currentRoom = RoomModel().obs;
@@ -168,6 +171,29 @@ class RoomController extends GetxController {
       }, currentRoom.value.id!);
     }
 
+  }
+
+  Future<void> fetchAllUsers() async {
+
+    try {
+      allUsersLoading.value = true;
+
+      var users = await UserAPI()
+          .getAllUsers();
+
+      if (users != null) {
+        allUsers.value = users;
+      }else{
+        allUsers.value = [];
+      }
+      allUsers.refresh();
+      allUsersLoading.value = false;
+
+      update();
+    }catch(e) {
+      printOut(e);
+      allUsersLoading.value = false;
+    }
   }
 
 }

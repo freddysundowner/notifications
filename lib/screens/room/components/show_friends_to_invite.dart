@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/services/end_points.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
+  final RoomController _homeController = Get.find<RoomController>();
+
   return showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -40,37 +46,52 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                         SizedBox(
                           height: 0.03.sh,
                         ),
-                        SizedBox(
+                      _homeController.allUsersLoading.isFalse ? SizedBox(
                           height: 0.4.sh,
-                          child: GridView.builder(
-                              shrinkWrap: true,
-                              // physics: ScrollPhysics(),
-                              gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
-                                childAspectRatio: 0.9,
-                              ),
-                              itemCount: 19,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    const CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                                      radius: 30,
-                                    ),
-                                    SizedBox(
-                                      height: 0.01.sh,
-                                    ),
-                                    Text(
-                                      "User name",
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 14.sp),
-                                    ),
-                                  ],
-                                );
-                              }),
-                        ),
+                          child: GetBuilder<RoomController>(
+                              builder: (_dx) {
+                                _dx.fetchAllUsers();
+
+                              return GridView.builder(
+                                  shrinkWrap: true,
+                                  // physics: ScrollPhysics(),
+                                  gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    childAspectRatio: 0.9,
+                                  ),
+                                  itemCount: _dx.allUsers.length,
+                                  itemBuilder: (context, index) {
+                                    UserModel user = UserModel.fromJson(_dx.allUsers.elementAt(index));
+                                    return Column(
+                                      children: [
+                                        user.profilePhoto ==
+                                            null
+                                            ? const CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage: AssetImage(
+                                                "assets/icons/profile_placeholder.png"))
+                                            : CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: NetworkImage(
+                                              imageUrl +
+                                                  user
+                                                      .profilePhoto!),
+                                        ),
+                                        SizedBox(
+                                          height: 0.01.sh,
+                                        ),
+                                        Text(
+                                          user.userName!,
+                                          style: TextStyle(
+                                              color: Colors.black, fontSize: 14.sp),
+                                        ),
+                                      ],
+                                    );
+                                  });}
+                          )
+
+                      ): const CircularProgressIndicator(color: Colors.black)
                       ],
                     ),
                   );

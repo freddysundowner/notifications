@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/home_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -13,12 +14,22 @@ import 'components/show_room_raised_hands.dart';
 class RoomPage extends StatelessWidget {
   final HomeController _homeController = Get.find<HomeController>();
 
+  OwnerId currentUser = OwnerId(
+      id: Get.find<AuthController>().usermodel.value!.id,
+      bio: Get.find<AuthController>().usermodel.value!.bio,
+      email: Get.find<AuthController>().usermodel.value!.email,
+      firstName: Get.find<AuthController>().usermodel.value!.firstName,
+      lastName: Get.find<AuthController>().usermodel.value!.lastName,
+      userName: Get.find<AuthController>().usermodel.value!.userName,
+      profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
+
   String roomId;
 
   RoomPage({Key? key, required this.roomId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    RoomModel currentRoom = _homeController.currentRoom.value;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -39,8 +50,9 @@ class RoomPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
-                onTap: () {
+                onTap: () async {
                   Get.back();
+                  await _homeController.leaveRoom(currentUser);
                 },
                 child: Container(
                   height: 0.07.sh,
@@ -116,7 +128,7 @@ class RoomPage extends StatelessWidget {
                         color: Colors.black12,
                       ),
                     ),
-                    _homeController.currentRoom.value.speakerIds!.isNotEmpty
+                    currentRoom.speakerIds!.isNotEmpty
                         ? Column(
                             children: [
                               RoomUser("Speakers"),
@@ -398,10 +410,9 @@ class RoomUser extends StatelessWidget {
                                     .currentRoom.value.speakerIds!
                                     .contains(user)) {
                                   _homeController.addUserToSpeaker(user);
-                                }  else {
+                                } else {
                                   _homeController.removeUserFromSpeaker(user);
                                 }
-
                               },
                               child: Container(
                                 height: 0.07.sh,

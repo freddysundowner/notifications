@@ -70,4 +70,23 @@ class RoomAPI {
       printOut("Error removeUserFromAudience  room $e");
     }
   }
+
+  removeAUserFromRoom(Map<String, dynamic> body, String id) async {
+    try {
+      await DbBase()
+          .databaseRequest(removeUserFromRoom + id, DbBase().patchRequestType, body: body);
+    } catch (e) {
+      printOut("Error removeAUserFromRoom  room $e");
+    }
+  }
+
+
+  deleteARoom(String id) async {
+    try {
+      await DbBase()
+          .databaseRequest(deleteRoom + id, DbBase().deleteRequestType);
+    } catch (e) {
+      printOut("Error deleteARoom  room $e");
+    }
+  }
 }

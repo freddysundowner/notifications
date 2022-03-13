@@ -133,4 +133,21 @@ class HomeController extends GetxController {
     }, currentRoom.value.id!);
   }
 
+  Future<void> leaveRoom(OwnerId user) async {
+
+    currentRoom.value.speakerIds!.add(user);
+    currentRoom.value.raisedHands!.remove(user);
+
+    currentRoom.refresh();
+    if (currentRoom.value.hostIds!.length == 1 &&
+        currentRoom.value.hostIds!.contains(user)) {
+      await RoomAPI().deleteARoom(currentRoom.value.id!);
+    } else {
+      await RoomAPI().removeAUserFromRoom({
+        "users": [user.id]
+      }, currentRoom.value.id!);
+    }
+
+  }
+
 }

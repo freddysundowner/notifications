@@ -1,4 +1,5 @@
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/room_model.dart';
@@ -8,12 +9,17 @@ import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'auth_controller.dart';
 
 class RoomController extends GetxController {
+  RtcEngineContext context = RtcEngineContext(AGORA_APP_ID);
+  late RtcEngine engine;
+
   var isLoading = false.obs;
   var allUsersLoading = false.obs;
   var allUsers = [].obs;
@@ -35,6 +41,7 @@ class RoomController extends GetxController {
 
   var userProducts = [].obs;
   var userProductsLoading = false.obs;
+  var userJoinedRoom = false.obs;
 
   @override
   void onInit() {
@@ -95,6 +102,8 @@ class RoomController extends GetxController {
         await fetchRoom(roomId);
         Get.back();
         Get.to(RoomPage(roomId: roomId));
+
+        initAgora(agoraToken.value, roomId);
 
       } else {
 
@@ -168,6 +177,9 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToRoom(OwnerId user) async {
+    initAgora(currentRoom.value.token, currentRoom.value.id!);
+
+
     if (!currentRoom.value.hostIds!.contains(user) &&
         !currentRoom.value.speakerIds!.contains(user) &&
         !currentRoom.value.userIds!.contains(user)) {
@@ -244,6 +256,8 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
+
+
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -258,6 +272,12 @@ class RoomController extends GetxController {
         "users": [user.id]
       }, currentRoom.value.id!);
     }
+  }
+
+  void leaveAgora() {
+    engine.leaveChannel();
+    engine.disableAudio();
+    engine.destroy();
   }
 
   Future<void> fetchAllUsers() async {
@@ -307,5 +327,37 @@ class RoomController extends GetxController {
       userProductsLoading.value = false;
     }
   }
+
+  void initAgora(String token, String roomId) async {
+
+    try{
+
+      // Get microphone permission
+      await [Permission.microphone].request();
+
+      // Create RTC client instance
+      RtcEngine engine = await RtcEngine.createWithContext(context);
+      // Define event handling logic
+      engine.setEventHandler(RtcEngineEventHandler(
+          joinChannelSuccess: (String channel, int uid, int elapsed) {
+            printOut('joinChannelSuccess ${channel} ${uid}');
+            userJoinedRoom.value = true;
+
+          }, userJoined: (int uid, int elapsed) {
+        printOut('userJoined ${uid}');
+
+      }, userOffline: (int uid, UserOfflineReason reason) {
+        printOut('userOffline ${uid}');
+
+      }));
+      // Join channel with channel name as 123
+      await engine.joinChannel(token, roomId, null, 0);
+
+    } catch(e, s) {
+      printOut('error joining room $e $s');
+    }
+
+    }
+
 
 }

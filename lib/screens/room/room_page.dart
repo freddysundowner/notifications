@@ -95,13 +95,23 @@ class RoomPage extends StatelessWidget {
                   SizedBox(
                     width: 0.01.sw,
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Ionicons.mic,
-                      color: Colors.black54,
-                      size: 30,
-                    ),
+                  SizedBox(
+                    height: 0.1.sh,
+                    child: Obx(() {
+                      return _homeController.currentRoom.value.hostIds!
+                                  .contains(currentUser) ||
+                              _homeController.currentRoom.value.speakerIds!
+                                  .contains(currentUser)
+                          ? IconButton(
+                              onPressed: () {},
+                              icon: const Icon(
+                                Ionicons.mic,
+                                color: Colors.black54,
+                                size: 30,
+                              ),
+                            )
+                          : Container();
+                    }),
                   ),
                 ],
               )
@@ -404,9 +414,9 @@ class RoomUser extends StatelessWidget {
                       RoomModel room = _homeController.currentRoom.value;
 
                       return user.id !=
-                                    Get.find<AuthController>()
-                                        .usermodel
-                                        .value!
+                                  Get.find<AuthController>()
+                                      .usermodel
+                                      .value!
                                       .id &&
                               !room.hostIds!.contains(user)
                           ? InkWell(

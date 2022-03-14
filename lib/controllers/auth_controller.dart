@@ -6,6 +6,7 @@ import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -57,22 +58,27 @@ class AuthController extends GetxController {
   Future authenticate() async {
     try {
       isLoading(true);
-      Map<String, dynamic> login = new Authenticate(
+      Map<String, dynamic> login = Authenticate(
               email: emailFieldController.text,
               password: passwordFieldController.text)
           .toJson();
-      print(login);
+      printOut(login);
       Map<String, dynamic> user = await ApiCalls.authenticate(login, "login");
       Helper.debug(user["success"]);
       if (user["success"] == false) {
         error.value = "Check email and password";
       } else {
-        UserModel userModel = UserModel.fromJson(user["data"]);
-        this.usermodel.value = usermodel as UserModel?;
+        UserModel userModelFromApi = UserModel.fromJson(user["data"]);
+        try {
+          usermodel.value = userModelFromApi;
+        } catch (e) {
+          printOut("error saving user model to controller on login $e");
+        }
         return signInWithCustomToken(
-            userModel.userName!, user["authtoken"], user["accessToken"]);
+            userModelFromApi.userName!, user["authtoken"], user["accessToken"]);
       }
-    } finally {
+    } catch(e) {
+      printOut("Error after auth $e");
       isLoading(false);
     }
   }
@@ -81,7 +87,7 @@ class AuthController extends GetxController {
       String username, String authtoken, String accesstoken) async {
     try {
       var result = await FirebaseAuth.instance.signInWithCustomToken(authtoken);
-      print("result $result");
+      printOut("result signIn $result");
       if (result.user != null) {
         await FirebaseAuth.instance.currentUser!.updateDisplayName(username);
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -89,10 +95,10 @@ class AuthController extends GetxController {
 
         return Get.offAll(() => HomePage());
       } else {
-        print("User null");
+        printOut("User null");
       }
     } catch (e) {
-      print("error " + e.toString());
+      printOut("error " + e.toString());
       return "null";
     }
   }

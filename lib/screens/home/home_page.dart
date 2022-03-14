@@ -5,9 +5,8 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
-import 'package:fluttergistshop/screens/profile/profile.dart';
-import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
+import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
@@ -76,14 +75,20 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 Get.to(() => Profile());
               },
-              child: SizedBox(
-                height: 0.005.sh,
-                width: 0.07.sw,
-                child: const CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
-                ),
-              ),
+              child: Get.find<AuthController>().usermodel.value!.profilePhoto ==
+                      null
+                  ? const CircleAvatar(
+                      radius: 15,
+                      backgroundImage:
+                          AssetImage("assets/icons/profile_placeholder.png"))
+                  : CircleAvatar(
+                      radius: 15,
+                      backgroundImage: NetworkImage(imageUrl +
+                          Get.find<AuthController>()
+                              .usermodel
+                              .value!
+                              .profilePhoto!),
+                    ),
             ),
             SizedBox(
               width: 0.02.sw,
@@ -165,156 +170,176 @@ class HomePage extends StatelessWidget {
 
   buildIndividualRoomCard() {
     printOut("Home rooms ${_homeController.roomsList}");
-    return Obx(() => ListView.builder(
-        itemCount: _homeController.roomsList.length,
-        itemBuilder: (context, index) {
-          RoomModel roomModel =
-              RoomModel.fromJson(_homeController.roomsList.elementAt(index));
+    return Obx(() => RefreshIndicator(
+        onRefresh: () {
+          return _homeController.getRooms();
+        },
+        child: _homeController.roomsList.isNotEmpty
+            ? ListView.builder(
+                itemCount: _homeController.roomsList.length,
+                itemBuilder: (context, index) {
+                  RoomModel roomModel = RoomModel.fromJson(
+                      _homeController.roomsList.elementAt(index));
 
-          return InkWell(
-            onTap: () async {
-              Get.to(RoomPage(
-                roomId: roomModel.id!,
-              ));
-
-              await _homeController.fetchRoom(roomModel.id!);
-
-              OwnerId currentUser = OwnerId(
-                  id: Get.find<AuthController>().usermodel.value!.id,
-                  bio: Get.find<AuthController>().usermodel.value!.bio,
-                  email: Get.find<AuthController>().usermodel.value!.email,
-                  firstName:
-                      Get.find<AuthController>().usermodel.value!.firstName,
-                  lastName:
-                      Get.find<AuthController>().usermodel.value!.lastName,
-                  userName:
-                      Get.find<AuthController>().usermodel.value!.userName,
-                  profilePhoto:
-                      Get.find<AuthController>().usermodel.value!.profilePhoto);
-
-              await _homeController.addUserToRoom(currentUser);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.black12),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        spreadRadius: 0.1,
-                        blurRadius: 0.5,
-                        offset: Offset(0, 5), // changes position of shadow
-                      ),
-                    ]),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          roomModel.hostIds!.length.toString(),
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(width: 0.006.sw),
-                        const Icon(
-                          Ionicons.people,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        SizedBox(width: 0.03.sw),
-                        Text(
-                          roomModel.userIds!.length.toString(),
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(width: 0.006.sw),
-                        const Icon(
-                          Ionicons.chatbubble_outline,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 0.1.sh,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: roomModel.hostIds?.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: roomModel.hostIds?[index].profilePhoto ==
-                                        null
-                                    ? const CircleAvatar(
-                                        backgroundImage: AssetImage(
-                                            "assets/icons/profile_placeholder.png"))
-                                    : CircleAvatar(
-                                        backgroundImage: NetworkImage(imageUrl +
-                                            roomModel
-                                                .hostIds![index].profilePhoto!),
-                                      ));
-                          }),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        roomModel.title!,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 0.01.sh,
-                    ),
-                    Divider(
-                      color: Colors.grey[200],
-                      height: 0.001.sh,
-                    ),
-                    SizedBox(
-                      height: 0.01.sh,
-                    ),
-                    SizedBox(
-                      height: 0.12.sh,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: roomModel.productIds![0].images.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white),
-                                child: Center(
-                                  child: Image.network(
-                                    imageUrl +
-                                        roomModel.productIds![0].images[index],
-                                    height: 0.08.sh,
-                                    width: 0.12.sw,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
+                  return InkWell(
+                    onTap: () async {
+                      await joinRoom(roomModel);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.black12),
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                spreadRadius: 0.1,
+                                blurRadius: 0.5,
+                                offset:
+                                    Offset(0, 5), // changes position of shadow
                               ),
-                            );
-                          }),
+                            ]),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  roomModel.hostIds!.length.toString(),
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                                SizedBox(width: 0.006.sw),
+                                const Icon(
+                                  Ionicons.people,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 0.03.sw),
+                                Text(
+                                  roomModel.userIds!.length.toString(),
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                                SizedBox(width: 0.006.sw),
+                                const Icon(
+                                  Ionicons.chatbubble_outline,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 0.1.sh,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: roomModel.hostIds?.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: roomModel.hostIds?[index]
+                                                    .profilePhoto ==
+                                                null
+                                            ? const CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                    "assets/icons/profile_placeholder.png"))
+                                            : CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    imageUrl +
+                                                        roomModel
+                                                            .hostIds![index]
+                                                            .profilePhoto!),
+                                              ));
+                                  }),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                roomModel.title!,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 0.01.sh,
+                            ),
+                            Divider(
+                              color: Colors.grey[200],
+                              height: 0.001.sh,
+                            ),
+                            SizedBox(
+                              height: 0.01.sh,
+                            ),
+                            SizedBox(
+                              height: 0.12.sh,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount:
+                                      roomModel.productIds![0].images.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: Colors.white),
+                                        child: Center(
+                                          child: Image.network(
+                                            imageUrl +
+                                                roomModel.productIds![0]
+                                                    .images[index],
+                                            height: 0.08.sh,
+                                            width: 0.12.sw,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }));
+                  );
+                })
+            : ListView(
+              children: [ SizedBox(
+                height: 0.8.sh,
+                child: Center(
+                    child: Text(
+                    "There are no rooms at the moment",
+                    style: TextStyle(color: Colors.grey, fontSize: 16.sp),
+                  )),
+              )]
+            )));
+  }
+
+  Future<void> joinRoom(RoomModel roomModel) async {
+    await _homeController.fetchRoom(roomModel.id!);
+
+    OwnerId currentUser = OwnerId(
+        id: Get.find<AuthController>().usermodel.value!.id,
+        bio: Get.find<AuthController>().usermodel.value!.bio,
+        email: Get.find<AuthController>().usermodel.value!.email,
+        firstName: Get.find<AuthController>().usermodel.value!.firstName,
+        lastName: Get.find<AuthController>().usermodel.value!.lastName,
+        userName: Get.find<AuthController>().usermodel.value!.userName,
+        profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
+
+    await _homeController.addUserToRoom(currentUser);
+
+    Get.to(RoomPage(
+      roomId: roomModel.id!,
+    ));
   }
 
   InkWell buildCurrentRoom(BuildContext context) {
     RoomModel room = _homeController.currentRoom.value;
     return InkWell(
-      onTap: () {
-        Get.to(RoomPage(
-          roomId: room.id!,
-        ));
+      onTap: () async {
+        await joinRoom(room);
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -386,13 +411,59 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     width: 0.009.sw,
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Ionicons.mic,
-                      color: Colors.black54,
-                      size: 30,
-                    ),
+                  SizedBox(
+                    height: _homeController.isCurrentRoomLoading.isFalse
+                        ? 0.1.sh
+                        : 0.001.sh,
+                    child: Obx(() {
+
+                      //If user is not a speaker or a host, disable their audio
+                      if (_homeController.currentRoom.value.hostIds!
+                          .indexWhere((e) => e.id == currentUser.id) == -1 &&
+                          _homeController
+                              .currentRoom.value.speakerIds!
+                              .indexWhere((e) => e.id == currentUser.id) == -1) {
+                        _homeController.engine.disableAudio();
+                      }
+
+                      //If current room is loading, show a spinner
+                      if (_homeController.isCurrentRoomLoading.isFalse) {
+                        return Container(
+
+                          //If user is a speaker or host, show the mic icon, else don't show it
+                            child: _homeController.currentRoom.value.hostIds!
+                                .indexWhere((e) => e.id == currentUser.id) == 0 ||
+                                _homeController
+                                    .currentRoom.value.speakerIds!
+                                    .indexWhere((e) => e.id == currentUser.id) == 0
+                                ? IconButton(
+                              onPressed: () {
+
+                                //If user is muted, unmute and enbale their audio vice versa
+                                if (_homeController.audioMuted.isFalse) {
+                                  _homeController.audioMuted.value = true;
+                                  _homeController.engine.disableAudio();
+                                }  else {
+                                  _homeController.audioMuted.value = false;
+                                  _homeController.engine.enableAudio();
+                                }
+                              },
+                              icon: Icon(
+                                //If audio is not muted, show mic icon, if not show mic off
+                                _homeController.audioMuted.isFalse ? Ionicons.mic : Ionicons.mic_off,
+                                color: Colors.black54,
+                                size: 30,
+                              ),
+                            )
+                                : Container());
+                      } else {
+                        return Transform.scale(
+                            scale: 0.3,
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ));
+                      }
+                    }),
                   ),
                 ],
               )
@@ -637,7 +708,7 @@ class HomePage extends StatelessWidget {
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
-                                          childAspectRatio: 0.99,
+                                          childAspectRatio: 0.8,
                                         ),
                                         itemCount:
                                             _homeController.userProducts.length,
@@ -662,7 +733,7 @@ class HomePage extends StatelessWidget {
                                             },
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(5.0),
                                               child: Column(
                                                 children: [
                                                   Container(

@@ -1,6 +1,4 @@
-
 import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
@@ -17,7 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'auth_controller.dart';
 
 class RoomController extends GetxController {
-  RtcEngineContext context = RtcEngineContext(AGORA_APP_ID);
+  RtcEngineContext context = RtcEngineContext(agoraAppID);
   late RtcEngine engine;
 
   var isLoading = false.obs;
@@ -29,6 +27,7 @@ class RoomController extends GetxController {
   var isCreatingRoom = false.obs;
   var newRoom = RoomModel().obs;
   var toInviteUsers = [].obs;
+  var audioMuted = true.obs;
 
   var newRoomTitle = "".obs;
   var newRoomType = "public".obs;
@@ -36,7 +35,7 @@ class RoomController extends GetxController {
   var roomPickedProductId = "".obs;
   var roomPickedProductPrice = "".obs;
   var roomHosts = <UserModel>[].obs;
-  var roomShopId =  "".obs;
+  var roomShopId = "".obs;
   var roomProductImages = [].obs;
 
   var userProducts = [].obs;
@@ -59,20 +58,18 @@ class RoomController extends GetxController {
       roomHosts.add(Get.find<AuthController>().usermodel.value!);
       isCreatingRoom.value = true;
 
-      Get.defaultDialog(title: "Creating room",
-        content: Column(
-          children: const [
-            Text("We are creating your room"),
-            SizedBox(height: 0.07,),
-            CircularProgressIndicator()
-          ],
-        ), barrierDismissible: false);
+      Get.defaultDialog(
+          title: "We are creating your room",
+          content: CircularProgressIndicator(),
+          barrierDismissible: false);
 
       var hosts = [];
-      for (var element in roomHosts) {hosts.add(element.id);}
+      for (var element in roomHosts) {
+        hosts.add(element.id);
+      }
 
       var roomData = {
-        "title":  " ",
+        "title": " ",
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -91,26 +88,26 @@ class RoomController extends GetxController {
       printOut("room created $rooms");
 
       if (rooms != null) {
+
         var roomId = rooms["_id"];
-        agoraToken.value = await RoomAPI().generateAgoraToken(roomId, "0");
+        var token = await RoomAPI().generateAgoraToken(roomId, "0");
+        printOut("room token $token");
 
-        printOut("room token ${agoraToken.value}");
 
-        await RoomAPI().updateRoomById({"token": agoraToken.value}, roomId);
-
+        await RoomAPI().updateRoomById({"title": " ", "token": token}, roomId);
 
         await fetchRoom(roomId);
+
+        initAgora(token, roomId);
+
         Get.back();
         Get.to(RoomPage(roomId: roomId));
 
-        initAgora(agoraToken.value, roomId);
-
       } else {
-
         Get.back();
         Get.snackbar("", "Error creating your room");
       }
-      
+
       isCreatingRoom.value = false;
 
       update();
@@ -166,6 +163,8 @@ class RoomController extends GetxController {
 
       if (roomResponse != null) {
         currentRoom.value = RoomModel.fromJson(roomResponse);
+      } else {
+        Get.snackbar('', "Error getting your room, Try again later");
       }
       isCurrentRoomLoading.value = false;
       update();
@@ -177,8 +176,10 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToRoom(OwnerId user) async {
+    printOut("current user being added to room token ${currentRoom.value.token}");
     initAgora(currentRoom.value.token, currentRoom.value.id!);
 
+    printOut("current user being added to room ${user.id}");
 
     if (!currentRoom.value.hostIds!.contains(user) &&
         !currentRoom.value.speakerIds!.contains(user) &&
@@ -189,7 +190,9 @@ class RoomController extends GetxController {
 
       //Add user to room
       await RoomAPI().updateRoomById({
-        "userIds": [user.id]
+        "title": currentRoom.value.title,
+        "userIds": [user.id],
+        "token": currentRoom.value.token
       }, currentRoom.value.id!);
     }
   }
@@ -202,12 +205,23 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "speakerIds": [user.id]
+      "title": " ",
+      "speakerIds": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
     //Remove user from audience
     await RoomAPI().removeUserFromAudienceInRoom({
       "users": [user.id]
     }, currentRoom.value.id!);
+
+    //Remove user from RaisedHand
+    await RoomAPI().removeUserFromRaisedHandsInRoom({
+      "users": [user.id],
+      "token": currentRoom.value.token
+    }, currentRoom.value.id!);
+
+
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
@@ -219,7 +233,9 @@ class RoomController extends GetxController {
 
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
-      "raisedHands": [user.id]
+      "title": currentRoom.value.title,
+      "raisedHands": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
   }
 
@@ -231,7 +247,9 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "userIds": [user.id]
+      "title": currentRoom.value.title,
+      "userIds": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
     //Remove user from audience
     await RoomAPI().removeUserFromSpeakerInRoom({
@@ -247,41 +265,61 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "speakerIds": [user.id]
+      "title": currentRoom.value.title,
+      "speakerIds": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
-    //Remove user from audience
-    await RoomAPI().removeUserFromSpeakerInRoom({
-      "speakerIds": [user.id]
+
+    //Remove user from RaisedHand
+    await RoomAPI().removeUserFromRaisedHandsInRoom({
+      "users": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
+    //Remove user from RaisedHand
+    await RoomAPI().removeUserFromAudienceInRoom({
+      "users": [user.id],
+      "token": currentRoom.value.token
+    }, currentRoom.value.id!);
+
+
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-
+    leaveAgora();
 
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
 
-    currentRoom.value = RoomModel();
     currentRoom.refresh();
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!.contains(user)) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
+
     } else {
       await RoomAPI().removeAUserFromRoom({
         "users": [user.id]
       }, currentRoom.value.id!);
     }
+
+    currentRoom.value = RoomModel();
+
   }
 
-  void leaveAgora() {
-    engine.leaveChannel();
-    engine.disableAudio();
-    engine.destroy();
+  @override
+  void dispose() {
+    leaveAgora();
+    super.dispose();
+  }
+
+  Future<void> leaveAgora() async {
+    await engine.leaveChannel();
+    await engine.disableAudio();
+    await engine.destroy();
   }
 
   Future<void> fetchAllUsers() async {
-
     if (allUsers.isEmpty) {
       try {
         allUsersLoading.value = true;
@@ -329,35 +367,42 @@ class RoomController extends GetxController {
   }
 
   void initAgora(String token, String roomId) async {
-
-    try{
+    try {
+      printOut("Joining agora room");
 
       // Get microphone permission
       await [Permission.microphone].request();
 
       // Create RTC client instance
-      RtcEngine engine = await RtcEngine.createWithContext(context);
+      engine = await RtcEngine.createWithContext(context);
+
       // Define event handling logic
-      engine.setEventHandler(RtcEngineEventHandler(
-          joinChannelSuccess: (String channel, int uid, int elapsed) {
-            printOut('joinChannelSuccess ${channel} ${uid}');
-            userJoinedRoom.value = true;
+      agoraListeners();
 
-          }, userJoined: (int uid, int elapsed) {
-        printOut('userJoined ${uid}');
+      // Join channel
 
-      }, userOffline: (int uid, UserOfflineReason reason) {
-        printOut('userOffline ${uid}');
+      await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
+      await engine.enableAudioVolumeIndication(500, 3, true);
+      await engine.setDefaultAudioRoutetoSpeakerphone(true);
 
-      }));
-      // Join channel with channel name as 123
+      await engine.setClientRole(ClientRole.Broadcaster);
       await engine.joinChannel(token, roomId, null, 0);
 
-    } catch(e, s) {
+    } catch (e, s) {
       printOut('error joining room $e $s');
     }
+  }
 
-    }
-
-
+  void agoraListeners() {
+    // Define event handling logic
+    engine.setEventHandler(RtcEngineEventHandler(
+        joinChannelSuccess: (String channel, int uid, int elapsed) {
+      printOut('joinChannelSuccess $channel $uid');
+      userJoinedRoom.value = true;
+    }, userJoined: (int uid, int elapsed) {
+      printOut('userJoined $uid');
+    }, userOffline: (int uid, UserOfflineReason reason) {
+      printOut('userOffline $uid');
+    }));
+  }
 }

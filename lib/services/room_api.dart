@@ -45,7 +45,9 @@ class RoomAPI {
           (X509Certificate cert, String host, int port) => true;
       final http = new IOClient(ioc);
       var url = Uri.parse('$tokenPath?channel=$channel&uid=$uid');
+      printOut("Gen token $url");
       final response = await http.get(url);
+      printOut("response $response");
       if (response.statusCode == 200) {
         return jsonDecode(response.body)["token"];
       } else {
@@ -59,8 +61,10 @@ class RoomAPI {
 
   updateRoomById(Map<String, dynamic> body, String id) async {
     try {
-      await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
+      var updated = await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
           body: body);
+
+      printOut("updatedRoom $updated");
     } catch (e) {
       printOut("Error updating room $e");
     }

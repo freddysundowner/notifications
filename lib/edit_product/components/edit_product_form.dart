@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
@@ -38,7 +39,7 @@ class EditProductForm extends StatelessWidget {
         DefaultButton(
             text: "Save Product",
             press: () {
-              print("vv");
+              printOut("vv");
               // productController.saveProduct();
             }),
         SizedBox(height: 10.h),

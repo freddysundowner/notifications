@@ -124,6 +124,9 @@ class RoomPage extends StatelessWidget {
             ? SingleChildScrollView(
                 child: Column(
                   children: [
+                    _homeController.userJoinedRoom.isFalse
+                        ? const CircularProgressIndicator()
+                        : Container(),
                     RoomUser("Hosts"),
                     SizedBox(
                       width: 0.9.sw,

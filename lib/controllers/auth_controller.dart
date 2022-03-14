@@ -82,7 +82,7 @@ class AuthController extends GetxController {
       String username, String authtoken, String accesstoken) async {
     try {
       var result = await FirebaseAuth.instance.signInWithCustomToken(authtoken);
-      print("result $result");
+      printOut("result $result");
       if (result.user != null) {
         await FirebaseAuth.instance.currentUser!.updateDisplayName(username);
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -90,10 +90,10 @@ class AuthController extends GetxController {
 
         return Get.offAll(() => HomePage());
       } else {
-        print("User null");
+        printOut("User null");
       }
     } catch (e) {
-      print("error " + e.toString());
+      printOut("error " + e.toString());
       return "null";
     }
   }

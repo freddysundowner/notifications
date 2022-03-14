@@ -63,7 +63,7 @@ class RoomController extends GetxController {
         content: Column(
           children: const [
             Text("We are creating your room"),
-            SizedBox(height: 0.07,),
+            SizedBox(height: 0.1,),
             CircularProgressIndicator()
           ],
         ), barrierDismissible: false);
@@ -92,9 +92,11 @@ class RoomController extends GetxController {
 
       if (rooms != null) {
         var roomId = rooms["_id"];
-        agoraToken.value = await RoomAPI().generateAgoraToken(roomId, "0");
+        var token = await RoomAPI().generateAgoraToken(roomId, "0");
+        printOut("room token $token");
+        agoraToken.value =  token;
 
-        printOut("room token ${agoraToken.value}");
+
 
         await RoomAPI().updateRoomById({"token": agoraToken.value}, roomId);
 
@@ -340,14 +342,15 @@ class RoomController extends GetxController {
       // Define event handling logic
       engine.setEventHandler(RtcEngineEventHandler(
           joinChannelSuccess: (String channel, int uid, int elapsed) {
-            printOut('joinChannelSuccess ${channel} ${uid}');
+            printOut('joinChannelSuccess $channel $uid');
             userJoinedRoom.value = true;
 
+
           }, userJoined: (int uid, int elapsed) {
-        printOut('userJoined ${uid}');
+        printOut('userJoined $uid');
 
       }, userOffline: (int uid, UserOfflineReason reason) {
-        printOut('userOffline ${uid}');
+        printOut('userOffline $uid');
 
       }));
       // Join channel with channel name as 123

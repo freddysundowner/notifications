@@ -11,29 +11,27 @@ class Product {
   String? id;
   String name;
   int? price;
-  String? htmlprice;
   int? quantity;
   int? discountPrice;
   String? shopId;
   String? ownerId;
   String? description;
-  DateTime? createdAt;
-  DateTime? updatedAt;
 
   Product({
     required this.images,
     this.id,
     required this.name,
     this.price,
-    this.htmlprice,
     this.discountPrice,
     this.quantity,
     this.shopId,
     this.ownerId,
     this.description,
-    this.createdAt,
-    this.updatedAt,
   });
+
+  htmlPrice(price) {
+    return currencySymbol + this.price.toString();
+  }
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         images: List<String>.from(json["images"].map((x) => x)),
@@ -45,8 +43,6 @@ class Product {
         shopId: json["shopId"],
         ownerId: json["ownerId"],
         description: json["description"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -54,14 +50,11 @@ class Product {
         "_id": id,
         "name": name,
         "price": price,
-        "price": currencySymbol + htmlprice.toString(),
         "quantity": quantity,
         "discountPrice": discountPrice,
         "shopId": shopId,
         "ownerId": ownerId,
         "description": description,
-        "createdAt": createdAt!.toIso8601String(),
-        "updatedAt": updatedAt!.toIso8601String(),
       };
 }
 
@@ -74,8 +67,9 @@ List<Product> getProducts() {
   productone.id = "1";
   productone.price = 1;
   productone.discountPrice = 1;
-  productone.quantity = 1;
-  productone.htmlprice = currencySymbol + " 1";
+  productone.shopId = "62093827e3b4167368b575a7";
+  productone.ownerId = "61fb9094d59efb5046a99946";
+  productone.quantity = 3;
 
   productone.description = "this is the descrription";
   product.add(productone);
@@ -86,9 +80,10 @@ List<Product> getProducts() {
   producttwo.id = "2";
   producttwo.discountPrice = 1;
   producttwo.price = 1;
-  producttwo.htmlprice = currencySymbol + " 1";
+  productone.shopId = "62093827e3b4167368b575a7";
   producttwo.quantity = 1;
   producttwo.description = "this is the descrription 2";
+  producttwo.ownerId = "61fb9094d59efb5046a99946";
   product.add(producttwo);
 
   Product productthree = new Product(name: "test three", images: [
@@ -97,8 +92,9 @@ List<Product> getProducts() {
   productthree.id = "3";
   productthree.discountPrice = 1;
   productthree.price = 1;
+  productone.shopId = "62093827e3b4167368b575a7";
   productthree.quantity = 1;
-  productthree.htmlprice = currencySymbol + " 1";
+  productthree.ownerId = "61fb9094d59efb5046a99946";
 
   productthree.description = "this is the descrription 3";
   product.add(productthree);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
@@ -51,12 +52,17 @@ class HomePage extends StatelessWidget {
             SizedBox(
               width: 0.05.sw,
             ),
-            SizedBox(
-              height: 0.005.sh,
-              width: 0.07.sw,
-              child: const CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+            InkWell(
+              onTap: () {
+                Get.to(() => Profile());
+              },
+              child: SizedBox(
+                height: 0.005.sh,
+                width: 0.07.sw,
+                child: const CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+                ),
               ),
             ),
             SizedBox(

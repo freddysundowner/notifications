@@ -20,4 +20,14 @@ class Helper {
   }) {
     if (show) print(data);
   }
+
+  static showSnackBack(BuildContext context, String message,
+      {MaterialColor? color = Colors.green}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+      ),
+    );
+  }
 }

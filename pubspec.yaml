@@ -19,7 +19,8 @@ dependencies:
   cached_network_image: ^3.2.0
   image_picker:
   image_cropper: ^1.0.2
-
+  future_progress_dialog: ^0.1.1
+  swipedetector: ^1.2.0
   firebase_core:
   shared_preferences: ^2.0.7
 dev_dependencies:

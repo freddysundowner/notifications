@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,14 +15,12 @@ enum NewShopState { Default, DB, PICK }
 class NewShop extends StatelessWidget {
   late XFile image;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  ShopController shopController = Get.put(ShopController());
+  final _formKey = GlobalKey<FormState>();
 
   NewShopState state = NewShopState.Default;
   bool selected = false;
   late String _name, _imageUrl, _mobile, _email;
-  TextEditingController nameController = TextEditingController(),
-      mobileController = TextEditingController(),
-      descriptionController = TextEditingController(),
-      emailController = TextEditingController();
 
   void showSnackBar(String string, String color) {
     var clr = Colors.teal;
@@ -74,7 +74,11 @@ class NewShop extends StatelessWidget {
         title: Text("Add Shop "),
         actions: <Widget>[
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                shopController.saveProduct();
+              }
+            },
             child: Center(
               child: Text(
                 "SAVE",
@@ -141,204 +145,260 @@ class NewShop extends StatelessWidget {
                 ),
               ],
             )),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Shop Name",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: sc_ItemTitleColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  TextField(
-                    controller: nameController,
-                    toolbarOptions: ToolbarOptions(
-                      paste: true,
-                      selectAll: false,
-                    ),
-                    decoration: InputDecoration(
-                      fillColor: sc_InputBackgroundColor,
-                      filled: true,
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
+            Form(
+                key: _formKey,
+                child: Container(
+                  margin:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Shop Name",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: sc_ItemTitleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      SizedBox(
+                        height: 5.0,
                       ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      TextFormField(
+                        controller: shopController.nameController,
+                        toolbarOptions: ToolbarOptions(
+                          paste: true,
+                          selectAll: false,
+                        ),
+                        validator: (value) {
+                          if (shopController.nameController.text.isEmpty) {
+                            return "Shop name is required";
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: InputDecoration(
+                          fillColor: sc_InputBackgroundColor,
+                          filled: true,
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          prefixIcon: Icon(Icons.person),
+                        ),
+                        textCapitalization: TextCapitalization.words,
+                        autocorrect: false,
                       ),
-                      prefixIcon: Icon(Icons.person),
-                    ),
-                    textCapitalization: TextCapitalization.words,
-                    autocorrect: false,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(
-                    "Email",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: sc_ItemTitleColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      fillColor: sc_InputBackgroundColor,
-                      filled: true,
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
+                      SizedBox(
+                        height: 20.0,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      Text(
+                        "Email",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: sc_ItemTitleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      SizedBox(
+                        height: 5.0,
                       ),
-                      prefixIcon: Icon(Icons.email),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(
-                    "Mobile No.",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: sc_ItemTitleColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  TextField(
-                    controller: mobileController,
-                    toolbarOptions: ToolbarOptions(
-                      paste: true,
-                      selectAll: false,
-                    ),
-                    decoration: InputDecoration(
-                      fillColor: sc_InputBackgroundColor,
-                      filled: true,
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
+                      TextFormField(
+                        controller: shopController.emailController,
+                        validator: (value) {
+                          if (shopController.emailController.text.isEmpty) {
+                            return kEmailNullError;
+                          } else if (!emailValidatorRegExp
+                              .hasMatch(shopController.emailController.text)) {
+                            return kInvalidEmailError;
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: InputDecoration(
+                          fillColor: sc_InputBackgroundColor,
+                          filled: true,
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          prefixIcon: Icon(Icons.email),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      SizedBox(
+                        height: 20.0,
                       ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      Text(
+                        "Mobile No.",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: sc_ItemTitleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      prefixIcon: Icon(Icons.phone),
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(
-                    "Address",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: sc_ItemTitleColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  TextField(
-                    controller: descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 2,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: sc_InputBackgroundColor,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
+                      SizedBox(
+                        height: 5.0,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      TextFormField(
+                        validator: (value) {
+                          if (shopController.mobileController.text.isEmpty) {
+                            return "phone number is required";
+                          }
+                          return null;
+                        },
+                        controller: shopController.mobileController,
+                        toolbarOptions: ToolbarOptions(
+                          paste: true,
+                          selectAll: false,
+                        ),
+                        decoration: InputDecoration(
+                          fillColor: sc_InputBackgroundColor,
+                          filled: true,
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          prefixIcon: Icon(Icons.phone),
+                        ),
+                        keyboardType: TextInputType.number,
                       ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      SizedBox(
+                        height: 20.0,
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(
-                    "Description",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: sc_ItemTitleColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  TextField(
-                    controller: descriptionController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 5,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: sc_InputBackgroundColor,
-                      contentPadding: EdgeInsets.all(15),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
+                      Text(
+                        "Address",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: sc_ItemTitleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      SizedBox(
+                        height: 5.0,
                       ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: sc_InputBackgroundColor),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      TextField(
+                        controller: shopController.daddressController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        minLines: 2,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: sc_InputBackgroundColor,
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                        ),
                       ),
-                    ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        "Description",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: sc_ItemTitleColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                      TextField(
+                        controller: shopController.descriptionController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        minLines: 5,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: sc_InputBackgroundColor,
+                          contentPadding: EdgeInsets.all(15),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: sc_InputBackgroundColor),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ))
           ],
         ),
       ),

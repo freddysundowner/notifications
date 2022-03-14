@@ -25,6 +25,7 @@ class UserModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? profilePhoto;
+  String? shopId;
   int? memberShip;
   int? upgradedDate;
   UserModel({
@@ -45,6 +46,7 @@ class UserModel {
     @required this.password,
     @required this.phonenumber,
     @required this.createdAt,
+    @required this.shopId,
     @required this.updatedAt,
     @required this.profilePhoto,
     @required this.memberShip,
@@ -67,6 +69,7 @@ class UserModel {
         userName: json["userName"],
         email: json["email"],
         password: json["password"],
+        shopId: json["shopId"],
         phonenumber: json["phonenumber"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
@@ -88,6 +91,7 @@ class UserModel {
         "firstName": firstName,
         "lastName": lastName,
         "bio": bio,
+        "shopId": shopId,
         "userName": userName,
         "email": email,
         "password": password,

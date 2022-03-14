@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
@@ -25,53 +26,61 @@ class ShopView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-                width: 100.0,
-                height: 100.0,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: CachedNetworkImageProvider(
-                            "https://i.imgur.com/BoN9kdC.png")))),
-            Container(
-              margin: EdgeInsets.only(left: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Text(
-                    "Fred Shop",
-                    style: TextStyle(fontSize: 21.sp, color: Colors.black),
+                  Container(
+                      width: 100.0,
+                      height: 100.0,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: CachedNetworkImageProvider(
+                                  "https://i.imgur.com/BoN9kdC.png")))),
+                  SizedBox(
+                    width: 20.w,
                   ),
-                  Text(
-                    "description here",
-                    style: TextStyle(fontSize: 15.sp, color: Colors.white),
+                  Column(
+                    children: [
+                      Text(
+                        "Fred Shop",
+                        style: TextStyle(fontSize: 18.sp, color: Colors.black),
+                      ),
+                      Text(
+                        "@username",
+                        style: TextStyle(fontSize: 14.sp, color: Colors.black),
+                      ),
+                    ],
                   ),
-                  Text("email here",
-                      style: TextStyle(fontSize: 13.sp, color: Colors.white))
+                  Spacer(),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => NewShop());
+                    },
+                    child: Icon(
+                      Icons.edit,
+                      color: primarycolor,
+                      size: 30.sm,
+                    ),
+                  ),
                 ],
               ),
-            ),
-            InkWell(
-              onTap: () {
-                Get.to(() => NewShop());
-              },
-              child: Icon(
-                Icons.edit,
-                color: Colors.white,
-                size: 30.sm,
+              Divider(
+                color: primarycolor,
               ),
-            ),
-            Text("Products", style: headingStyle),
-            Column(
-              children: products
-                  .map((e) => buildProductDismissible(e, context))
-                  .toList(),
-            )
-          ],
+              Text("Products", style: headingStyle),
+              Column(
+                children: products
+                    .map((e) => buildProductDismissible(e, context))
+                    .toList(),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -79,7 +88,9 @@ class ShopView extends StatelessWidget {
         elevation: 4,
         hoverColor: Colors.green,
         splashColor: Colors.green,
-        onPressed: () {},
+        onPressed: () {
+          Get.to(() => EditProductScreen());
+        },
         backgroundColor: Colors.pink,
       ),
     );

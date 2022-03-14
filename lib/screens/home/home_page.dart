@@ -5,6 +5,8 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/screens/profile/profile.dart';
+import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
@@ -70,12 +72,17 @@ class HomePage extends StatelessWidget {
             SizedBox(
               width: 0.05.sw,
             ),
-            SizedBox(
-              height: 0.005.sh,
-              width: 0.07.sw,
-              child: const CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+            InkWell(
+              onTap: () {
+                Get.to(() => Profile());
+              },
+              child: SizedBox(
+                height: 0.005.sh,
+                width: 0.07.sw,
+                child: const CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      "http://52.43.151.113/public/img/61fb9094d59efb5046a99946.png"),
+                ),
               ),
             ),
             SizedBox(
@@ -642,10 +649,16 @@ class HomePage extends StatelessWidget {
                                           return InkWell(
                                             onTap: () {
                                               Get.back();
-                                              _homeController.roomPickedProductId.value = product.id!;
-                                              _homeController.roomPickedProductPrice.value = product.price.toString();
+                                              _homeController
+                                                  .roomPickedProductId
+                                                  .value = product.id!;
+                                              _homeController
+                                                      .roomPickedProductPrice
+                                                      .value =
+                                                  product.price.toString();
 
-                                              showChooseImagesBottomSheet(context, product);
+                                              showChooseImagesBottomSheet(
+                                                  context, product);
                                             },
                                             child: Padding(
                                               padding:
@@ -702,7 +715,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<dynamic> showChooseImagesBottomSheet(BuildContext context, Product product) {
+  Future<dynamic> showChooseImagesBottomSheet(
+      BuildContext context, Product product) {
     _homeController.roomHosts.value = [];
 
     return showModalBottomSheet(
@@ -778,7 +792,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 3,
                               childAspectRatio: 0.99,
                             ),
-                            itemCount:  product.images.length,
+                            itemCount: product.images.length,
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {},
@@ -793,7 +807,8 @@ class HomePage extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Center(
                                         child: Image.network(
-                                          imageUrl + product.images.elementAt(index),
+                                          imageUrl +
+                                              product.images.elementAt(index),
                                           height: 0.1.sh,
                                           width: 0.2.sw,
                                           fit: BoxFit.fill,
@@ -912,67 +927,94 @@ class HomePage extends StatelessWidget {
                         height: 0.01.sh,
                       ),
                       Obx(() {
-                          return _homeController.allUsersLoading.isFalse ? SizedBox(
-                            height: 0.55.sh,
-                            child: _homeController.allUsers.isNotEmpty ? GridView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                // physics: ScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 0.99,
-                                ),
-                                itemCount: _homeController.allUsers.length,
-                                itemBuilder: (context, index) {
-
-                                  UserModel user = UserModel.fromJson(_homeController.allUsers.elementAt(index));
-                                  return InkWell(
-                                    onTap: () {
-                                      if (_homeController.roomHosts.contains(user)) {
-                                        _homeController.roomHosts.remove(user);
-                                      } else {
-                                        _homeController.roomHosts.add(user);
-                                      }
-
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Obx(() {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Center(
-                                                  child:  user.profilePhoto == null ? CircleAvatar(
-                                                      radius: 35,
-                                                      backgroundColor: Colors.transparent,
-                                                      foregroundImage: _homeController.roomHosts.contains(user) ? const AssetImage(
-                                                          "assets/icons/picked.png") : null,
-                                                      backgroundImage: const AssetImage(
-                                                          "assets/icons/profile_placeholder.png"))
-                                                    : CircleAvatar(
-                                                radius: 35,
-                                                    backgroundColor: Colors.transparent,
-                                                foregroundImage: _homeController.roomHosts.contains(user) ? const AssetImage(
-                                                    "assets/icons/picked.png") : null,
-                                                backgroundImage: NetworkImage(
-                                                    imageUrl + user.profilePhoto!),
-                                              ),),
-                                            );
-                                          }
+                        return _homeController.allUsersLoading.isFalse
+                            ? SizedBox(
+                                height: 0.55.sh,
+                                child: _homeController.allUsers.isNotEmpty
+                                    ? GridView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        // physics: ScrollPhysics(),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          childAspectRatio: 0.99,
                                         ),
-                                        Text(
-                                          user.userName!,
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 16.sp),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }) : const Text("No users to add")
-                          ) : const CircularProgressIndicator();
-                        }
-                      ),
+                                        itemCount:
+                                            _homeController.allUsers.length,
+                                        itemBuilder: (context, index) {
+                                          UserModel user = UserModel.fromJson(
+                                              _homeController.allUsers
+                                                  .elementAt(index));
+                                          return InkWell(
+                                            onTap: () {
+                                              if (_homeController.roomHosts
+                                                  .contains(user)) {
+                                                _homeController.roomHosts
+                                                    .remove(user);
+                                              } else {
+                                                _homeController.roomHosts
+                                                    .add(user);
+                                              }
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Obx(() {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Center(
+                                                      child: user.profilePhoto ==
+                                                              null
+                                                          ? CircleAvatar(
+                                                              radius: 35,
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              foregroundImage: _homeController
+                                                                      .roomHosts
+                                                                      .contains(
+                                                                          user)
+                                                                  ? const AssetImage(
+                                                                      "assets/icons/picked.png")
+                                                                  : null,
+                                                              backgroundImage:
+                                                                  const AssetImage(
+                                                                      "assets/icons/profile_placeholder.png"))
+                                                          : CircleAvatar(
+                                                              radius: 35,
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              foregroundImage: _homeController
+                                                                      .roomHosts
+                                                                      .contains(
+                                                                          user)
+                                                                  ? const AssetImage(
+                                                                      "assets/icons/picked.png")
+                                                                  : null,
+                                                              backgroundImage:
+                                                                  NetworkImage(
+                                                                      imageUrl +
+                                                                          user.profilePhoto!),
+                                                            ),
+                                                    ),
+                                                  );
+                                                }),
+                                                Text(
+                                                  user.userName!,
+                                                  style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 16.sp),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        })
+                                    : const Text("No users to add"))
+                            : const CircularProgressIndicator();
+                      }),
                       SizedBox(
                         height: 0.02.sh,
                       ),

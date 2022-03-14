@@ -11,9 +11,7 @@ import 'helper.dart';
 class Api {
   static var client = http.Client();
   static callApi(
-      {required String method,
-      Map<String, dynamic>? body,
-      required String endpoint}) async {
+      {required String method, body, required String endpoint}) async {
     _tryConnection();
 
     var url = Uri.parse(endpoint);
@@ -23,6 +21,9 @@ class Api {
     if (method == post) {
       return _callPost(body: body!, url: url);
     }
+    if (method == put) {
+      return _callPut(body: body!, url: url);
+    }
   }
 
   static _callGet({required Uri url}) async {
@@ -31,11 +32,10 @@ class Api {
       String? token = prefs.getString("access_token");
       Map<String, String> headers = {};
       if (token != null) {
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': "Bearer " + token
-        };
+        headers = {'Authorization': "Bearer " + token};
       }
+      Helper.debug("headers ${headers}");
+      Helper.debug("url ${url}");
       final response = await client.get(url, headers: headers);
       return jsonDecode(response.body);
     } catch (e) {
@@ -49,12 +49,31 @@ class Api {
       String? token = prefs.getString("access_token");
       Map<String, String> headers = {};
       if (token != null) {
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': "Bearer " + token
-        };
+        headers = {'Authorization': "Bearer " + token};
       }
+      Helper.debug("headers ${headers}");
+      Helper.debug("url ${url}");
+      Helper.debug("body ${body}");
       final response = await client.post(url, body: body, headers: headers);
+      return jsonDecode(response.body);
+    } catch (e) {
+      Helper.debug("error _callPost ${e}");
+      return null;
+    }
+  }
+
+  static _callPut({Map<String, dynamic>? body, required Uri url}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("access_token");
+      Map<String, String> headers = {};
+      if (token != null) {
+        headers = {'Authorization': "Bearer " + token};
+      }
+      Helper.debug("headers ${headers}");
+      Helper.debug("url ${url}");
+      Helper.debug("body ${body}");
+      final response = await client.put(url, body: body, headers: headers);
       return jsonDecode(response.body);
     } catch (e) {
       Helper.debug("error _callPost ${e}");

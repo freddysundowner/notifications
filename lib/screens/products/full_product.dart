@@ -48,7 +48,7 @@ class FullProduct extends StatelessWidget {
                   horizontal: 24.0,
                 ),
                 child: Text(
-                  product.htmlprice.toString(),
+                  product.htmlPrice(product.price).toString(),
                   style: TextStyle(
                     fontSize: 18.0.sp,
                     color: Theme.of(context).accentColor,

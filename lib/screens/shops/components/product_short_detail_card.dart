@@ -53,7 +53,7 @@ class ProductShortDetailCard extends StatelessWidget {
                 SizedBox(height: 10),
                 Text.rich(
                   TextSpan(
-                      text: "\₹${product!.discountPrice}    ",
+                      text: "${product!.htmlPrice(product!.price)}    ",
                       style: TextStyle(
                         color: primarycolor,
                         fontWeight: FontWeight.w700,
@@ -61,7 +61,7 @@ class ProductShortDetailCard extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: "\₹${product!.price}",
+                          text: "${product!.htmlPrice(product!.price)}",
                           style: TextStyle(
                             color: kTextColor,
                             decoration: TextDecoration.lineThrough,

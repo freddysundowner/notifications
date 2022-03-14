@@ -111,6 +111,9 @@ class HomePage extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
+                          _homeController.newRoomTitle.value = " ";
+                          _homeController.newRoomType.value = " ";
+
                           showRoomTypeBottomSheet(context);
                         },
                         child: Container(
@@ -304,16 +307,16 @@ class HomePage extends StatelessWidget {
                     ),
                   );
                 })
-            : ListView(
-              children: [ SizedBox(
-                height: 0.8.sh,
-                child: Center(
-                    child: Text(
+            : ListView(children: [
+                SizedBox(
+                  height: 0.8.sh,
+                  child: Center(
+                      child: Text(
                     "There are no rooms at the moment",
                     style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                   )),
-              )]
-            )));
+                )
+              ])));
   }
 
   Future<void> joinRoom(RoomModel roomModel) async {
@@ -416,13 +419,13 @@ class HomePage extends StatelessWidget {
                         ? 0.1.sh
                         : 0.001.sh,
                     child: Obx(() {
-
                       //If user is not a speaker or a host, disable their audio
                       if (_homeController.currentRoom.value.hostIds!
-                          .indexWhere((e) => e.id == currentUser.id) == -1 &&
-                          _homeController
-                              .currentRoom.value.speakerIds!
-                              .indexWhere((e) => e.id == currentUser.id) == -1) {
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1 &&
+                          _homeController.currentRoom.value.speakerIds!
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1) {
                         _homeController.engine.disableAudio();
                       }
 
@@ -430,31 +433,37 @@ class HomePage extends StatelessWidget {
                       if (_homeController.isCurrentRoomLoading.isFalse) {
                         return Container(
 
-                          //If user is a speaker or host, show the mic icon, else don't show it
+                            //If user is a speaker or host, show the mic icon, else don't show it
                             child: _homeController.currentRoom.value.hostIds!
-                                .indexWhere((e) => e.id == currentUser.id) == 0 ||
-                                _homeController
-                                    .currentRoom.value.speakerIds!
-                                    .indexWhere((e) => e.id == currentUser.id) == 0
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) ==
+                                        0 ||
+                                    _homeController
+                                            .currentRoom.value.speakerIds!
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) ==
+                                        0
                                 ? IconButton(
-                              onPressed: () {
-
-                                //If user is muted, unmute and enbale their audio vice versa
-                                if (_homeController.audioMuted.isFalse) {
-                                  _homeController.audioMuted.value = true;
-                                  _homeController.engine.disableAudio();
-                                }  else {
-                                  _homeController.audioMuted.value = false;
-                                  _homeController.engine.enableAudio();
-                                }
-                              },
-                              icon: Icon(
-                                //If audio is not muted, show mic icon, if not show mic off
-                                _homeController.audioMuted.isFalse ? Ionicons.mic : Ionicons.mic_off,
-                                color: Colors.black54,
-                                size: 30,
-                              ),
-                            )
+                                    onPressed: () {
+                                      //If user is muted, unmute and enbale their audio vice versa
+                                      if (_homeController.audioMuted.isFalse) {
+                                        _homeController.audioMuted.value = true;
+                                        _homeController.engine.disableAudio();
+                                      } else {
+                                        _homeController.audioMuted.value =
+                                            false;
+                                        _homeController.engine.enableAudio();
+                                      }
+                                    },
+                                    icon: Icon(
+                                      //If audio is not muted, show mic icon, if not show mic off
+                                      _homeController.audioMuted.isFalse
+                                          ? Ionicons.mic
+                                          : Ionicons.mic_off,
+                                      color: Colors.black54,
+                                      size: 30,
+                                    ),
+                                  )
                                 : Container());
                       } else {
                         return Transform.scale(
@@ -519,63 +528,95 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         height: 0.03.sh,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: Colors.black38),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Icon(
-                                    Ionicons.earth,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 80,
+                      Obx(() {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                _homeController.newRoomType.value = "public";
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            color: _homeController
+                                                        .newRoomType.value ==
+                                                    "public"
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.black38,
+                                            width: _homeController
+                                                        .newRoomType.value ==
+                                                    "public"
+                                                ? 5
+                                                : 1),
+                                        color: Colors.white),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Icon(
+                                        Ionicons.earth,
+                                        color: Theme.of(context).primaryColor,
+                                        size: 80,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 0.01.sh,
-                              ),
-                              Text(
-                                "Public Room",
-                                style: TextStyle(
-                                    color: Colors.black87, fontSize: 18.sp),
-                              )
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: Colors.black38),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Icon(
-                                    Ionicons.shield_checkmark_outline,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 80,
+                                  SizedBox(
+                                    height: 0.01.sh,
                                   ),
-                                ),
+                                  Text(
+                                    "Public Room",
+                                    style: TextStyle(
+                                        color: Colors.black87, fontSize: 18.sp),
+                                  )
+                                ],
                               ),
-                              SizedBox(
-                                height: 0.01.sh,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                _homeController.newRoomType.value = "private";
+                              },
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            color: _homeController
+                                                        .newRoomType.value ==
+                                                    "private"
+                                                ? Theme.of(context).primaryColor
+                                                : Colors.black38,
+                                            width: _homeController
+                                                        .newRoomType.value ==
+                                                    "private"
+                                                ? 5
+                                                : 1),
+                                        color: Colors.white),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Icon(
+                                        Ionicons.shield_checkmark_outline,
+                                        color: Theme.of(context).primaryColor,
+                                        size: 80,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 0.01.sh,
+                                  ),
+                                  Text(
+                                    "Private Room",
+                                    style: TextStyle(
+                                        color: Colors.black87, fontSize: 18.sp),
+                                  )
+                                ],
                               ),
-                              Text(
-                                "Private Room",
-                                style: TextStyle(
-                                    color: Colors.black87, fontSize: 18.sp),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
+                            )
+                          ],
+                        );
+                      }),
                       SizedBox(
                         height: 0.04.sh,
                       ),
@@ -642,6 +683,8 @@ class HomePage extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Get.back();
+                        _homeController.newRoomTitle.value =
+                            titleFieldController.text;
                       },
                       child: Text(
                         "Okay".toUpperCase(),

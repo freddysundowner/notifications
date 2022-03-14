@@ -29,7 +29,7 @@ class RoomController extends GetxController {
   var toInviteUsers = [].obs;
   var audioMuted = true.obs;
 
-  var newRoomTitle = "".obs;
+  var newRoomTitle = " ".obs;
   var newRoomType = "public".obs;
   var agoraToken = "".obs;
   var roomPickedProductId = "".obs;
@@ -69,7 +69,7 @@ class RoomController extends GetxController {
       }
 
       var roomData = {
-        "title": " ",
+        "title": newRoomTitle.value ,
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -94,7 +94,7 @@ class RoomController extends GetxController {
         printOut("room token $token");
 
 
-        await RoomAPI().updateRoomById({"title": " ", "token": token}, roomId);
+        await RoomAPI().updateRoomById({"title": currentRoom.value.title, "token": token}, roomId);
 
         await fetchRoom(roomId);
 
@@ -205,7 +205,7 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "title": " ",
+      "title": currentRoom.value.title,
       "speakerIds": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);

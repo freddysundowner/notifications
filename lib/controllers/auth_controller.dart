@@ -6,6 +6,7 @@ import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -57,11 +58,11 @@ class AuthController extends GetxController {
   Future authenticate() async {
     try {
       isLoading(true);
-      Map<String, dynamic> login = new Authenticate(
+      Map<String, dynamic> login = Authenticate(
               email: emailFieldController.text,
               password: passwordFieldController.text)
           .toJson();
-      print(login);
+      printOut(login);
       Map<String, dynamic> user = await ApiCalls.authenticate(login, "login");
       Helper.debug(user["success"]);
       if (user["success"] == false) {

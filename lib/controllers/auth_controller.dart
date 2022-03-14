@@ -68,12 +68,17 @@ class AuthController extends GetxController {
       if (user["success"] == false) {
         error.value = "Check email and password";
       } else {
-        UserModel userModel = UserModel.fromJson(user["data"]);
-        this.usermodel.value = usermodel as UserModel?;
+        UserModel userModelFromApi = UserModel.fromJson(user["data"]);
+        try {
+          usermodel.value = userModelFromApi;
+        } catch (e) {
+          printOut("error saving user model to controller on login $e");
+        }
         return signInWithCustomToken(
-            userModel.userName!, user["authtoken"], user["accessToken"]);
+            userModelFromApi.userName!, user["authtoken"], user["accessToken"]);
       }
-    } finally {
+    } catch(e) {
+      printOut("Error after auth $e");
       isLoading(false);
     }
   }
@@ -82,7 +87,7 @@ class AuthController extends GetxController {
       String username, String authtoken, String accesstoken) async {
     try {
       var result = await FirebaseAuth.instance.signInWithCustomToken(authtoken);
-      printOut("result $result");
+      printOut("result signIn $result");
       if (result.user != null) {
         await FirebaseAuth.instance.currentUser!.updateDisplayName(username);
         SharedPreferences prefs = await SharedPreferences.getInstance();

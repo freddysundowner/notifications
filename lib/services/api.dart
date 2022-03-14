@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/services/configs.dart';
@@ -55,6 +56,7 @@ class Api {
       Helper.debug("url ${url}");
       Helper.debug("body ${body}");
       final response = await client.post(url, body: body, headers: headers);
+      Helper.debug("result ${response.body}");
       return jsonDecode(response.body);
     } catch (e) {
       Helper.debug("error _callPost ${e}");
@@ -74,6 +76,7 @@ class Api {
       Helper.debug("url ${url}");
       Helper.debug("body ${body}");
       final response = await client.put(url, body: body, headers: headers);
+      Helper.debug("result ${response.body}");
       return jsonDecode(response.body);
     } catch (e) {
       Helper.debug("error _callPost ${e}");

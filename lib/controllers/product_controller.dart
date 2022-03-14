@@ -25,11 +25,11 @@ class ProductController extends GetxController {
 
   saveProduct() {
     try {
-      Map<String, dynamic> productdata = new Product(
+      Map<String, dynamic> productdata = Product(
           name: titleFieldController.text,
           price: int.parse(originalPriceFieldController.text),
           quantity: int.parse(qtyFieldController.text),
-          shopId: Get.find<AuthController>().currentuser!.shopId,
+          shopId: Get.find<AuthController>().currentuser!.shopId!,
           ownerId: FirebaseAuth.instance.currentUser!.uid,
           images: []).toJson();
       var response = ApiCalls.saveProduct(productdata);

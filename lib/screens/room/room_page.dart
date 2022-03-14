@@ -98,19 +98,23 @@ class RoomPage extends StatelessWidget {
                   SizedBox(
                     height: 0.1.sh,
                     child: Obx(() {
-                      return _homeController.currentRoom.value.hostIds!
-                                  .contains(currentUser) ||
+                      if (_homeController.isCurrentRoomLoading.isFalse) {
+                        return Container(
+                          child: _homeController.currentRoom.value.hostIds!
+                              .contains(currentUser) ||
                               _homeController.currentRoom.value.speakerIds!
-                                  .contains(currentUser)
-                          ? IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Ionicons.mic,
-                                color: Colors.black54,
-                                size: 30,
-                              ),
-                            )
-                          : Container();
+                                  .contains(currentUser) ? IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Ionicons.mic,
+                                  color: Colors.black54,
+                                  size: 30,
+                                ),
+                              ) : Container()
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
                     }),
                   ),
                 ],

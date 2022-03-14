@@ -61,8 +61,10 @@ class RoomAPI {
 
   updateRoomById(Map<String, dynamic> body, String id) async {
     try {
-      await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
+      var updated = await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
           body: body);
+
+      printOut("updatedRoom $updated");
     } catch (e) {
       printOut("Error updating room $e");
     }

@@ -5,9 +5,8 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
-import 'package:fluttergistshop/screens/profile/profile.dart';
-import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
+import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
@@ -173,26 +172,9 @@ class HomePage extends StatelessWidget {
 
           return InkWell(
             onTap: () async {
-              Get.to(RoomPage(
-                roomId: roomModel.id!,
-              ));
 
-              await _homeController.fetchRoom(roomModel.id!);
+              await joinRoom(roomModel);
 
-              OwnerId currentUser = OwnerId(
-                  id: Get.find<AuthController>().usermodel.value!.id,
-                  bio: Get.find<AuthController>().usermodel.value!.bio,
-                  email: Get.find<AuthController>().usermodel.value!.email,
-                  firstName:
-                      Get.find<AuthController>().usermodel.value!.firstName,
-                  lastName:
-                      Get.find<AuthController>().usermodel.value!.lastName,
-                  userName:
-                      Get.find<AuthController>().usermodel.value!.userName,
-                  profilePhoto:
-                      Get.find<AuthController>().usermodel.value!.profilePhoto);
-
-              await _homeController.addUserToRoom(currentUser);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -308,13 +290,35 @@ class HomePage extends StatelessWidget {
         }));
   }
 
+  Future<void> joinRoom(RoomModel roomModel) async {
+
+    await _homeController.fetchRoom(roomModel.id!);
+
+    OwnerId currentUser = OwnerId(
+        id: Get.find<AuthController>().usermodel.value!.id,
+        bio: Get.find<AuthController>().usermodel.value!.bio,
+        email: Get.find<AuthController>().usermodel.value!.email,
+        firstName:
+        Get.find<AuthController>().usermodel.value!.firstName,
+        lastName:
+        Get.find<AuthController>().usermodel.value!.lastName,
+        userName:
+        Get.find<AuthController>().usermodel.value!.userName,
+        profilePhoto:
+        Get.find<AuthController>().usermodel.value!.profilePhoto);
+
+    await _homeController.addUserToRoom(currentUser);
+
+    Get.to(RoomPage(
+      roomId: roomModel.id!,
+    ));
+  }
+
   InkWell buildCurrentRoom(BuildContext context) {
     RoomModel room = _homeController.currentRoom.value;
     return InkWell(
-      onTap: () {
-        Get.to(RoomPage(
-          roomId: room.id!,
-        ));
+      onTap: () async {
+        await joinRoom(room);
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -637,7 +641,7 @@ class HomePage extends StatelessWidget {
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
-                                          childAspectRatio: 0.99,
+                                          childAspectRatio: 1.2,
                                         ),
                                         itemCount:
                                             _homeController.userProducts.length,
@@ -662,7 +666,7 @@ class HomePage extends StatelessWidget {
                                             },
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(5.0),
                                               child: Column(
                                                 children: [
                                                   Container(
@@ -1031,4 +1035,6 @@ class HomePage extends StatelessWidget {
       },
     );
   }
+
+
 }

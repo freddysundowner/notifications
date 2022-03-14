@@ -15,15 +15,19 @@ dependencies:
   flutter_screenutil: ^5.3.1
   ionicons: ^0.1.2
   http: ^0.13.4
-  firebase_auth:
+  firebase_auth: ^2.0.0
   cached_network_image: ^3.2.0
   image_picker:
   image_cropper: ^1.0.2
+  shared_preferences: ^2.0.13
+  agora_rtc_engine: ^4.0.5
+  permission_handler: ^6.0.0
+
   future_progress_dialog: ^0.1.1
   swipedetector: ^1.2.0
   firebase_core:
-  shared_preferences: ^2.0.7
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0

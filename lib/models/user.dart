@@ -1,5 +1,6 @@
-import 'package:meta/meta.dart';
 import 'dart:convert';
+
+import 'package:meta/meta.dart';
 
 UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
 
@@ -57,7 +58,7 @@ class UserModel {
         followers: List<String>.from(json["followers"].map((x) => x)),
         following: List<String>.from(json["following"].map((x) => x)),
         wallet: json["wallet"],
-        currentRoom: json["currentRoom"],
+        currentRoom: json["currentRoom"] ?? "",
         facebook: json["facebook"],
         instagram: json["instagram"],
         linkedIn: json["linkedIn"],

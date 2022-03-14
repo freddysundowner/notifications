@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const String appName = "GistShop";
+const String AGORA_APP_ID = "eb2b573198f24c98a285c82094696299";
 const String currencySymbol = "GC ";
 const String currencyName = "Gistcoins ";
 

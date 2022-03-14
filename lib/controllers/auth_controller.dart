@@ -33,7 +33,7 @@ class AuthController extends GetxController {
   Future register() async {
     try {
       isLoading(true);
-      Map<String, dynamic> auth = new Authenticate(
+      Map<String, dynamic> auth = Authenticate(
         email: emailFieldController.text,
         password: passwordFieldController.text,
         userName: usernameFieldController.text,
@@ -68,6 +68,7 @@ class AuthController extends GetxController {
         error.value = "Check email and password";
       } else {
         UserModel userModel = UserModel.fromJson(user["data"]);
+        this.usermodel.value = usermodel as UserModel?;
         return signInWithCustomToken(
             userModel.userName!, user["authtoken"], user["accessToken"]);
       }
@@ -85,6 +86,7 @@ class AuthController extends GetxController {
         await FirebaseAuth.instance.currentUser!.updateDisplayName(username);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("access_token", accesstoken);
+
         return Get.offAll(() => HomePage());
       } else {
         print("User null");

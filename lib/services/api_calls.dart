@@ -5,6 +5,7 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/services/api.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
+import 'package:fluttergistshop/utils/Functions.dart';
 
 import 'helper.dart';
 
@@ -27,6 +28,8 @@ class ApiCalls {
     var response = await Api.callApi(
         method: config.get,
         endpoint: config.users + FirebaseAuth.instance.currentUser!.uid);
+
+    printOut(UserModel.fromJson(response).userName);
 
     return UserModel.fromJson(response);
   }

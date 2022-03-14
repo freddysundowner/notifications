@@ -55,8 +55,8 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        followers: List<String>.from(json["followers"].map((x) => x)),
-        following: List<String>.from(json["following"].map((x) => x)),
+        // followers: List<String>.from(json["followers"].map((x) => x)),
+        // following: List<String>.from(json["following"].map((x) => x)),
         wallet: json["wallet"],
         currentRoom: json["currentRoom"] ?? "",
         facebook: json["facebook"],

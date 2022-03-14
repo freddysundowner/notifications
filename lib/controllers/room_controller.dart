@@ -27,6 +27,7 @@ class RoomController extends GetxController {
   var isCreatingRoom = false.obs;
   var newRoom = RoomModel().obs;
   var toInviteUsers = [].obs;
+  var audioMuted = true.obs;
 
   var newRoomTitle = "".obs;
   var newRoomType = "public".obs;
@@ -175,7 +176,7 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToRoom(OwnerId user) async {
-    printOut("current user being added to room token ${currentRoom.value}");
+    printOut("current user being added to room token ${currentRoom.value.token}");
     initAgora(currentRoom.value.token, currentRoom.value.id!);
 
     printOut("current user being added to room ${user.id}");
@@ -189,8 +190,9 @@ class RoomController extends GetxController {
 
       //Add user to room
       await RoomAPI().updateRoomById({
-        "title": " ",
-        "userIds": [user.id]
+        "title": currentRoom.value.title,
+        "userIds": [user.id],
+        "token": currentRoom.value.token
       }, currentRoom.value.id!);
     }
   }
@@ -203,12 +205,23 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "speakerIds": [user.id]
+      "title": " ",
+      "speakerIds": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
     //Remove user from audience
     await RoomAPI().removeUserFromAudienceInRoom({
       "users": [user.id]
     }, currentRoom.value.id!);
+
+    //Remove user from RaisedHand
+    await RoomAPI().removeUserFromRaisedHandsInRoom({
+      "users": [user.id],
+      "token": currentRoom.value.token
+    }, currentRoom.value.id!);
+
+
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
@@ -220,7 +233,9 @@ class RoomController extends GetxController {
 
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
-      "raisedHands": [user.id]
+      "title": currentRoom.value.title,
+      "raisedHands": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
   }
 
@@ -232,7 +247,9 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "userIds": [user.id]
+      "title": currentRoom.value.title,
+      "userIds": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
     //Remove user from audience
     await RoomAPI().removeUserFromSpeakerInRoom({
@@ -248,12 +265,24 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "speakerIds": [user.id]
+      "title": currentRoom.value.title,
+      "speakerIds": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
-    //Remove user from audience
-    await RoomAPI().removeUserFromSpeakerInRoom({
-      "speakerIds": [user.id]
+
+    //Remove user from RaisedHand
+    await RoomAPI().removeUserFromRaisedHandsInRoom({
+      "users": [user.id],
+      "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
+    //Remove user from RaisedHand
+    await RoomAPI().removeUserFromAudienceInRoom({
+      "users": [user.id],
+      "token": currentRoom.value.token
+    }, currentRoom.value.id!);
+
+
   }
 
   Future<void> leaveRoom(OwnerId user) async {
@@ -351,7 +380,7 @@ class RoomController extends GetxController {
       agoraListeners();
 
       // Join channel
-      await engine.enableAudio();
+
       await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
       await engine.enableAudioVolumeIndication(500, 3, true);
       await engine.setDefaultAudioRoutetoSpeakerphone(true);

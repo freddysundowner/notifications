@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
@@ -190,7 +189,7 @@ class EditProductForm extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ...List.generate(
-                productController.product!.images.length,
+                productController.product.images.length,
                 (index) => SizedBox(
                   width: 80,
                   height: 80,
@@ -199,7 +198,7 @@ class EditProductForm extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {},
                       child: Image.network(
-                          productController.product!.images[index]),
+                          productController.product.images[index]),
                     ),
                   ),
                 ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 
 class NewChatPage extends StatelessWidget {
 
@@ -13,92 +14,129 @@ class NewChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _homeController.fetchAllUsers();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Choose user to chat with", style: TextStyle(color: Colors.black),),
+        title: const Text("Select a friend to chat with", style: TextStyle(color: Colors.black),),
         centerTitle: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 30.0, top: 10, right: 10, left: 10),
-        child: Container(
-            child: _homeController.allUsersLoading.isFalse
-                ? SizedBox(
-                height: 0.4.sh,
-                child: GetBuilder<RoomController>(
-                  init: _homeController,
-                    builder: (_dx) {
-                  return GridView.builder(
-                      shrinkWrap: true,
-                      // physics: ScrollPhysics(),
-                      gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        childAspectRatio: 0.7,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 5.0, top: 5, right: 10, left: 10),
+          child: Obx(() {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 15.0, right: 10.0),
+                      height: 0.07.sh,
+                      decoration: BoxDecoration(
+                        color: Colors.black12, borderRadius: BorderRadius.circular(30)
                       ),
-                      itemCount: _dx.allUsers.length,
-                      itemBuilder: (context, index) {
-                        UserModel user = UserModel.fromJson(
-                            _dx.allUsers.elementAt(index));
-                        return InkWell(
-                          onTap: () {
-                            if (_homeController.toInviteUsers
-                                .contains(user)) {
-                              _homeController.toInviteUsers
-                                  .remove(user);
-                            } else {
-                              _homeController.toInviteUsers
-                                  .add(user);
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              Obx(() {
-                                return Center(
-                                  child: user.profilePhoto == null
-                                      ? CircleAvatar(
-                                      radius: 35,
-                                      backgroundColor:
-                                      Colors.transparent,
-                                      foregroundImage: _homeController
-                                          .toInviteUsers
-                                          .contains(user)
-                                          ? const AssetImage(
-                                          "assets/icons/picked.png")
-                                          : null,
-                                      backgroundImage:
-                                      const AssetImage(
-                                          "assets/icons/profile_placeholder.png"))
-                                      : CircleAvatar(
-                                    radius: 35,
-                                    backgroundColor:
-                                    Colors.transparent,
-                                    foregroundImage: _homeController
-                                        .toInviteUsers
-                                        .contains(user)
-                                        ? const AssetImage(
-                                        "assets/icons/picked.png")
-                                        : null,
-                                    backgroundImage:
-                                    NetworkImage(imageUrl +
-                                        user.profilePhoto!),
+                      child: Row(
+                        children: [
+                          const Icon(Ionicons.search, color: Colors.grey,),
+                          SizedBox(width: 0.03.sw,),
+                          Expanded(
+                            child: Center(
+                              child: TextField(
+                                autofocus: true,
+                                decoration: InputDecoration(
+                                  hintText: "Search",
+                                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16.sp),
+                                  border: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                style: TextStyle(color: Colors.black, fontSize: 16.sp),),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 0.01.sh,),
+                  SizedBox(
+                    height: 0.78.sh,
+                      child: _homeController.allUsersLoading.isFalse
+                          ? GetBuilder<RoomController>(
+                          builder: (_dx) {
+                        return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: _dx.allUsers.length,
+                            itemBuilder: (context, index) {
+                              OwnerId user = OwnerId.fromJson(
+                                  _dx.allUsers.elementAt(index));
+                              return Container(
+                                padding: const EdgeInsets.all(10),
+                                child: InkWell(
+                                  onTap: () {
+
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Obx(() {
+                                            return Center(
+                                              child: user.profilePhoto == null
+                                                  ? CircleAvatar(
+                                                  radius: 25,
+                                                  backgroundColor:
+                                                  Colors.transparent,
+                                                  foregroundImage: _homeController
+                                                      .toInviteUsers
+                                                      .contains(user)
+                                                      ? const AssetImage(
+                                                      "assets/icons/picked.png")
+                                                      : null,
+                                                  backgroundImage:
+                                                  const AssetImage(
+                                                      "assets/icons/profile_placeholder.png"))
+                                                  : CircleAvatar(
+                                                radius: 25,
+                                                backgroundColor:
+                                                Colors.transparent,
+                                                foregroundImage: _homeController
+                                                    .toInviteUsers
+                                                    .contains(user)
+                                                    ? const AssetImage(
+                                                    "assets/icons/picked.png")
+                                                    : null,
+                                                backgroundImage:
+                                                NetworkImage(imageUrl +
+                                                    user.profilePhoto!),
+                                              ),
+                                            );
+                                          }),
+                                          SizedBox(
+                                            width: 0.04.sw,
+                                          ),
+                                          Text(
+                                            "${user.firstName} ${user.lastName}",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16.sp),
+                                          ),
+                                        ],
+                                      ),
+                                      const Icon(Ionicons.add_circle_outline)
+                                    ],
                                   ),
-                                );
-                              }),
-                              SizedBox(
-                                height: 0.01.sh,
-                              ),
-                              Text(
-                                user.userName!,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.sp),
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                }))
-                : const CircularProgressIndicator(color: Colors.black)
+                                ),
+                              );
+                            });
+                      }) : const Center(child: CircularProgressIndicator(color: Colors.black))
+
+                  ),
+                ],
+              );
+            }
+          ),
         ),
       ),
     );

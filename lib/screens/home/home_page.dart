@@ -188,7 +188,7 @@ class HomePage extends StatelessWidget {
                   RoomModel roomModel = RoomModel.fromJson(
                       _homeController.roomsList.elementAt(index));
 
-                  return InkWell(
+                  return roomModel.token != null ? InkWell(
                     onTap: () async {
                       await joinRoom(roomModel);
                     },
@@ -309,7 +309,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  );
+                  ) : Container();
                 })
             : ListView(children: [
                 SizedBox(

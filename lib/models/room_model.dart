@@ -25,8 +25,6 @@ class RoomModel {
     this.title,
     this.shopId,
     this.productPrice,
-    this.createdAt,
-    this.updatedAt,
     this.v,
     this.token,
   });
@@ -44,8 +42,6 @@ class RoomModel {
   String? title = "";
   ShopId? shopId;
   int? productPrice;
-  DateTime? createdAt;
-  DateTime? updatedAt;
   int? v;
   dynamic? token;
 
@@ -63,8 +59,6 @@ class RoomModel {
     title: json["title"] ?? "",
     shopId: json["shopId"] == null ? null : ShopId.fromJson(json["shopId"]),
     productPrice: json["productPrice"],
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
     token: json["token"],
   );
@@ -83,8 +77,6 @@ class RoomModel {
     "title": title,
     "shopId": shopId == null ? null : shopId!.toJson(),
     "productPrice": productPrice,
-    "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
-    "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
     "__v": v,
     "token": token,
   };
@@ -92,42 +84,101 @@ class RoomModel {
 
 class OwnerId {
   OwnerId({
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.bio,
-    this.userName,
-    this.email,
-    this.profilePhoto,
+    this.followers,
+     this.following,
+     this.wallet,
+     this.currentRoom,
+     this.facebook,
+     this.instagram,
+     this.linkedIn,
+     this.twitter,
+     this.id,
+     this.firstName,
+     this.lastName,
+     this.bio,
+     this.userName,
+     this.email,
+     this.password,
+     this.phonenumber,
+     this.createdAt,
+     this.shopId,
+     this.updatedAt,
+     this.profilePhoto,
+     this.memberShip,
+     this.upgradedDate,
   });
 
+  List<String>? followers;
+  List<String>? following;
+  int? wallet;
+  String? currentRoom;
+  String? facebook;
+  String? instagram;
+  String? linkedIn;
+  String? twitter;
   String? id;
   String? firstName;
   String? lastName;
   String? bio;
   String? userName;
   String? email;
+  String? password;
+  String? phonenumber;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   String? profilePhoto;
+  String? shopId;
+  int? memberShip;
+  int? upgradedDate;
 
   factory OwnerId.fromJson(Map<String, dynamic> json) => OwnerId(
+    // followers: List<String>.from(json["followers"].map((x) => x)),
+    // following: List<String>.from(json["following"].map((x) => x)),
+    wallet: json["wallet"],
+    currentRoom: json["currentRoom"] ?? "",
+    facebook: json["facebook"],
+    instagram: json["instagram"],
+    linkedIn: json["linkedIn"],
+    twitter: json["twitter"],
     id: json["_id"],
     firstName: json["firstName"],
     lastName: json["lastName"],
     bio: json["bio"],
     userName: json["userName"],
     email: json["email"],
+    password: json["password"],
+    shopId: json["shopId"],
+    phonenumber: json["phonenumber"],
     profilePhoto: json["profilePhoto"],
+    memberShip: json["memberShip"],
+    upgradedDate: json["upgradedDate"],
   );
 
   Map<String, dynamic> toJson() => {
-    "_id": id == null ? null : id,
-    "firstName": firstName == null ? null : firstName,
-    "lastName": lastName == null ? null : lastName,
-    "bio": bio == null ? null : bio,
-    "userName": userName == null ? null : userName,
-    "email": email == null ? null : email,
-    "profilePhoto": profilePhoto == null ? null : profilePhoto,
+    // "followers": List<dynamic>.from(followers!.map((x) => x)),
+    // "following": List<dynamic>.from(following!.map((x) => x)),
+    "wallet": wallet,
+    "currentRoom": currentRoom,
+    "facebook": facebook,
+    "instagram": instagram,
+    "linkedIn": linkedIn,
+    "twitter": twitter,
+    "_id": id,
+    "firstName": firstName,
+    "lastName": lastName,
+    "bio": bio,
+    "shopId": shopId,
+    "userName": userName,
+    "email": email,
+    "password": password,
+    "phonenumber": phonenumber,
+    "createdAt": createdAt!.toIso8601String(),
+    "updatedAt": updatedAt!.toIso8601String(),
+    "profilePhoto": profilePhoto,
+    "memberShip": memberShip,
+    "upgradedDate": upgradedDate,
   };
+
 }
 
 class ShopId {

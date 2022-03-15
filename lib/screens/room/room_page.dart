@@ -35,7 +35,7 @@ class RoomPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text(
-          _homeController.currentRoom.value.title!,
+          _homeController.currentRoom.value.title ?? " ",
           style: const TextStyle(color: Colors.white),
         ),
         centerTitle: false,
@@ -72,7 +72,8 @@ class RoomPage extends StatelessWidget {
                   IconButton(
                     onPressed: () async {
                       if ((_homeController.currentRoom.value.hostIds!
-                          .indexWhere((e) => e.id == currentUser.id) == 0)) {
+                              .indexWhere((e) => e.id == currentUser.id) ==
+                          0)) {
                         showRaisedHandsBottomSheet(context);
                       } else {
                         await _homeController.addUserToRaisedHands(currentUser);
@@ -100,60 +101,82 @@ class RoomPage extends StatelessWidget {
                   SizedBox(
                     width: 0.01.sw,
                   ),
-                  SizedBox(
-                    height: _homeController.isCurrentRoomLoading.isFalse
-                        ? 0.1.sh
-                        : 0.001.sh,
-                    child: Obx(() {
+                  Obx(() {
+                    return _homeController.currentRoom.value.id != null
+                        ? SizedBox(
+                            height: _homeController.isCurrentRoomLoading.isFalse
+                                ? 0.1.sh
+                                : 0.001.sh,
+                            child: Obx(() {
+                              //If user is not a speaker or a host, disable their audio
+                              if (_homeController.currentRoom.value.hostIds!
+                                          .indexWhere(
+                                              (e) => e.id == currentUser.id) ==
+                                      -1 &&
+                                  _homeController.currentRoom.value.speakerIds!
+                                          .indexWhere(
+                                              (e) => e.id == currentUser.id) ==
+                                      -1) {
+                                _homeController.engine.disableAudio();
+                              }
 
-                      //If user is not a speaker or a host, disable their audio
-                      if (_homeController.currentRoom.value.hostIds!
-                          .indexWhere((e) => e.id == currentUser.id) == -1 &&
-                          _homeController
-                              .currentRoom.value.speakerIds!
-                              .indexWhere((e) => e.id == currentUser.id) == -1) {
-                        _homeController.engine.disableAudio();
-                      }
+                              //If current room is loading, show a spinner
+                              if (_homeController
+                                  .isCurrentRoomLoading.isFalse) {
+                                return Container(
 
-                      //If current room is loading, show a spinner
-                      if (_homeController.isCurrentRoomLoading.isFalse) {
-                        return Container(
-
-                          //If user is a speaker or host, show the mic icon, else don't show it
-                            child: _homeController.currentRoom.value.hostIds!
-                                        .indexWhere((e) => e.id == currentUser.id) == 0 ||
-                                    _homeController
-                                        .currentRoom.value.speakerIds!
-                                        .indexWhere((e) => e.id == currentUser.id) == 0
-                                ? IconButton(
-                                    onPressed: () {
-
-                                      //If user is muted, unmute and enbale their audio vice versa
-                                      if (_homeController.audioMuted.isFalse) {
-                                        _homeController.audioMuted.value = true;
-                                        _homeController.engine.disableAudio();
-                                      }  else {
-                                        _homeController.audioMuted.value = false;
-                                        _homeController.engine.enableAudio();
-                                      }
-                                    },
-                                    icon: Icon(
-                                      //If audio is not muted, show mic icon, if not show mic off
-                                      _homeController.audioMuted.isFalse ? Ionicons.mic : Ionicons.mic_off,
-                                      color: Colors.black54,
-                                      size: 30,
-                                    ),
-                                  )
-                                : Container());
-                      } else {
-                        return Transform.scale(
-                            scale: 0.3,
-                            child: const CircularProgressIndicator(
-                              color: Colors.black,
-                            ));
-                      }
-                    }),
-                  ),
+                                    //If user is a speaker or host, show the mic icon, else don't show it
+                                    child: _homeController
+                                                    .currentRoom.value.hostIds!
+                                                    .indexWhere((e) =>
+                                                        e.id ==
+                                                        currentUser.id) ==
+                                                0 ||
+                                            _homeController.currentRoom.value
+                                                    .speakerIds!
+                                                    .indexWhere((e) =>
+                                                        e.id ==
+                                                        currentUser.id) ==
+                                                0
+                                        ? IconButton(
+                                            onPressed: () {
+                                              //If user is muted, unmute and enbale their audio vice versa
+                                              if (_homeController
+                                                  .audioMuted.isFalse) {
+                                                _homeController
+                                                    .audioMuted.value = true;
+                                                _homeController.engine
+                                                    .disableAudio();
+                                              } else {
+                                                _homeController
+                                                    .audioMuted.value = false;
+                                                _homeController.engine
+                                                    .enableAudio();
+                                              }
+                                            },
+                                            icon: Icon(
+                                              //If audio is not muted, show mic icon, if not show mic off
+                                              _homeController.audioMuted.isFalse
+                                                  ? Ionicons.mic
+                                                  : Ionicons.mic_off,
+                                              color: Colors.black54,
+                                              size: 30,
+                                            ),
+                                          )
+                                        : Container());
+                              } else {
+                                return Transform.scale(
+                                    scale: 0.3,
+                                    child: const CircularProgressIndicator(
+                                      color: Colors.black,
+                                    ));
+                              }
+                            }),
+                          )
+                        : SizedBox(
+                      height:  0.1.sh,
+                        child: const Center(child: CircularProgressIndicator()));
+                  }),
                 ],
               )
             ],
@@ -167,39 +190,41 @@ class RoomPage extends StatelessWidget {
                   return _homeController
                       .fetchRoom(_homeController.currentRoom.value.id!);
                 },
-                child: ListView(children: [
-                  _homeController.userJoinedRoom.isFalse
-                      ? const CircularProgressIndicator()
-                      : Container(),
-                  RoomUser("Hosts"),
-                  SizedBox(
-                    width: 0.9.sw,
-                    child: const Divider(
-                      color: Colors.black12,
-                    ),
-                  ),
-                  buildProducts(),
-                  SizedBox(
-                    width: 0.9.sw,
-                    child: const Divider(
-                      color: Colors.black12,
-                    ),
-                  ),
-                  _homeController.currentRoom.value.speakerIds!.isNotEmpty
-                      ? Column(
-                          children: [
-                            RoomUser("Speakers"),
-                            SizedBox(
-                              width: 0.9.sw,
-                              child: const Divider(
-                                color: Colors.black12,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  RoomUser("Audience"),
-                ]),
+                child: _homeController.currentRoom.value.id != null
+                    ? ListView(children: [
+                        _homeController.userJoinedRoom.isFalse
+                            ? const CircularProgressIndicator()
+                            : Container(),
+                        RoomUser("Hosts"),
+                        SizedBox(
+                          width: 0.9.sw,
+                          child: const Divider(
+                            color: Colors.black12,
+                          ),
+                        ),
+                        buildProducts(),
+                        SizedBox(
+                          width: 0.9.sw,
+                          child: const Divider(
+                            color: Colors.black12,
+                          ),
+                        ),
+                        _homeController.currentRoom.value.speakerIds!.isNotEmpty
+                            ? Column(
+                                children: [
+                                  RoomUser("Speakers"),
+                                  SizedBox(
+                                    width: 0.9.sw,
+                                    child: const Divider(
+                                      color: Colors.black12,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                        RoomUser("Audience"),
+                      ])
+                    : const Center(child: CircularProgressIndicator()),
               )
             : const Center(
                 child: CircularProgressIndicator(
@@ -464,7 +489,9 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              !(room.hostIds!.indexWhere((e) => e.id == user.id) == 0)
+                              !(room.hostIds!
+                                      .indexWhere((e) => e.id == user.id) ==
+                                  0)
                           ? InkWell(
                               onTap: () async {
                                 Get.back();
@@ -483,8 +510,10 @@ class RoomUser extends StatelessWidget {
                                 child: Center(
                                   child: Text(
                                     !(_homeController
-                                            .currentRoom.value.speakerIds!
-                                            .indexWhere((e) => e.id == user.id) == 0)
+                                                .currentRoom.value.speakerIds!
+                                                .indexWhere(
+                                                    (e) => e.id == user.id) ==
+                                            0)
                                         ? "Move to speakers".toUpperCase()
                                         : "Move to audience".toUpperCase(),
                                     style: TextStyle(

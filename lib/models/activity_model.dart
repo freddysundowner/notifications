@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 
 ActivityModel activityModelFromJson(String str) => ActivityModel.fromJson(json.decode(str));
 

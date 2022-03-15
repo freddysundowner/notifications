@@ -6,7 +6,8 @@ import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/services/api.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/helper.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
+
 import 'client.dart';
 import 'end_points.dart';
 

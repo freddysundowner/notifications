@@ -13,7 +13,7 @@ import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.d
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/services/end_points.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -188,7 +188,7 @@ class HomePage extends StatelessWidget {
                   RoomModel roomModel = RoomModel.fromJson(
                       _homeController.roomsList.elementAt(index));
 
-                  return roomModel.token != null ? InkWell(
+                  return InkWell(
                     onTap: () async {
                       await joinRoom(roomModel);
                     },
@@ -309,7 +309,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ) : Container();
+                  );
                 })
             : ListView(children: [
                 SizedBox(

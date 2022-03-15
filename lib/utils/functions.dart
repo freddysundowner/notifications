@@ -8,7 +8,8 @@ printOut(data) {
 
 String convertTime(String time) {
   var convertedTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-  var timeDifference = "${convertedTime.day}-${convertedTime.month}-${convertedTime.year}";
+  var timeDifference =
+      "${convertedTime.day}-${convertedTime.month}-${convertedTime.year}";
 
   var diff = DateTime.now().difference(convertedTime);
 
@@ -19,9 +20,11 @@ String convertTime(String time) {
   } else if (diff.inDays < 1) {
     timeDifference = "${diff.inHours} hours ago";
   } else if (diff.inDays == 2) {
-    timeDifference = "${convertedTime.minute}:${convertedTime.hour} yesterday";
+    timeDifference = "${convertedTime.hour}:${convertedTime.minute} yesterday";
   } else if (diff.inDays > 2) {
-    timeDifference = "${convertedTime.minute}:${convertedTime.hour} ${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
+    timeDifference =
+        "${convertedTime.hour}:${convertedTime.minute} "
+            "${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
   }
 
   return timeDifference;

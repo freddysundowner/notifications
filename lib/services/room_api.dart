@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fluttergistshop/controllers/auth_controller.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:http/io_client.dart';
 
@@ -40,16 +41,10 @@ class RoomAPI {
 
   generateAgoraToken(String channel, String uid) async {
     try {
-      final ioc = new HttpClient();
-      ioc.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-      final http = new IOClient(ioc);
-      var url = Uri.parse('$tokenPath?channel=$channel&uid=$uid');
-      printOut("Gen token $url");
-      final response = await http.get(url);
-      printOut("response $response");
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body)["token"];
+
+      var genToken = await DbBase().databaseRequest(tokenPath + "?channel=$channel&uid=$uid'", DbBase().getRequestType);
+      if (genToken != null) {
+        return jsonDecode(genToken)["token"];
       } else {
         throw Exception('Failed to load token');
       }
@@ -60,7 +55,9 @@ class RoomAPI {
 
 
   updateRoomById(Map<String, dynamic> body, String id) async {
+    final RoomController _homeController = Get.find<RoomController>();
     try {
+      body.addAll({"title": _homeController.currentRoom.value.title ?? " "});
       var updated = await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
           body: body);
 

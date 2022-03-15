@@ -6,7 +6,7 @@ import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -93,15 +93,21 @@ class RoomController extends GetxController {
         var token = await RoomAPI().generateAgoraToken(roomId, "0");
         printOut("room token $token");
 
+        if (token != null ) {
+          await RoomAPI().updateRoomById(
+              {"title": " ", "token": token}, roomId);
 
-        await RoomAPI().updateRoomById({"title": currentRoom.value.title, "token": token}, roomId);
+          await fetchRoom(roomId);
 
-        await fetchRoom(roomId);
+          initAgora(token, roomId);
 
-        initAgora(token, roomId);
-
-        Get.back();
-        Get.to(RoomPage(roomId: roomId));
+          Get.back();
+          Get.to(RoomPage(roomId: roomId));
+        } else {
+          Get.back();
+          Get.snackbar("", "There was an error creating your room. Try again later");
+          await RoomAPI().deleteARoom(roomId);
+        }
 
       } else {
         Get.back();
@@ -165,6 +171,7 @@ class RoomController extends GetxController {
         RoomModel room = RoomModel.fromJson(roomResponse);
         if (room.token != null) {
           currentRoom.value = room;
+
         }
 
       } else {
@@ -196,7 +203,7 @@ class RoomController extends GetxController {
 
         //Add user to room
         await RoomAPI().updateRoomById({
-          "title": currentRoom.value.title,
+        "title": currentRoom.value.title ?? " ",
           "userIds": [user.id],
           "token": currentRoom.value.token
         }, currentRoom.value.id!);
@@ -212,7 +219,7 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title,
+    "title": currentRoom.value.title ?? " ",
       "speakerIds": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
@@ -240,7 +247,7 @@ class RoomController extends GetxController {
 
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title,
+    "title": currentRoom.value.title ?? " ",
       "raisedHands": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
@@ -254,7 +261,7 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title,
+      "title": currentRoom.value.title ?? " ",
       "userIds": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
@@ -272,7 +279,7 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title,
+    "title": currentRoom.value.title ?? " ",
       "speakerIds": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);

@@ -60,7 +60,7 @@ class HomePage extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.to(const ActivitiesPage());
+                Get.to(ActivitiesPage());
               },
               child: const Icon(
                 Ionicons.notifications,

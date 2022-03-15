@@ -4,6 +4,7 @@ const imageUrl = baseUrl + "/public/img/";
 const rooms = baseUrl + "/rooms";
 const user = baseUrl + "/users";
 const product = baseUrl + "/products";
+const activities = baseUrl + "/activities";
 
 const allRooms = rooms + "/";
 const roomById = rooms + "/rooms/";
@@ -21,3 +22,5 @@ const removeUserFromRaisedHands = rooms + "/raisedhans/remove/";
 const allUsers = user + "/";
 
 const userProducts = product + "/get/all/";
+
+const userActivities = activities + "/to/";

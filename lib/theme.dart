@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 
-//ff
 ThemeData theme() {
   return ThemeData(
     backgroundColor: Colors.grey[50],

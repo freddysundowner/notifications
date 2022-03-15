@@ -68,20 +68,26 @@ class FullProduct extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 24.0,
-                  horizontal: 24.0,
+              if (product.variations.length > 0)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 24.0,
+                        horizontal: 24.0,
+                      ),
+                      child: Text(
+                        "Variation",
+                        style: regularDarkText,
+                      ),
+                    ),
+                    ProductSize(
+                      productSizes: product.variations,
+                      onSelected: (size) {},
+                    ),
+                  ],
                 ),
-                child: Text(
-                  "Variation",
-                  style: regularDarkText,
-                ),
-              ),
-              ProductSize(
-                productSizes: [1, 2, 3, 4, 5, 6],
-                onSelected: (size) {},
-              ),
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Row(
@@ -141,6 +147,7 @@ class FullProduct extends StatelessWidget {
           ),
           CustomActionBar(
             title: 'nn',
+            qty: product.quantity.toString(),
           )
         ],
       ),

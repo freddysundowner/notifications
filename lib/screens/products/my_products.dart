@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
+import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/checkout.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/cart/cart_screen.dart';
@@ -20,8 +21,6 @@ class MyProducts extends StatelessWidget {
   Future<void> refreshPage() {
     return Future<void>.value();
   }
-
-  List<Product> products = getProducts();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,8 @@ class MyProducts extends StatelessWidget {
                     ),
                   SizedBox(height: 20.h),
                   Column(
-                    children: products
+                    children: Get.find<ProductController>()
+                        .products
                         .map((e) => buildProductDismissible(e, context))
                         .toList(),
                   ),

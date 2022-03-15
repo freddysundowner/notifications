@@ -6,8 +6,10 @@ import '../../../utils/utils.dart';
 
 class CustomActionBar extends StatelessWidget {
   final String title;
+  final String qty;
   CustomActionBar({
     required this.title,
+    required this.qty,
   });
 
   @override
@@ -62,7 +64,7 @@ class CustomActionBar extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: Text(
-                "qty: 2",
+                "qty: $qty",
                 style: TextStyle(
                   fontSize: 13.0.sp,
                   fontWeight: FontWeight.w600,

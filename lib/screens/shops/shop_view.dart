@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
@@ -12,7 +15,9 @@ import 'package:ionicons/ionicons.dart';
 import '../../utils/utils.dart';
 
 class ShopView extends StatelessWidget {
-  final List<Product> products = getProducts();
+  ShopController shopController = Get.find<ShopController>();
+  AuthController authController = Get.find<AuthController>();
+  ProductController productController = Get.find<ProductController>();
   ShopView({Key? key}) : super(key: key);
   Future<void> refreshPage() {
     return Future<void>.value();
@@ -22,7 +27,7 @@ class ShopView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primarycolor,
+        backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
@@ -45,19 +50,23 @@ class ShopView extends StatelessWidget {
                   SizedBox(
                     width: 20.w,
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        "Fred Shop",
-                        style: TextStyle(fontSize: 18.sp, color: Colors.black),
-                      ),
-                      Text(
-                        "@username",
-                        style: TextStyle(fontSize: 14.sp, color: Colors.black),
-                      ),
-                    ],
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          authController.currentuser!.shopId!.name,
+                          style:
+                              TextStyle(fontSize: 13.sp, color: Colors.black),
+                        ),
+                        Text(
+                          authController.currentuser!.shopId!.email,
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                      ],
+                    ),
                   ),
-                  Spacer(),
                   InkWell(
                     onTap: () {
                       Get.to(() => NewShop());
@@ -70,15 +79,45 @@ class ShopView extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Text(
+                authController.currentuser!.shopId!.description,
+                style: TextStyle(fontSize: 14.sp, color: Colors.black),
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
               Divider(
                 color: primarycolor,
               ),
               Text("Products", style: headingStyle),
-              Column(
-                children: products
-                    .map((e) => buildProductDismissible(e, context))
-                    .toList(),
-              )
+              GetX<ProductController>(
+                  initState: (_) async =>
+                      Get.find<ProductController>().products =
+                          await ProductController.getProductsByShop(
+                              authController.currentuser!.shopId!.id),
+                  builder: (_) {
+                    if (_.products.length == 0) {
+                      return Text("No Products yet");
+                    }
+                    if (_.products.length > 0) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: ListView.builder(
+                            itemCount: _.products.length,
+                            itemBuilder: (context, index) {
+                              return buildProductDismissible(
+                                  _.products[index], context);
+                            }),
+                      );
+                      // return Column(
+                      //   children: _.products.map((e) => Text(e.name)).toList(),
+                      // );
+                    }
+                    return Text("No Products yet");
+                  })
             ],
           ),
         ),
@@ -89,6 +128,7 @@ class ShopView extends StatelessWidget {
         hoverColor: Colors.green,
         splashColor: Colors.green,
         onPressed: () {
+          productController.product.id = null;
           Get.to(() => EditProductScreen());
         },
         backgroundColor: Colors.pink,
@@ -137,7 +177,12 @@ class ShopView extends StatelessWidget {
         } else if (direction == DismissDirection.endToStart) {
           final confirmation = await showConfirmationDialog(
               context, "Are you sure to Edit Product?");
-          if (confirmation) {}
+          if (confirmation) {
+            productController.product = product;
+            Get.to(() => EditProductScreen(
+                  product: product,
+                ));
+          }
           await refreshPage();
           return false;
         }

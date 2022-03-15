@@ -38,12 +38,19 @@ class ProductCard extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.network(
-            product.images[0],
-            fit: BoxFit.fitWidth,
-            height: 120,
-            width: double.infinity,
-          ),
+          child: product.images.length == 0
+              ? Image.asset(
+                  "assets/images/tab_saved.png",
+                  fit: BoxFit.contain,
+                  height: 120,
+                  width: double.infinity,
+                )
+              : Image.network(
+                  product.images[0],
+                  fit: BoxFit.fitWidth,
+                  height: 120,
+                  width: double.infinity,
+                ),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -51,7 +58,7 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "${product.name + product.name + product.name + product.name + product.name + product.name + product.name + product.name}",
+                "${product.name}",
                 style: TextStyle(
                   color: kTextColor,
                   fontSize: 12.sp,

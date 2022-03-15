@@ -1,19 +1,51 @@
 import 'dart:convert';
 
+import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:get/get.dart';
+
 import 'client.dart';
 import 'end_points.dart';
+
+import 'package:fluttergistshop/services/api.dart';
+import 'package:fluttergistshop/services/configs.dart' as config;
 
 class ProductPI {
   getAllRooms() async {
     var rooms =
-    await DbBase().databaseRequest(allRooms, DbBase().getRequestType);
+        await DbBase().databaseRequest(allRooms, DbBase().getRequestType);
 
     return jsonDecode(rooms);
+  }
+
+  static updateProduct(
+      Map<String, dynamic> productdata, String productid) async {
+    List<dynamic> response = await Api.callApi(
+        method: config.put,
+        endpoint: config.updateproducts + productid,
+        body: productdata);
+    print(response);
+    return response;
   }
 
   getUserProducts(String userId) async {
     var products = await DbBase()
         .databaseRequest(userProducts + userId, DbBase().getRequestType);
     return jsonDecode(products);
+  }
+
+  static updateProductsImages(String productId, List<String> downloadUrls) {}
+
+  static String getPathForProductImage(String id, int index) {
+    String path = "products/images/$id";
+    return path + "_$index";
+  }
+
+  static saveProduct(Map<String, dynamic> productdata) async {
+    var response = await Api.callApi(
+        method: config.post,
+        endpoint: config.products +
+            Get.find<AuthController>().currentuser!.shopId!.id,
+        body: productdata);
+    return response;
   }
 }

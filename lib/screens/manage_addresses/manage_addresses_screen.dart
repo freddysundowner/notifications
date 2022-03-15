@@ -5,7 +5,7 @@ import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/screens/edit_address/edit_address_screen.dart';
 import 'package:fluttergistshop/screens/manage_addresses/components/address_short_details_card.dart';
-import 'package:fluttergistshop/services/api_calls.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/widgets/nothingtoshow_container.dart';
 import 'package:get/get.dart';
@@ -54,7 +54,7 @@ class ManageAddressesScreen extends StatelessWidget {
                     SizedBox(
                       height: MediaQuery.of(context).size.height,
                       child: FutureBuilder<List<Address>>(
-                        future: ApiCalls.getAddressesFromUserId(),
+                        future: UserAPI.getAddressesFromUserId(),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             List<Address>? addresses = snapshot.data;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/screens/edit_address/components/address_details_form.dart';
-import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 
 class EditAddressScreen extends StatelessWidget {

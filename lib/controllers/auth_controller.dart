@@ -4,8 +4,8 @@ import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
-import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
@@ -41,7 +41,7 @@ class AuthController extends GetxController {
         firstName: fnameFieldController.text,
         lastName: lnameFieldController.text,
       ).toJson();
-      Map<String, dynamic> user = await ApiCalls.authenticate(auth, "register");
+      Map<String, dynamic> user = await UserAPI.authenticate(auth, "register");
 
       if (user["status"] == 400) {
         error.value = user["message"];
@@ -62,8 +62,7 @@ class AuthController extends GetxController {
               email: emailFieldController.text,
               password: passwordFieldController.text)
           .toJson();
-      printOut(login);
-      Map<String, dynamic> user = await ApiCalls.authenticate(login, "login");
+      Map<String, dynamic> user = await UserAPI.authenticate(login, "login");
       Helper.debug(user["success"]);
       if (user["success"] == false) {
         error.value = "Check email and password";
@@ -77,7 +76,7 @@ class AuthController extends GetxController {
         return signInWithCustomToken(
             userModelFromApi.userName!, user["authtoken"], user["accessToken"]);
       }
-    } catch(e) {
+    } catch (e) {
       printOut("Error after auth $e");
       isLoading(false);
     }
@@ -111,7 +110,7 @@ class AuthController extends GetxController {
 
   handleAuth() {
     return FutureBuilder(
-      future: ApiCalls.getUserById(),
+      future: UserAPI.getUserById(),
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(

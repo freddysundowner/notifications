@@ -36,6 +36,7 @@ class ActivityController extends GetxController {
 
     } catch (e) {
       allActivitiesLoading.value = false;
+      allActivities.value = [];
       printOut("Error getting activities $e");
     }
   }

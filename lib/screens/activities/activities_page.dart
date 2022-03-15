@@ -85,14 +85,21 @@ class ActivitiesPage extends StatelessWidget {
                     })
                 : SizedBox(
                     height: 0.8.sh,
-                    child: Text(
-                      "No activities yet",
-                      style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                    child: Center(
+                      child: Text(
+                        "No activities yet",
+                        style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                      ),
                     ),
                   )
-            : const CircularProgressIndicator(
-                color: Colors.black,
-              );
+            : SizedBox(
+          height: 0.8.sh,
+              child: const Center(
+                child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+              ),
+            );
       }),
     );
   }

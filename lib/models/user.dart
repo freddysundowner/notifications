@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttergistshop/models/shop.dart';
 import 'package:meta/meta.dart';
 
 UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
@@ -26,7 +27,7 @@ class UserModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? profilePhoto;
-  String? shopId;
+  ShopId? shopId;
   int? memberShip;
   int? upgradedDate;
   UserModel({
@@ -70,7 +71,9 @@ class UserModel {
         userName: json["userName"],
         email: json["email"],
         password: json["password"],
-        shopId: json["shopId"],
+        shopId: json["shopId"] != null && json["shopId"] != ""
+            ? ShopId.fromJson(json["shopId"])
+            : null,
         phonenumber: json["phonenumber"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
@@ -80,8 +83,8 @@ class UserModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "followers": List<dynamic>.from(followers!.map((x) => x)),
-        "following": List<dynamic>.from(following!.map((x) => x)),
+        // "followers": List<dynamic>.from(followers!.map((x) => x)),
+        // "following": List<dynamic>.from(following!.map((x) => x)),
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,
@@ -102,5 +105,45 @@ class UserModel {
         "profilePhoto": profilePhoto,
         "memberShip": memberShip,
         "upgradedDate": upgradedDate,
+      };
+}
+
+class ShopId {
+  ShopId({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.phoneNumber,
+    required this.location,
+    required this.image,
+    required this.description,
+  });
+
+  String id;
+  String name;
+  String email;
+  String phoneNumber;
+  String location;
+  String image;
+  String description;
+
+  factory ShopId.fromJson(Map<String, dynamic> json) => ShopId(
+        id: json["_id"],
+        name: json["name"],
+        email: json["email"],
+        phoneNumber: json["phoneNumber"],
+        location: json["location"],
+        image: json["image"],
+        description: json["description"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "location": location,
+        "email": email,
+        "phoneNumber": phoneNumber,
+        "image": image,
+        "description": description,
       };
 }

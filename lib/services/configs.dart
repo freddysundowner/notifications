@@ -14,3 +14,6 @@ const users = api_url + "users/";
 const addresses = api_url + "address/all/";
 const address = api_url + "address/";
 const shop = api_url + "shop/";
+const updateshop = api_url + "shop/shop/";
+const products = api_url + "products/";
+const updateproducts = products + "products/";

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/services/configs.dart';
@@ -79,7 +78,7 @@ class Api {
       Helper.debug("result ${response.body}");
       return jsonDecode(response.body);
     } catch (e) {
-      Helper.debug("error _callPost ${e}");
+      Helper.debug("error _callPut ${e}");
       return null;
     }
   }

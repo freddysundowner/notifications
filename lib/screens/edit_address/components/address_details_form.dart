@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/address.dart';
-import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
@@ -198,7 +198,7 @@ class AddressDetailsForm extends StatelessWidget {
       var response;
       String snackbarMessage = "Saved successfully";
       try {
-        response = ApiCalls.addAddressForCurrentUser(newAddress);
+        response = UserAPI.addAddressForCurrentUser(newAddress);
         await showDialog(
           context: context,
           builder: (context) {
@@ -232,7 +232,7 @@ class AddressDetailsForm extends StatelessWidget {
       var response;
       String snackbarMessage = "updated successfully";
       try {
-        response = ApiCalls.updateAddressForCurrentUser(newAddress);
+        response = UserAPI.updateAddressForCurrentUser(newAddress);
         await showDialog(
           context: context,
           builder: (context) {

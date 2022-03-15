@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:fluttergistshop/services/user_api.dart';
+import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,7 +18,9 @@ enum NewShopState { Default, DB, PICK }
 class NewShop extends StatelessWidget {
   late XFile image;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  ShopController shopController = Get.put(ShopController());
+  ShopController shopController = Get.find<ShopController>();
+  AuthController authController = Get.find<AuthController>();
+
   final _formKey = GlobalKey<FormState>();
 
   NewShopState state = NewShopState.Default;
@@ -67,21 +72,74 @@ class NewShop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (authController.currentuser!.shopId != null) {
+      shopController.nameController.text =
+          authController.currentuser!.shopId!.name;
+
+      shopController.emailController.text =
+          authController.currentuser!.shopId!.email;
+
+      shopController.mobileController.text =
+          authController.currentuser!.shopId!.phoneNumber;
+
+      shopController.daddressController.text =
+          authController.currentuser!.shopId!.location;
+
+      shopController.descriptionController.text =
+          authController.currentuser!.shopId!.description;
+    }
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
-        title: Text("Add Shop "),
+        title: Text(" Shop Details"),
         actions: <Widget>[
           FlatButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                shopController.saveProduct();
+                String snackbarMessage = "";
+                var response;
+                if (authController.currentuser!.shopId != "" ||
+                    authController.currentuser!.shopId != null) {
+                  response = shopController
+                      .updateShop(authController.currentuser!.shopId!.id);
+                }
+                if (authController.currentuser!.shopId == null ||
+                    authController.currentuser!.shopId == "") {
+                  response = shopController.saveShop();
+                }
+                try {
+                  print("add shop response ${response}");
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AsyncProgressDialog(
+                        response,
+                        message: Text("Creating shop"),
+                        onError: (e) {
+                          snackbarMessage = e.toString();
+                        },
+                      );
+                    },
+                  );
+                  snackbarMessage = shopController.error.value;
+                } finally {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(snackbarMessage),
+                    ),
+                  );
+                  if (shopController.error.value == "") {
+                    authController.usermodel.value =
+                        await UserAPI.getUserById();
+                    Get.back();
+                  }
+                }
               }
             },
             child: Center(
               child: Text(
-                "SAVE",
+                authController.currentuser!.shopId != null ? "UPDATE" : "SAVE",
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w500,

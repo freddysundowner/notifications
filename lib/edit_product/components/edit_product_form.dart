@@ -4,21 +4,25 @@ import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
+import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
 
 class EditProductForm extends StatelessWidget {
+  Product? product;
   EditProductForm({
     Key? key,
+    this.product,
   }) : super(key: key);
 
   final _basicDetailsFormKey = GlobalKey<FormState>();
   final _describeProductFormKey = GlobalKey<FormState>();
-  ProductController productController = Get.put(ProductController());
+  ProductController productController = Get.find<ProductController>();
 
   bool newProduct = true;
+  String btnTxt = "Save Product";
 
   @override
   void dispose() {}
@@ -28,6 +32,34 @@ class EditProductForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("productController.product.id ${productController.product.id}");
+    if (productController.product.id != null) {
+      btnTxt = "Update";
+      productController.titleFieldController.text =
+          productController.product.name;
+
+      productController.variantFieldController.text =
+          productController.product.variations.join(",");
+
+      productController.originalPriceFieldController.text =
+          productController.product.price.toString();
+
+      productController.qtyFieldController.text =
+          productController.product.quantity.toString();
+
+      productController.desciptionFieldController.text =
+          productController.product.description!;
+    } else {
+      productController.titleFieldController.text = "";
+
+      productController.variantFieldController.text = "";
+
+      productController.originalPriceFieldController.text = "";
+
+      productController.qtyFieldController.text = "";
+
+      productController.desciptionFieldController.text = "";
+    }
     final column = Column(
       children: [
         buildBasicDetailsTile(context),
@@ -37,10 +69,48 @@ class EditProductForm extends StatelessWidget {
         buildUploadImagesTile(context),
         SizedBox(height: 80.h),
         DefaultButton(
-            text: "Save Product",
-            press: () {
-              printOut("vv");
-              // productController.saveProduct();
+            text: btnTxt,
+            press: () async {
+              if (_basicDetailsFormKey.currentState!.validate()) {
+                String snackbarMessage = "";
+                var response;
+                if (productController.product.id != null) {
+                  response = productController
+                      .updateProduct(productController.product.id!);
+                } else {
+                  response = productController.saveProduct();
+                }
+
+                try {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AsyncProgressDialog(
+                        response,
+                        message: Text(productController.product.id != null
+                            ? "Updating product"
+                            : "Creating product"),
+                        onError: (e) {
+                          snackbarMessage = e.toString();
+                        },
+                      );
+                    },
+                  );
+                  snackbarMessage = productController.error.value;
+                } finally {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(snackbarMessage),
+                    ),
+                  );
+                  if (productController.error.value == "") {
+                    Get.find<ProductController>().products =
+                        await ProductController.getProductsByShop(
+                            productController.product.shopId!);
+                    Get.back();
+                  }
+                }
+              }
             }),
         SizedBox(height: 10.h),
       ],
@@ -52,6 +122,7 @@ class EditProductForm extends StatelessWidget {
     return Form(
       key: _basicDetailsFormKey,
       child: ExpansionTile(
+        initiallyExpanded: true,
         maintainState: true,
         title: Text(
           "Basic Details",

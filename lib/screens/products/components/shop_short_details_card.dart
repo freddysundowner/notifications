@@ -63,26 +63,34 @@ class ShopShortDetailCard extends StatelessWidget {
                   maxLines: 2,
                 ),
                 SizedBox(height: 10.h),
-                Text.rich(
-                  TextSpan(
-                      text: "$currencySymbol${product!.discountPrice}    ",
-                      style: TextStyle(
-                        color: secondaryColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12.sp,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "$currencySymbol${product!.price}",
-                          style: TextStyle(
-                            color: kTextColor,
-                            decoration: TextDecoration.lineThrough,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 11.sp,
-                          ),
-                        ),
-                      ]),
+                Text(
+                  "$currencySymbol${product!.price}    ",
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12.sp,
+                  ),
                 ),
+                // Text.rich(
+                //   TextSpan(
+                //       text: "$currencySymbol${product!.price}    ",
+                //       style: TextStyle(
+                //         color: secondaryColor,
+                //         fontWeight: FontWeight.w700,
+                //         fontSize: 12.sp,
+                //       ),
+                //       children: [
+                //         TextSpan(
+                //           text: "$currencySymbol${product!.price}",
+                //           style: TextStyle(
+                //             color: kTextColor,
+                //             decoration: TextDecoration.lineThrough,
+                //             fontWeight: FontWeight.normal,
+                //             fontSize: 11.sp,
+                //           ),
+                //         ),
+                //       ]),
+                // ),
               ],
             ),
           ),

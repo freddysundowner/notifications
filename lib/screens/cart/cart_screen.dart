@@ -13,8 +13,8 @@ import 'package:fluttergistshop/screens/manage_addresses/components/address_shor
 import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/components/product_short_detail_card.dart';
-import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/services/orders_api.dart';
 import 'package:fluttergistshop/widgets/nothingtoshow_container.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
@@ -333,11 +333,11 @@ class CartScreen extends StatelessWidget {
                         ),
                         onTap: () async {
                           if (checkOutController.qty.value + 1 <=
-                              checkOutController.product.value!.quantity!) {
+                              checkOutController.product.value!.quantity) {
                             checkOutController.qty.value += 1;
                             checkOutController.ordertotal.value =
                                 checkOutController.qty.value *
-                                    checkOutController.product.value!.price!;
+                                    checkOutController.product.value!.price;
                           } else {
                             Helper.showSnackBack(context, "not enough in stock",
                                 color: Colors.red);
@@ -364,7 +364,7 @@ class CartScreen extends StatelessWidget {
                             checkOutController.qty.value -= 1;
                             checkOutController.ordertotal.value =
                                 checkOutController.qty.value *
-                                    checkOutController.product.value!.price!;
+                                    checkOutController.product.value!.price;
                           } else {
                             Helper.showSnackBack(
                                 context, "You cant buy 0 products",
@@ -411,7 +411,7 @@ class CartScreen extends StatelessWidget {
         productOwnerId: checkOutController.product.value!.ownerId.toString());
     // Checkout checkout = new Checkout(order: order);
     // checkOutController.checkout.value = checkOutController.checkout.value.
-    final orderFuture = ApiCalls.checkOut(order);
+    final orderFuture = OrderApi.checkOut(order);
     orderFuture.then((orderedProductsUid) async {
       if (orderedProductsUid != null) {
         String snackbarmMessage = "Products ordered Successfully";

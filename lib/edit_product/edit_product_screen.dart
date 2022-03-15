@@ -5,7 +5,8 @@ import 'package:fluttergistshop/models/product.dart';
 import '../utils/constants.dart';
 
 class EditProductScreen extends StatelessWidget {
-  const EditProductScreen({Key? key}) : super(key: key);
+  final Product? product;
+  const EditProductScreen({Key? key, this.product}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,11 +22,11 @@ class EditProductScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 10.h),
                   Text(
-                    "Fill Product Details",
+                    "Product Details",
                     style: headingStyle,
                   ),
                   SizedBox(height: 30.h),
-                  EditProductForm(),
+                  EditProductForm(product: product),
                   SizedBox(height: 30.h),
                 ],
               ),

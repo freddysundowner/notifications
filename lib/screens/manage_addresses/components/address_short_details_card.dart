@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/address.dart';
-import 'package:fluttergistshop/services/api_calls.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 
 class AddressShortDetailsCard extends StatelessWidget {

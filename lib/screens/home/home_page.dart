@@ -6,6 +6,7 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
+import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
@@ -134,10 +135,13 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         width: 0.1.sw,
                       ),
-                      const Icon(
-                        Ionicons.chatbox_outline,
-                        color: Colors.grey,
-                        size: 35,
+                      InkWell(
+                        onTap: () => Get.to(AllChatsPage()),
+                        child: const Icon(
+                          Ionicons.chatbox_outline,
+                          color: Colors.grey,
+                          size: 35,
+                        ),
                       ),
                       SizedBox(
                         width: 0.02.sw,
@@ -160,7 +164,7 @@ class HomePage extends StatelessWidget {
           }),
         ),
         body: Obx(() {
-          if (_homeController.isLoading.isFalse) {
+          if (_homeController.isLoading.isFalse || _homeController.isCurrentRoomLoading.isFalse) {
             return buildIndividualRoomCard();
           } else {
             return const Center(
@@ -333,9 +337,13 @@ class HomePage extends StatelessWidget {
 
     await _homeController.addUserToRoom(currentUser);
 
-    Get.to(RoomPage(
-      roomId: roomModel.id!,
-    ));
+    if (_homeController.currentRoom.value.token != null) {
+      Get.to(RoomPage(
+        roomId: roomModel.id!,
+      ));
+    } else {
+      Get.snackbar('', "There was an error adding you to the room, Try again later");
+    }
   }
 
   InkWell buildCurrentRoom(BuildContext context) {

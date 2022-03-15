@@ -162,7 +162,11 @@ class RoomController extends GetxController {
       var roomResponse = await RoomAPI().getRoomById(roomId);
 
       if (roomResponse != null) {
-        currentRoom.value = RoomModel.fromJson(roomResponse);
+        RoomModel room = RoomModel.fromJson(roomResponse);
+        if (room.token != null) {
+          currentRoom.value = room;
+        }
+
       } else {
         Get.snackbar('', "Error getting your room, Try again later");
       }
@@ -177,23 +181,26 @@ class RoomController extends GetxController {
 
   Future<void> addUserToRoom(OwnerId user) async {
     printOut("current user being added to room token ${currentRoom.value.token}");
-    initAgora(currentRoom.value.token, currentRoom.value.id!);
 
-    printOut("current user being added to room ${user.id}");
+    if (currentRoom.value.token != null) {
+      initAgora(currentRoom.value.token, currentRoom.value.id!);
 
-    if (!currentRoom.value.hostIds!.contains(user) &&
-        !currentRoom.value.speakerIds!.contains(user) &&
-        !currentRoom.value.userIds!.contains(user)) {
-      currentRoom.value.userIds!.add(user);
+      printOut("current user being added to room ${user.id}");
 
-      currentRoom.refresh();
+      if (!currentRoom.value.hostIds!.contains(user) &&
+          !currentRoom.value.speakerIds!.contains(user) &&
+          !currentRoom.value.userIds!.contains(user)) {
+        currentRoom.value.userIds!.add(user);
 
-      //Add user to room
-      await RoomAPI().updateRoomById({
-        "title": currentRoom.value.title,
-        "userIds": [user.id],
-        "token": currentRoom.value.token
-      }, currentRoom.value.id!);
+        currentRoom.refresh();
+
+        //Add user to room
+        await RoomAPI().updateRoomById({
+          "title": currentRoom.value.title,
+          "userIds": [user.id],
+          "token": currentRoom.value.token
+        }, currentRoom.value.id!);
+      }
     }
   }
 

@@ -18,6 +18,7 @@ class NewChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.fetchAllUsers();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Select a friend to chat with", style: TextStyle(color: Colors.black),),
@@ -77,9 +78,10 @@ class NewChatPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(10),
                                 child: InkWell(
                                   onTap: () {
-                                    _chatController.getPreviousChat(user);
                                     _chatController.currentChat.value = [];
                                     _chatController.currentChatId.value = "";
+                                    _chatController.getPreviousChat(user);
+
                                     Get.to(ChatRoomPage(user));
                                     },
                                   child: Row(

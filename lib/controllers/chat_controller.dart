@@ -25,8 +25,9 @@ class ChatController extends GetxController {
     super.onInit();
   }
 
-  getUserChats() {
+  Future<void> getUserChats() async {
     gettingChats.value = true;
+    var newChats = [];
 
     db
         .collection("chats")
@@ -36,22 +37,26 @@ class ChatController extends GetxController {
       gettingChats.value = false;
 
       printOut("Chats loaded ${querySnapshot.docs.length}");
-
+      allUserChats.value = [];
       for (var i = 0; i < querySnapshot.docs.length; i++) {
         DocumentSnapshot snapshot = querySnapshot.docs.elementAt(i);
 
         AllChatsModel allChatsModel = AllChatsModel(
             snapshot.id,
-            snapshot.get("chatTitle"),
-            snapshot.get("imageUrl"),
             snapshot.get("lastMessage"),
             snapshot.get("lastMessageTime"),
             snapshot.get("lastSender"),
             snapshot.get("userIds"),
             snapshot.get("users"));
 
-        allUserChats.add(allChatsModel);
+        newChats.add(allChatsModel);
       }
+
+      newChats.sort((a, b) => b.lastMessageTime
+          .compareTo(a.lastMessageTime));
+
+      allUserChats.value = newChats;
+
     }).onError((error, stackTrace) {
       gettingChats.value = false;
       printOut("Error getting all chats $error $stackTrace");
@@ -60,6 +65,9 @@ class ChatController extends GetxController {
 
   getChatById(String id) {
     currentChatLoading.value = true;
+    currentChat.value = [];
+
+    printOut("PAth $id");
 
     db.collection("chats/$id/messages").get().then((QuerySnapshot snapshot) {
       for (var i = 0; i < snapshot.docs.length; i++) {
@@ -74,25 +82,7 @@ class ChatController extends GetxController {
         currentChat.add(chatRoomModel);
       }
     });
-
-    db.collection("chats/$id/users").get().then((QuerySnapshot snapshot) {
-      for (var i = 0; i < snapshot.docs.length; i++) {
-        DocumentSnapshot documentSnapshot = snapshot.docs.elementAt(i);
-
-        UserModel userModel = UserModel.fromPlayer(
-            documentSnapshot.id,
-            documentSnapshot.get("firstName"),
-            documentSnapshot.get("lastName"),
-            documentSnapshot.get("bio"),
-            documentSnapshot.get("userName"),
-            documentSnapshot.get("phonenumber"),
-            documentSnapshot.get("profilePhoto"));
-
-        currentChatUsers.add(userModel);
-
-        currentChatLoading.value = false;
-      }
-    });
+    currentChatLoading.value = false;
   }
 
   getPreviousChat(OwnerId otherUser) {
@@ -126,7 +116,7 @@ class ChatController extends GetxController {
       currentChatId.value = genId;
 
       //Create a new chat
-      createChat(message, otherUser);
+      createChat(message, otherUser, genId);
 
       printOut("Auto generated Firestore id $genId");
     }
@@ -143,35 +133,47 @@ class ChatController extends GetxController {
         .add(newChat.toMap())
         .then((value) {
       currentChat.add(newChat);
+      db.collection("chats").doc(currentChatId.value).set({
+        "lastMessage": message,
+        "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
+        "lastSender": Get.find<AuthController>().usermodel.value!.id
+      }, SetOptions(merge: true));
       printOut("Chat message saved");
     });
   }
 
-  void createChat(String message, OwnerId otherUser) {
+  void createChat(String message, OwnerId otherUser, chatId) {
     UserModel currentUser = Get.find<AuthController>().usermodel.value!;
     //Create a new chat
-    AllChatsModel allChatsModel = AllChatsModel(currentChatId.value, "", "",
-        message, DateTime.now().millisecondsSinceEpoch.toString(), userId,
-        [currentUser.id, otherUser.id],
-        [
-          {
-                "id": currentUser.id,
-                "firstName": currentUser.firstName,
-                "lastName": currentUser.lastName,
-                "userName": currentUser.userName,
-                "profilePhoto": currentUser.profilePhoto},
-
+    var data = {
+      "id": chatId,
+      "lastMessage": message,
+      "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
+      "lastSender": userId, "userIds": [userId, otherUser.id],
+      "users": [
         {
-                "id": otherUser.id,
-                "firstName": otherUser.firstName,
-                "lastName": otherUser.lastName,
-                "userName": otherUser.userName,
-                "profilePhoto": otherUser.profilePhoto}
+          "id": currentUser.id,
+          "firstName": currentUser.firstName,
+          "lastName": currentUser.lastName,
+          "userName": currentUser.userName,
+          "profilePhoto": currentUser.profilePhoto
+        },
+        {
+          "id": otherUser.id,
+          "firstName": otherUser.firstName,
+          "lastName": otherUser.lastName,
+          "userName": otherUser.userName,
+          "profilePhoto": otherUser.profilePhoto
+        }
+      ]
+    };
 
-    ]);
-
-    printOut("New being saved ${allChatsModel.toMap()}");
-    db.collection("chats").doc(currentChatId.value).set(allChatsModel.toMap()).then((value) {
+    printOut("New being saved $data");
+    db
+        .collection("chats")
+        .doc(currentChatId.value)
+        .set(data, SetOptions(merge: true))
+        .then((value) {
       printOut("Chat saved successfully ");
     });
   }

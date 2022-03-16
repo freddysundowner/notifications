@@ -102,7 +102,7 @@ class ChatRoomPage extends StatelessWidget {
                       child: Center(
                         child: TextField(
                           controller: messageController,
-                          autofocus: true,
+                          autofocus: false,
                           decoration: InputDecoration(
                             hintText: "Enter message here",
                             hintStyle:
@@ -123,7 +123,6 @@ class ChatRoomPage extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     if (messageController.text.trim().isNotEmpty) {
-
                       _chatController.sendMessage(messageController.text.trim(), user);
                       messageController.text = "";
                     }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/models/product.dart';
 import 'package:get/get.dart';
 
 import 'client.dart';
@@ -21,7 +22,7 @@ class ProductPI {
       Map<String, dynamic> productdata, String productid) async {
     List<dynamic> response = await Api.callApi(
         method: config.put,
-        endpoint: config.updateproducts + productid,
+        endpoint: config.updateproduct + productid,
         body: productdata);
     print(response);
     return response;
@@ -32,8 +33,6 @@ class ProductPI {
         .databaseRequest(userProducts + userId, DbBase().getRequestType);
     return jsonDecode(products);
   }
-
-  static updateProductsImages(String productId, List<String> downloadUrls) {}
 
   static String getPathForProductImage(String id, int index) {
     String path = "products/images/$id";
@@ -47,5 +46,16 @@ class ProductPI {
             Get.find<AuthController>().currentuser!.shopId!.id,
         body: productdata);
     return response;
+  }
+
+  static Future<bool> updateProductsImages(
+      String productId, List<dynamic> imgUrl) async {
+    print("updateProductsImages $imgUrl");
+    print("productId $productId");
+    await DbBase().databaseRequest(
+        config.updateproductimages + productId, DbBase().patchRequestType,
+        body: {"images": imgUrl});
+
+    return true;
   }
 }

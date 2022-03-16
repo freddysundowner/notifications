@@ -25,9 +25,9 @@ class ShopShortDetailCard extends StatelessWidget {
               aspectRatio: 0.88,
               child: Padding(
                 padding: EdgeInsets.all(10),
-                child: product!.images.length > 0
+                child: product!.images!.length > 0
                     ? Image.network(
-                        product!.images[0],
+                        product!.images![0],
                         fit: BoxFit.contain,
                       )
                     : Text("No Image"),
@@ -40,7 +40,7 @@ class ShopShortDetailCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product!.name,
+                  product!.name!,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

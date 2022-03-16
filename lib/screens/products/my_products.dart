@@ -83,7 +83,7 @@ class MyProducts extends StatelessWidget {
             final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Delete Product?");
             if (confirmation) {
-              for (int i = 0; i < product.images.length; i++) {}
+              for (int i = 0; i < product.images!.length; i++) {}
 
               bool productInfoDeleted = false;
               String snackbarMessage;

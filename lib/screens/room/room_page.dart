@@ -72,7 +72,8 @@ class RoomPage extends StatelessWidget {
                   IconButton(
                     onPressed: () async {
                       if ((_homeController.currentRoom.value.hostIds!
-                          .indexWhere((e) => e.id == currentUser.id) == 0)) {
+                              .indexWhere((e) => e.id == currentUser.id) ==
+                          0)) {
                         showRaisedHandsBottomSheet(context);
                       } else {
                         await _homeController.addUserToRaisedHands(currentUser);
@@ -105,13 +106,13 @@ class RoomPage extends StatelessWidget {
                         ? 0.1.sh
                         : 0.001.sh,
                     child: Obx(() {
-
                       //If user is not a speaker or a host, disable their audio
                       if (_homeController.currentRoom.value.hostIds!
-                          .indexWhere((e) => e.id == currentUser.id) == -1 &&
-                          _homeController
-                              .currentRoom.value.speakerIds!
-                              .indexWhere((e) => e.id == currentUser.id) == -1) {
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1 &&
+                          _homeController.currentRoom.value.speakerIds!
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1) {
                         _homeController.engine.disableAudio();
                       }
 
@@ -119,27 +120,33 @@ class RoomPage extends StatelessWidget {
                       if (_homeController.isCurrentRoomLoading.isFalse) {
                         return Container(
 
-                          //If user is a speaker or host, show the mic icon, else don't show it
+                            //If user is a speaker or host, show the mic icon, else don't show it
                             child: _homeController.currentRoom.value.hostIds!
-                                        .indexWhere((e) => e.id == currentUser.id) == 0 ||
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) ==
+                                        0 ||
                                     _homeController
-                                        .currentRoom.value.speakerIds!
-                                        .indexWhere((e) => e.id == currentUser.id) == 0
+                                            .currentRoom.value.speakerIds!
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) ==
+                                        0
                                 ? IconButton(
                                     onPressed: () {
-
                                       //If user is muted, unmute and enbale their audio vice versa
                                       if (_homeController.audioMuted.isFalse) {
                                         _homeController.audioMuted.value = true;
                                         _homeController.engine.disableAudio();
-                                      }  else {
-                                        _homeController.audioMuted.value = false;
+                                      } else {
+                                        _homeController.audioMuted.value =
+                                            false;
                                         _homeController.engine.enableAudio();
                                       }
                                     },
                                     icon: Icon(
                                       //If audio is not muted, show mic icon, if not show mic off
-                                      _homeController.audioMuted.isFalse ? Ionicons.mic : Ionicons.mic_off,
+                                      _homeController.audioMuted.isFalse
+                                          ? Ionicons.mic
+                                          : Ionicons.mic_off,
                                       color: Colors.black54,
                                       size: 30,
                                     ),
@@ -234,7 +241,7 @@ class RoomPage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: _hc.currentRoom.value.productIds!
                       .elementAt(0)
-                      .images
+                      .images!
                       .length,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -249,7 +256,7 @@ class RoomPage extends StatelessWidget {
                             imageUrl +
                                 _hc.currentRoom.value.productIds!
                                     .elementAt(0)
-                                    .images
+                                    .images!
                                     .elementAt(index),
                             height: 0.08.sh,
                             width: 0.12.sw,
@@ -464,7 +471,9 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              !(room.hostIds!.indexWhere((e) => e.id == user.id) == 0)
+                              !(room.hostIds!
+                                      .indexWhere((e) => e.id == user.id) ==
+                                  0)
                           ? InkWell(
                               onTap: () async {
                                 Get.back();
@@ -483,8 +492,10 @@ class RoomUser extends StatelessWidget {
                                 child: Center(
                                   child: Text(
                                     !(_homeController
-                                            .currentRoom.value.speakerIds!
-                                            .indexWhere((e) => e.id == user.id) == 0)
+                                                .currentRoom.value.speakerIds!
+                                                .indexWhere(
+                                                    (e) => e.id == user.id) ==
+                                            0)
                                         ? "Move to speakers".toUpperCase()
                                         : "Move to audience".toUpperCase(),
                                     style: TextStyle(

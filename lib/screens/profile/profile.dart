@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
-import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
@@ -21,7 +20,6 @@ class Profile extends StatelessWidget {
         actions: [
           InkWell(
             onTap: () {
-              print("bb" + authController.currentuser!.shopId.toString());
               if (authController.currentuser!.shopId != null &&
                   authController.currentuser!.shopId != "") {
                 Get.to(() => ShopView());
@@ -37,7 +35,9 @@ class Profile extends StatelessWidget {
             width: 15.w,
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              authController.signOut();
+            },
             child: Icon(
               Icons.settings,
               color: primarycolor,

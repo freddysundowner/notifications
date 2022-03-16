@@ -28,7 +28,7 @@ class FullProduct extends StatelessWidget {
             padding: EdgeInsets.all(0),
             children: [
               ImageSwipe(
-                imageList: product.images,
+                imageList: product.images!,
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -38,7 +38,7 @@ class FullProduct extends StatelessWidget {
                   bottom: 4.0,
                 ),
                 child: Text(
-                  product.name,
+                  product.name!,
                   style: boldHeading,
                 ),
               ),
@@ -68,7 +68,7 @@ class FullProduct extends StatelessWidget {
                   ),
                 ),
               ),
-              if (product.variations.length > 0)
+              if (product.variations!.length > 0)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -83,7 +83,7 @@ class FullProduct extends StatelessWidget {
                       ),
                     ),
                     ProductSize(
-                      productSizes: product.variations,
+                      productSizes: product.variations!,
                       onSelected: (size) {},
                     ),
                   ],

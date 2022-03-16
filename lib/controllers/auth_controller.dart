@@ -47,6 +47,12 @@ class AuthController extends GetxController {
         error.value = user["message"];
       } else {
         UserModel userModel = UserModel.fromJson(user["data"]);
+        try {
+          usermodel.value = userModel;
+        } catch (e) {
+          printOut("error saving user model to controller on login $e");
+        }
+
         return signInWithCustomToken(
             userModel.userName!, user["authtoken"], user["accessToken"]);
       }
@@ -106,6 +112,7 @@ class AuthController extends GetxController {
     FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    Get.offAll(Login());
   }
 
   handleAuth() {

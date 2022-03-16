@@ -274,7 +274,7 @@ class HomePage extends StatelessWidget {
                               child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount:
-                                      roomModel.productIds![0].images.length,
+                                      roomModel.productIds![0].images!.length,
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.all(5.0),
@@ -288,7 +288,7 @@ class HomePage extends StatelessWidget {
                                           child: Image.network(
                                             imageUrl +
                                                 roomModel.productIds![0]
-                                                    .images[index],
+                                                    .images![index],
                                             height: 0.08.sh,
                                             width: 0.12.sw,
                                             fit: BoxFit.fill,
@@ -304,16 +304,16 @@ class HomePage extends StatelessWidget {
                     ),
                   );
                 })
-            : ListView(
-              children: [ SizedBox(
-                height: 0.8.sh,
-                child: Center(
-                    child: Text(
+            : ListView(children: [
+                SizedBox(
+                  height: 0.8.sh,
+                  child: Center(
+                      child: Text(
                     "There are no rooms at the moment",
                     style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                   )),
-              )]
-            )));
+                )
+              ])));
   }
 
   Future<void> joinRoom(RoomModel roomModel) async {
@@ -416,13 +416,13 @@ class HomePage extends StatelessWidget {
                         ? 0.1.sh
                         : 0.001.sh,
                     child: Obx(() {
-
                       //If user is not a speaker or a host, disable their audio
                       if (_homeController.currentRoom.value.hostIds!
-                          .indexWhere((e) => e.id == currentUser.id) == -1 &&
-                          _homeController
-                              .currentRoom.value.speakerIds!
-                              .indexWhere((e) => e.id == currentUser.id) == -1) {
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1 &&
+                          _homeController.currentRoom.value.speakerIds!
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1) {
                         _homeController.engine.disableAudio();
                       }
 
@@ -430,31 +430,37 @@ class HomePage extends StatelessWidget {
                       if (_homeController.isCurrentRoomLoading.isFalse) {
                         return Container(
 
-                          //If user is a speaker or host, show the mic icon, else don't show it
+                            //If user is a speaker or host, show the mic icon, else don't show it
                             child: _homeController.currentRoom.value.hostIds!
-                                .indexWhere((e) => e.id == currentUser.id) == 0 ||
-                                _homeController
-                                    .currentRoom.value.speakerIds!
-                                    .indexWhere((e) => e.id == currentUser.id) == 0
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) ==
+                                        0 ||
+                                    _homeController
+                                            .currentRoom.value.speakerIds!
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) ==
+                                        0
                                 ? IconButton(
-                              onPressed: () {
-
-                                //If user is muted, unmute and enbale their audio vice versa
-                                if (_homeController.audioMuted.isFalse) {
-                                  _homeController.audioMuted.value = true;
-                                  _homeController.engine.disableAudio();
-                                }  else {
-                                  _homeController.audioMuted.value = false;
-                                  _homeController.engine.enableAudio();
-                                }
-                              },
-                              icon: Icon(
-                                //If audio is not muted, show mic icon, if not show mic off
-                                _homeController.audioMuted.isFalse ? Ionicons.mic : Ionicons.mic_off,
-                                color: Colors.black54,
-                                size: 30,
-                              ),
-                            )
+                                    onPressed: () {
+                                      //If user is muted, unmute and enbale their audio vice versa
+                                      if (_homeController.audioMuted.isFalse) {
+                                        _homeController.audioMuted.value = true;
+                                        _homeController.engine.disableAudio();
+                                      } else {
+                                        _homeController.audioMuted.value =
+                                            false;
+                                        _homeController.engine.enableAudio();
+                                      }
+                                    },
+                                    icon: Icon(
+                                      //If audio is not muted, show mic icon, if not show mic off
+                                      _homeController.audioMuted.isFalse
+                                          ? Ionicons.mic
+                                          : Ionicons.mic_off,
+                                      color: Colors.black54,
+                                      size: 30,
+                                    ),
+                                  )
                                 : Container());
                       } else {
                         return Transform.scale(
@@ -748,7 +754,7 @@ class HomePage extends StatelessWidget {
                                                       child: Image.network(
                                                         imageUrl +
                                                             product
-                                                                .images.first,
+                                                                .images!.first,
                                                         height: 0.1.sh,
                                                         width: 0.2.sw,
                                                         fit: BoxFit.fill,
@@ -757,7 +763,7 @@ class HomePage extends StatelessWidget {
                                                   ),
                                                   Center(
                                                       child: Text(
-                                                    product.name,
+                                                    product.name!,
                                                     style: TextStyle(
                                                         color: Colors.black54,
                                                         fontSize: 12.sp),
@@ -863,7 +869,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 3,
                               childAspectRatio: 0.99,
                             ),
-                            itemCount: product.images.length,
+                            itemCount: product.images!.length,
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {},
@@ -879,7 +885,7 @@ class HomePage extends StatelessWidget {
                                       child: Center(
                                         child: Image.network(
                                           imageUrl +
-                                              product.images.elementAt(index),
+                                              product.images!.elementAt(index),
                                           height: 0.1.sh,
                                           width: 0.2.sw,
                                           fit: BoxFit.fill,

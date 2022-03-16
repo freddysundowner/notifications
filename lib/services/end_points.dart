@@ -1,9 +1,15 @@
 const baseUrl = "http://52.43.151.113";
-const tokenPath = "http://us-central1-gisthouse-887e3.cloudfunctions.net/generateagoratoken";
+const tokenPath =
+    "http://us-central1-gisthouse-887e3.cloudfunctions.net/generateagoratoken";
 const imageUrl = baseUrl + "/public/img/";
 const rooms = baseUrl + "/rooms";
 const user = baseUrl + "/users";
-const product = baseUrl + "/products";
+const shop = baseUrl + "/shop/";
+const product = baseUrl + "/products/";
+const authenticatation = baseUrl + "/authenticate";
+const register = baseUrl + "/registerv1";
+const address = baseUrl + "/address/";
+const addresses = address + "/all/";
 
 const allRooms = rooms + "/";
 const roomById = rooms + "/rooms/";
@@ -17,6 +23,10 @@ const removeUserFromRoom = rooms + "/user/remove/";
 const removeSpeaker = rooms + "/speaker/remove/";
 const removeUserFromAudience = rooms + "/audience/remove/";
 const removeUserFromRaisedHands = rooms + "/raisedhans/remove/";
+
+const updateshop = shop + "shop/";
+const updateproduct = product + "products/";
+const updateproductimages = product + "images/";
 
 const allUsers = user + "/";
 

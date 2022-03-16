@@ -333,11 +333,11 @@ class CartScreen extends StatelessWidget {
                         ),
                         onTap: () async {
                           if (checkOutController.qty.value + 1 <=
-                              checkOutController.product.value!.quantity) {
+                              checkOutController.product.value!.quantity!) {
                             checkOutController.qty.value += 1;
                             checkOutController.ordertotal.value =
                                 checkOutController.qty.value *
-                                    checkOutController.product.value!.price;
+                                    checkOutController.product.value!.price!;
                           } else {
                             Helper.showSnackBack(context, "not enough in stock",
                                 color: Colors.red);
@@ -364,7 +364,7 @@ class CartScreen extends StatelessWidget {
                             checkOutController.qty.value -= 1;
                             checkOutController.ordertotal.value =
                                 checkOutController.qty.value *
-                                    checkOutController.product.value!.price;
+                                    checkOutController.product.value!.price!;
                           } else {
                             Helper.showSnackBack(
                                 context, "You cant buy 0 products",

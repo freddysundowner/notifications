@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:get/get.dart';
 
 import '../../../utils/utils.dart';
 
 class ProductShortDetailCard extends StatelessWidget {
   final Product? product;
   final VoidCallback? onPressed;
-  const ProductShortDetailCard({
+  ProductShortDetailCard({
     Key? key,
     @required this.product,
     @required this.onPressed,
   }) : super(key: key);
 
+  final CheckOutController checkOutController = Get.find<CheckOutController>();
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -25,12 +28,15 @@ class ProductShortDetailCard extends StatelessWidget {
               aspectRatio: 0.88,
               child: Padding(
                 padding: EdgeInsets.all(10),
-                child: product!.images.length > 0
+                child: product!.images!.length > 0
                     ? Image.network(
-                        product!.images[0],
+                        product!.images![0],
                         fit: BoxFit.contain,
                       )
-                    : Text("No Image"),
+                    : Image.asset(
+                        imageplaceholder,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
           ),
@@ -40,7 +46,7 @@ class ProductShortDetailCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  product!.name,
+                  product!.name!,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -51,6 +57,14 @@ class ProductShortDetailCard extends StatelessWidget {
                   maxLines: 2,
                 ),
                 SizedBox(height: 10),
+                if (checkOutController.selectetedvariationvalue != "")
+                  Text(
+                    "Variation: ${checkOutController.selectetedvariationvalue}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 11,
+                    ),
+                  ),
                 Text.rich(
                   TextSpan(
                       text: "${product!.htmlPrice(product!.price)}    ",

@@ -7,12 +7,12 @@ Product productFromJson(String str) => Product.fromJson(json.decode(str));
 String productToJson(Product data) => json.encode(data.toJson());
 
 class Product {
-  List<String> images;
-  List<String> variations;
+  List<String>? images;
+  List<String>? variations;
   String? id;
-  String name;
-  int price;
-  int quantity;
+  String? name;
+  int? price;
+  int? quantity;
   int? discountPrice;
   String? shopId;
   String? ownerId;
@@ -21,12 +21,12 @@ class Product {
   Product({
     this.images = const [],
     this.id,
-    required this.name,
-    required this.price,
+    this.name,
+    this.price,
     this.discountPrice,
-    required this.quantity,
+    this.quantity,
     this.shopId,
-    required this.variations,
+    this.variations,
     this.ownerId,
     this.description,
   });

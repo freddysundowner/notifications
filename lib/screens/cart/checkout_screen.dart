@@ -5,8 +5,7 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/models/checkout.dart';
-import 'package:fluttergistshop/models/product.dart';
-import 'package:fluttergistshop/screens/cart/components/checkout_card.dart';
+import 'package:fluttergistshop/screens/cart/checkout_card.dart';
 import 'package:fluttergistshop/screens/edit_address/edit_address_screen.dart';
 import 'package:fluttergistshop/screens/manage_addresses/components/address_box.dart';
 import 'package:fluttergistshop/screens/manage_addresses/components/address_short_details_card.dart';
@@ -15,61 +14,68 @@ import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/components/product_short_detail_card.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/orders_api.dart';
-import 'package:fluttergistshop/widgets/nothingtoshow_container.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
 
-class CartScreen extends StatelessWidget {
+class CheckOut extends StatelessWidget {
   CheckOutController checkOutController = Get.find<CheckOutController>();
   final AuthController authController = Get.find<AuthController>();
-  CartScreen({Key? key}) : super(key: key);
+  CheckOut({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: refreshPage,
-          child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  children: [
-                    Text(
-                      "Your Cart",
-                      style: headingStyle,
-                    ),
-                    SizedBox(height: 20.h),
-                    buildCartItemsList(context),
-                    SizedBox(height: 10.h),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ManageAddressesScreen(),
-                          ),
-                        );
-                      },
-                      child: Obx(() => Text(
-                            checkOutController.address.value == null
-                                ? "Select Address"
-                                : "Change Address",
-                            style: TextStyle(color: primarycolor),
-                          )),
-                    ),
-                    SizedBox(height: 20.h),
-                    Obx(() => checkOutController.address.value != null
-                        ? buildAddressItemCard(
-                            checkOutController.address.value!, context)
-                        : Text("")),
-                  ],
+    return WillPopScope(
+      onWillPop: () async {
+        checkOutController.product.value = null;
+        checkOutController.qty.value = 0;
+        checkOutController.selectetedvariationvalue.value = "";
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: refreshPage,
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      Text(
+                        "Your Cart",
+                        style: headingStyle,
+                      ),
+                      SizedBox(height: 20.h),
+                      buildCartItemsList(context),
+                      SizedBox(height: 10.h),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ManageAddressesScreen(),
+                            ),
+                          );
+                        },
+                        child: Obx(() => Text(
+                              checkOutController.address.value == null
+                                  ? "Select Address"
+                                  : "Change Address",
+                              style: TextStyle(color: primarycolor),
+                            )),
+                      ),
+                      SizedBox(height: 20.h),
+                      Obx(() => checkOutController.address.value != null
+                          ? buildAddressItemCard(
+                              checkOutController.address.value!, context)
+                          : Text("")),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -333,11 +339,11 @@ class CartScreen extends StatelessWidget {
                         ),
                         onTap: () async {
                           if (checkOutController.qty.value + 1 <=
-                              checkOutController.product.value!.quantity) {
+                              checkOutController.product.value!.quantity!) {
                             checkOutController.qty.value += 1;
                             checkOutController.ordertotal.value =
                                 checkOutController.qty.value *
-                                    checkOutController.product.value!.price;
+                                    checkOutController.product.value!.price!;
                           } else {
                             Helper.showSnackBack(context, "not enough in stock",
                                 color: Colors.red);
@@ -364,7 +370,7 @@ class CartScreen extends StatelessWidget {
                             checkOutController.qty.value -= 1;
                             checkOutController.ordertotal.value =
                                 checkOutController.qty.value *
-                                    checkOutController.product.value!.price;
+                                    checkOutController.product.value!.price!;
                           } else {
                             Helper.showSnackBack(
                                 context, "You cant buy 0 products",

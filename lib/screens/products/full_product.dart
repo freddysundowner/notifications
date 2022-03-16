@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
 import 'package:fluttergistshop/screens/products/components/custom_action_bar.dart';
 import 'package:fluttergistshop/screens/products/components/product_size.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
+import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
 
 class FullProduct extends StatelessWidget {
   final Product product;
+  CheckOutController checkOutController = Get.find<CheckOutController>();
   FullProduct({required this.product});
 
   _addToCart() {}
@@ -28,7 +32,7 @@ class FullProduct extends StatelessWidget {
             padding: EdgeInsets.all(0),
             children: [
               ImageSwipe(
-                imageList: product.images,
+                imageList: product.images!,
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -38,7 +42,7 @@ class FullProduct extends StatelessWidget {
                   bottom: 4.0,
                 ),
                 child: Text(
-                  product.name,
+                  product.name!,
                   style: boldHeading,
                 ),
               ),
@@ -68,7 +72,7 @@ class FullProduct extends StatelessWidget {
                   ),
                 ),
               ),
-              if (product.variations.length > 0)
+              if (product.variations!.length > 0)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -83,8 +87,12 @@ class FullProduct extends StatelessWidget {
                       ),
                     ),
                     ProductSize(
-                      productSizes: product.variations,
-                      onSelected: (size) {},
+                      productSizes: product.variations!,
+                      onSelected: (size) {
+                        print(size);
+                        checkOutController.selectetedvariationvalue.value =
+                            size;
+                      },
                     ),
                   ],
                 ),
@@ -116,9 +124,19 @@ class FullProduct extends StatelessWidget {
                     ),
                     Expanded(
                       child: GestureDetector(
-                        onTap: () async {
-                          await _addToCart();
-                          Scaffold.of(context).showSnackBar(_snackBar);
+                        onTap: () {
+                          checkOutController.product.value = product;
+                          checkOutController.qty.value = 1;
+                          print(
+                              "b ${checkOutController.selectetedvariationvalue.value}");
+                          if (checkOutController
+                                      .selectetedvariationvalue.value ==
+                                  "" &&
+                              product.variations!.length > 0) {
+                            checkOutController.selectetedvariationvalue.value =
+                                product.variations![0];
+                          }
+                          Get.to(() => CheckOut());
                         },
                         child: Container(
                           height: 50.0.h,

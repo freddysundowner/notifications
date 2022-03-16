@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
-import 'package:fluttergistshop/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/screens/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
@@ -128,8 +128,14 @@ class ShopView extends StatelessWidget {
         hoverColor: Colors.green,
         splashColor: Colors.green,
         onPressed: () {
-          productController.product.id = null;
-          Get.to(() => EditProductScreen());
+          // if (productController.product != null) {
+          //   productController.product.id = null;
+          // }
+
+          print("EditProductScreen");
+          Get.to(() => EditProductScreen(
+                product: productController.product,
+              ));
         },
         backgroundColor: Colors.pink,
       ),
@@ -158,7 +164,7 @@ class ShopView extends StatelessWidget {
           final confirmation = await showConfirmationDialog(
               context, "Are you sure to Delete Product?");
           if (confirmation) {
-            for (int i = 0; i < product.images.length; i++) {}
+            for (int i = 0; i < product.images!.length; i++) {}
 
             bool productInfoDeleted = false;
             String snackbarMessage;
@@ -179,6 +185,11 @@ class ShopView extends StatelessWidget {
               context, "Are you sure to Edit Product?");
           if (confirmation) {
             productController.product = product;
+            productController.selectedImages.assignAll(productController
+                .product.images!
+                .map((e) => CustomImage(imgType: ImageType.network, path: e))
+                .toList());
+
             Get.to(() => EditProductScreen(
                   product: product,
                 ));

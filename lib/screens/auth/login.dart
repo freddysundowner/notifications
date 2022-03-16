@@ -129,7 +129,7 @@ class Login extends StatelessWidget {
 
   Future<void> signInButtonCallback(BuildContext context) async {
     if (_formLoginkey.currentState!.validate()) {
-      String snackbarMessage = "";
+      String snackbarMessage = "Error loggin in, check email and password";
       try {
         var login = authController.authenticate();
         await showDialog(

@@ -2,15 +2,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
+import 'package:fluttergistshop/services/configs.dart' as config;
+
+enum ImageType {
+  local,
+  network,
+}
+
+class CustomImage {
+  final ImageType imgType;
+  final String path;
+  CustomImage({this.imgType = ImageType.local, required this.path});
+  @override
+  String toString() {
+    return "Instance of Custom Image: {imgType: $imgType, path: $path}";
+  }
+}
+
 class ProductController extends GetxController {
   Rxn<Product> _product = Rxn();
   static Rxn<List<Product>> _products = Rxn([]);
 
+  RxInt selectedPage = 0.obs;
   var error = "".obs;
   Product get product => _product.value!;
   set product(Product value) => _product.value = value;
@@ -30,6 +49,25 @@ class ProductController extends GetxController {
       TextEditingController();
   final TextEditingController desciptionFieldController =
       TextEditingController();
+
+  var selectedImages = [].obs;
+  var _selectedImages = [].obs;
+
+  set initialSelectedImages(List<CustomImage> images) {
+    _selectedImages.value = images;
+  }
+
+  void setSelectedImageAtIndex(CustomImage image, int index) {
+    if (index < selectedImages.value.length) {
+      selectedImages.value[index] = image;
+    }
+  }
+
+  void addNewSelectedImage(CustomImage image) {
+    print("addNewSelectedImage ${image.path}");
+    _selectedImages.value.add(image);
+    print("addNewSelectedImage length ${_selectedImages.value.length}");
+  }
 
   @override
   void onInit() {
@@ -63,7 +101,10 @@ class ProductController extends GetxController {
         "description": desciptionFieldController.text,
         "variations": variantFieldController.text
       };
-
+      print("updateProduct $productdata");
+      return DbBase().databaseRequest(
+          config.updateproduct + productid, DbBase().patchRequestType,
+          body: productdata);
       return ProductPI.updateProduct(productdata, productid);
     } catch (e) {
       print("Error ${e.toString()}");

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -20,6 +21,7 @@ import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatelessWidget {
   TextEditingController titleFieldController = TextEditingController();
+  AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
   OwnerId currentUser = OwnerId(
@@ -76,20 +78,23 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 Get.to(() => Profile());
               },
-              child: Get.find<AuthController>().usermodel.value!.profilePhoto ==
-                      null
-                  ? const CircleAvatar(
-                      radius: 15,
-                      backgroundImage:
-                          AssetImage("assets/icons/profile_placeholder.png"))
-                  : CircleAvatar(
-                      radius: 15,
-                      backgroundImage: NetworkImage(imageUrl +
-                          Get.find<AuthController>()
-                              .usermodel
-                              .value!
-                              .profilePhoto!),
-                    ),
+              child: CachedNetworkImage(
+                imageUrl: authController.currentuser!.profilePhoto!,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 20.0,
+                  height: 20.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                  size: 20,
+                ),
+              ),
             ),
             SizedBox(
               width: 0.02.sw,
@@ -281,7 +286,7 @@ class HomePage extends StatelessWidget {
                               child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount:
-                                      roomModel.productIds![0].images.length,
+                                      roomModel.productIds![0].images!.length,
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.all(5.0),
@@ -295,7 +300,7 @@ class HomePage extends StatelessWidget {
                                           child: Image.network(
                                             imageUrl +
                                                 roomModel.productIds![0]
-                                                    .images[index],
+                                                    .images![index],
                                             height: 0.08.sh,
                                             width: 0.12.sw,
                                             fit: BoxFit.fill,
@@ -799,7 +804,7 @@ class HomePage extends StatelessWidget {
                                                       child: Image.network(
                                                         imageUrl +
                                                             product
-                                                                .images.first,
+                                                                .images!.first,
                                                         height: 0.1.sh,
                                                         width: 0.2.sw,
                                                         fit: BoxFit.fill,
@@ -808,7 +813,7 @@ class HomePage extends StatelessWidget {
                                                   ),
                                                   Center(
                                                       child: Text(
-                                                    product.name,
+                                                    product.name!,
                                                     style: TextStyle(
                                                         color: Colors.black54,
                                                         fontSize: 12.sp),
@@ -914,7 +919,7 @@ class HomePage extends StatelessWidget {
                               crossAxisCount: 3,
                               childAspectRatio: 0.99,
                             ),
-                            itemCount: product.images.length,
+                            itemCount: product.images!.length,
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {},
@@ -930,7 +935,7 @@ class HomePage extends StatelessWidget {
                                       child: Center(
                                         child: Image.network(
                                           imageUrl +
-                                              product.images.elementAt(index),
+                                              product.images!.elementAt(index),
                                           height: 0.1.sh,
                                           width: 0.2.sw,
                                           fit: BoxFit.fill,

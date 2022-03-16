@@ -1,13 +1,22 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
+import 'package:fluttergistshop/exceptions/local_files_handling/local_file_handling_exception.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/services/firestore_files_access_service.dart';
+import 'package:fluttergistshop/services/local_files_access_service.dart';
+import 'package:fluttergistshop/services/product_api.dart';
+import 'package:fluttergistshop/utils/Functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 
-import '../../utils/utils.dart';
+import '../../../utils/utils.dart';
 
 class EditProductForm extends StatelessWidget {
   Product? product;
@@ -29,16 +38,56 @@ class EditProductForm extends StatelessWidget {
   @override
   void initState() {}
 
+  Future<bool> uploadProductImages(
+      String productId, BuildContext context) async {
+    bool allImagesUpdated = true;
+    for (int i = 0; i < productController.selectedImages.length; i++) {
+      if (productController.selectedImages[i].imgType == ImageType.local) {
+        print("Image being uploaded: " +
+            productController.selectedImages[i].path);
+        String? downloadUrl;
+        try {
+          final imgUploadFuture = FirestoreFilesAccess().uploadFileToPath(
+              File(productController.selectedImages[i].path),
+              ProductPI.getPathForProductImage(productId, i));
+          downloadUrl = await showDialog(
+            context: context,
+            builder: (context) {
+              return AsyncProgressDialog(
+                imgUploadFuture,
+                message: Text(
+                    "Uploading Images ${i + 1}/${productController.selectedImages.length}"),
+              );
+            },
+          );
+        } finally {
+          if (downloadUrl != null) {
+            productController.selectedImages[i] =
+                CustomImage(imgType: ImageType.network, path: downloadUrl);
+          } else {
+            allImagesUpdated = false;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content:
+                    Text("Couldn't upload image ${i + 1} due to some issue"),
+              ),
+            );
+          }
+        }
+      }
+    }
+    return allImagesUpdated;
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("productController.product.id ${productController.product.id}");
-    if (productController.product.id != null) {
+    if (product != null) {
       btnTxt = "Update";
       productController.titleFieldController.text =
-          productController.product.name;
+          productController.product.name!;
 
       productController.variantFieldController.text =
-          productController.product.variations.join(",");
+          productController.product.variations!.join(",");
 
       productController.originalPriceFieldController.text =
           productController.product.price.toString();
@@ -80,34 +129,73 @@ class EditProductForm extends StatelessWidget {
                   response = productController.saveProduct();
                 }
 
+                // try {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AsyncProgressDialog(
+                      response,
+                      message: Text(productController.product.id != null
+                          ? "Updating product"
+                          : "Creating product"),
+                      onError: (e) {
+                        snackbarMessage = e.toString();
+                      },
+                    );
+                  },
+                );
+                snackbarMessage = productController.error.value;
+                // } finally {
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(
+                //       content: Text(snackbarMessage),
+                //     ),
+                //   );
+                //   if (productController.error.value == "") {
+                //     Get.find<ProductController>().products =
+                //         await ProductController.getProductsByShop(
+                //             productController.product.shopId!);
+                //     Get.back();
+                //   }
+                // }
+
+                await uploadProductImages(
+                    productController.product.id!, context);
+
+                List<dynamic> downloadUrls = productController.selectedImages
+                    .map((e) => e.imgType == ImageType.network ? e.path : null)
+                    .toList();
+
+                bool productFinalizeUpdate = false;
                 try {
-                  await showDialog(
+                  final updateProductFuture = ProductPI.updateProductsImages(
+                      productController.product.id!, downloadUrls);
+                  productFinalizeUpdate = await showDialog(
                     context: context,
                     builder: (context) {
                       return AsyncProgressDialog(
-                        response,
-                        message: Text(productController.product.id != null
-                            ? "Updating product"
-                            : "Creating product"),
-                        onError: (e) {
-                          snackbarMessage = e.toString();
-                        },
+                        updateProductFuture,
+                        message: Text("Saving Product"),
                       );
                     },
                   );
-                  snackbarMessage = productController.error.value;
+                  if (productFinalizeUpdate == true) {
+                    snackbarMessage = productController.product.id != null
+                        ? "Product updated successfully"
+                        : "Product uploaded successfully";
+                  } else {
+                    throw "Couldn't upload product properly, please retry";
+                  }
+                } on FirebaseException catch (e) {
+                  snackbarMessage = "Something went wrong";
+                } catch (e) {
+                  snackbarMessage = e.toString();
                 } finally {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(snackbarMessage),
                     ),
                   );
-                  if (productController.error.value == "") {
-                    Get.find<ProductController>().products =
-                        await ProductController.getProductsByShop(
-                            productController.product.shopId!);
-                    Get.back();
-                  }
                 }
               }
             }),
@@ -166,6 +254,48 @@ class EditProductForm extends StatelessWidget {
     );
   }
 
+  Future<void> addImageButtonCallback(BuildContext context,
+      {int? index}) async {
+    // if (index == null && productController.selectedImages.length >= 3) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(content: Text("Max 3 images can be uploaded")));
+    //   return;
+    // }
+    String path = "";
+    String snackbarMessage = "";
+    // try {
+    path = await choseImageFromLocalFiles(context);
+    print(path);
+    if (path == null) {
+      throw LocalImagePickingUnknownReasonFailureException();
+    }
+    // } on LocalFileHandlingException catch (e) {
+    //   snackbarMessage = e.toString();
+    // } catch (e) {
+    //   snackbarMessage = e.toString();
+    // } finally {
+    //   if (snackbarMessage != null) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       SnackBar(
+    //         content: Text(snackbarMessage),
+    //       ),
+    //     );
+    //   }
+    // }
+    if (path == null) {
+      return;
+    }
+    if (index == null) {
+      productController.selectedImages
+          .add(CustomImage(imgType: ImageType.local, path: path));
+    } else {
+      if (index < productController.selectedImages.value.length) {
+        productController.selectedImages[index] =
+            CustomImage(imgType: ImageType.local, path: path);
+      }
+    }
+  }
+
   Widget buildUploadImagesTile(BuildContext context) {
     return ExpansionTile(
       title: Text(
@@ -173,7 +303,7 @@ class EditProductForm extends StatelessWidget {
         style: Theme.of(context).textTheme.headline6,
       ),
       leading: Icon(Icons.image),
-      childrenPadding: EdgeInsets.symmetric(vertical: 20.h),
+      childrenPadding: EdgeInsets.symmetric(vertical: 20),
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
@@ -182,29 +312,39 @@ class EditProductForm extends StatelessWidget {
                 Icons.add_a_photo,
               ),
               color: kTextColor,
-              onPressed: () {}),
+              onPressed: () {
+                addImageButtonCallback(context);
+              }),
         ),
-        if (productController.product != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ...List.generate(
-                productController.product.images.length,
-                (index) => SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Image.network(
-                          productController.product.images[index]),
+        Obx(() => Container(
+              height: 80.h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: productController.selectedImages.length,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          addImageButtonCallback(context, index: index);
+                        },
+                        child: productController
+                                    .selectedImages[index].imgType ==
+                                ImageType.local
+                            ? Image.memory(File(productController
+                                    .selectedImages[index].path)
+                                .readAsBytesSync())
+                            : Image.network(
+                                productController.selectedImages[index].path),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            ],
-          ),
+            )),
       ],
     );
   }

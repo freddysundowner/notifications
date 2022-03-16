@@ -64,23 +64,26 @@ class Api {
   }
 
   static _callPut({Map<String, dynamic>? body, required Uri url}) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString("access_token");
-      Map<String, String> headers = {};
-      if (token != null) {
-        headers = {'Authorization': "Bearer " + token};
-      }
-      Helper.debug("headers ${headers}");
-      Helper.debug("url ${url}");
-      Helper.debug("body ${body}");
-      final response = await client.put(url, body: body, headers: headers);
-      Helper.debug("result ${response.body}");
-      return jsonDecode(response.body);
-    } catch (e) {
-      Helper.debug("error _callPut ${e}");
-      return null;
+    // try {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    Map<String, String> headers = {};
+    if (token != null) {
+      headers = {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + token
+      };
     }
+    Helper.debug("headers ${headers}");
+    Helper.debug("url ${url}");
+    Helper.debug("body ${body}");
+    final response = await client.put(url, body: body, headers: headers);
+    Helper.debug("result ${response.body}");
+    return jsonDecode(response.body);
+    // } catch (e) {
+    //   Helper.debug("error _callPut ${e}");
+    //   return null;
+    // }
   }
 
   static Future<void> _tryConnection() async {

@@ -4,7 +4,7 @@ import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/checkout.dart';
 import 'package:fluttergistshop/models/product.dart';
-import 'package:fluttergistshop/screens/cart/cart_screen.dart';
+import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:get/get.dart';
@@ -83,7 +83,7 @@ class MyProducts extends StatelessWidget {
             final confirmation = await showConfirmationDialog(
                 context, "Are you sure to Delete Product?");
             if (confirmation) {
-              for (int i = 0; i < product.images.length; i++) {}
+              for (int i = 0; i < product.images!.length; i++) {}
 
               bool productInfoDeleted = false;
               String snackbarMessage;
@@ -112,7 +112,7 @@ class MyProducts extends StatelessWidget {
                 context, "Continue to buying this product?");
             checkOutController.product.value = product;
             checkOutController.qty.value = 1;
-            Get.to(() => CartScreen());
+            Get.to(() => CheckOut());
 
             return false;
           } else if (direction == DismissDirection.endToStart) {

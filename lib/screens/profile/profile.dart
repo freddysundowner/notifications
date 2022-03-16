@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
-import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
+import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
+import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/product_card.dart';
 import 'package:get/get.dart';
@@ -21,7 +22,6 @@ class Profile extends StatelessWidget {
         actions: [
           InkWell(
             onTap: () {
-              print("bb" + authController.currentuser!.shopId.toString());
               if (authController.currentuser!.shopId != null &&
                   authController.currentuser!.shopId != "") {
                 Get.to(() => ShopView());
@@ -37,7 +37,9 @@ class Profile extends StatelessWidget {
             width: 15.w,
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              authController.signOut();
+            },
             child: Icon(
               Icons.settings,
               color: primarycolor,
@@ -56,15 +58,27 @@ class Profile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                  width: 100.0,
-                  height: 100.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: CachedNetworkImageProvider(
-                              "https://i.imgur.com/BoN9kdC.png")))),
+              InkWell(
+                  onTap: () {
+                    Get.to(() => ChageProfileImage());
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: authController.currentuser!.profilePhoto!,
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 120.0,
+                      height: 120.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.error,
+                      size: 120,
+                    ),
+                  )),
               Text(
                 authController.currentuser!.firstName! +
                     " " +

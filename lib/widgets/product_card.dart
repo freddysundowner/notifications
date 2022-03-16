@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 
 class ProductCard extends StatelessWidget {
@@ -38,18 +40,28 @@ class ProductCard extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: product.images.length == 0
+          child: product.images!.length == 0
               ? Image.asset(
-                  "assets/images/tab_saved.png",
+                  imageplaceholder,
                   fit: BoxFit.contain,
                   height: 120,
                   width: double.infinity,
                 )
-              : Image.network(
-                  product.images[0],
-                  fit: BoxFit.fitWidth,
-                  height: 120,
-                  width: double.infinity,
+              : CachedNetworkImage(
+                  imageUrl: product.images![0],
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: double.infinity,
+                    height: 120.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.fitWidth),
+                    ),
+                  ),
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                    size: 120,
+                  ),
                 ),
         ),
         Container(

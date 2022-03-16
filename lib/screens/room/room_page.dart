@@ -259,7 +259,7 @@ class RoomPage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: _hc.currentRoom.value.productIds!
                       .elementAt(0)
-                      .images
+                      .images!
                       .length,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -274,7 +274,7 @@ class RoomPage extends StatelessWidget {
                             imageUrl +
                                 _hc.currentRoom.value.productIds!
                                     .elementAt(0)
-                                    .images
+                                    .images!
                                     .elementAt(index),
                             height: 0.08.sh,
                             width: 0.12.sw,

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/checkout_controller.dart';
+import 'package:get/get.dart';
 
 import '../../../utils/utils.dart';
 
-class ProductSize extends StatefulWidget {
+class ProductSize extends StatelessWidget {
   final List productSizes;
   final Function(String) onSelected;
+  CheckOutController checkOutController = Get.find<CheckOutController>();
   ProductSize({required this.productSizes, required this.onSelected});
-
-  @override
-  _ProductSizeState createState() => _ProductSizeState();
-}
-
-class _ProductSizeState extends State<ProductSize> {
-  int _selected = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -23,34 +19,36 @@ class _ProductSizeState extends State<ProductSize> {
       ),
       child: Row(
         children: [
-          for (var i = 0; i < widget.productSizes.length; i++)
+          for (var i = 0; i < productSizes.length; i++)
             GestureDetector(
               onTap: () {
-                widget.onSelected("${widget.productSizes[i]}");
-                setState(() {
-                  _selected = i;
-                });
+                onSelected("${productSizes[i]}");
+                checkOutController.selectetedvariation.value = i;
               },
-              child: Container(
-                width: 42.0.sm,
-                height: 42.0.sm,
-                decoration: BoxDecoration(
-                  color: _selected == i ? primarycolor : Color(0xFFDCDCDC),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                alignment: Alignment.center,
-                margin: EdgeInsets.symmetric(
-                  horizontal: 4.0,
-                ),
-                child: Text(
-                  "${widget.productSizes[i]}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: _selected == i ? Colors.white : Colors.black,
-                    fontSize: 16.0.sp,
-                  ),
-                ),
-              ),
+              child: Obx(() => Container(
+                    width: 42.0.sm,
+                    height: 42.0.sm,
+                    decoration: BoxDecoration(
+                      color: checkOutController.selectetedvariation == i
+                          ? primarycolor
+                          : Color(0xFFDCDCDC),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                    ),
+                    child: Text(
+                      "${productSizes[i]}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: checkOutController.selectetedvariation == i
+                            ? Colors.white
+                            : Colors.black,
+                        fontSize: 16.0.sp,
+                      ),
+                    ),
+                  )),
             )
         ],
       ),

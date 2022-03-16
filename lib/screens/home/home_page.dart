@@ -14,8 +14,8 @@ import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.d
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/services/end_points.dart';
-import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/button.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -283,7 +283,7 @@ class HomePage extends StatelessWidget {
                             ),
                             SizedBox(
                               height: 0.12.sh,
-                              child: ListView.builder(
+                              child: roomModel.productIds!.isNotEmpty ?ListView.builder(
                                   scrollDirection: Axis.horizontal,
                                   itemCount:
                                       roomModel.productIds![0].images!.length,
@@ -308,7 +308,7 @@ class HomePage extends StatelessWidget {
                                         ),
                                       ),
                                     );
-                                  }),
+                                  }) : Container(),
                             ),
                           ],
                         ),

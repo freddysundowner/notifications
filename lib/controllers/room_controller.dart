@@ -69,7 +69,7 @@ class RoomController extends GetxController {
       }
 
       var roomData = {
-        "title": newRoomTitle.value ,
+        "title": newRoomTitle.value,
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -77,7 +77,7 @@ class RoomController extends GetxController {
         "raisedHands": [],
         "speakerIds": [],
         "invitedIds": [],
-        "shopId": "61f951020019c849882d6819",
+        "shopId": Get.find<AuthController>().usermodel.value!.shopId ?? " ",
         "status": true,
         "productPrice": roomPickedProductPrice.value,
         "productImages": roomProductImages
@@ -88,14 +88,13 @@ class RoomController extends GetxController {
       printOut("room created $rooms");
 
       if (rooms != null) {
-
         var roomId = rooms["_id"];
         var token = await RoomAPI().generateAgoraToken(roomId, "0");
         printOut("room token $token");
 
-        if (token != null ) {
-          await RoomAPI().updateRoomById(
-              {"title": " ", "token": token}, roomId);
+        if (token != null) {
+          await RoomAPI()
+              .updateRoomById({"title": " ", "token": token}, roomId);
 
           await fetchRoom(roomId);
 
@@ -105,10 +104,10 @@ class RoomController extends GetxController {
           Get.to(RoomPage(roomId: roomId));
         } else {
           Get.back();
-          Get.snackbar("", "There was an error creating your room. Try again later");
+          Get.snackbar(
+              "", "There was an error creating your room. Try again later");
           await RoomAPI().deleteARoom(roomId);
         }
-
       } else {
         Get.back();
         Get.snackbar("", "Error creating your room");
@@ -171,9 +170,7 @@ class RoomController extends GetxController {
         RoomModel room = RoomModel.fromJson(roomResponse);
         if (room.token != null) {
           currentRoom.value = room;
-
         }
-
       } else {
         Get.snackbar('', "Error getting your room, Try again later");
       }
@@ -187,23 +184,30 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToRoom(OwnerId user) async {
-    printOut("current user being added to room token ${currentRoom.value.token}");
+    printOut(
+        "current user being added to room token ${currentRoom.value.token}");
 
     if (currentRoom.value.token != null) {
       initAgora(currentRoom.value.token, currentRoom.value.id!);
 
       printOut("current user being added to room ${user.id}");
 
-      if (!currentRoom.value.hostIds!.contains(user) &&
-          !currentRoom.value.speakerIds!.contains(user) &&
-          !currentRoom.value.userIds!.contains(user)) {
+      if ((currentRoom.value.hostIds!
+                  .indexWhere((element) => element.id == user.id) ==
+              -1) &&
+          (currentRoom.value.speakerIds!
+                  .indexWhere((element) => element.id == user.id) ==
+              -1) &&
+          (currentRoom.value.userIds!
+                  .indexWhere((element) => element.id == user.id) ==
+              -1)) {
         currentRoom.value.userIds!.add(user);
 
         currentRoom.refresh();
 
         //Add user to room
         await RoomAPI().updateRoomById({
-        "title": currentRoom.value.title ?? " ",
+          "title": currentRoom.value.title ?? " ",
           "userIds": [user.id],
           "token": currentRoom.value.token
         }, currentRoom.value.id!);
@@ -219,7 +223,7 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-    "title": currentRoom.value.title ?? " ",
+      "title": currentRoom.value.title ?? " ",
       "speakerIds": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
@@ -234,8 +238,6 @@ class RoomController extends GetxController {
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
-
-
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
@@ -247,7 +249,7 @@ class RoomController extends GetxController {
 
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
-    "title": currentRoom.value.title ?? " ",
+      "title": currentRoom.value.title ?? " ",
       "raisedHands": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
@@ -279,7 +281,7 @@ class RoomController extends GetxController {
 
     //Add user to speakers
     await RoomAPI().updateRoomById({
-    "title": currentRoom.value.title ?? " ",
+      "title": currentRoom.value.title ?? " ",
       "speakerIds": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
@@ -295,8 +297,6 @@ class RoomController extends GetxController {
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
-
-
   }
 
   Future<void> leaveRoom(OwnerId user) async {
@@ -310,7 +310,6 @@ class RoomController extends GetxController {
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!.contains(user)) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
-
     } else {
       await RoomAPI().removeAUserFromRoom({
         "users": [user.id]
@@ -318,7 +317,6 @@ class RoomController extends GetxController {
     }
 
     currentRoom.value = RoomModel();
-
   }
 
   @override
@@ -401,7 +399,6 @@ class RoomController extends GetxController {
 
       await engine.setClientRole(ClientRole.Broadcaster);
       await engine.joinChannel(token, roomId, null, 0);
-
     } catch (e, s) {
       printOut('error joining room $e $s');
     }

@@ -4,6 +4,7 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -29,7 +30,6 @@ class RoomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RoomModel currentRoom = _homeController.currentRoom.value;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -117,7 +117,11 @@ class RoomPage extends StatelessWidget {
                                           .indexWhere(
                                               (e) => e.id == currentUser.id) ==
                                       -1) {
-                                _homeController.engine.disableAudio();
+                                try {
+                                  _homeController.engine.disableAudio();
+                                } catch(e) {
+                                  printOut("Error disabling audio $e");
+                                }
                               }
 
                               //If current room is loading, show a spinner
@@ -173,9 +177,11 @@ class RoomPage extends StatelessWidget {
                               }
                             }),
                           )
-                        : SizedBox(
-                      height:  0.1.sh,
-                        child: const Center(child: CircularProgressIndicator()));
+                        : Transform.scale(
+                        scale: 0.1,
+                        child: const CircularProgressIndicator(
+                          color: Colors.black,
+                        ));
                   }),
                 ],
               )

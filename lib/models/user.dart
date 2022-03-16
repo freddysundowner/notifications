@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:fluttergistshop/models/shop.dart';
 import 'package:meta/meta.dart';
 
 UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
@@ -55,6 +54,10 @@ class UserModel {
     @required this.upgradedDate,
   });
 
+
+  UserModel.fromPlayer(this.id, this.firstName, this.lastName, this.bio, this.userName,
+      this.phonenumber, this.profilePhoto);
+
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         // followers: List<String>.from(json["followers"].map((x) => x)),
         // following: List<String>.from(json["following"].map((x) => x)),
@@ -71,9 +74,9 @@ class UserModel {
         userName: json["userName"],
         email: json["email"],
         password: json["password"],
-        shopId: json["shopId"] != null && json["shopId"] != ""
+ /*       shopId: json["shopId"] != null && json["shopId"] != ""
             ? ShopId.fromJson(json["shopId"])
-            : null,
+            : null,*/
         phonenumber: json["phonenumber"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),

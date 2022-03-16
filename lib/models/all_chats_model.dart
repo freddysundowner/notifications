@@ -1,6 +1,6 @@
 class AllChatsModel {
   String id;
-  String sender;
+  String? sender;
   String message;
   String date;
   String userName;

@@ -1,34 +1,58 @@
 {
   "project_info": {
-    "project_number": "268154715648",
-    "project_id": "gistshop-673b1",
-    "storage_bucket": "gistshop-673b1.appspot.com"
+    "project_number": "533803420489",
+    "firebase_url": "https://gistshop-f3e7e-default-rtdb.firebaseio.com",
+    "project_id": "gistshop-f3e7e",
+    "storage_bucket": "gistshop-f3e7e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:268154715648:android:784100d430bd4bc747e2e5",
+        "mobilesdk_app_id": "1:533803420489:android:1049eff8cce81956e46898",
         "android_client_info": {
-          "package_name": "com.gistshop.gistshop"
+          "package_name": "com.gistshop"
         }
       },
       "oauth_client": [
         {
-          "client_id": "268154715648-cd6f0uamo1dhgkv1e86gsgod2janbn9p.apps.googleusercontent.com",
+          "client_id": "533803420489-3rpnklsg7m01nghst1aupuo83t82sku2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gistshop",
+            "certificate_hash": "7f2f9245e9896a8c80e2ebb425ec3037e9fdfb60"
+          }
+        },
+        {
+          "client_id": "533803420489-p9350di1lc3vna95j2gugen390vpsbon.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gistshop",
+            "certificate_hash": "b1fd654865ed157d250e66a5a39ed8efa262d0f5"
+          }
+        },
+        {
+          "client_id": "533803420489-b7hp9svrb5o78d3jsnujv4dvhsrca742.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC24WcdW7Aif9kNzam3HNceJn3A11FFch8"
+          "current_key": "AIzaSyBizMR2ktziLxNVKgRZpEFHZ6xc3qHIDCs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "268154715648-cd6f0uamo1dhgkv1e86gsgod2janbn9p.apps.googleusercontent.com",
+              "client_id": "533803420489-b7hp9svrb5o78d3jsnujv4dvhsrca742.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "533803420489-na4ujrdj412t8fm2pkmdtj019b41c101.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gist.GistShop"
+              }
             }
           ]
         }

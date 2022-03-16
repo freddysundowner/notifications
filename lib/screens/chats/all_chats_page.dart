@@ -16,65 +16,92 @@ class AllChatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chats", style: TextStyle(color: Colors.black),),
+        title: const Text(
+          "Chats",
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 30.0),
         child: Obx(() {
-            return _chatController.gettingChats.isFalse ? ListView.builder(
-              itemCount: _chatController.allUserChats.length,
-                itemBuilder: (context, index) {
-                AllChatsModel allChatsModel = _chatController.allUserChats.elementAt(index);
-              return Container(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: allChatsModel.sender == null ? const CircleAvatar(
-                          radius: 25,
-                          backgroundColor:
-                          Colors.transparent,
-                          backgroundImage:
-                          AssetImage(
-                              "assets/icons/profile_placeholder.png"))
-                    : CircleAvatar(
-                radius: 25,
-                backgroundColor:
-                Colors.transparent,
-                backgroundImage:
-                NetworkImage(imageUrl +
-                    allChatsModel.sender),
-              ),
-                    ),
-                    SizedBox(width: 0.03.sw,),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 0.7.sw,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Other user", style: TextStyle(color: Colors.black, fontSize: 16.sp),),
-                              Text("now", style: TextStyle(color: Colors.grey, fontSize: 12.sp),)
-                            ],
+          return _chatController.gettingChats.isFalse
+              ? _chatController.allUserChats.isNotEmpty ? ListView.builder(
+                  itemCount: _chatController.allUserChats.length,
+                  itemBuilder: (context, index) {
+                    AllChatsModel allChatsModel =
+                        _chatController.allUserChats.elementAt(index);
+                    return Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: allChatsModel.sender == null
+                                ? const CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: Colors.transparent,
+                                    backgroundImage: AssetImage(
+                                        "assets/icons/profile_placeholder.png"))
+                                : CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: Colors.transparent,
+                                    backgroundImage: NetworkImage(
+                                        imageUrl + allChatsModel.sender!),
+                                  ),
                           ),
-                        ),
-                        Text("A message I sent you last week. Heeellllloooooooooo......????".substring(0, 40) + "...", style: TextStyle(color: Colors.grey, fontSize: 14.sp),)
-                      ],
-                    )
-                  ],
-                ),
-              );
-            }) : const Center(child: CircularProgressIndicator(color: Colors.black,),);
-          }
-        ),
+                          SizedBox(
+                            width: 0.03.sw,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 0.7.sw,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Other user",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16.sp),
+                                    ),
+                                    Text(
+                                      "now",
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 12.sp),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                "A message I sent you last week. Heeellllloooooooooo......????"
+                                        .substring(0, 40) +
+                                    "...",
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14.sp),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  })
+          : Center(child: Text("No chats yet", style: TextStyle(color: Colors.grey, fontSize: 16.sp),),)
+              : const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.black,
+                  ),
+                );
+        }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.to(NewChatPage()),
-        child: const Icon(Ionicons.add, color: Colors.white,),
+        child: const Icon(
+          Ionicons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }

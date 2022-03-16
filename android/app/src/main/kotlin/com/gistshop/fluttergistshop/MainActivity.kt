@@ -1,4 +1,4 @@
-package com.gistshop.gistshop
+package com.gistshop
 
 import io.flutter.embedding.android.FlutterActivity
 

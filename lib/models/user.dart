@@ -78,8 +78,6 @@ class UserModel {
             ? ShopId.fromJson(json["shopId"])
             : null,*/
         phonenumber: json["phonenumber"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],
         upgradedDate: json["upgradedDate"],

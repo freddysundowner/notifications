@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/chats/chat_room_page.dart';
@@ -10,6 +11,7 @@ import 'package:ionicons/ionicons.dart';
 class NewChatPage extends StatelessWidget {
 
   final RoomController _homeController = Get.find<RoomController>();
+  final ChatController _chatController = Get.find<ChatController>();
 
   NewChatPage({Key? key}) : super(key: key);
 
@@ -74,7 +76,12 @@ class NewChatPage extends StatelessWidget {
                               return Container(
                                 padding: const EdgeInsets.all(10),
                                 child: InkWell(
-                                  onTap: () => Get.to(ChatRoomPage()),
+                                  onTap: () {
+                                    _chatController.getPreviousChat(user);
+                                    _chatController.currentChat.value = [];
+                                    _chatController.currentChatId.value = "";
+                                    Get.to(ChatRoomPage(user));
+                                    },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [

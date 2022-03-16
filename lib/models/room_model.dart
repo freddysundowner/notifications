@@ -172,8 +172,6 @@ class OwnerId {
     "email": email,
     "password": password,
     "phonenumber": phonenumber,
-    "createdAt": createdAt!.toIso8601String(),
-    "updatedAt": updatedAt!.toIso8601String(),
     "profilePhoto": profilePhoto,
     "memberShip": memberShip,
     "upgradedDate": upgradedDate,

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -19,6 +20,7 @@ import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatelessWidget {
   TextEditingController titleFieldController = TextEditingController();
+  AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
   OwnerId currentUser = OwnerId(
@@ -75,20 +77,23 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 Get.to(() => Profile());
               },
-              child: Get.find<AuthController>().usermodel.value!.profilePhoto ==
-                      null
-                  ? const CircleAvatar(
-                      radius: 15,
-                      backgroundImage:
-                          AssetImage("assets/icons/profile_placeholder.png"))
-                  : CircleAvatar(
-                      radius: 15,
-                      backgroundImage: NetworkImage(imageUrl +
-                          Get.find<AuthController>()
-                              .usermodel
-                              .value!
-                              .profilePhoto!),
-                    ),
+              child: CachedNetworkImage(
+                imageUrl: authController.currentuser!.profilePhoto!,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 20.0,
+                  height: 20.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                  size: 20,
+                ),
+              ),
             ),
             SizedBox(
               width: 0.02.sw,

@@ -29,6 +29,7 @@ class ProductController extends GetxController {
   Rxn<Product> _product = Rxn();
   static Rxn<List<Product>> _products = Rxn([]);
 
+  RxInt selectedPage = 0.obs;
   var error = "".obs;
   Product get product => _product.value!;
   set product(Product value) => _product.value = value;

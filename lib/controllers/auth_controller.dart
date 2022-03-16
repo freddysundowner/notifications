@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
@@ -25,6 +27,12 @@ class AuthController extends GetxController {
 
   var error = "".obs;
   var isLoading = true.obs;
+
+  Rx<File> _chosenImage = Rx(File(""));
+  File get chosenImage => _chosenImage.value;
+  set setChosenImage(File img) {
+    _chosenImage.value = img;
+  }
 
   @override
   void onInit() {
@@ -62,30 +70,30 @@ class AuthController extends GetxController {
   }
 
   Future authenticate() async {
-    try {
-      isLoading(true);
-      Map<String, dynamic> login = Authenticate(
-              email: emailFieldController.text,
-              password: passwordFieldController.text)
-          .toJson();
-      Map<String, dynamic> user = await UserAPI.authenticate(login, "login");
-      Helper.debug(user["success"]);
-      if (user["success"] == false) {
-        error.value = "Check email and password";
-      } else {
+    // try {
+    isLoading(true);
+    Map<String, dynamic> login = Authenticate(
+            email: emailFieldController.text,
+            password: passwordFieldController.text)
+        .toJson();
+    Map<String, dynamic> user = await UserAPI.authenticate(login, "login");
+    Helper.debug(user["success"]);
+    if (user["success"] == false) {
+      error.value = "Check email and password";
+    } else {
+      try {
         UserModel userModelFromApi = UserModel.fromJson(user["data"]);
-        try {
-          usermodel.value = userModelFromApi;
-        } catch (e) {
-          printOut("error saving user model to controller on login $e");
-        }
+        usermodel.value = userModelFromApi;
         return signInWithCustomToken(
             userModelFromApi.userName!, user["authtoken"], user["accessToken"]);
+      } catch (e) {
+        printOut("error saving user model to controller on login $e");
       }
-    } catch (e) {
-      printOut("Error after auth $e");
-      isLoading(false);
     }
+    // } catch (e) {
+    //   printOut("Error after auth $e");
+    //   isLoading(false);
+    // }
   }
 
   signInWithCustomToken(

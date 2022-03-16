@@ -65,6 +65,11 @@ class UserAPI {
     return response;
   }
 
+  String getPathForCurrentUserDisplayPicture() {
+    final String currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+    return "user/display_picture/$currentUserUid";
+  }
+
   static updateAddressForCurrentUser(Address newAddress) async {
     var response = await Api.callApi(
         method: config.put,
@@ -73,4 +78,17 @@ class UserAPI {
     Helper.debug("updateAddressForCurrentUser ${response}");
     return response;
   }
+
+  static uploadDisplayPictureForCurrentUser(String downloadUrl) async {
+    print(
+        "uploadDisplayPictureForCurrentUser ${{"profilePhoto": downloadUrl}}");
+    await DbBase().databaseRequest(
+        config.users + FirebaseAuth.instance.currentUser!.uid,
+        DbBase().patchRequestType,
+        body: {"profilePhoto": downloadUrl});
+
+    return true;
+  }
+
+  static removeDisplayPictureForCurrentUser() {}
 }

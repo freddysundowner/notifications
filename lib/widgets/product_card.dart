@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 
 class ProductCard extends StatelessWidget {
@@ -40,7 +41,7 @@ class ProductCard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: product.images!.length == 0
               ? Image.asset(
-                  "assets/images/tab_saved.png",
+                  imageplaceholder,
                   fit: BoxFit.contain,
                   height: 120,
                   width: double.infinity,

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/product.dart';
@@ -26,11 +27,14 @@ class ShopShortDetailCard extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: product!.images!.length > 0
-                    ? Image.network(
-                        product!.images![0],
+                    ? CachedNetworkImage(
+                        imageUrl: product!.images![0],
                         fit: BoxFit.contain,
                       )
-                    : Text("No Image"),
+                    : Image.asset(
+                        imageplaceholder,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
           ),

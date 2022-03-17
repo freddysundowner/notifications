@@ -439,7 +439,11 @@ class HomePage extends StatelessWidget {
                           _homeController.currentRoom.value.speakerIds!
                                   .indexWhere((e) => e.id == currentUser.id) ==
                               -1) {
-                        _homeController.engine.disableAudio();
+                        try {
+                          _homeController.engine.disableAudio();
+                        } catch(e) {
+                          printOut("Error disabling audio $e");
+                        }
                       }
 
                       //If current room is loading, show a spinner

@@ -119,7 +119,7 @@ class RoomPage extends StatelessWidget {
                                       -1) {
                                 try {
                                   _homeController.engine.disableAudio();
-                                } catch(e) {
+                                } catch (e) {
                                   printOut("Error disabling audio $e");
                                 }
                               }
@@ -178,10 +178,10 @@ class RoomPage extends StatelessWidget {
                             }),
                           )
                         : Transform.scale(
-                        scale: 0.1,
-                        child: const CircularProgressIndicator(
-                          color: Colors.black,
-                        ));
+                            scale: 0.1,
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ));
                   }),
                 ],
               )
@@ -495,9 +495,11 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              !(room.hostIds!
-                                      .indexWhere((e) => e.id == user.id) ==
-                                  0)
+                              room.hostIds!.indexWhere((e) => e.id == user.id) == -1 &&
+                          room.hostIds!.indexWhere((e) => e.id == Get.find<AuthController>()
+                              .usermodel
+                              .value!
+                              .id) == 0
                           ? InkWell(
                               onTap: () async {
                                 Get.back();

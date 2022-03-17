@@ -44,6 +44,7 @@ class RoomController extends GetxController {
   var userJoinedRoom = false.obs;
 
   final TextEditingController searchChatUsersController = TextEditingController();
+  TextEditingController roomTitleController = TextEditingController();
 
   @override
   void onInit() {
@@ -71,8 +72,10 @@ class RoomController extends GetxController {
         hosts.add(element.id);
       }
 
+      printOut("Room title ${roomTitleController.text}");
+
       var roomData = {
-        "title": newRoomTitle.value,
+        "title": roomTitleController.text,
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -96,8 +99,9 @@ class RoomController extends GetxController {
         printOut("room token $token");
 
         if (token != null) {
+          printOut("room title ${roomData["title"]}");
           await RoomAPI()
-              .updateRoomById({"title": " ", "token": token}, roomId);
+              .updateRoomById({"title": roomData["title"], "token": token}, roomId);
 
           await fetchRoom(roomId);
 

@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
-import 'package:http/io_client.dart';
 
 import 'client.dart';
 import 'end_points.dart';
@@ -57,7 +55,11 @@ class RoomAPI {
   updateRoomById(Map<String, dynamic> body, String id) async {
     final RoomController _homeController = Get.find<RoomController>();
     try {
-      body.addAll({"title": _homeController.currentRoom.value.title ?? " "});
+      if (body["title"] == null) {
+        body.addAll({"title": _homeController.currentRoom.value.title});
+      }
+
+      printOut("Room to be updated title ${body["title"]}");
       var updated = await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
           body: body);
 

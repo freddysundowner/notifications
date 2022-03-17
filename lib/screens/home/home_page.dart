@@ -20,7 +20,7 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatelessWidget {
-  TextEditingController titleFieldController = TextEditingController();
+
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
@@ -670,7 +670,7 @@ class HomePage extends StatelessWidget {
             ),
             children: [
               TextField(
-                controller: titleFieldController,
+                controller: _homeController.roomTitleController,
                 autofocus: true,
                 keyboardType: TextInputType.text,
                 decoration: const InputDecoration(
@@ -704,8 +704,6 @@ class HomePage extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Get.back();
-                        _homeController.newRoomTitle.value =
-                            titleFieldController.text;
                       },
                       child: Text(
                         "Okay".toUpperCase(),

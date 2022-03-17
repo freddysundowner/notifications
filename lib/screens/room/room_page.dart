@@ -203,7 +203,7 @@ class RoomPage extends StatelessWidget {
                     ? ListView(children: [
                         _homeController.userJoinedRoom.isFalse
                             ? Transform.scale(
-                            scale: 0.3,
+                            scale: 0.2,
                             child: const CircularProgressIndicator(
                               color: Colors.black,
                             ))

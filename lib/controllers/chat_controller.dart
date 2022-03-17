@@ -33,13 +33,13 @@ class ChatController extends GetxController {
         .collection("chats")
         .where("userIds", arrayContains: userId)
         .get()
-        .then((QuerySnapshot querySnapshot) {
+        .then(( querySnapshot) {
       gettingChats.value = false;
 
       printOut("Chats loaded ${querySnapshot.docs.length}");
       allUserChats.value = [];
       for (var i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot snapshot = querySnapshot.docs.elementAt(i);
+        var snapshot = querySnapshot.docs.elementAt(i);
 
         AllChatsModel allChatsModel = AllChatsModel(
             snapshot.id,
@@ -69,9 +69,9 @@ class ChatController extends GetxController {
 
     printOut("PAth $id");
 
-    db.collection("chats/$id/messages").get().then((QuerySnapshot snapshot) {
+    db.collection("chats/$id/messages").get().then((snapshot) {
       for (var i = 0; i < snapshot.docs.length; i++) {
-        DocumentSnapshot documentSnapshot = snapshot.docs.elementAt(i);
+        var documentSnapshot = snapshot.docs.elementAt(i);
 
         ChatRoomModel chatRoomModel = ChatRoomModel(
             documentSnapshot.get("date"),

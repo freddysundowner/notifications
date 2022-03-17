@@ -202,7 +202,11 @@ class RoomPage extends StatelessWidget {
                 child: _homeController.currentRoom.value.id != null
                     ? ListView(children: [
                         _homeController.userJoinedRoom.isFalse
-                            ? const CircularProgressIndicator()
+                            ? Transform.scale(
+                            scale: 0.3,
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ))
                             : Container(),
                         RoomUser("Hosts"),
                         SizedBox(

@@ -74,9 +74,9 @@ class UserModel {
         userName: json["userName"],
         email: json["email"],
         password: json["password"],
- /*       shopId: json["shopId"] != null && json["shopId"] != ""
+        shopId: json["shopId"] != null && json["shopId"] != ""
             ? ShopId.fromJson(json["shopId"])
-            : null,*/
+            : null,
         phonenumber: json["phonenumber"],
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],

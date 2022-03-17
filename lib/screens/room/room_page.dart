@@ -69,6 +69,9 @@ class RoomPage extends StatelessWidget {
               ),
               Row(
                 children: [
+                  (_homeController.currentRoom.value.speakerIds!
+                      .indexWhere((e) => e.id == currentUser.id) ==
+                      -1) ?
                   IconButton(
                     onPressed: () async {
                       if ((_homeController.currentRoom.value.hostIds!
@@ -84,7 +87,7 @@ class RoomPage extends StatelessWidget {
                       color: Colors.black54,
                       size: 30,
                     ),
-                  ),
+                  ) : Container(height: 0.06.sh,),
                   SizedBox(
                     width: 0.01.sw,
                   ),
@@ -393,13 +396,23 @@ class RoomUser extends StatelessWidget {
                                           user.elementAt(index).profilePhoto!),
                                     )),
                       SizedBox(
-                        height: 0.01.sh,
+                        height: 0.002.sh,
                       ),
-                      Center(
-                          child: Text(
-                        user.elementAt(index).userName!,
-                        style: TextStyle(color: Colors.black, fontSize: 14.sp),
-                      ))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                        child: Center(
+                            child: Text(
+                          user.elementAt(index).userName!.length > 10
+                              ? user
+                                      .elementAt(index)
+                                      .userName!
+                                      .substring(0, 9) +
+                                  "..."
+                              : user.elementAt(index).userName!,
+                          style:
+                              TextStyle(color: Colors.black, fontSize: 12.sp),
+                        )),
+                      )
                     ],
                   ),
                 );
@@ -495,11 +508,16 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              room.hostIds!.indexWhere((e) => e.id == user.id) == -1 &&
-                          room.hostIds!.indexWhere((e) => e.id == Get.find<AuthController>()
-                              .usermodel
-                              .value!
-                              .id) == 0
+                              room.hostIds!
+                                      .indexWhere((e) => e.id == user.id) ==
+                                  -1 &&
+                              room.hostIds!.indexWhere((e) =>
+                                      e.id ==
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .id) ==
+                                  0
                           ? InkWell(
                               onTap: () async {
                                 Get.back();

@@ -77,7 +77,7 @@ class RoomController extends GetxController {
         "raisedHands": [],
         "speakerIds": [],
         "invitedIds": [],
-        "shopId": Get.find<AuthController>().usermodel.value!.shopId ?? " ",
+        "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
         "status": true,
         "productPrice": roomPickedProductPrice.value,
         "productImages": roomProductImages
@@ -216,28 +216,34 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToSpeaker(OwnerId user) async {
-    currentRoom.value.speakerIds!.add(user);
     currentRoom.value.userIds!.remove(user);
 
-    currentRoom.refresh();
+    if ((currentRoom.value.speakerIds!
+        .indexWhere((element) => element.id == user.id) ==
+        -1)) {
+      currentRoom.value.speakerIds!.add(user);
 
-    //Add user to speakers
-    await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title ?? " ",
-      "speakerIds": [user.id],
-      "token": currentRoom.value.token
-    }, currentRoom.value.id!);
 
-    //Remove user from audience
-    await RoomAPI().removeUserFromAudienceInRoom({
-      "users": [user.id]
-    }, currentRoom.value.id!);
+      currentRoom.refresh();
 
+      //Add user to speakers
+      await RoomAPI().updateRoomById({
+        "title": currentRoom.value.title ?? " ",
+        "speakerIds": [user.id],
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
+
+      //Remove user from audience
+      await RoomAPI().removeUserFromAudienceInRoom({
+        "users": [user.id]
+      }, currentRoom.value.id!);
+    }
     //Remove user from RaisedHand
     await RoomAPI().removeUserFromRaisedHandsInRoom({
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
@@ -274,24 +280,29 @@ class RoomController extends GetxController {
   }
 
   Future<void> removeUserFromRaisedHands(OwnerId user) async {
-    currentRoom.value.speakerIds!.add(user);
     currentRoom.value.raisedHands!.remove(user);
 
-    currentRoom.refresh();
+    if ((currentRoom.value.speakerIds!
+        .indexWhere((element) => element.id == user.id) ==
+        -1)) {
+      currentRoom.value.speakerIds!.add(user);
 
-    //Add user to speakers
-    await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title ?? " ",
-      "speakerIds": [user.id],
-      "token": currentRoom.value.token
-    }, currentRoom.value.id!);
 
-    //Remove user from RaisedHand
-    await RoomAPI().removeUserFromRaisedHandsInRoom({
-      "users": [user.id],
-      "token": currentRoom.value.token
-    }, currentRoom.value.id!);
+      currentRoom.refresh();
 
+      //Add user to speakers
+      await RoomAPI().updateRoomById({
+        "title": currentRoom.value.title ?? " ",
+        "speakerIds": [user.id],
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
+
+      //Remove user from RaisedHand
+      await RoomAPI().removeUserFromRaisedHandsInRoom({
+        "users": [user.id],
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
+    }
     //Remove user from RaisedHand
     await RoomAPI().removeUserFromAudienceInRoom({
       "users": [user.id],

@@ -396,10 +396,14 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     width: 0.01.sw,
                   ),
+                  (_homeController.currentRoom.value.speakerIds!
+                      .indexWhere((e) => e.id == currentUser.id) ==
+                      -1) ?
                   IconButton(
                     onPressed: () async {
-                      if (_homeController.currentRoom.value.hostIds!
-                          .contains(currentUser)) {
+                      if ((_homeController.currentRoom.value.hostIds!
+                          .indexWhere((e) => e.id == currentUser.id) ==
+                          0)) {
                         showRaisedHandsBottomSheet(context);
                       } else {
                         await _homeController.addUserToRaisedHands(currentUser);
@@ -410,7 +414,7 @@ class HomePage extends StatelessWidget {
                       color: Colors.black54,
                       size: 30,
                     ),
-                  ),
+                  ) : Container(height: 0.06.sh,),
                   SizedBox(
                     width: 0.01.sw,
                   ),

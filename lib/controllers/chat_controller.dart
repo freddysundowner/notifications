@@ -51,6 +51,7 @@ class ChatController extends GetxController {
             snapshot.get("users"));
 
 
+
         newChats.add(allChatsModel);
       }
 

@@ -21,6 +21,7 @@ class RoomController extends GetxController {
   var isLoading = false.obs;
   var allUsersLoading = false.obs;
   var allUsers = [].obs;
+  var searchedUsers = [].obs;
   var isCurrentRoomLoading = false.obs;
   var roomsList = [].obs;
   var currentRoom = RoomModel().obs;
@@ -41,6 +42,8 @@ class RoomController extends GetxController {
   var userProducts = [].obs;
   var userProductsLoading = false.obs;
   var userJoinedRoom = false.obs;
+
+  final TextEditingController searchChatUsersController = TextEditingController();
 
   @override
   void onInit() {
@@ -354,6 +357,8 @@ class RoomController extends GetxController {
         } else {
           allUsers.value = [];
         }
+        searchedUsers.value = allUsers;
+
         allUsers.refresh();
         allUsersLoading.value = false;
 
@@ -363,6 +368,29 @@ class RoomController extends GetxController {
         allUsersLoading.value = false;
       }
     }
+  }
+
+  searchUsers() async {
+   if (searchChatUsersController.text.trim().isNotEmpty) {
+     try {
+       allUsersLoading.value = true;
+
+       var users = await UserAPI().searchUser(searchChatUsersController.text.trim());
+
+       if (users != null) {
+         searchedUsers.value = users;
+       } else {
+         searchedUsers.value = [];
+       }
+       searchedUsers.refresh();
+       allUsersLoading.value = false;
+
+       update();
+     } catch (e) {
+       printOut(e);
+       allUsersLoading.value = false;
+     }
+   }
   }
 
   Future<void> fetchUserProducts() async {

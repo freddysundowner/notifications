@@ -30,6 +30,7 @@ const updateproduct = product + "products/";
 const updateproductimages = product + "images/";
 
 const allUsers = user + "/";
+const searchUsersByFirstName = user + "/search/";
 
 const userProducts = product + "/get/all/";
 

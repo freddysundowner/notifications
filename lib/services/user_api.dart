@@ -20,6 +20,13 @@ class UserAPI {
     return jsonDecode(users);
   }
 
+  searchUser(String text) async {
+    var users =
+    await DbBase().databaseRequest(searchUsersByFirstName + text, DbBase().getRequestType);
+
+    return jsonDecode(users);
+  }
+
   static Future<Map<String, dynamic>> authenticate(data, String type) async {
     Helper.debug("data $data");
     Helper.debug("type $type");

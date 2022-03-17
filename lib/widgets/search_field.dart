@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:get/get.dart';
 
 class SearchField extends StatelessWidget {
-  final Function? onSubmit;
-  const SearchField({
+  final onSubmit;
+  final textController;
+  final ShopController _shopController = Get.find<ShopController>();
+  SearchField({
     Key? key,
-    this.onSubmit,
+    this.onSubmit, this.textController,
   }) : super(key: key);
 
   @override
@@ -16,16 +20,17 @@ class SearchField extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextField(
+        controller: textController,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           hintText: "Search Shops",
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.sm, vertical: 9.sm),
         ),
-        onSubmitted: (c) => onSubmit,
+        onChanged: (c) => onSubmit,
       ),
     );
   }

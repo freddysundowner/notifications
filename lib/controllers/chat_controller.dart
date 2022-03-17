@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
@@ -11,7 +12,7 @@ import 'auth_controller.dart';
 
 class ChatController extends GetxController {
   FirebaseFirestore db = FirebaseFirestore.instance;
-  String userId = Get.find<AuthController>().usermodel.value!.id!;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   var allUserChats = [].obs;
   var gettingChats = false.obs;
   var currentChatLoading = false.obs;

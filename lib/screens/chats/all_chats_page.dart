@@ -6,7 +6,6 @@ import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/chats/chat_room_page.dart';
 import 'package:fluttergistshop/screens/chats/new_chat_page.dart';
-import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -18,6 +17,7 @@ class AllChatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _chatController.getUserChats();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -70,7 +70,7 @@ class AllChatsPage extends StatelessWidget {
                                               backgroundColor:
                                                   Colors.transparent,
                                               backgroundImage: NetworkImage(
-                                                  imageUrl +
+
                                                       getOtherUser(
                                                               allChatsModel)
                                                           .profilePhoto!),

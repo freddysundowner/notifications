@@ -49,23 +49,29 @@ class ChatRoomPage extends StatelessWidget {
                                   : Alignment.centerRight,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 0.5.sw,
-                                  decoration: BoxDecoration(
-                                      color: chat.id ==
-                                          Get.find<AuthController>()
-                                              .usermodel
-                                              .value!
-                                              .id ? Theme.of(context).primaryColor : Colors.black54,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                      chat.message,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16.sp),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      width: 0.5.sw,
+                                      decoration: BoxDecoration(
+                                          color: chat.id ==
+                                              Get.find<AuthController>()
+                                                  .usermodel
+                                                  .value!
+                                                  .id ? Theme.of(context).primaryColor : Colors.black54,
+                                          borderRadius: BorderRadius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          chat.message,
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 16.sp),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    Text(convertTime(chat.date))
+                                  ],
                                 ),
                               ),
                             );

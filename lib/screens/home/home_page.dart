@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
@@ -24,6 +25,8 @@ class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
+  final ShopController _shopController = Get.find<ShopController>();
+
   OwnerId currentUser = OwnerId(
       id: Get.find<AuthController>().usermodel.value!.id,
       bio: Get.find<AuthController>().usermodel.value!.bio,
@@ -45,6 +48,7 @@ class HomePage extends StatelessWidget {
           leading: InkWell(
             onTap: () {
               Get.to(() => ShopSearchResults());
+              _shopController.getShops();
             },
             child: const Icon(
               Ionicons.search,

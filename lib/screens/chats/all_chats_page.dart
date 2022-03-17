@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
@@ -29,13 +28,11 @@ class AllChatsPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(bottom: 30.0),
         child: Obx(() {
-
           return _chatController.gettingChats.isFalse
               ? RefreshIndicator(
-                      onRefresh: () =>  _chatController.getUserChats(),
-
-                      child: _chatController.allUserChats.isNotEmpty
-                          ? ListView.builder(
+                  onRefresh: () => _chatController.getUserChats(),
+                  child: _chatController.allUserChats.isNotEmpty
+                      ? ListView.builder(
                           itemCount: _chatController.allUserChats.length,
                           itemBuilder: (context, index) {
                             AllChatsModel allChatsModel =
@@ -70,10 +67,8 @@ class AllChatsPage extends StatelessWidget {
                                               backgroundColor:
                                                   Colors.transparent,
                                               backgroundImage: NetworkImage(
-
-                                                      getOtherUser(
-                                                              allChatsModel)
-                                                          .profilePhoto!),
+                                                  getOtherUser(allChatsModel)
+                                                      .profilePhoto!),
                                             ),
                                     ),
                                     SizedBox(
@@ -107,15 +102,28 @@ class AllChatsPage extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        Text(
-                                          allChatsModel.lastMessage.length > 40
-                                              ? allChatsModel.lastMessage
-                                                      .substring(0, 40) +
-                                                  "..."
-                                              : allChatsModel.lastMessage,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 14.sp),
+                                        Row(
+                                          children: [
+                                            Text(allChatsModel.lastSender ==
+                                                    _chatController.userId
+                                                ? "You: "
+                                                : getOtherUser(allChatsModel)
+                                                        .firstName! +
+                                                    ": ", style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14.sp)),
+                                            Text(
+                                              allChatsModel.lastMessage.length >
+                                                      40
+                                                  ? allChatsModel.lastMessage
+                                                          .substring(0, 40) +
+                                                      "..."
+                                                  : allChatsModel.lastMessage,
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14.sp),
+                                            ),
+                                          ],
                                         )
                                       ],
                                     )
@@ -123,21 +131,22 @@ class AllChatsPage extends StatelessWidget {
                                 ),
                               ),
                             );
-                          }) : ListView(
-                            children: [
-                              SizedBox(
-                                height: 0.6.sh,
-                                child: Center(
-                        child: Text(
-                                "No chats yet",
-                                style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                        ),
-                      ),
+                          })
+                      : ListView(
+                          children: [
+                            SizedBox(
+                              height: 0.6.sh,
+                              child: Center(
+                                child: Text(
+                                  "No chats yet",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 16.sp),
+                                ),
                               ),
-                            ],
-                          ),
-                    )
-
+                            ),
+                          ],
+                        ),
+                )
               : const Center(
                   child: CircularProgressIndicator(
                     color: Colors.black,
@@ -159,8 +168,7 @@ class AllChatsPage extends StatelessWidget {
     OwnerId user = OwnerId.fromJson({});
 
     for (var i = 0; i < allChatsModel.users.length; i++) {
-      if (allChatsModel.users.elementAt(i) !=
-          Get.find<AuthController>().usermodel.value!.id!) {
+      if (allChatsModel.userIds.elementAt(i) != _chatController.userId) {
         user = OwnerId.fromJson(allChatsModel.users.elementAt(i));
         user.id = allChatsModel.users.elementAt(i)["id"];
         printOut("other user chat ${user.userName}");

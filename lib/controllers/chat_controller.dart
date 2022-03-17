@@ -64,13 +64,16 @@ class ChatController extends GetxController {
     });
   }
 
-  getChatById(String id) {
+  Future<void> getChatById(String id) async {
     currentChatLoading.value = true;
     currentChat.value = [];
 
     printOut("PAth $id");
 
     db.collection("chats/$id/messages").get().then((snapshot) {
+
+      var chats = [];
+
       for (var i = 0; i < snapshot.docs.length; i++) {
         var documentSnapshot = snapshot.docs.elementAt(i);
 
@@ -80,8 +83,13 @@ class ChatController extends GetxController {
             documentSnapshot.get("message"),
             documentSnapshot.get("seen"),
             documentSnapshot.get("sender"));
-        currentChat.add(chatRoomModel);
+
+        chats.add(chatRoomModel);
       }
+      chats.sort((a, b) => a.date
+          .compareTo(b.date));
+
+      currentChat.value = chats;
     });
     currentChatLoading.value = false;
   }

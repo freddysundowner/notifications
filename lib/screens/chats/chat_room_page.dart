@@ -16,6 +16,7 @@ class ChatRoomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _chatController.readChats();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -41,7 +42,7 @@ class ChatRoomPage extends StatelessWidget {
                               ChatRoomModel chat =
                                   _chatController.currentChat.elementAt(index);
                               return Align(
-                                alignment: chat.sender ==
+                                alignment: chat.sender !=
                                         _chatController.userId
                                     ? Alignment.centerLeft
                                     : Alignment.centerRight,
@@ -54,14 +55,15 @@ class ChatRoomPage extends StatelessWidget {
                                         width: 0.5.sw,
                                         decoration: BoxDecoration(
                                             color: chat.sender ==
-                                                _chatController.userId ? Theme.of(context).primaryColor : Colors.black54,
+                                                _chatController.userId ? Theme.of(context).primaryColor : Colors.black26,
                                             borderRadius: BorderRadius.circular(10)),
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
                                           child: Text(
                                             chat.message,
                                             style: TextStyle(
-                                                color: Colors.white, fontSize: 16.sp),
+                                                color: chat.sender ==
+                                                    _chatController.userId ? Colors.white : Colors.black, fontSize: 16.sp),
                                           ),
                                         ),
                                       ),
@@ -129,17 +131,24 @@ class ChatRoomPage extends StatelessWidget {
                       messageController.text = "";
                     }
                   },
-                  child: Container(
-                    height: 0.07.sh,
-                    width: 0.12.sw,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: const Center(
-                        child: Icon(
-                      Ionicons.send,
-                      color: Colors.white,
-                    )),
+                  child: Obx(() {
+                      return Container(
+                        height: 0.07.sh,
+                        width: 0.12.sw,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(30)),
+                        child: _chatController.sendingMessage.isFalse ? const Center(
+                            child: Icon(
+                          Ionicons.send,
+                          color: Colors.white,
+                        )) : Transform.scale(
+                            scale: 0.3,
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                            )),
+                      );
+                    }
                   ),
                 )
               ],

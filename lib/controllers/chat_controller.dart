@@ -19,6 +19,7 @@ class ChatController extends GetxController {
   var currentChat = [].obs;
   var currentChatUsers = [].obs;
   var currentChatId = "".obs;
+  var sendingMessage = false.obs;
 
   @override
   void onInit() {
@@ -34,7 +35,7 @@ class ChatController extends GetxController {
         .collection("chats")
         .where("userIds", arrayContains: userId)
         .get()
-        .then(( querySnapshot) {
+        .then((querySnapshot) {
       gettingChats.value = false;
 
       printOut("Chats loaded ${querySnapshot.docs.length}");
@@ -48,18 +49,15 @@ class ChatController extends GetxController {
             snapshot.get("lastMessageTime"),
             snapshot.get("lastSender"),
             snapshot.get("userIds"),
-            snapshot.get("users"));
-
-
+            snapshot.get("users"),
+            snapshot.get(userId) ?? 0);
 
         newChats.add(allChatsModel);
       }
 
-      newChats.sort((a, b) => b.lastMessageTime
-          .compareTo(a.lastMessageTime));
+      newChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
 
       allUserChats.value = newChats;
-
     }).onError((error, stackTrace) {
       gettingChats.value = false;
       printOut("Error getting all chats $error $stackTrace");
@@ -73,7 +71,6 @@ class ChatController extends GetxController {
     printOut("PAth $id");
 
     db.collection("chats/$id/messages").get().then((snapshot) {
-
       var chats = [];
 
       for (var i = 0; i < snapshot.docs.length; i++) {
@@ -88,8 +85,7 @@ class ChatController extends GetxController {
 
         chats.add(chatRoomModel);
       }
-      chats.sort((a, b) => a.date
-          .compareTo(b.date));
+      chats.sort((a, b) => a.date.compareTo(b.date));
 
       currentChat.value = chats;
     });
@@ -121,7 +117,18 @@ class ChatController extends GetxController {
     }
   }
 
+  readChats() async {
+    await db
+        .collection("chats")
+        .doc(currentChatId.value)
+        .set({userId: 0}, SetOptions(merge: true));
+
+    printOut("Chat messages read");
+  }
+
   sendMessage(String message, OwnerId otherUser) {
+    sendingMessage.value = true;
+
     if (currentChatId.value == "") {
       String genId = db.collection("chats").doc().id;
       currentChatId.value = genId;
@@ -144,10 +151,13 @@ class ChatController extends GetxController {
         .add(newChat.toMap())
         .then((value) {
       currentChat.add(newChat);
+      sendingMessage.value = false;
+
       db.collection("chats").doc(currentChatId.value).set({
         "lastMessage": message,
         "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
-        "lastSender": Get.find<AuthController>().usermodel.value!.id
+        "lastSender": Get.find<AuthController>().usermodel.value!.id,
+        otherUser.id!: FieldValue.increment(1)
       }, SetOptions(merge: true));
       printOut("Chat message saved");
     });
@@ -160,7 +170,10 @@ class ChatController extends GetxController {
       "id": chatId,
       "lastMessage": message,
       "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
-      "lastSender": userId, "userIds": [userId, otherUser.id],
+      "lastSender": userId,
+      "userIds": [userId, otherUser.id],
+      userId: 0,
+      otherUser.id!: 0,
       "users": [
         {
           "id": currentUser.id,

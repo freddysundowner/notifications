@@ -20,6 +20,17 @@ class UserAPI {
     return jsonDecode(users);
   }
 
+  getUserProfile(String uid) async {
+    var user =
+    await DbBase().databaseRequest(userById + uid, DbBase().getRequestType);
+
+    if (user == null) {
+      return null;
+    }  else {
+      return jsonDecode(user);
+    }
+  }
+
   searchUser(String text) async {
     var users =
     await DbBase().databaseRequest(searchUsersByFirstName + text, DbBase().getRequestType);

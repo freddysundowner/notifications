@@ -130,12 +130,12 @@ class ShopId {
 
   factory ShopId.fromJson(Map<String, dynamic> json) => ShopId(
         id: json["_id"],
-        name: json["name"],
-        email: json["email"],
-        phoneNumber: json["phoneNumber"],
-        location: json["location"],
-        image: json["image"],
-        description: json["description"],
+        name: json["name"] ?? "",
+        email: json["email"] ?? "",
+        phoneNumber: json["phoneNumber"] ?? "",
+        location: json["location"] ?? "",
+        image: json["image"] ?? "",
+        description: json["description"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

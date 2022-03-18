@@ -21,11 +21,11 @@ class ImageSwipe extends StatelessWidget {
               productController.selectedPage.value = num;
             },
             children: [
-              if (imageList.length == 0)
+              if (imageList.isEmpty)
                 Container(
                   child: Image.asset(imageplaceholder),
                 ),
-              if (imageList.length > 0)
+              if (imageList.isNotEmpty)
                 for (var i = 0; i < imageList.length; i++)
                   Container(
                     child: CachedNetworkImage(

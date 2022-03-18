@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/user.dart';
 
 class AllChatsModel {
@@ -7,9 +8,10 @@ class AllChatsModel {
   String lastSender;
   List<dynamic> userIds;
   List<dynamic> users;
+  int unread;
 
   AllChatsModel(this.id, this.lastMessage,
-      this.lastMessageTime, this.lastSender, this.userIds, this.users);
+      this.lastMessageTime, this.lastSender, this.userIds, this.users, this.unread);
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,6 +32,7 @@ class AllChatsModel {
       map['lastMessage'] as String,
       map['userIds'] as List<dynamic>,
       map['users'] as List<UserModel>,
+      map[FirebaseAuth.instance.currentUser!.uid] as int
     );
   }
 }

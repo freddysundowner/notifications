@@ -138,9 +138,7 @@ class AuthController extends GetxController {
           return Scaffold(
             backgroundColor: primarycolor,
             body: Center(
-              child: Container(
-                child: CircularProgressIndicator(),
-              ),
+              child: CircularProgressIndicator(),
             ),
           );
         }
@@ -152,4 +150,5 @@ class AuthController extends GetxController {
       },
     );
   }
+
 }

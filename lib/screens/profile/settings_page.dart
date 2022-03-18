@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen.dart';
+import 'package:fluttergistshop/screens/profile/orders_sceen.dart';
 import 'package:get/get.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -95,7 +97,9 @@ class SettingsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(OrdersScreen());
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -108,7 +112,9 @@ class SettingsPage extends StatelessWidget {
                     ),
                     const Divider(),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(ManageAddressesScreen());
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -184,7 +190,7 @@ class SettingsPage extends StatelessWidget {
                   onTap: () {
                     Get.defaultDialog(onConfirm: () => authController.signOut(),
                         title: "Log out",
-                    content: Text("Are you sure you want to log out?"),
+                    content: const Text("Are you sure you want to log out?"),
                     onCancel: () => Get.back(), textConfirm: "LogOut"
                     );
                   },

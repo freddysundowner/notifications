@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:fluttergistshop/screens/profile/orders_sceen.dart';
 import 'package:get/get.dart';
 
@@ -111,7 +112,9 @@ class SettingsPage extends StatelessWidget {
                     ),
                     const Divider(),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(ManageAddressesScreen());
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

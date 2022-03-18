@@ -49,7 +49,6 @@ class Profile extends StatelessWidget {
           Obx(() {
               return _userController.profileLoading.isFalse && _userController.currentProfile.value.id == authController.currentuser!.id ?InkWell(
                 onTap: () {
-                 // authController.signOut();
                   Get.to(SettingsPage());
                 },
                 child: const Icon(

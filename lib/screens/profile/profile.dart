@@ -3,23 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
-import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/product_card.dart';
 import 'package:get/get.dart';
 
 class Profile extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
-  Profile({Key? key}) : super(key: key);
+  UserModel profile;
+
+
+  Profile(this.profile, {Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          if (profile.id == authController.currentuser!.id)
           InkWell(
             onTap: () {
               if (authController.currentuser!.shopId != null &&
@@ -36,6 +41,7 @@ class Profile extends StatelessWidget {
           SizedBox(
             width: 15.w,
           ),
+          if (profile.id == authController.currentuser!.id)
           InkWell(
             onTap: () {
               authController.signOut();
@@ -60,10 +66,11 @@ class Profile extends StatelessWidget {
             children: [
               InkWell(
                   onTap: () {
-                    Get.to(() => ChageProfileImage());
+                    if (profile.id == authController.currentuser!.id)
+                      Get.to(() => ChageProfileImage());
                   },
                   child: CachedNetworkImage(
-                    imageUrl: authController.currentuser!.profilePhoto!,
+                    imageUrl: profile.profilePhoto!,
                     imageBuilder: (context, imageProvider) => Container(
                       width: 120.0,
                       height: 120.0,
@@ -80,13 +87,13 @@ class Profile extends StatelessWidget {
                     ),
                   )),
               Text(
-                authController.currentuser!.firstName! +
+                profile.firstName! +
                     " " +
-                    authController.currentuser!.lastName!,
+                    profile.lastName!,
                 style: TextStyle(fontSize: 18.sp, color: Colors.black),
               ),
               Text(
-                "@${authController.currentuser!.userName!}",
+                "@${profile.userName!}",
                 style: TextStyle(fontSize: 14.sp, color: Colors.black),
               ),
               SizedBox(
@@ -97,7 +104,7 @@ class Profile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "2",
+                        profile.following != null ? profile.following!.length.toString() : "0",
                         style: TextStyle(
                             fontSize: 18.sp,
                             color: primarycolor,
@@ -121,7 +128,7 @@ class Profile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "2",
+                        profile.followers != null ? profile.followers!.length.toString() : "0",
                         style: TextStyle(
                             fontSize: 18.sp,
                             color: primarycolor,
@@ -148,7 +155,7 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    authController.currentuser!.bio!,
+                    profile.bio!,
                     style: TextStyle(fontSize: 15.sp),
                   ),
                 ],
@@ -165,7 +172,7 @@ class Profile extends StatelessWidget {
                     onTap: () => Get.to(
                       () => MyProducts(
                           title:
-                              "${authController.currentuser!.firstName} Products",
+                              "${profile.firstName} Products",
                           edit: false),
                     ),
                     child: Text("View all",
@@ -180,7 +187,7 @@ class Profile extends StatelessWidget {
                   initState: (_) async =>
                       Get.find<ProductController>().products =
                           await ProductController.getProductsByShop(
-                              authController.currentuser!.shopId!.id),
+                              profile.shopId!.id),
                   builder: (_) {
                     print(_.products.length);
                     if (_.products.length == 0) {

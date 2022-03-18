@@ -84,7 +84,7 @@ class HomePage extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.to(() => Profile());
+                Get.to(() => Profile(authController.currentuser!));
               },
               child: CachedNetworkImage(
                 imageUrl: authController.currentuser!.profilePhoto!,

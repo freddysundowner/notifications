@@ -131,17 +131,24 @@ class ChatRoomPage extends StatelessWidget {
                       messageController.text = "";
                     }
                   },
-                  child: Container(
-                    height: 0.07.sh,
-                    width: 0.12.sw,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: const Center(
-                        child: Icon(
-                      Ionicons.send,
-                      color: Colors.white,
-                    )),
+                  child: Obx(() {
+                      return Container(
+                        height: 0.07.sh,
+                        width: 0.12.sw,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(30)),
+                        child: _chatController.sendingMessage.isFalse ? const Center(
+                            child: Icon(
+                          Ionicons.send,
+                          color: Colors.white,
+                        )) : Transform.scale(
+                            scale: 0.3,
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                            )),
+                      );
+                    }
                   ),
                 )
               ],

@@ -72,7 +72,7 @@ class FullProduct extends StatelessWidget {
                   ),
                 ),
               ),
-              if (product.variations!.length > 0)
+              if (product.variations!.isNotEmpty)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -110,12 +110,12 @@ class FullProduct extends StatelessWidget {
                         width: 50.0.w,
                         height: 50.0.h,
                         decoration: BoxDecoration(
-                          color: Color(0xFFDCDCDC),
+                          color: const Color(0xFFDCDCDC),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         alignment: Alignment.center,
                         child: Image(
-                          image: AssetImage(
+                          image: const AssetImage(
                             "assets/images/tab_saved.png",
                           ),
                           height: 22.0.h,
@@ -140,7 +140,7 @@ class FullProduct extends StatelessWidget {
                         },
                         child: Container(
                           height: 50.0.h,
-                          margin: EdgeInsets.only(
+                          margin: const EdgeInsets.only(
                             left: 16.0,
                           ),
                           decoration: BoxDecoration(
@@ -164,7 +164,7 @@ class FullProduct extends StatelessWidget {
             ],
           ),
           CustomActionBar(
-            title: 'nn',
+            title: product.name!,
             qty: product.quantity.toString(),
           )
         ],

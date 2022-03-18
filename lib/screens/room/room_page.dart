@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
@@ -275,23 +276,27 @@ class RoomPage extends StatelessWidget {
                       .images!
                       .length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white),
-                        child: Center(
-                          child: Image.network(
-                            imageUrl +
-                                _hc.currentRoom.value.productIds!
-                                    .elementAt(0)
-                                    .images!
-                                    .elementAt(index),
-                            height: 0.08.sh,
-                            width: 0.12.sw,
-                            fit: BoxFit.fill,
+                    return InkWell(
+                      onTap: () => Get.to(FullProduct(product: _hc.currentRoom.value.productIds!
+                          .elementAt(0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white),
+                          child: Center(
+                            child: Image.network(
+                              imageUrl +
+                                  _hc.currentRoom.value.productIds!
+                                      .elementAt(0)
+                                      .images!
+                                      .elementAt(index),
+                              height: 0.08.sh,
+                              width: 0.12.sw,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         ),
                       ),

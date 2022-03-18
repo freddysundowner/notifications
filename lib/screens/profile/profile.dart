@@ -29,7 +29,7 @@ class Profile extends StatelessWidget {
             onTap: () {
               if (authController.currentuser!.shopId != null &&
                   authController.currentuser!.shopId != "") {
-                Get.to(() => ShopView());
+                Get.to(() => ShopView(authController.currentuser!.shopId!));
               }
             },
             child: Icon(

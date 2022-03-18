@@ -14,6 +14,7 @@ import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.d
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
+import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/button.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -56,11 +57,14 @@ class HomePage extends StatelessWidget {
             ),
           ),
           actions: [
-            Image.asset(
-              "assets/icons/wallet_icon.png",
-              color: Colors.grey,
-              width: 0.06.sw,
-              height: 0.005.sh,
+            InkWell(
+              onTap: () => Get.to(WalletPage()),
+              child: Image.asset(
+                "assets/icons/wallet_icon.png",
+                color: Colors.grey,
+                width: 0.06.sw,
+                height: 0.005.sh,
+              ),
             ),
             SizedBox(
               width: 0.05.sw,

@@ -11,6 +11,7 @@ const register = baseUrl + "/registerv1";
 const address = baseUrl + "/address/";
 const addresses = address + "/all/";
 const activities = baseUrl + "/activities";
+const transactions = baseUrl + "/transactions";
 
 const allRooms = rooms + "/";
 const roomById = rooms + "/rooms/";
@@ -37,3 +38,5 @@ const searchUsersByFirstName = user + "/search/";
 const userProducts = product + "/get/all/";
 
 const userActivities = activities + "/to/";
+
+const userTransactions = transactions + "/";

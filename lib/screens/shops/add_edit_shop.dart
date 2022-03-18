@@ -5,6 +5,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
+import 'package:fluttergistshop/services/firestore_files_access_service.dart';
+import 'package:fluttergistshop/services/local_files_access_service.dart';
+import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
@@ -16,7 +20,6 @@ import '../../utils/utils.dart';
 enum NewShopState { Default, DB, PICK }
 
 class NewShop extends StatelessWidget {
-  late XFile image;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ShopController shopController = Get.find<ShopController>();
   AuthController authController = Get.find<AuthController>();
@@ -25,7 +28,6 @@ class NewShop extends StatelessWidget {
 
   NewShopState state = NewShopState.Default;
   bool selected = false;
-  late String _name, _imageUrl, _mobile, _email;
 
   void showSnackBar(String string, String color) {
     var clr = Colors.teal;
@@ -53,21 +55,48 @@ class NewShop extends StatelessWidget {
       _scaffoldKey.currentState!.showSnackBar(snackBar);
   }
 
-  Future<void> _selectImage() async {
-    XFile? image = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 40);
-    image = (await ImageCropper().cropImage(
-      sourcePath: image!.path,
-      // ratioX: 1.0,
-      // ratioY: 1.0,
-      // maxWidth: 512,
-      // maxHeight: 512,
-      //   toolbarColor: Colors.purple,
-      // toolbarWidgetColor: Colors.white,
-    )) as XFile?;
-    image = image;
-    state = NewShopState.PICK;
-    selected = true;
+  Widget buildDisplayPictureAvatar(BuildContext context) {
+    ImageProvider? backImage;
+    if (shopController.chosenImage.path != "") {
+      print("one");
+      backImage = MemoryImage(shopController.chosenImage.readAsBytesSync());
+    } else if (authController.currentuser!.shopId!.image != null &&
+        authController.currentuser!.shopId!.image.isNotEmpty) {
+      print("two ${authController.currentuser!.shopId!.image}");
+      final String? url = authController.currentuser!.shopId!.image;
+      if (url != null) backImage = NetworkImage(url);
+    }
+    print("backImage $backImage");
+    return CircleAvatar(
+      radius: 100,
+      backgroundColor: Colors.grey,
+      backgroundImage: backImage ?? AssetImage(imageplaceholder),
+    );
+  }
+
+  void getImageFromUser(BuildContext context) async {
+    String path;
+    String snackbarMessage = "Image picked";
+    try {
+      path = await choseImageFromLocalFiles(context,
+          aspectration: CropAspectRatio(ratioX: 3, ratioY: 2));
+      if (path == null) {
+        throw LocalImagePickingUnknownReasonFailureException();
+      }
+    } finally {
+      if (snackbarMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+    }
+    if (path == null) {
+      return;
+    }
+    shopController.setChosenImage = File(path);
+    // bodyState.setChosenImage = File(path);
   }
 
   @override
@@ -110,6 +139,7 @@ class NewShop extends StatelessWidget {
                 }
                 try {
                   print("add shop response ${response}");
+
                   await showDialog(
                     context: context,
                     builder: (context) {
@@ -167,39 +197,12 @@ class NewShop extends StatelessWidget {
                     )
                   ]),
                   alignment: Alignment.center,
-                  child: Stack(
-                    children: [
-                      state == NewShopState.DB
-                          ? CircleAvatar(
-                              backgroundImage: NetworkImage(_imageUrl),
-                              radius: 60,
-                            )
-                          : state == NewShopState.Default
-                              ? CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      "https://image.freepik.com/free-vector/doctor-character-background_1270-84.jpg"),
-                                  radius: 60,
-                                )
-                              : CircleAvatar(
-                                  radius: 60,
-                                  backgroundImage: FileImage(File(image.path)),
-                                ),
-                      Positioned(
-                        bottom: 0,
-                        right: -15,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.add_photo_alternate,
-                            color: Colors.red,
-                            size: 35.0,
-                          ),
-                          onPressed: () {
-                            _selectImage();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: Obx(() => GestureDetector(
+                        child: buildDisplayPictureAvatar(context),
+                        onTap: () {
+                          getImageFromUser(context);
+                        },
+                      )),
                 ),
               ],
             )),
@@ -461,11 +464,5 @@ class NewShop extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(StringProperty('_imageUrl', _imageUrl));
   }
 }

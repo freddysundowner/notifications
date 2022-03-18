@@ -5,7 +5,7 @@ const String appName = "GistShop";
 const String agoraAppID = "eb2b573198f24c98a285c82094696299";
 const String currencySymbol = "GC ";
 const String currencyName = "Gistcoins ";
-const String imageplaceholder = "assets/images/productavatar.png";
+const String imageplaceholder = "assets/images/productavatar.jpeg";
 const String userimageplaceholder = "assets/images/userimageplaceholder.jpeg";
 
 // Form Error

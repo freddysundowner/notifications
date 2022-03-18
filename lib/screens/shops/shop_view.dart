@@ -38,15 +38,15 @@ class ShopView extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
+                  Obx(() => Container(
                       width: 100.0,
                       height: 100.0,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
                               fit: BoxFit.fill,
-                              image: CachedNetworkImageProvider(
-                                  "https://i.imgur.com/BoN9kdC.png")))),
+                              image: CachedNetworkImageProvider(authController
+                                  .currentuser!.shopId!.image))))),
                   SizedBox(
                     width: 20.w,
                   ),

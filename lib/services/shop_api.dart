@@ -14,16 +14,19 @@ class ShopApi {
         endpoint: config.shop + FirebaseAuth.instance.currentUser!.uid,
         body: shopdata);
     print(response);
-    return response;
+    return jsonDecode(response);
   }
 
   static updateShop(Map<String, dynamic> shopdata, String shopid) async {
-    var response = await Api.callApi(
-        method: config.put,
-        endpoint: config.updateshop + shopid,
+    var response = await DbBase().databaseRequest(
+        config.updateshop + shopid, DbBase().patchRequestType,
         body: shopdata);
-    print(response);
-    return response;
+    // var response = await Api.callApi(
+    //     method: config.put,
+    //     endpoint: config.updateshop + shopid,
+    //     body: shopdata);
+    print("updateShop $response");
+    return jsonDecode(response);
   }
 
   static getProductsByShop(String shopid) async {
@@ -34,16 +37,20 @@ class ShopApi {
   }
 
   searchShop(String text) async {
-    var shops =
-    await DbBase().databaseRequest(searchShopByName + text, DbBase().getRequestType);
+    var shops = await DbBase()
+        .databaseRequest(searchShopByName + text, DbBase().getRequestType);
 
     return jsonDecode(shops);
   }
 
   getAllShops() async {
     var shops =
-    await DbBase().databaseRequest(allShops, DbBase().getRequestType);
+        await DbBase().databaseRequest(allShops, DbBase().getRequestType);
 
     return jsonDecode(shops);
+  }
+
+  static String getPathForShop(String shopid) {
+    return "shop/$shopid";
   }
 }

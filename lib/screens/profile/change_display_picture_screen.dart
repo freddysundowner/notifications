@@ -12,6 +12,7 @@ import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class ChageProfileImage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
@@ -121,9 +122,10 @@ class ChageProfileImage extends StatelessWidget {
 
   void getImageFromUser(BuildContext context) async {
     String path;
-    String snackbarMessage = "";
+    String snackbarMessage = "Image picked";
     try {
-      path = await choseImageFromLocalFiles(context);
+      path = await choseImageFromLocalFiles(context,
+          aspectration: CropAspectRatio(ratioX: 3, ratioY: 2));
       if (path == null) {
         throw LocalImagePickingUnknownReasonFailureException();
       }

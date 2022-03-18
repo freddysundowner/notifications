@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/models/shop.dart';
+import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -13,6 +17,12 @@ class ShopController extends GetxController {
   var isSearchingShop = false.obs;
   var allShops = [].obs;
 
+  Rx<File> _chosenImage = Rx(File(""));
+  File get chosenImage => _chosenImage.value;
+  set setChosenImage(File img) {
+    _chosenImage.value = img;
+  }
+
   TextEditingController nameController = TextEditingController(),
       mobileController = TextEditingController(),
       descriptionController = TextEditingController(),
@@ -20,7 +30,6 @@ class ShopController extends GetxController {
       emailController = TextEditingController();
 
   TextEditingController searchShopController = TextEditingController();
-
 
   saveShop() async {
     try {
@@ -34,6 +43,10 @@ class ShopController extends GetxController {
       var response = await ShopApi.saveShop(productdata);
       error.value = "";
       if (response["success"]) {
+        final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
+            chosenImage, ShopApi.getPathForShop(response["data"]["_id"]));
+        await ShopApi.updateShop(
+            {"image": downloadUrl}, response["data"]["_id"]);
         Get.back();
       } else {
         error.value = response["message"];
@@ -44,13 +57,22 @@ class ShopController extends GetxController {
 
   updateShop(String id) async {
     try {
+      String imageurl = Get.find<AuthController>().currentuser!.shopId!.image;
+      if (chosenImage.path.isNotEmpty) {
+        imageurl = await FirestoreFilesAccess().uploadFileToPath(
+            chosenImage,
+            ShopApi.getPathForShop(
+                Get.find<AuthController>().currentuser!.shopId!.id));
+      }
       Map<String, dynamic> productdata = new Shop(
               name: nameController.text,
               phoneNumber: mobileController.text,
               description: descriptionController.text,
+              image: imageurl,
               location: daddressController.text,
               email: emailController.text)
           .toJson();
+      print("productdata $productdata");
       var response = await ShopApi.updateShop(productdata, id);
       error.value = "";
       if (response["success"]) {
@@ -63,12 +85,12 @@ class ShopController extends GetxController {
   }
 
   searchShops() async {
-
     if (searchShopController.text.trim().isNotEmpty) {
       try {
         isSearchingShop.value = true;
 
-        var shops = await ShopApi().searchShop(searchShopController.text.trim());
+        var shops =
+            await ShopApi().searchShop(searchShopController.text.trim());
 
         if (shops != null) {
           searchedShops.value = shops;
@@ -87,7 +109,6 @@ class ShopController extends GetxController {
   }
 
   getShops() async {
-
     if (allShops.isEmpty) {
       try {
         isSearchingShop.value = true;
@@ -109,8 +130,6 @@ class ShopController extends GetxController {
         printOut(e);
         isSearchingShop.value = false;
       }
-    } else{
-
-    }
+    } else {}
   }
 }

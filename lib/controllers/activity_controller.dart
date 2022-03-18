@@ -1,10 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/services/activities_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-
-import 'auth_controller.dart';
 
 class ActivityController extends GetxController {
   var allActivitiesLoading = false.obs;
@@ -22,7 +21,7 @@ class ActivityController extends GetxController {
       allActivitiesLoading.value = true;
 
       var activities = await ActivitiesAPI().getAllUserActivities(
-          Get.find<AuthController>().usermodel.value!.id!);
+          FirebaseAuth.instance.currentUser!.uid);
       if (activities != null) {
 
         allActivities.value = activities;

@@ -18,6 +18,8 @@ class RoomController extends GetxController {
   RtcEngineContext context = RtcEngineContext(agoraAppID);
   late RtcEngine engine;
 
+  var currentProfile = "".obs;
+  var profileLoading = false.obs;
   var isLoading = false.obs;
   var allUsersLoading = false.obs;
   var allUsers = [].obs;
@@ -179,7 +181,7 @@ class RoomController extends GetxController {
           currentRoom.value = room;
         }
       } else {
-        Get.snackbar('', "Error getting your room, Try again later");
+        Get.snackbar('', "Room has ended");
       }
       isCurrentRoomLoading.value = false;
       update();
@@ -337,6 +339,30 @@ class RoomController extends GetxController {
     currentRoom.value = RoomModel();
   }
 
+
+  Future<void> joinRoom(String roomId) async {
+    await fetchRoom(roomId);
+
+    OwnerId currentUser = OwnerId(
+        id: Get.find<AuthController>().usermodel.value!.id,
+        bio: Get.find<AuthController>().usermodel.value!.bio,
+        email: Get.find<AuthController>().usermodel.value!.email,
+        firstName: Get.find<AuthController>().usermodel.value!.firstName,
+        lastName: Get.find<AuthController>().usermodel.value!.lastName,
+        userName: Get.find<AuthController>().usermodel.value!.userName,
+        profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
+
+    await addUserToRoom(currentUser);
+
+    if (currentRoom.value.token != null) {
+      Get.to(RoomPage(
+        roomId: roomId,
+      ));
+    } else {
+      Get.snackbar('', "There was an error adding you to the room, Try again later");
+    }
+  }
+
   @override
   void dispose() {
     leaveAgora();
@@ -459,4 +485,24 @@ class RoomController extends GetxController {
       printOut('userOffline $uid');
     }));
   }
+
+  getUserProfile(String userId) async {
+
+    try {
+      profileLoading.value = true;
+      var user = await UserAPI().getUserProfile(userId);
+
+      if (user == null) {
+        currentProfile.value = "";
+      } else {
+        currentProfile.value = user;
+      }
+
+      profileLoading.value = false;
+    } catch(e, s) {
+
+      printOut("Error getting user $userId profile $e $s");
+    }
+  }
+
 }

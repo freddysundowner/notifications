@@ -150,4 +150,5 @@ class AuthController extends GetxController {
       },
     );
   }
+
 }

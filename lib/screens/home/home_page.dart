@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
@@ -12,7 +13,6 @@ import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
-import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -26,6 +26,7 @@ class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
+  final UserController _userController = Get.put(UserController());
   final ShopController _shopController = Get.find<ShopController>();
 
   OwnerId currentUser = OwnerId(
@@ -84,7 +85,9 @@ class HomePage extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.to(() => Profile(authController.currentuser!));
+                _userController.getUserProfile(authController.currentuser!.id!);
+                Get.to(Profile());
+
               },
               child: CachedNetworkImage(
                 imageUrl: authController.currentuser!.profilePhoto!,
@@ -203,7 +206,7 @@ class HomePage extends StatelessWidget {
 
                   return InkWell(
                     onTap: () async {
-                      await joinRoom(roomModel);
+                      await _homeController.joinRoom(roomModel.id!);
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -336,34 +339,11 @@ class HomePage extends StatelessWidget {
               ])));
   }
 
-  Future<void> joinRoom(RoomModel roomModel) async {
-    await _homeController.fetchRoom(roomModel.id!);
-
-    OwnerId currentUser = OwnerId(
-        id: Get.find<AuthController>().usermodel.value!.id,
-        bio: Get.find<AuthController>().usermodel.value!.bio,
-        email: Get.find<AuthController>().usermodel.value!.email,
-        firstName: Get.find<AuthController>().usermodel.value!.firstName,
-        lastName: Get.find<AuthController>().usermodel.value!.lastName,
-        userName: Get.find<AuthController>().usermodel.value!.userName,
-        profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
-
-    await _homeController.addUserToRoom(currentUser);
-
-    if (_homeController.currentRoom.value.token != null) {
-      Get.to(RoomPage(
-        roomId: roomModel.id!,
-      ));
-    } else {
-      Get.snackbar('', "There was an error adding you to the room, Try again later");
-    }
-  }
-
   InkWell buildCurrentRoom(BuildContext context) {
     RoomModel room = _homeController.currentRoom.value;
     return InkWell(
       onTap: () async {
-        await joinRoom(room);
+        await _homeController.joinRoom(room.id!);
       },
       child: Container(
         decoration: const BoxDecoration(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
-import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -315,6 +315,7 @@ class RoomPage extends StatelessWidget {
 class RoomUser extends StatelessWidget {
   String title;
   final RoomController _homeController = Get.find<RoomController>();
+  final UserController _userController = Get.find<UserController>();
 
   RoomUser(this.title, {Key? key}) : super(key: key);
 
@@ -497,35 +498,8 @@ class RoomUser extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Get.back();
-                        Get.to(Profile(UserModel(followers: user.followers,
-                            following: user.following,
-                            wallet: user.wallet,
-                            currentRoom: user.currentRoom,
-                            facebook: user.facebook,
-                            instagram: user.instagram,
-                            linkedIn: user.linkedIn,
-                            twitter: user.twitter,
-                            id: user.id,
-                            firstName: user.firstName,
-                            lastName: user.lastName,
-                            bio: user.bio,
-                            userName: user.userName,
-                            email: user.email,
-                            password: user.password,
-                            phonenumber: user.phonenumber,
-                            createdAt: user.createdAt,
-                            shopId: ShopId(id: user.shopId ?? "",
-                                name: "",
-                                email: "",
-                                phoneNumber: "",
-                                location: "",
-                                image: "",
-                                description: ""),
-                            updatedAt: user.updatedAt,
-                            profilePhoto: user.profilePhoto,
-                            memberShip: user.memberShip,
-                            upgradedDate: user.upgradedDate)));
-
+                        _userController.getUserProfile(user.id!);
+                        Get.to(Profile());
                       },
                       child: Container(
                         height: 0.07.sh,

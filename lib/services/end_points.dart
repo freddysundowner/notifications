@@ -32,6 +32,7 @@ const searchShopByName = shop + "search/";
 const updateproduct = product + "products/";
 const updateproductimages = product + "images/";
 
+const userById = user + "/";
 const allUsers = user + "/";
 const searchUsersByFirstName = user + "/search/";
 

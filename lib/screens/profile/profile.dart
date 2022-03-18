@@ -8,6 +8,7 @@ import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
+import 'package:fluttergistshop/screens/profile/settings_page.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/product_card.dart';
@@ -48,7 +49,8 @@ class Profile extends StatelessWidget {
           Obx(() {
               return _userController.profileLoading.isFalse && _userController.currentProfile.value.id == authController.currentuser!.id ?InkWell(
                 onTap: () {
-                  authController.signOut();
+                 // authController.signOut();
+                  Get.to(SettingsPage());
                 },
                 child: const Icon(
                   Icons.settings,

@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/models/user.dart';
 
 RoomModel roomModelFromJson(String str) => RoomModel.fromJson(json.decode(str));
 
@@ -177,28 +178,4 @@ class OwnerId {
     "upgradedDate": upgradedDate,
   };
 
-}
-
-class ShopId {
-  ShopId({
-    this.id,
-    this.image,
-    this.description,
-  });
-
-  String? id;
-  String? image;
-  String? description;
-
-  factory ShopId.fromJson(Map<String, dynamic> json) => ShopId(
-    id: json["_id"],
-    image: json["image"],
-    description: json["description"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "image": image,
-    "description": description,
-  };
 }

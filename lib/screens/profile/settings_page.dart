@@ -184,7 +184,7 @@ class SettingsPage extends StatelessWidget {
                   onTap: () {
                     Get.defaultDialog(onConfirm: () => authController.signOut(),
                         title: "Log out",
-                    content: Text("Are you sure you want to log out?"),
+                    content: const Text("Are you sure you want to log out?"),
                     onCancel: () => Get.back(), textConfirm: "LogOut"
                     );
                   },

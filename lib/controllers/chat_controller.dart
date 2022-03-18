@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
@@ -11,7 +12,7 @@ import 'auth_controller.dart';
 
 class ChatController extends GetxController {
   FirebaseFirestore db = FirebaseFirestore.instance;
-  String userId = Get.find<AuthController>().usermodel.value!.id!;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   var allUserChats = [].obs;
   var gettingChats = false.obs;
   var currentChatLoading = false.obs;
@@ -33,13 +34,13 @@ class ChatController extends GetxController {
         .collection("chats")
         .where("userIds", arrayContains: userId)
         .get()
-        .then((QuerySnapshot querySnapshot) {
+        .then(( querySnapshot) {
       gettingChats.value = false;
 
       printOut("Chats loaded ${querySnapshot.docs.length}");
       allUserChats.value = [];
       for (var i = 0; i < querySnapshot.docs.length; i++) {
-        DocumentSnapshot snapshot = querySnapshot.docs.elementAt(i);
+        var snapshot = querySnapshot.docs.elementAt(i);
 
         AllChatsModel allChatsModel = AllChatsModel(
             snapshot.id,
@@ -48,6 +49,8 @@ class ChatController extends GetxController {
             snapshot.get("lastSender"),
             snapshot.get("userIds"),
             snapshot.get("users"));
+
+
 
         newChats.add(allChatsModel);
       }
@@ -63,15 +66,18 @@ class ChatController extends GetxController {
     });
   }
 
-  getChatById(String id) {
+  Future<void> getChatById(String id) async {
     currentChatLoading.value = true;
     currentChat.value = [];
 
     printOut("PAth $id");
 
-    db.collection("chats/$id/messages").get().then((QuerySnapshot snapshot) {
+    db.collection("chats/$id/messages").get().then((snapshot) {
+
+      var chats = [];
+
       for (var i = 0; i < snapshot.docs.length; i++) {
-        DocumentSnapshot documentSnapshot = snapshot.docs.elementAt(i);
+        var documentSnapshot = snapshot.docs.elementAt(i);
 
         ChatRoomModel chatRoomModel = ChatRoomModel(
             documentSnapshot.get("date"),
@@ -79,8 +85,13 @@ class ChatController extends GetxController {
             documentSnapshot.get("message"),
             documentSnapshot.get("seen"),
             documentSnapshot.get("sender"));
-        currentChat.add(chatRoomModel);
+
+        chats.add(chatRoomModel);
       }
+      chats.sort((a, b) => a.date
+          .compareTo(b.date));
+
+      currentChat.value = chats;
     });
     currentChatLoading.value = false;
   }

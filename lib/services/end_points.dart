@@ -26,10 +26,13 @@ const removeUserFromAudience = rooms + "/audience/remove/";
 const removeUserFromRaisedHands = rooms + "/raisedhans/remove/";
 
 const updateshop = shop + "shop/";
+const allShops = shop;
+const searchShopByName = shop + "search/";
 const updateproduct = product + "products/";
 const updateproductimages = product + "images/";
 
 const allUsers = user + "/";
+const searchUsersByFirstName = user + "/search/";
 
 const userProducts = product + "/get/all/";
 

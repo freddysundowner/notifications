@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
@@ -31,52 +30,55 @@ class ChatRoomPage extends StatelessWidget {
             flex: 1,
             child: Obx(() {
               return _chatController.currentChatLoading.isFalse
-                  ? _chatController.currentChat.isNotEmpty
-                      ? ListView.builder(
-                          padding: const EdgeInsets.all(8.0),
-                          itemCount: _chatController.currentChat.length,
-                          itemBuilder: (context, index) {
-                            printOut(_chatController.currentChat.length);
-                            ChatRoomModel chat =
-                                _chatController.currentChat.elementAt(index);
-                            return Align(
-                              alignment: chat.id ==
-                                      Get.find<AuthController>()
-                                          .usermodel
-                                          .value!
-                                          .id
-                                  ? Alignment.centerLeft
-                                  : Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: 0.5.sw,
-                                  decoration: BoxDecoration(
-                                      color: chat.id ==
-                                          Get.find<AuthController>()
-                                              .usermodel
-                                              .value!
-                                              .id ? Theme.of(context).primaryColor : Colors.black54,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                      chat.message,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16.sp),
-                                    ),
+                  ? RefreshIndicator(
+                    onRefresh: () => _chatController.getChatById(_chatController.currentChatId.value),
+                    child: _chatController.currentChat.isNotEmpty
+                        ? ListView.builder(
+                            padding: const EdgeInsets.all(8.0),
+                            itemCount: _chatController.currentChat.length,
+                            itemBuilder: (context, index) {
+                              printOut(_chatController.currentChat.length);
+                              ChatRoomModel chat =
+                                  _chatController.currentChat.elementAt(index);
+                              return Align(
+                                alignment: chat.sender ==
+                                        _chatController.userId
+                                    ? Alignment.centerLeft
+                                    : Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        width: 0.5.sw,
+                                        decoration: BoxDecoration(
+                                            color: chat.sender ==
+                                                _chatController.userId ? Theme.of(context).primaryColor : Colors.black54,
+                                            borderRadius: BorderRadius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Text(
+                                            chat.message,
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 16.sp),
+                                          ),
+                                        ),
+                                      ),
+                                      Text(convertTime(chat.date))
+                                    ],
                                   ),
                                 ),
-                              ),
-                            );
-                          })
-                      : Center(
-                          child: Text(
-                            "Nothing here",
-                            style:
-                                TextStyle(color: Colors.grey, fontSize: 16.sp),
+                              );
+                            })
+                        : Center(
+                            child: Text(
+                              "Nothing here",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 16.sp),
+                            ),
                           ),
-                        )
+                  )
                   : const Center(
                       child: CircularProgressIndicator(
                       color: Colors.black,

@@ -69,6 +69,9 @@ class RoomPage extends StatelessWidget {
               ),
               Row(
                 children: [
+                  (_homeController.currentRoom.value.speakerIds!
+                      .indexWhere((e) => e.id == currentUser.id) ==
+                      -1) ?
                   IconButton(
                     onPressed: () async {
                       if ((_homeController.currentRoom.value.hostIds!
@@ -84,7 +87,7 @@ class RoomPage extends StatelessWidget {
                       color: Colors.black54,
                       size: 30,
                     ),
-                  ),
+                  ) : Container(height: 0.06.sh,),
                   SizedBox(
                     width: 0.01.sw,
                   ),
@@ -119,7 +122,7 @@ class RoomPage extends StatelessWidget {
                                       -1) {
                                 try {
                                   _homeController.engine.disableAudio();
-                                } catch(e) {
+                                } catch (e) {
                                   printOut("Error disabling audio $e");
                                 }
                               }
@@ -178,10 +181,10 @@ class RoomPage extends StatelessWidget {
                             }),
                           )
                         : Transform.scale(
-                        scale: 0.1,
-                        child: const CircularProgressIndicator(
-                          color: Colors.black,
-                        ));
+                            scale: 0.1,
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ));
                   }),
                 ],
               )
@@ -199,7 +202,11 @@ class RoomPage extends StatelessWidget {
                 child: _homeController.currentRoom.value.id != null
                     ? ListView(children: [
                         _homeController.userJoinedRoom.isFalse
-                            ? const CircularProgressIndicator()
+                            ? Transform.scale(
+                            scale: 0.2,
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ))
                             : Container(),
                         RoomUser("Hosts"),
                         SizedBox(
@@ -393,13 +400,23 @@ class RoomUser extends StatelessWidget {
                                           user.elementAt(index).profilePhoto!),
                                     )),
                       SizedBox(
-                        height: 0.01.sh,
+                        height: 0.002.sh,
                       ),
-                      Center(
-                          child: Text(
-                        user.elementAt(index).userName!,
-                        style: TextStyle(color: Colors.black, fontSize: 14.sp),
-                      ))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                        child: Center(
+                            child: Text(
+                          user.elementAt(index).userName!.length > 10
+                              ? user
+                                      .elementAt(index)
+                                      .userName!
+                                      .substring(0, 9) +
+                                  "..."
+                              : user.elementAt(index).userName!,
+                          style:
+                              TextStyle(color: Colors.black, fontSize: 12.sp),
+                        )),
+                      )
                     ],
                   ),
                 );
@@ -495,9 +512,16 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              !(room.hostIds!
+                              room.hostIds!
                                       .indexWhere((e) => e.id == user.id) ==
-                                  0)
+                                  -1 &&
+                              room.hostIds!.indexWhere((e) =>
+                                      e.id ==
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .id) ==
+                                  0
                           ? InkWell(
                               onTap: () async {
                                 Get.back();

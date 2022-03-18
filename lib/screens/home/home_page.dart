@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
@@ -20,10 +21,12 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatelessWidget {
-  TextEditingController titleFieldController = TextEditingController();
+
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
+  final ShopController _shopController = Get.find<ShopController>();
+
   OwnerId currentUser = OwnerId(
       id: Get.find<AuthController>().usermodel.value!.id,
       bio: Get.find<AuthController>().usermodel.value!.bio,
@@ -45,6 +48,7 @@ class HomePage extends StatelessWidget {
           leading: InkWell(
             onTap: () {
               Get.to(() => ShopSearchResults());
+              _shopController.getShops();
             },
             child: const Icon(
               Ionicons.search,
@@ -396,10 +400,14 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     width: 0.01.sw,
                   ),
+                  (_homeController.currentRoom.value.speakerIds!
+                      .indexWhere((e) => e.id == currentUser.id) ==
+                      -1) ?
                   IconButton(
                     onPressed: () async {
-                      if (_homeController.currentRoom.value.hostIds!
-                          .contains(currentUser)) {
+                      if ((_homeController.currentRoom.value.hostIds!
+                          .indexWhere((e) => e.id == currentUser.id) ==
+                          0)) {
                         showRaisedHandsBottomSheet(context);
                       } else {
                         await _homeController.addUserToRaisedHands(currentUser);
@@ -410,7 +418,7 @@ class HomePage extends StatelessWidget {
                       color: Colors.black54,
                       size: 30,
                     ),
-                  ),
+                  ) : Container(height: 0.06.sh,),
                   SizedBox(
                     width: 0.01.sw,
                   ),
@@ -439,7 +447,11 @@ class HomePage extends StatelessWidget {
                           _homeController.currentRoom.value.speakerIds!
                                   .indexWhere((e) => e.id == currentUser.id) ==
                               -1) {
-                        _homeController.engine.disableAudio();
+                        try {
+                          _homeController.engine.disableAudio();
+                        } catch(e) {
+                          printOut("Error disabling audio $e");
+                        }
                       }
 
                       //If current room is loading, show a spinner
@@ -662,7 +674,7 @@ class HomePage extends StatelessWidget {
             ),
             children: [
               TextField(
-                controller: titleFieldController,
+                controller: _homeController.roomTitleController,
                 autofocus: true,
                 keyboardType: TextInputType.text,
                 decoration: const InputDecoration(
@@ -696,8 +708,6 @@ class HomePage extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Get.back();
-                        _homeController.newRoomTitle.value =
-                            titleFieldController.text;
                       },
                       child: Text(
                         "Okay".toUpperCase(),

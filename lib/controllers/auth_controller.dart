@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
@@ -120,7 +122,12 @@ class AuthController extends GetxController {
     FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+
     Get.offAll(Login());
+
+    dispose();
+    ChatController().dispose();
+
   }
 
   handleAuth() {

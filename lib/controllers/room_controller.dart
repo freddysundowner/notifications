@@ -21,6 +21,7 @@ class RoomController extends GetxController {
   var isLoading = false.obs;
   var allUsersLoading = false.obs;
   var allUsers = [].obs;
+  var searchedUsers = [].obs;
   var isCurrentRoomLoading = false.obs;
   var roomsList = [].obs;
   var currentRoom = RoomModel().obs;
@@ -41,6 +42,9 @@ class RoomController extends GetxController {
   var userProducts = [].obs;
   var userProductsLoading = false.obs;
   var userJoinedRoom = false.obs;
+
+  final TextEditingController searchChatUsersController = TextEditingController();
+  TextEditingController roomTitleController = TextEditingController();
 
   @override
   void onInit() {
@@ -68,8 +72,10 @@ class RoomController extends GetxController {
         hosts.add(element.id);
       }
 
+      printOut("Room title ${roomTitleController.text}");
+
       var roomData = {
-        "title": newRoomTitle.value,
+        "title": roomTitleController.text,
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -77,7 +83,7 @@ class RoomController extends GetxController {
         "raisedHands": [],
         "speakerIds": [],
         "invitedIds": [],
-        "shopId": Get.find<AuthController>().usermodel.value!.shopId ?? " ",
+        "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
         "status": true,
         "productPrice": roomPickedProductPrice.value,
         "productImages": roomProductImages
@@ -93,8 +99,9 @@ class RoomController extends GetxController {
         printOut("room token $token");
 
         if (token != null) {
+          printOut("room title ${roomData["title"]}");
           await RoomAPI()
-              .updateRoomById({"title": " ", "token": token}, roomId);
+              .updateRoomById({"title": roomData["title"], "token": token}, roomId);
 
           await fetchRoom(roomId);
 
@@ -216,28 +223,34 @@ class RoomController extends GetxController {
   }
 
   Future<void> addUserToSpeaker(OwnerId user) async {
-    currentRoom.value.speakerIds!.add(user);
     currentRoom.value.userIds!.remove(user);
 
-    currentRoom.refresh();
+    if ((currentRoom.value.speakerIds!
+        .indexWhere((element) => element.id == user.id) ==
+        -1)) {
+      currentRoom.value.speakerIds!.add(user);
 
-    //Add user to speakers
-    await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title ?? " ",
-      "speakerIds": [user.id],
-      "token": currentRoom.value.token
-    }, currentRoom.value.id!);
 
-    //Remove user from audience
-    await RoomAPI().removeUserFromAudienceInRoom({
-      "users": [user.id]
-    }, currentRoom.value.id!);
+      currentRoom.refresh();
 
+      //Add user to speakers
+      await RoomAPI().updateRoomById({
+        "title": currentRoom.value.title ?? " ",
+        "speakerIds": [user.id],
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
+
+      //Remove user from audience
+      await RoomAPI().removeUserFromAudienceInRoom({
+        "users": [user.id]
+      }, currentRoom.value.id!);
+    }
     //Remove user from RaisedHand
     await RoomAPI().removeUserFromRaisedHandsInRoom({
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
@@ -274,24 +287,29 @@ class RoomController extends GetxController {
   }
 
   Future<void> removeUserFromRaisedHands(OwnerId user) async {
-    currentRoom.value.speakerIds!.add(user);
     currentRoom.value.raisedHands!.remove(user);
 
-    currentRoom.refresh();
+    if ((currentRoom.value.speakerIds!
+        .indexWhere((element) => element.id == user.id) ==
+        -1)) {
+      currentRoom.value.speakerIds!.add(user);
 
-    //Add user to speakers
-    await RoomAPI().updateRoomById({
-      "title": currentRoom.value.title ?? " ",
-      "speakerIds": [user.id],
-      "token": currentRoom.value.token
-    }, currentRoom.value.id!);
 
-    //Remove user from RaisedHand
-    await RoomAPI().removeUserFromRaisedHandsInRoom({
-      "users": [user.id],
-      "token": currentRoom.value.token
-    }, currentRoom.value.id!);
+      currentRoom.refresh();
 
+      //Add user to speakers
+      await RoomAPI().updateRoomById({
+        "title": currentRoom.value.title ?? " ",
+        "speakerIds": [user.id],
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
+
+      //Remove user from RaisedHand
+      await RoomAPI().removeUserFromRaisedHandsInRoom({
+        "users": [user.id],
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
+    }
     //Remove user from RaisedHand
     await RoomAPI().removeUserFromAudienceInRoom({
       "users": [user.id],
@@ -343,6 +361,8 @@ class RoomController extends GetxController {
         } else {
           allUsers.value = [];
         }
+        searchedUsers.value = allUsers;
+
         allUsers.refresh();
         allUsersLoading.value = false;
 
@@ -352,6 +372,29 @@ class RoomController extends GetxController {
         allUsersLoading.value = false;
       }
     }
+  }
+
+  searchUsers() async {
+   if (searchChatUsersController.text.trim().isNotEmpty) {
+     try {
+       allUsersLoading.value = true;
+
+       var users = await UserAPI().searchUser(searchChatUsersController.text.trim());
+
+       if (users != null) {
+         searchedUsers.value = users;
+       } else {
+         searchedUsers.value = [];
+       }
+       searchedUsers.refresh();
+       allUsersLoading.value = false;
+
+       update();
+     } catch (e) {
+       printOut(e);
+       allUsersLoading.value = false;
+     }
+   }
   }
 
   Future<void> fetchUserProducts() async {

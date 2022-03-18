@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/shop.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -8,12 +9,18 @@ class ShopController extends GetxController {
   Rxn<Shop> _shop = Rxn();
   get shop => _shop.value;
   RxString error = "".obs;
+  var searchedShops = [].obs;
+  var isSearchingShop = false.obs;
+  var allShops = [].obs;
 
   TextEditingController nameController = TextEditingController(),
       mobileController = TextEditingController(),
       descriptionController = TextEditingController(),
       daddressController = TextEditingController(),
       emailController = TextEditingController();
+
+  TextEditingController searchShopController = TextEditingController();
+
 
   saveShop() async {
     try {
@@ -53,5 +60,57 @@ class ShopController extends GetxController {
       }
       return response;
     } catch (e) {}
+  }
+
+  searchShops() async {
+
+    if (searchShopController.text.trim().isNotEmpty) {
+      try {
+        isSearchingShop.value = true;
+
+        var shops = await ShopApi().searchShop(searchShopController.text.trim());
+
+        if (shops != null) {
+          searchedShops.value = shops;
+        } else {
+          searchedShops.value = [];
+        }
+        searchedShops.refresh();
+        isSearchingShop.value = false;
+
+        update();
+      } catch (e) {
+        printOut(e);
+        isSearchingShop.value = false;
+      }
+    }
+  }
+
+  getShops() async {
+
+    if (allShops.isEmpty) {
+      try {
+        isSearchingShop.value = true;
+
+        var shops = await ShopApi().getAllShops();
+
+        if (shops != null) {
+          allShops.value = shops;
+        } else {
+          allShops.value = [];
+        }
+        allShops.refresh();
+        isSearchingShop.value = false;
+
+        printOut("All shops length ${allShops.length}");
+
+        update();
+      } catch (e) {
+        printOut(e);
+        isSearchingShop.value = false;
+      }
+    } else{
+
+    }
   }
 }

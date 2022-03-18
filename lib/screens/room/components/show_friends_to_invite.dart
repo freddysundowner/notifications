@@ -32,16 +32,25 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Icon(
-                            Ionicons.people,
-                            color: Colors.grey,
+                          Row(
+                            children: [
+                              const Icon(
+                                Ionicons.people,
+                                color: Colors.grey,
+                              ),
+                              Text(
+                                "Invite friends",
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 14.sp),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Invite friends",
-                            style:
-                                TextStyle(color: Colors.grey, fontSize: 14.sp),
-                          )
+                          IconButton(onPressed: () {
+
+                          }, icon: const Icon(Icons.done))
+
                         ],
                       ),
                       SizedBox(

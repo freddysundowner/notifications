@@ -55,7 +55,7 @@ class AllChatsPage extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: getOtherUser(allChatsModel)
                                                   .profilePhoto ==
-                                              null
+                                              ""
                                           ? const CircleAvatar(
                                               radius: 25,
                                               backgroundColor:
@@ -96,34 +96,60 @@ class AllChatsPage extends StatelessWidget {
                                                 convertTime(allChatsModel
                                                     .lastMessageTime),
                                                 style: TextStyle(
-                                                    color: Colors.grey,
+                                                    color: allChatsModel.unread > 0 ? Theme.of(context).primaryColor : Colors.grey,
                                                     fontSize: 12.sp),
                                               )
                                             ],
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            Text(allChatsModel.lastSender ==
-                                                    _chatController.userId
-                                                ? "You: "
-                                                : getOtherUser(allChatsModel)
-                                                        .firstName! +
-                                                    ": ", style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 14.sp)),
-                                            Text(
-                                              allChatsModel.lastMessage.length >
-                                                      40
-                                                  ? allChatsModel.lastMessage
-                                                          .substring(0, 40) +
-                                                      "..."
-                                                  : allChatsModel.lastMessage,
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 14.sp),
-                                            ),
-                                          ],
+                                        SizedBox(
+                                          width: 0.7.sw,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                      allChatsModel.lastSender ==
+                                                              _chatController
+                                                                  .userId
+                                                          ? "You: "
+                                                          : getOtherUser(
+                                                                      allChatsModel)
+                                                                  .firstName! +
+                                                              ": ",
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14.sp)),
+                                                  Text(
+                                                    allChatsModel.lastMessage
+                                                                .length >
+                                                            40
+                                                        ? allChatsModel
+                                                                .lastMessage
+                                                                .substring(
+                                                                    0, 40) +
+                                                            "..."
+                                                        : allChatsModel
+                                                            .lastMessage,
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 14.sp),
+                                                  ),
+                                                ],
+                                              ),
+                                              allChatsModel.unread > 0 ? Container(
+                                                padding: const EdgeInsets.all(5),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(20),
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                                child: Center(child: Text(allChatsModel.unread.toString(),
+                                                  style: TextStyle(color: Colors.white, fontSize: 10.sp),)),
+                                              ) : Container()
+                                            ],
+                                          ),
                                         )
                                       ],
                                     )

@@ -48,7 +48,8 @@ class ChatController extends GetxController {
             snapshot.get("lastMessageTime"),
             snapshot.get("lastSender"),
             snapshot.get("userIds"),
-            snapshot.get("users"));
+            snapshot.get("users"),
+            snapshot.get(userId) ?? 0);
 
 
 
@@ -121,6 +122,15 @@ class ChatController extends GetxController {
     }
   }
 
+  readChats() async {
+    await db.collection("chats").doc(currentChatId.value).set({
+      userId: 0
+    }, SetOptions(merge: true));
+
+    printOut("Chat messages read");
+
+  }
+
   sendMessage(String message, OwnerId otherUser) {
     if (currentChatId.value == "") {
       String genId = db.collection("chats").doc().id;
@@ -143,11 +153,14 @@ class ChatController extends GetxController {
         .collection("chats/${currentChatId.value}/messages")
         .add(newChat.toMap())
         .then((value) {
+
       currentChat.add(newChat);
+
       db.collection("chats").doc(currentChatId.value).set({
         "lastMessage": message,
         "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
-        "lastSender": Get.find<AuthController>().usermodel.value!.id
+        "lastSender": Get.find<AuthController>().usermodel.value!.id,
+        otherUser.id!: FieldValue.increment(1) 
       }, SetOptions(merge: true));
       printOut("Chat message saved");
     });
@@ -161,6 +174,8 @@ class ChatController extends GetxController {
       "lastMessage": message,
       "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
       "lastSender": userId, "userIds": [userId, otherUser.id],
+      userId: 0,
+      otherUser.id!: 0,
       "users": [
         {
           "id": currentUser.id,

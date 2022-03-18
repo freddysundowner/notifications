@@ -132,6 +132,7 @@ class ShopView extends StatelessWidget {
                     }
                     return Text("No Products yet");
                   })
+
             ],
           ),
         ),

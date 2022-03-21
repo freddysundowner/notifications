@@ -107,7 +107,7 @@ class ShopView extends StatelessWidget {
                           await ProductController.getProductsByShop(
                               currentShop.id),
                   builder: (_) {
-                    if (_.products.length == 0) {
+                    if (_.products.isEmpty) {
                       return Text("No Products yet");
                     }
                     if (_.products.length > 0) {

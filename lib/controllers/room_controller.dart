@@ -99,6 +99,7 @@ class RoomController extends GetxController {
         var roomId = rooms["_id"];
         var token = await RoomAPI().generateAgoraToken(roomId, "0");
         printOut("room token $token");
+        roomTitleController.text = "";
 
         if (token != null) {
           printOut("room title ${roomData["title"]}");
@@ -328,7 +329,7 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
     if (currentRoom.value.hostIds!.length == 1 &&
-        currentRoom.value.hostIds!.contains(user)) {
+        currentRoom.value.hostIds!.indexWhere((element) => element.id == user.id) == 0) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
     } else {
       await RoomAPI().removeAUserFromRoom({

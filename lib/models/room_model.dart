@@ -65,14 +65,14 @@ class RoomModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "productIds": productIds == [] ? null : List<dynamic>.from(productIds!.map((x) => x.toJson())),
+    "productIds": productIds == [] ? [] : List<dynamic>.from(productIds!.map((x) => x.toJson())),
     "hostIds": hostIds == null ? [] : List<dynamic>.from(hostIds!.map((x) => x.toJson())),
     "userIds": userIds == null ? [] : List<dynamic>.from(userIds!.map((x) => x.toJson())),
-    "raisedHands": raisedHands == [] ? null : List<dynamic>.from(raisedHands!.map((x) => x.toJson())),
-    "speakerIds": speakerIds == [] ? null : List<dynamic>.from(speakerIds!.map((x) => x)),
-    "invitedIds": invitedIds == [] ? null : List<dynamic>.from(invitedIds!.map((x) => x)),
+    "raisedHands": raisedHands == [] ? [] : List<dynamic>.from(raisedHands!.map((x) => x.toJson())),
+    "speakerIds": speakerIds == [] ? [] : List<dynamic>.from(speakerIds!.map((x) => x)),
+    "invitedIds": invitedIds == [] ? [] : List<dynamic>.from(invitedIds!.map((x) => x)),
     "status": status,
-    "productImages": productImages == [] ? null : List<dynamic>.from(productImages!.map((x) => x)),
+    "productImages": productImages == [] ? [] : List<dynamic>.from(productImages!.map((x) => x)),
     "_id": id,
     "ownerId": ownerId == null ? null : ownerId!.toJson(),
     "title": title,

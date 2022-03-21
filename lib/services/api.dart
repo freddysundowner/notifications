@@ -50,16 +50,19 @@ class Api {
       String? token = prefs.getString("access_token");
       Map<String, String> headers = {};
       if (token != null) {
-        headers = {'Authorization': "Bearer " + token};
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer " + token};
       }
       Helper.debug("headers ${headers}");
       Helper.debug("url ${url}");
       Helper.debug("body ${body}");
-      final response = await client.post(url, body: body, headers: headers);
+      Helper.debug("body ${jsonEncode(body)}");
+      final response = await client.post(url, body: jsonEncode(body), headers: headers);
       Helper.debug("result ${response.body}");
       return jsonDecode(response.body);
-    } catch (e) {
-      Helper.debug("error _callPost ${e}");
+    } catch (e, s) {
+      Helper.debug("error _callPost $e $s");
       return null;
     }
   }

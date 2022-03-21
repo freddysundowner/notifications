@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -14,6 +13,7 @@ import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/components/product_short_detail_card.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/orders_api.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
 
@@ -282,12 +282,19 @@ class CheckOut extends StatelessWidget {
   }
 
   Widget buildCartItemsList(BuildContext context) {
+    checkOutController.ordertotal.value =
+            checkOutController.product.value!.price!;
     return Column(
       children: [
         DefaultButton(
           text: "Proceed to Payment >>",
           press: () {
-            _settingModalBottomSheet(context);
+            if (checkOutController.address.value == null) {
+              const GetSnackBar(message: "Pick address first").show();
+
+            }  else {
+              _settingModalBottomSheet(context);
+            }
           },
         ),
         SizedBox(height: 20.h),
@@ -338,6 +345,7 @@ class CheckOut extends StatelessWidget {
                           color: kTextColor,
                         ),
                         onTap: () async {
+                          printOut(checkOutController.qty);
                           if (checkOutController.qty.value + 1 <=
                               checkOutController.product.value!.quantity!) {
                             checkOutController.qty.value += 1;
@@ -394,7 +402,7 @@ class CheckOut extends StatelessWidget {
     if (authController.currentuser!.wallet! <= 0) {
       await showConfirmationDialog(
         context,
-        "You dont have enough $currencyName to complete this order",
+        "You don't have enough $currencyName to complete this order",
       );
       return;
     }
@@ -406,6 +414,7 @@ class CheckOut extends StatelessWidget {
     if (confirmation == false) {
       return;
     }
+
     Order order = Order(
         shippingId: checkOutController.address.value!.id,
         productId: checkOutController.product.value!.id!,

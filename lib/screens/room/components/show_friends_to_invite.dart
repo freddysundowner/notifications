@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
-import 'package:fluttergistshop/models/user.dart';
-import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/models/room_model.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -22,13 +21,13 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return DraggableScrollableSheet(
-            initialChildSize: 0.5,
+            initialChildSize: 0.6,
             expand: false,
             builder: (BuildContext context, ScrollController scrollController) {
               return Obx(() {
                 _homeController.fetchAllUsers();
                 return Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10, bottom: 2),
                   child: Column(
                     children: [
                       Row(
@@ -48,17 +47,18 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                             ],
                           ),
                           IconButton(onPressed: () {
+                            Get.back();
 
                           }, icon: const Icon(Icons.done))
 
                         ],
                       ),
                       SizedBox(
-                        height: 0.03.sh,
+                        height: 0.01.sh,
                       ),
                       _homeController.allUsersLoading.isFalse
                           ? SizedBox(
-                              height: 0.4.sh,
+                              height: 0.5.sh,
                               child: GetBuilder<RoomController>(builder: (_dx) {
                                 return GridView.builder(
                                     shrinkWrap: true,
@@ -70,7 +70,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                     ),
                                     itemCount: _dx.allUsers.length,
                                     itemBuilder: (context, index) {
-                                      UserModel user = UserModel.fromJson(
+                                      OwnerId user = OwnerId.fromJson(
                                           _dx.allUsers.elementAt(index));
                                       return InkWell(
                                         onTap: () {
@@ -112,7 +112,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                                                 "assets/icons/picked.png")
                                                             : null,
                                                         backgroundImage:
-                                                            NetworkImage(imageUrl +
+                                                            NetworkImage(
                                                                 user.profilePhoto!),
                                                       ),
                                               );

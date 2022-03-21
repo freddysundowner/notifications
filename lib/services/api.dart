@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/services/configs.dart';
@@ -77,7 +78,7 @@ class Api {
     Helper.debug("headers ${headers}");
     Helper.debug("url ${url}");
     Helper.debug("body ${body}");
-    final response = await client.put(url, body: body, headers: headers);
+    final response = await client.put(url, body: jsonEncode(body), headers: headers);
     Helper.debug("result ${response.body}");
     return jsonDecode(response.body);
     // } catch (e) {

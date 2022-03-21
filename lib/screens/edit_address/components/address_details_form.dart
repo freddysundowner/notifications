@@ -5,6 +5,7 @@ import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 
@@ -194,7 +195,7 @@ class AddressDetailsForm extends StatelessWidget {
   Future<void> saveNewAddressButtonCallback(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final Address newAddress = generateAddressObject();
-      print("saveNewAddressButtonCallback ${newAddress}");
+      printOut("saveNewAddressButtonCallback ${newAddress.name}");
       var response;
       String snackbarMessage = "Saved successfully";
       try {
@@ -204,20 +205,23 @@ class AddressDetailsForm extends StatelessWidget {
           builder: (context) {
             return AsyncProgressDialog(
               response,
-              message: Text("adding address"),
+              message: const Text("Adding address"),
               onError: (e) {
                 snackbarMessage = e.toString();
               },
             );
           },
         );
-        if (response["success"] == true) {
+
+        var awaitedResponse = await response;
+        if (await awaitedResponse["success"] == true) {
           Get.back();
           snackbarMessage = "Address saved successfully";
         } else {
           throw "Coundn't save the address due to unknown reason";
         }
-      } catch (e) {
+      } catch (e, s) {
+        printOut("Error saving address $e $s");
         snackbarMessage = "Something went wrong";
       } finally {
         Helper.showSnackBack(context, snackbarMessage);

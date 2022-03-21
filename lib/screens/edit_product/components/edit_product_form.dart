@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
-import 'package:fluttergistshop/exceptions/local_files_handling/local_file_handling_exception.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
@@ -122,7 +121,7 @@ class EditProductForm extends StatelessWidget {
               if (_basicDetailsFormKey.currentState!.validate()) {
                 String snackbarMessage = "";
                 var response;
-                if (productController.product.id != null) {
+                if (productController.productObservable.value != null) {
                   response = productController
                       .updateProduct(productController.product.id!);
                 } else {
@@ -135,7 +134,7 @@ class EditProductForm extends StatelessWidget {
                   builder: (context) {
                     return AsyncProgressDialog(
                       response,
-                      message: Text(productController.product.id != null
+                      message: Text(productController.productObservable.value != null
                           ? "Updating product"
                           : "Creating product"),
                       onError: (e) {
@@ -158,6 +157,10 @@ class EditProductForm extends StatelessWidget {
                 //     Get.back();
                 //   }
                 // }
+
+                var waitedResponse = await response;
+                printOut("Save image response $waitedResponse");
+                productController.product = Product.fromJson( waitedResponse["data"]);
 
                 await uploadProductImages(
                     productController.product.id!, context);
@@ -196,6 +199,10 @@ class EditProductForm extends StatelessWidget {
                       content: Text(snackbarMessage),
                     ),
                   );
+
+                  if (productController.product.id != null) {
+                    Get.back();
+                  }
                 }
               }
             }),
@@ -262,7 +269,7 @@ class EditProductForm extends StatelessWidget {
     //   return;
     // }
     String path = "";
-    String snackbarMessage = "";
+
     // try {
     path = await choseImageFromLocalFiles(context);
     print(path);

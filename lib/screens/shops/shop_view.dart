@@ -150,7 +150,7 @@ class ShopView extends StatelessWidget {
 
           print("EditProductScreen");
           Get.to(() => EditProductScreen(
-                product: productController.product,
+                product: productController.productObservable.value,
               ));
         },
         backgroundColor: Colors.pink,
@@ -183,7 +183,7 @@ class ShopView extends StatelessWidget {
             for (int i = 0; i < product.images!.length; i++) {}
 
             bool productInfoDeleted = false;
-            String snackbarMessage;
+            String snackbarMessage = "";
             try {
               if (productInfoDeleted == true) {
                 snackbarMessage = "Product deleted successfully";
@@ -192,7 +192,9 @@ class ShopView extends StatelessWidget {
               }
             } catch (e) {
               snackbarMessage = e.toString();
-            } finally {}
+            } finally {
+              GetSnackBar(message: snackbarMessage,);
+            }
           }
           await refreshPage();
           return confirmation;

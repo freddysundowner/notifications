@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
@@ -5,6 +6,7 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
 import 'package:fluttergistshop/screens/products/components/custom_action_bar.dart';
 import 'package:fluttergistshop/screens/products/components/product_size.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
 
@@ -89,13 +91,14 @@ class FullProduct extends StatelessWidget {
                     ProductSize(
                       productSizes: product.variations!,
                       onSelected: (size) {
-                        print(size);
+                        printOut(size);
                         checkOutController.selectetedvariationvalue.value =
                             size;
                       },
                     ),
                   ],
                 ),
+              product.ownerId != FirebaseAuth.instance.currentUser!.uid ?
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Row(
@@ -122,6 +125,7 @@ class FullProduct extends StatelessWidget {
                         ),
                       ),
                     ),
+
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
@@ -160,7 +164,7 @@ class FullProduct extends StatelessWidget {
                     )
                   ],
                 ),
-              )
+              ) : Container()
             ],
           ),
           CustomActionBar(

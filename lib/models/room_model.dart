@@ -28,6 +28,7 @@ class RoomModel {
     this.productPrice,
     this.v,
     this.token,
+    this.roomType
   });
 
   List<Product>? productIds;
@@ -44,6 +45,7 @@ class RoomModel {
   ShopId? shopId;
   int? productPrice;
   int? v;
+  String? roomType;
   dynamic? token;
 
   factory RoomModel.fromJson(Map<String, dynamic> json) => RoomModel(
@@ -62,6 +64,7 @@ class RoomModel {
     productPrice: json["productPrice"],
     v: json["__v"],
     token: json["token"],
+  roomType: json["roomType"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -80,6 +83,7 @@ class RoomModel {
     "productPrice": productPrice,
     "__v": v,
     "token": token,
+  "roomType": roomType
   };
 }
 

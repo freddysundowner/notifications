@@ -76,8 +76,10 @@ class RoomController extends GetxController {
 
       printOut("Room title ${roomTitleController.text}");
 
+      String roomTitle = roomTitleController.text.isEmpty ? " " : roomTitleController.text;
+
       var roomData = {
-        "title": roomTitleController.text,
+        "title": roomTitle,
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -88,7 +90,7 @@ class RoomController extends GetxController {
         "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
         "status": true,
         "productPrice": roomPickedProductPrice.value,
-        "productImages": roomProductImages
+        "productImages": roomProductImages,
       };
 
       var rooms = await RoomAPI().createARoom(roomData);

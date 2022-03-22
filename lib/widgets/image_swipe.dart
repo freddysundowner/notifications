@@ -41,8 +41,13 @@ class ImageSwipe extends StatelessWidget {
                       placeholder: (context, url) => SizedBox(
                           width: 30,
                           height: 30,
-                          child: CircularProgressIndicator()),
-                      errorWidget: (context, url, error) => Icon(
+                          child: Transform.scale(
+                              scale: 0.3,
+                              child: const CircularProgressIndicator(
+                                color: Colors.black,
+                              ))
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
                         Icons.error,
                         size: 80,
                       ),

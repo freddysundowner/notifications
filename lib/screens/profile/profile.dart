@@ -229,11 +229,11 @@ class Profile extends StatelessWidget {
                                           profile.shopId!.id),
                               builder: (_) {
                                 print(_.products.length);
-                                if (_.products.length == 0) {
+                                if (_.products.isEmpty) {
                                   return Text("No Products yet");
                                 }
-                                if (_.products.length > 0) {
-                                  return Container(
+                                if (_.products.isNotEmpty) {
+                                  return SizedBox(
                                       height: 200.h,
                                       width: double.infinity,
                                       child: ListView.separated(
@@ -243,21 +243,15 @@ class Profile extends StatelessWidget {
                                             SizedBox(
                                           height: 30,
                                         ),
-                                        physics: BouncingScrollPhysics(),
+                                        physics: const BouncingScrollPhysics(),
                                         itemCount: _.products.length,
                                         itemBuilder: (context, index) {
                                           return ProductCard(
                                             product: _.products[index],
                                             press: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FullProduct(
-                                                    product: _.products[index],
-                                                  ),
-                                                ),
-                                              );
+                                              Get.to(FullProduct(
+                                                product: _.products[index],
+                                              ));
                                             },
                                           );
                                         },

@@ -428,25 +428,18 @@ class CheckOut extends StatelessWidget {
     // checkOutController.checkout.value = checkOutController.checkout.value.
     final orderFuture = OrderApi.checkOut(order);
     orderFuture.then((orderedProductsUid) async {
+      Get.back();
       if (orderedProductsUid != null) {
         String snackbarmMessage = "Products ordered Successfully";
         try {} catch (e) {
           snackbarmMessage = e.toString();
         } finally {
           Helper.showSnackBack(context, snackbarmMessage);
+          Get.back();
         }
       } else {
         throw "Something went wrong while clearing cart";
       }
-      await showDialog(
-        context: context,
-        builder: (context) {
-          return AsyncProgressDialog(
-            orderFuture,
-            message: Text("Placing the Order"),
-          );
-        },
-      );
     }).catchError((e) {
       Helper.showSnackBack(context, "Something went wrong", color: Colors.red);
     });

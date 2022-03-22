@@ -46,6 +46,20 @@ class UserAPI {
 
   }
 
+  updateUser(Map<String, dynamic> body, String id) async {
+    try {
+
+      printOut("updating user $body");
+
+      var updated = await DbBase().databaseRequest(editUser + id, DbBase().patchRequestType,
+          body: body);
+
+      printOut("updatedUser $updated");
+    } catch (e) {
+      printOut("Error updating user $e");
+    }
+  }
+
   static Future<Map<String, dynamic>> authenticate(data, String type) async {
     Helper.debug("data $data");
     Helper.debug("type $type");

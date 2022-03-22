@@ -181,6 +181,7 @@ class ChageProfileImage extends StatelessWidget {
       final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
           authController.chosenImage,
           UserAPI().getPathForCurrentUserDisplayPicture());
+
       print(downloadUrl);
 
       uploadDisplayPictureStatus =

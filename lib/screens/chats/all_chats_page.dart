@@ -96,7 +96,11 @@ class AllChatsPage extends StatelessWidget {
                                                 convertTime(allChatsModel
                                                     .lastMessageTime),
                                                 style: TextStyle(
-                                                    color: allChatsModel.unread > 0 ? Theme.of(context).primaryColor : Colors.grey,
+                                                    color:
+                                                        allChatsModel.unread > 0
+                                                            ? Theme.of(context)
+                                                                .primaryColor
+                                                            : Colors.grey,
                                                     fontSize: 12.sp),
                                               )
                                             ],
@@ -111,7 +115,8 @@ class AllChatsPage extends StatelessWidget {
                                               Row(
                                                 children: [
                                                   Text(
-                                                      allChatsModel.lastSender ==
+                                                      allChatsModel
+                                                                  .lastSender ==
                                                               _chatController
                                                                   .userId
                                                           ? "You: "
@@ -123,8 +128,8 @@ class AllChatsPage extends StatelessWidget {
                                                           color: Colors.grey,
                                                           fontSize: 14.sp)),
                                                   Text(
-                                                    allChatsModel.lastMessage
-                                                                .length >
+                                                    allChatsModel
+                                                                .lastMessage.length >
                                                             40
                                                         ? allChatsModel
                                                                 .lastMessage
@@ -139,15 +144,28 @@ class AllChatsPage extends StatelessWidget {
                                                   ),
                                                 ],
                                               ),
-                                              allChatsModel.unread > 0 ? Container(
-                                                padding: const EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                    color: Theme.of(context)
-                                                        .primaryColor),
-                                                child: Center(child: Text(allChatsModel.unread.toString(),
-                                                  style: TextStyle(color: Colors.white, fontSize: 10.sp),)),
-                                              ) : Container()
+                                              allChatsModel.unread > 0
+                                                  ? Container(
+                                                      padding:
+                                                          const EdgeInsets.only(left:
+                                                              10, right: 10, bottom: 4, top: 4),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(100),
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .primaryColor),
+                                                      child: Center(
+                                                          child: Text(
+                                                            allChatsModel.unread
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 10.sp),
+                                                      )),
+                                                    )
+                                                  : Container()
                                             ],
                                           ),
                                         )

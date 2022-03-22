@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/services/client.dart';
+import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-
-import 'package:fluttergistshop/services/configs.dart' as config;
 
 enum ImageType {
   local,
@@ -26,13 +25,13 @@ class CustomImage {
 }
 
 class ProductController extends GetxController {
-  Rxn<Product> _product = Rxn();
+  Rxn<Product> productObservable = Rxn();
   static Rxn<List<Product>> _products = Rxn([]);
 
   RxInt selectedPage = 0.obs;
   var error = "".obs;
-  Product get product => _product.value!;
-  set product(Product value) => _product.value = value;
+  Product get product => productObservable.value!;
+  set product(Product value) => productObservable.value = value;
 
   List<Product> get products => _products.value!;
   set products(List<Product> value) => _products.value = value;
@@ -105,7 +104,6 @@ class ProductController extends GetxController {
       return DbBase().databaseRequest(
           config.updateproduct + productid, DbBase().patchRequestType,
           body: productdata);
-      return ProductPI.updateProduct(productdata, productid);
     } catch (e) {
       print("Error ${e.toString()}");
     }

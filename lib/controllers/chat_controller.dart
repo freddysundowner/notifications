@@ -118,12 +118,15 @@ class ChatController extends GetxController {
   }
 
   readChats() async {
-    await db
-        .collection("chats")
-        .doc(currentChatId.value)
-        .set({userId: 0}, SetOptions(merge: true));
 
-    printOut("Chat messages read");
+    if (currentChatId.value != "") {
+      await db
+          .collection("chats")
+          .doc(currentChatId.value)
+          .set({userId: 0}, SetOptions(merge: true));
+
+      printOut("Chat messages read");
+    }
   }
 
   sendMessage(String message, OwnerId otherUser) {
@@ -198,6 +201,33 @@ class ChatController extends GetxController {
         .doc(currentChatId.value)
         .set(data, SetOptions(merge: true))
         .then((value) {
+      AllChatsModel allChatsModel = AllChatsModel(
+          chatId,
+          message,
+          DateTime.now().millisecondsSinceEpoch.toString(),
+          userId,
+          [userId, otherUser.id],
+          [
+            {
+              "id": currentUser.id,
+              "firstName": currentUser.firstName,
+              "lastName": currentUser.lastName,
+              "userName": currentUser.userName,
+              "profilePhoto": currentUser.profilePhoto
+            },
+            {
+              "id": otherUser.id,
+              "firstName": otherUser.firstName,
+              "lastName": otherUser.lastName,
+              "userName": otherUser.userName,
+              "profilePhoto": otherUser.profilePhoto
+            }
+          ],
+          0);
+      allUserChats.add(allChatsModel);
+
+      allUserChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+
       printOut("Chat saved successfully ");
     });
   }

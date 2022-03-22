@@ -5,12 +5,13 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
+import 'package:fluttergistshop/services/end_points.dart';
 import 'package:get/get.dart';
-import 'package:ionicons/ionicons.dart';
 
 import '../../utils/utils.dart';
 
@@ -18,7 +19,9 @@ class ShopView extends StatelessWidget {
   ShopController shopController = Get.find<ShopController>();
   AuthController authController = Get.find<AuthController>();
   ProductController productController = Get.find<ProductController>();
-  ShopView({Key? key}) : super(key: key);
+  ShopId currentShop;
+  ShopView(this.currentShop);
+
   Future<void> refreshPage() {
     return Future<void>.value();
   }
@@ -38,15 +41,19 @@ class ShopView extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Obx(() => Container(
+                  Container(
                       width: 100.0,
                       height: 100.0,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: DecorationImage(
+                          image: currentShop.image != ""
+                              ? DecorationImage(
                               fit: BoxFit.fill,
-                              image: CachedNetworkImageProvider(authController
-                                  .currentuser!.shopId!.image))))),
+                              image: CachedNetworkImageProvider(imageUrl + currentShop.image))
+                              : const DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage("assets/icons/no_image.png"))
+                      )),
                   SizedBox(
                     width: 20.w,
                   ),
@@ -56,17 +63,18 @@ class ShopView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          authController.currentuser!.shopId!.name,
+                          currentShop.name,
                           style:
                               TextStyle(fontSize: 13.sp, color: Colors.black),
                         ),
                         Text(
-                          authController.currentuser!.shopId!.email,
+                          currentShop.email,
                           style: TextStyle(fontSize: 14.sp),
                         ),
                       ],
                     ),
                   ),
+                  if (currentShop.id == authController.currentuser!.shopId!.id)
                   InkWell(
                     onTap: () {
                       Get.to(() => NewShop());
@@ -83,13 +91,13 @@ class ShopView extends StatelessWidget {
                 height: 10.h,
               ),
               Text(
-                authController.currentuser!.shopId!.description,
+                currentShop.description,
                 style: TextStyle(fontSize: 14.sp, color: Colors.black),
               ),
               SizedBox(
                 height: 5.h,
               ),
-              Divider(
+              const Divider(
                 color: primarycolor,
               ),
               Text("Products", style: headingStyle),
@@ -97,9 +105,9 @@ class ShopView extends StatelessWidget {
                   initState: (_) async =>
                       Get.find<ProductController>().products =
                           await ProductController.getProductsByShop(
-                              authController.currentuser!.shopId!.id),
+                              currentShop.id),
                   builder: (_) {
-                    if (_.products.length == 0) {
+                    if (_.products.isEmpty) {
                       return Text("No Products yet");
                     }
                     if (_.products.length > 0) {
@@ -108,8 +116,14 @@ class ShopView extends StatelessWidget {
                         child: ListView.builder(
                             itemCount: _.products.length,
                             itemBuilder: (context, index) {
-                              return buildProductDismissible(
-                                  _.products[index], context);
+                              return currentShop.id == authController.currentuser!.shopId!.id ? buildProductDismissible(
+                                  _.products[index], context) : ShopShortDetailCard(
+                                product: _.products[index],
+                                onPressed: () {
+                                  print("v");
+                                  Get.to(() => FullProduct(product: _.products[index]));
+                                },
+                              );
                             }),
                       );
                       // return Column(
@@ -118,11 +132,13 @@ class ShopView extends StatelessWidget {
                     }
                     return Text("No Products yet");
                   })
+
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+
+      floatingActionButton: currentShop.id == authController.currentuser!.shopId!.id ? FloatingActionButton(
         child: Icon(Icons.add),
         elevation: 4,
         hoverColor: Colors.green,
@@ -134,11 +150,11 @@ class ShopView extends StatelessWidget {
 
           print("EditProductScreen");
           Get.to(() => EditProductScreen(
-                product: productController.product,
+                product: productController.productObservable.value,
               ));
         },
         backgroundColor: Colors.pink,
-      ),
+      ) : Container(),
     );
   }
 
@@ -167,7 +183,7 @@ class ShopView extends StatelessWidget {
             for (int i = 0; i < product.images!.length; i++) {}
 
             bool productInfoDeleted = false;
-            String snackbarMessage;
+            String snackbarMessage = "";
             try {
               if (productInfoDeleted == true) {
                 snackbarMessage = "Product deleted successfully";
@@ -176,7 +192,9 @@ class ShopView extends StatelessWidget {
               }
             } catch (e) {
               snackbarMessage = e.toString();
-            } finally {}
+            } finally {
+              GetSnackBar(message: snackbarMessage,);
+            }
           }
           await refreshPage();
           return confirmation;

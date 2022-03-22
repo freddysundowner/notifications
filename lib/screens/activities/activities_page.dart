@@ -5,6 +5,7 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/activity_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/screens/profile/orders_sceen.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:get/get.dart';
@@ -48,8 +49,8 @@ class ActivitiesPage extends StatelessWidget {
                             _homeController.currentRoom.value = RoomModel();
                             _homeController.joinRoom(activityModel.actionkey!);
                           } else if (activityModel.type == "OrderScreen") {
-                            _userController.getUserProfile(activityModel.actionkey!);
-                            Get.to(Profile());
+                            _userController.getUserOrders();
+                            Get.to(OrdersScreen());
                           }
                         },
                         child: Padding(

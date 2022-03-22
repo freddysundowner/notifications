@@ -76,8 +76,10 @@ class RoomController extends GetxController {
 
       printOut("Room title ${roomTitleController.text}");
 
+      String roomTitle = roomTitleController.text.isEmpty ? " " : roomTitleController.text;
+
       var roomData = {
-        "title": roomTitleController.text,
+        "title": roomTitle,
         "roomType": newRoomType.value,
         "productIds": [roomPickedProductId.value],
         "hostIds": hosts,
@@ -88,7 +90,7 @@ class RoomController extends GetxController {
         "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
         "status": true,
         "productPrice": roomPickedProductPrice.value,
-        "productImages": roomProductImages
+        "productImages": roomProductImages,
       };
 
       var rooms = await RoomAPI().createARoom(roomData);
@@ -99,6 +101,7 @@ class RoomController extends GetxController {
         var roomId = rooms["_id"];
         var token = await RoomAPI().generateAgoraToken(roomId, "0");
         printOut("room token $token");
+        roomTitleController.text = "";
 
         if (token != null) {
           printOut("room title ${roomData["title"]}");
@@ -328,7 +331,7 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
     if (currentRoom.value.hostIds!.length == 1 &&
-        currentRoom.value.hostIds!.contains(user)) {
+        currentRoom.value.hostIds!.indexWhere((element) => element.id == user.id) == 0) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
     } else {
       await RoomAPI().removeAUserFromRoom({

@@ -102,6 +102,7 @@ class NewChatPage extends StatelessWidget {
                                             _chatController
                                                 .getPreviousChat(user);
 
+
                                             Get.to(ChatRoomPage(user));
                                           },
                                           child: Row(

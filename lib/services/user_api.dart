@@ -38,6 +38,14 @@ class UserAPI {
     return jsonDecode(users);
   }
 
+  getUserOrders(String uid)async {
+    var orders =
+    await DbBase().databaseRequest(userOrders + uid, DbBase().getRequestType);
+
+    return jsonDecode(orders);
+
+  }
+
   static Future<Map<String, dynamic>> authenticate(data, String type) async {
     Helper.debug("data $data");
     Helper.debug("type $type");
@@ -110,4 +118,6 @@ class UserAPI {
   }
 
   static removeDisplayPictureForCurrentUser() {}
+
+
 }

@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
-import 'package:fluttergistshop/models/checkout.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
@@ -67,8 +67,8 @@ class MyProducts extends StatelessWidget {
     return Dismissible(
       key: Key(product.id.toString()),
       direction: DismissDirection.horizontal,
-      background: buildDismissibleSecondaryBackground(),
-      secondaryBackground: buildDismissiblePrimaryBackground(),
+      background: buildDismissibleSecondaryBackground(product),
+      secondaryBackground: buildDismissiblePrimaryBackground(product),
       dismissThresholds: {
         DismissDirection.endToStart: 0.65,
         DismissDirection.startToEnd: 0.65,
@@ -107,20 +107,22 @@ class MyProducts extends StatelessWidget {
             return false;
           }
         } else {
-          if (direction == DismissDirection.startToEnd) {
-            final confirmation = await showConfirmationDialog(
-                context, "Continue to buying this product?");
-            checkOutController.product.value = product;
-            checkOutController.qty.value = 1;
-            Get.to(() => CheckOut());
+          if (product.ownerId != FirebaseAuth.instance.currentUser!.uid ) {
+            if (direction == DismissDirection.startToEnd) {
+              final confirmation = await showConfirmationDialog(
+                  context, "Continue to buying this product?");
+              checkOutController.product.value = product;
+              checkOutController.qty.value = 1;
+              Get.to(() => CheckOut());
 
-            return false;
-          } else if (direction == DismissDirection.endToStart) {
-            final confirmation =
-                await showConfirmationDialog(context, "Add to favorite");
-            Helper.showSnackBack(context, "Added to favorite");
-            if (confirmation) {}
-            return false;
+              return false;
+            } else if (direction == DismissDirection.endToStart) {
+              final confirmation =
+              await showConfirmationDialog(context, "Add to favorite");
+              Helper.showSnackBack(context, "Added to favorite");
+              if (confirmation) {}
+              return false;
+            }
           }
         }
         return false;
@@ -131,18 +133,18 @@ class MyProducts extends StatelessWidget {
     );
   }
 
-  Widget buildDismissiblePrimaryBackground() {
+  Widget buildDismissiblePrimaryBackground(Product product) {
     return Container(
       padding: EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
-        color: Colors.green,
+        color: product.ownerId != FirebaseAuth.instance.currentUser!.uid ? Colors.green : Colors.transparent,
         borderRadius: BorderRadius.circular(15),
       ),
       child: edit
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+              children: const [
                 Icon(
                   Icons.edit,
                   color: Colors.white,
@@ -158,7 +160,7 @@ class MyProducts extends StatelessWidget {
                 ),
               ],
             )
-          : Row(
+          : product.ownerId != FirebaseAuth.instance.currentUser!.uid ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -176,15 +178,15 @@ class MyProducts extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ) : Container(),
     );
   }
 
-  Widget buildDismissibleSecondaryBackground() {
+  Widget buildDismissibleSecondaryBackground(Product product) {
     return Container(
       padding: EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
-        color: edit ? Colors.red : primarycolor,
+        color: edit ? Colors.red : product.ownerId != FirebaseAuth.instance.currentUser!.uid ? primarycolor : Colors.transparent,
         borderRadius: BorderRadius.circular(15),
       ),
       child: edit
@@ -207,7 +209,7 @@ class MyProducts extends StatelessWidget {
                 ),
               ],
             )
-          : Row(
+          : product.ownerId != FirebaseAuth.instance.currentUser!.uid ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -225,7 +227,7 @@ class MyProducts extends StatelessWidget {
                   color: Colors.white,
                 ),
               ],
-            ),
+            ) : Container(),
     );
   }
 }

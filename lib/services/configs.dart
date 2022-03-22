@@ -18,3 +18,4 @@ const updateshop = api_url + "shop/shop/";
 const products = api_url + "products/";
 const updateproduct = products + "products/";
 const updateproductimages = products + "images/";
+const orders = api_url + "orders/";

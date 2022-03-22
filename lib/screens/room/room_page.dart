@@ -268,18 +268,16 @@ class RoomPage extends StatelessWidget {
         ),
         SizedBox(
           height: 0.12.sh,
-          child: GetBuilder<RoomController>(builder: (_hc) {
+          child: Obx(() {
             return Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 8.0),
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _hc.currentRoom.value.productIds!
-                      .elementAt(0)
-                      .images!
+                  itemCount: _homeController.currentRoom.value.productImages!
                       .length,
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: () => Get.to(FullProduct(product: _hc.currentRoom.value.productIds!
+                      onTap: () => Get.to(FullProduct(product: _homeController.currentRoom.value.productIds!
                           .elementAt(0))),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -291,9 +289,7 @@ class RoomPage extends StatelessWidget {
                           child: Center(
                             child: Image.network(
                               imageUrl +
-                                  _hc.currentRoom.value.productIds!
-                                      .elementAt(0)
-                                      .images!
+                                  _homeController.currentRoom.value.productImages!
                                       .elementAt(index),
                               height: 0.08.sh,
                               width: 0.12.sw,

@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
+import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -35,8 +41,9 @@ class RoomController extends GetxController {
   var newRoomTitle = " ".obs;
   var newRoomType = "public".obs;
   var agoraToken = "".obs;
-  var roomPickedProductId = "".obs;
-  var roomPickedProductPrice = "".obs;
+
+  var roomPickedProduct = Product().obs;
+
   var roomHosts = <UserModel>[].obs;
   var roomShopId = "".obs;
   var roomProductImages = [].obs;
@@ -45,7 +52,10 @@ class RoomController extends GetxController {
   var userProductsLoading = false.obs;
   var userJoinedRoom = false.obs;
 
-  final TextEditingController searchChatUsersController = TextEditingController();
+  var roomPickedImages = [].obs;
+
+  final TextEditingController searchChatUsersController =
+      TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
 
   @override
@@ -61,8 +71,8 @@ class RoomController extends GetxController {
 
   Future<void> createRoom() async {
     try {
-      roomHosts.add(Get.find<AuthController>().usermodel.value!);
       isCreatingRoom.value = true;
+      roomHosts.add(Get.find<AuthController>().usermodel.value!);
 
       Get.defaultDialog(
           title: "We are creating your room",
@@ -76,12 +86,14 @@ class RoomController extends GetxController {
 
       printOut("Room title ${roomTitleController.text}");
 
-      String roomTitle = roomTitleController.text.isEmpty ? " " : roomTitleController.text;
+
+      String roomTitle =
+          roomTitleController.text.isEmpty ? " " : roomTitleController.text;
 
       var roomData = {
         "title": roomTitle,
         "roomType": newRoomType.value,
-        "productIds": [roomPickedProductId.value],
+        "productIds": [roomPickedProduct.value.id],
         "hostIds": hosts,
         "userIds": [],
         "raisedHands": [],
@@ -89,11 +101,13 @@ class RoomController extends GetxController {
         "invitedIds": [],
         "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
         "status": true,
-        "productPrice": roomPickedProductPrice.value,
-        "productImages": roomProductImages,
+        "productPrice": roomPickedProduct.value.price,
+        "productImages": roomPickedProduct.value.images,
       };
 
       var rooms = await RoomAPI().createARoom(roomData);
+
+
 
       printOut("room created $rooms");
 
@@ -105,15 +119,17 @@ class RoomController extends GetxController {
 
         if (token != null) {
           printOut("room title ${roomData["title"]}");
-          await RoomAPI()
-              .updateRoomById({"title": roomData["title"], "token": token}, roomId);
+          await RoomAPI().updateRoomById(
+              {"title": roomData["title"], "token": token}, roomId);
 
           await fetchRoom(roomId);
 
           initAgora(token, roomId);
+          uploadImageToFireStorage(roomId);
 
           Get.back();
           Get.to(RoomPage(roomId: roomId));
+
         } else {
           Get.back();
           Get.snackbar(
@@ -132,6 +148,46 @@ class RoomController extends GetxController {
       Get.back();
       printOut("Error creating room in controller $e $s");
       isCreatingRoom.value = false;
+    }
+  }
+
+  Future<void> uploadImageToFireStorage(String roomId) async {
+
+    String snackBarMessage = "";
+
+    try {
+      List<String> uploadedImages = [];
+
+      for (var i = 0; i < roomPickedImages.length; i++) {
+        RoomImagesModel roomImagesModel = roomPickedImages.elementAt(i);
+
+        if (roomImagesModel.isPath) {
+          final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
+              File(roomImagesModel.imageUrl), "rooms/$roomId");
+
+          printOut(downloadUrl);
+          uploadedImages.add(downloadUrl);
+          currentRoom.value.productImages!.add(downloadUrl);
+          currentRoom.refresh();
+        }
+      }
+
+      await RoomAPI().updateRoomById({
+        "title": currentRoom.value.title ?? " ",
+        "token": currentRoom.value.token,
+        "productImages": uploadedImages
+      }, roomId);
+
+      roomPickedImages.value = [];
+
+
+    } on FirebaseException catch (e) {
+      snackBarMessage = "Something went wrong ${e.toString()}";
+    } catch (e) {
+      snackBarMessage = "Something went wrong ${e.toString()}";
+    } finally {
+
+      GetSnackBar(title: "", message: snackBarMessage);
     }
   }
 
@@ -231,10 +287,9 @@ class RoomController extends GetxController {
     currentRoom.value.userIds!.remove(user);
 
     if ((currentRoom.value.speakerIds!
-        .indexWhere((element) => element.id == user.id) ==
+            .indexWhere((element) => element.id == user.id) ==
         -1)) {
       currentRoom.value.speakerIds!.add(user);
-
 
       currentRoom.refresh();
 
@@ -255,7 +310,6 @@ class RoomController extends GetxController {
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
-
   }
 
   Future<void> addUserToRaisedHands(OwnerId user) async {
@@ -295,10 +349,9 @@ class RoomController extends GetxController {
     currentRoom.value.raisedHands!.remove(user);
 
     if ((currentRoom.value.speakerIds!
-        .indexWhere((element) => element.id == user.id) ==
+            .indexWhere((element) => element.id == user.id) ==
         -1)) {
       currentRoom.value.speakerIds!.add(user);
-
 
       currentRoom.refresh();
 
@@ -331,7 +384,9 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
     if (currentRoom.value.hostIds!.length == 1 &&
-        currentRoom.value.hostIds!.indexWhere((element) => element.id == user.id) == 0) {
+        currentRoom.value.hostIds!
+                .indexWhere((element) => element.id == user.id) ==
+            0) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
     } else {
       await RoomAPI().removeAUserFromRoom({
@@ -341,7 +396,6 @@ class RoomController extends GetxController {
 
     currentRoom.value = RoomModel();
   }
-
 
   Future<void> joinRoom(String roomId) async {
     await fetchRoom(roomId);
@@ -362,7 +416,8 @@ class RoomController extends GetxController {
         roomId: roomId,
       ));
     } else {
-      Get.snackbar('', "There was an error adding you to the room, Try again later");
+      Get.snackbar(
+          '', "There was an error adding you to the room, Try again later");
     }
   }
 
@@ -404,26 +459,27 @@ class RoomController extends GetxController {
   }
 
   searchUsers() async {
-   if (searchChatUsersController.text.trim().isNotEmpty) {
-     try {
-       allUsersLoading.value = true;
+    if (searchChatUsersController.text.trim().isNotEmpty) {
+      try {
+        allUsersLoading.value = true;
 
-       var users = await UserAPI().searchUser(searchChatUsersController.text.trim());
+        var users =
+            await UserAPI().searchUser(searchChatUsersController.text.trim());
 
-       if (users != null) {
-         searchedUsers.value = users;
-       } else {
-         searchedUsers.value = [];
-       }
-       searchedUsers.refresh();
-       allUsersLoading.value = false;
+        if (users != null) {
+          searchedUsers.value = users;
+        } else {
+          searchedUsers.value = [];
+        }
+        searchedUsers.refresh();
+        allUsersLoading.value = false;
 
-       update();
-     } catch (e) {
-       printOut(e);
-       allUsersLoading.value = false;
-     }
-   }
+        update();
+      } catch (e) {
+        printOut(e);
+        allUsersLoading.value = false;
+      }
+    }
   }
 
   Future<void> fetchUserProducts() async {
@@ -490,7 +546,6 @@ class RoomController extends GetxController {
   }
 
   getUserProfile(String userId) async {
-
     try {
       profileLoading.value = true;
       var user = await UserAPI().getUserProfile(userId);
@@ -502,10 +557,8 @@ class RoomController extends GetxController {
       }
 
       profileLoading.value = false;
-    } catch(e, s) {
-
+    } catch (e, s) {
       printOut("Error getting user $userId profile $e $s");
     }
   }
-
 }

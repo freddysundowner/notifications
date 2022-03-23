@@ -7,6 +7,8 @@ const String currencySymbol = "GC ";
 const String currencyName = "Gistcoins ";
 const String imageplaceholder = "assets/images/productavatar.jpeg";
 const String userimageplaceholder = "assets/images/userimageplaceholder.jpeg";
+const int PREMIUM_UPGRADE_COINS_AMOUNT = 200;
+const String gccurrency = "GC";
 
 // Form Error
 final RegExp emailValidatorRegExp =

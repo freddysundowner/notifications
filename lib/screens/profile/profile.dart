@@ -11,6 +11,7 @@ import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
 import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/settings_page.dart';
+import 'package:fluttergistshop/screens/profile/upgrade_account.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/styles.dart';
@@ -89,267 +90,308 @@ class Profile extends StatelessWidget {
               child: Obx(() {
                 UserModel profile = _userController.currentProfile.value;
                 return _userController.profileLoading.isFalse
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                if (profile.id ==
-                                    authController.currentuser!.id) {
-                                  Get.to(() => ChageProfileImage());
-                                }
-                              },
-                              child: CachedNetworkImage(
-                                imageUrl: profile.profilePhoto!,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  width: 120.0,
-                                  height: 120.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
+                    ? SingleChildScrollView(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  if (profile.id ==
+                                      authController.currentuser!.id) {
+                                    Get.to(() => ChageProfileImage());
+                                  }
+                                },
+                                child: CachedNetworkImage(
+                                  imageUrl: profile.profilePhoto!,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    width: 120.0,
+                                    height: 120.0,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(
+                                    Icons.error,
+                                    size: 120,
+                                  ),
+                                )),
+                            InkWell(
+                              onTap: () => updateName(context),
+                              child: Text(
+                                profile.firstName! + " " + profile.lastName!,
+                                style: TextStyle(
+                                    fontSize: 18.sp, color: Colors.black),
+                              ),
+                            ),
+                            Text(
+                              "@${profile.userName!}",
+                              style:
+                                  TextStyle(fontSize: 14.sp, color: Colors.black),
+                            ),
+                            if (profile.id !=
+                                FirebaseAuth.instance.currentUser!.uid)
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: 0.03.sh,
+                                  ),
+                                  InkWell(
+                                    onTap: () async {
+                                      if (profile.followers!.contains(FirebaseAuth
+                                          .instance.currentUser!.uid)) {
+                                        _userController
+                                            .currentProfile.value.followers!
+                                            .remove(FirebaseAuth
+                                                .instance.currentUser!.uid);
+                                        _userController.currentProfile.value
+                                            .followersCount = _userController
+                                                .currentProfile
+                                                .value
+                                                .followersCount! -
+                                            1;
+                                        _userController.currentProfile.refresh();
+
+                                        await UserAPI().unFollowAUser(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            profile.id!);
+                                      } else {
+                                        _userController
+                                            .currentProfile.value.followers!
+                                            .add(FirebaseAuth
+                                                .instance.currentUser!.uid);
+                                        _userController.currentProfile.value
+                                            .followersCount = _userController
+                                                .currentProfile
+                                                .value
+                                                .followersCount! +
+                                            1;
+
+                                        _userController.currentProfile.refresh();
+
+                                        await UserAPI().followAUser(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            profile.id!);
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 0.2.sw,
+                                      height: 0.04.sh,
+                                      decoration: BoxDecoration(
+                                        color: profile.followers!.contains(
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                            ? Colors.grey
+                                            : Colors.green,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          profile.followers!.contains(FirebaseAuth
+                                                  .instance.currentUser!.uid)
+                                              ? "UnFollow"
+                                              : "Follow",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12.sp),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            SizedBox(
+                              height: 0.03.sh,
+                            ),
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    _userController.getUserFollowing(profile.id!);
+                                    Get.to(FollowersFollowingPage("Following"));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        profile.followingCount != null
+                                            ? profile.followingCount.toString()
+                                            : "0",
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            color: primarycolor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 0.01.sw,
+                                      ),
+                                      Text(
+                                        "Following",
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: primarycolor,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(
-                                  Icons.error,
-                                  size: 120,
-                                ),
-                              )),
-                          InkWell(
-                            onTap: () => updateName(context),
-                            child: Text(
-                              profile.firstName! + " " + profile.lastName!,
-                              style: TextStyle(
-                                  fontSize: 18.sp, color: Colors.black),
-                            ),
-                          ),
-                          Text(
-                            "@${profile.userName!}",
-                            style:
-                                TextStyle(fontSize: 14.sp, color: Colors.black),
-                          ),
-                          if (profile.id !=
-                              FirebaseAuth.instance.currentUser!.uid)
-                            Column(
-                              children: [
                                 SizedBox(
-                                  height: 0.03.sh,
+                                  width: 0.1.sw,
                                 ),
                                 InkWell(
-                                  onTap: () async {
-                                    if (profile.followers!.contains(FirebaseAuth
-                                        .instance.currentUser!.uid)) {
-                                      _userController
-                                          .currentProfile.value.followers!
-                                          .remove(FirebaseAuth
-                                              .instance.currentUser!.uid);
-                                      _userController.currentProfile.value
-                                          .followersCount = _userController
-                                              .currentProfile
-                                              .value
-                                              .followersCount! -
-                                          1;
-                                      _userController.currentProfile.refresh();
-
-                                      await UserAPI().unFollowAUser(
-                                          FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          profile.id!);
-                                    } else {
-                                      _userController
-                                          .currentProfile.value.followers!
-                                          .add(FirebaseAuth
-                                              .instance.currentUser!.uid);
-                                      _userController.currentProfile.value
-                                          .followersCount = _userController
-                                              .currentProfile
-                                              .value
-                                              .followersCount! +
-                                          1;
-
-                                      _userController.currentProfile.refresh();
-
-                                      await UserAPI().followAUser(
-                                          FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          profile.id!);
-                                    }
+                                  onTap: () {
+                                    _userController.getUserFollowers(profile.id!);
+                                    Get.to(FollowersFollowingPage("Followers"));
                                   },
-                                  child: Container(
-                                    width: 0.2.sw,
-                                    height: 0.04.sh,
-                                    decoration: BoxDecoration(
-                                      color: profile.followers!.contains(
-                                              FirebaseAuth
-                                                  .instance.currentUser!.uid)
-                                          ? Colors.grey
-                                          : Colors.green,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        profile.followers!.contains(FirebaseAuth
-                                                .instance.currentUser!.uid)
-                                            ? "UnFollow"
-                                            : "Follow",
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        profile.followersCount != null
+                                            ? profile.followersCount.toString()
+                                            : "0",
                                         style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12.sp),
+                                            fontSize: 18.sp,
+                                            color: primarycolor,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width: 0.01.sw,
+                                      ),
+                                      Text(
+                                        "Followers",
+                                        style: TextStyle(
+                                          fontSize: 10.sp,
+                                          color: primarycolor,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                )
                               ],
                             ),
-                          SizedBox(
-                            height: 0.03.sh,
-                          ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _userController.getUserFollowing(profile.id!);
-                                  Get.to(FollowersFollowingPage("Following"));
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      profile.followingCount != null
-                                          ? profile.followingCount.toString()
-                                          : "0",
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          color: primarycolor,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 0.01.sw,
-                                    ),
-                                    Text(
-                                      "Following",
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: primarycolor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 0.1.sw,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  _userController.getUserFollowers(profile.id!);
-                                  Get.to(FollowersFollowingPage("Followers"));
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      profile.followersCount != null
-                                          ? profile.followersCount.toString()
-                                          : "0",
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          color: primarycolor,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: 0.01.sw,
-                                    ),
-                                    Text(
-                                      "Followers",
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        color: primarycolor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 0.03.sh,
-                          ),
-                          InkWell(
-                            onTap: () => updateBio(context),
-                            child: Text(
-                              profile.bio!,
-                              style: TextStyle(fontSize: 15.sp),
+                            SizedBox(
+                              height: 0.03.sh,
                             ),
-                          ),
-                          SizedBox(
-                            height: 0.03.sh,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Products",
-                                  style: TextStyle(
-                                      fontSize: 13.sp, color: primarycolor)),
-                              InkWell(
-                                onTap: () => Get.to(
-                                  () => MyProducts(
-                                      title: "${profile.firstName} Products",
-                                      edit: false),
-                                ),
-                                child: Text("View all",
+                            InkWell(
+                              onTap: () => updateBio(context),
+                              child: Text(
+                                profile.bio!,
+                                style: TextStyle(fontSize: 15.sp),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 0.03.sh,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Products",
                                     style: TextStyle(
                                         fontSize: 13.sp, color: primarycolor)),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          GetX<ProductController>(
-                              initState: (_) async =>
-                                  Get.find<ProductController>().products =
-                                      await ProductController.getProductsByShop(
-                                          profile.shopId!.id),
-                              builder: (_) {
-                                print(_.products.length);
-                                if (_.products.isEmpty) {
-                                  return Text("No Products yet");
-                                }
-                                if (_.products.isNotEmpty) {
-                                  return SizedBox(
-                                      height: 200.h,
-                                      width: double.infinity,
-                                      child: ListView.separated(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        separatorBuilder: (context, index) =>
-                                            SizedBox(
-                                          height: 30,
+                                InkWell(
+                                  onTap: () => Get.to(
+                                    () => MyProducts(
+                                        title: "${profile.firstName} Products",
+                                        edit: false),
+                                  ),
+                                  child: Text("View all",
+                                      style: TextStyle(
+                                          fontSize: 13.sp, color: primarycolor)),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 0.02.sh,
+                            ),
+                            GetX<ProductController>(
+                                initState: (_) async =>
+                                    Get.find<ProductController>().products =
+                                        await ProductController.getProductsByShop(
+                                            profile.shopId!.id),
+                                builder: (_) {
+                                  printOut(_.products.length);
+                                  if (_.products.isEmpty) {
+                                    return SizedBox(height: 0.3.sh,child: Text("No Products yet", style: TextStyle(color: Colors.grey, fontSize: 16.sp),));
+                                  }
+                                  if (_.products.isNotEmpty) {
+                                    return SizedBox(
+                                        height: 0.3.sh,
+                                        width: double.infinity,
+                                        child: ListView.separated(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          separatorBuilder: (context, index) =>
+                                              SizedBox(
+                                            height: 0.1.sh,
+                                          ),
+                                          physics: const BouncingScrollPhysics(),
+                                          itemCount: _.products.length,
+                                          itemBuilder: (context, index) {
+                                            return ProductCard(
+                                              product: _.products[index],
+                                              press: () {
+                                                Get.to(FullProduct(
+                                                  product: _.products[index],
+                                                ));
+                                              },
+                                            );
+                                          },
+                                        ));
+                                    // return Column(
+                                    //   children: _.products.map((e) => Text(e.name)).toList(),
+                                    // );
+                                  }
+                                  return Text("No Products yet", style: TextStyle(color: Colors.grey, fontSize: 16.sp));
+                                }),
+                            SizedBox(
+                              height: 0.03.sh,
+                            ),
+                            if (profile.id ==
+                                FirebaseAuth.instance.currentUser!.uid)
+                              Obx(() {
+                                  return _userController.currentProfile.value.memberShip == 0 ? Center(
+                                    child: InkWell(
+                                      onTap: () {
+                                        showPremiumAlert(context);
+                                      },
+                                      child: Container(
+                                        width: 0.7.sw,
+                                        height: 0.07.sh,
+                                        decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius: BorderRadius.circular(10),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Colors.black12,
+                                                spreadRadius: 0.5,
+                                                blurRadius: 0.8,
+                                                offset:
+                                                Offset(0, 5), // changes position of shadow
+                                              ),
+                                            ]
                                         ),
-                                        physics: const BouncingScrollPhysics(),
-                                        itemCount: _.products.length,
-                                        itemBuilder: (context, index) {
-                                          return ProductCard(
-                                            product: _.products[index],
-                                            press: () {
-                                              Get.to(FullProduct(
-                                                product: _.products[index],
-                                              ));
-                                            },
-                                          );
-                                        },
-                                      ));
-                                  // return Column(
-                                  //   children: _.products.map((e) => Text(e.name)).toList(),
-                                  // );
+                                        child: Center(
+                                          child: Text("Upgrade account",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.sp),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ) : Container();
                                 }
-                                return Text("No Products yet");
-                              })
-                        ],
-                      )
+                              ),
+                          ],
+                        ),
+                    )
                     : SizedBox(
                         height: 0.5.sh,
                         child:
@@ -376,7 +418,6 @@ class Profile extends StatelessWidget {
         topRight: Radius.circular(15),
       )),
       builder: (context) {
-        UserModel user = authController.usermodel.value!;
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Container(
@@ -679,4 +720,6 @@ class Profile extends StatelessWidget {
       },
     );
   }
+
+
 }

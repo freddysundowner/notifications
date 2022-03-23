@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
@@ -95,6 +96,20 @@ class UserController extends GetxController {
     } catch (e, s) {
       gettingFollowers.value = false;
       printOut("Error getting user following $e $s");
+    }
+  }
+
+  upgradeAccount() async {
+    try {
+      await UserAPI().upgradeAUser();
+      currentProfile.value.memberShip = 1;
+      currentProfile.value.wallet = currentProfile.value.wallet! - PREMIUM_UPGRADE_COINS_AMOUNT;
+      currentProfile.refresh();
+      Get.snackbar("", "You have successfully upgraded your account o premium membership, Enjoy Gisting",);
+
+    }catch(e, s) {
+      printOut("Error upgrading account $e $s");
+      Get.snackbar("", "An error occured while upgrading your account. Try again later",);
     }
   }
 

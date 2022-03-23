@@ -34,6 +34,10 @@ const updateproduct = product + "products/";
 const updateproductimages = product + "images/";
 
 const userById = user + "/";
+const userFollowers = user + "/followers/";
+const userFollowing = user + "/following/";
+const followUser = user + "/follow/";
+const unFollowUser = user + "/unfollow/";
 const editUser = user + "/";
 const allUsers = user + "/";
 const searchUsersByFirstName = user + "/search/";

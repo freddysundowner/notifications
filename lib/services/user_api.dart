@@ -31,6 +31,28 @@ class UserAPI {
     }
   }
 
+  getUserFollowers(String uid) async {
+    var users =
+    await DbBase().databaseRequest(userFollowers + uid, DbBase().getRequestType);
+
+    if (users == null) {
+      return null;
+    }  else {
+      return jsonDecode(users);
+    }
+  }
+
+  getUserFollowing(String uid) async {
+    var users =
+    await DbBase().databaseRequest(userFollowing + uid, DbBase().getRequestType);
+
+    if (users == null) {
+      return null;
+    }  else {
+      return jsonDecode(users);
+    }
+  }
+
   searchUser(String text) async {
     var users =
     await DbBase().databaseRequest(searchUsersByFirstName + text, DbBase().getRequestType);
@@ -57,6 +79,32 @@ class UserAPI {
       printOut("updatedUser $updated");
     } catch (e) {
       printOut("Error updating user $e");
+    }
+  }
+
+  followAUser(String myId, String toFollowId) async {
+    try {
+
+      var updated = await DbBase()
+          .databaseRequest(followUser + myId + "/" + toFollowId,
+          DbBase().patchRequestType);
+
+      printOut("updatedUser $updated");
+    } catch (e, s) {
+      printOut("Error following user $e $s");
+    }
+  }
+
+  unFollowAUser(String myId, String toUnFollowId) async {
+    try {
+
+      var updated = await DbBase()
+          .databaseRequest(unFollowUser + myId + "/" + toUnFollowId,
+          DbBase().patchRequestType);
+
+      printOut("updatedUser $updated");
+    } catch (e, s) {
+      printOut("Error following user $e $s");
     }
   }
 

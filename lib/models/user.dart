@@ -23,6 +23,8 @@ class UserModel {
   String? email;
   String? password;
   String? phonenumber;
+  int? followersCount;
+  int? followingCount;
   DateTime? createdAt;
   DateTime? updatedAt;
   String? profilePhoto;
@@ -30,6 +32,8 @@ class UserModel {
   int? memberShip;
   int? upgradedDate;
   UserModel({
+    @required this.followersCount,
+    @required this.followingCount,
     @required this.followers,
     @required this.following,
     @required this.wallet,
@@ -81,11 +85,15 @@ class UserModel {
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],
         upgradedDate: json["upgradedDate"],
+    followersCount: json["followersCount"],
+    followingCount: json["followingCount"],
       );
 
   Map<String, dynamic> toJson() => {
         // "followers": List<dynamic>.from(followers!.map((x) => x)),
         // "following": List<dynamic>.from(following!.map((x) => x)),
+    "followingCount": followingCount,
+    "followersCount": followersCount,
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,

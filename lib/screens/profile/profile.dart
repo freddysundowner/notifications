@@ -9,6 +9,7 @@ import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
+import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/settings_page.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -137,54 +138,66 @@ class Profile extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    profile.following != null
-                                        ? profile.following!.length.toString()
-                                        : "0",
-                                    style: TextStyle(
-                                        fontSize: 18.sp,
-                                        color: primarycolor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 0.01.sw,
-                                  ),
-                                  Text(
-                                    "Following",
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: primarycolor,
+                              InkWell(
+                                onTap: () {
+                                  _userController.getUserFollowing(profile.id!);
+                                  Get.to(FollowersFollowingPage("Following"));
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      profile.followingCount != null
+                                          ? profile.followingCount.toString()
+                                          : "0",
+                                      style: TextStyle(
+                                          fontSize: 18.sp,
+                                          color: primarycolor,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      width: 0.01.sw,
+                                    ),
+                                    Text(
+                                      "Following",
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: primarycolor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               SizedBox(
                                 width: 0.1.sw,
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    profile.followers != null
-                                        ? profile.followers!.length.toString()
-                                        : "0",
-                                    style: TextStyle(
-                                        fontSize: 18.sp,
-                                        color: primarycolor,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 0.01.sw,
-                                  ),
-                                  Text(
-                                    "Followers",
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: primarycolor,
+                              InkWell(
+                                onTap: () {
+                                  _userController.getUserFollowers(profile.id!);
+                                  Get.to(FollowersFollowingPage("Followers"));
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      profile.followersCount != null
+                                          ? profile.followersCount.toString()
+                                          : "0",
+                                      style: TextStyle(
+                                          fontSize: 18.sp,
+                                          color: primarycolor,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      width: 0.01.sw,
+                                    ),
+                                    Text(
+                                      "Followers",
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: primarycolor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           ),

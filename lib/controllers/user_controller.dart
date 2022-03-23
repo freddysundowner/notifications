@@ -12,6 +12,8 @@ class UserController extends GetxController {
   var profileLoading = false.obs;
   var ordersLoading = false.obs;
   var userOrders = [].obs;
+  var userFollowersFollowing = [].obs;
+  var gettingFollowers = false.obs;
 
   getUserProfile(String userId) async {
 
@@ -47,6 +49,52 @@ class UserController extends GetxController {
     } catch(e, s) {
       ordersLoading.value = false;
       printOut("Error getting user orders $e $s");
+    }
+  }
+
+  getUserFollowers(String uid) async {
+
+    try {
+      gettingFollowers.value = true;
+
+      userFollowersFollowing.value = [];
+
+      var users = await UserAPI().getUserFollowers(uid);
+
+      if (users == null) {
+        userFollowersFollowing.value = [];
+      }  else {
+        userFollowersFollowing.value = users;
+      }
+
+      gettingFollowers.value = false;
+
+    } catch (e, s) {
+      gettingFollowers.value = false;
+      printOut("Error getting user followers $e $s");
+    }
+  }
+
+  getUserFollowing(String uid) async {
+
+    try {
+      gettingFollowers.value = true;
+
+      userFollowersFollowing.value = [];
+
+      var users = await UserAPI().getUserFollowing(uid);
+
+      if (users == null) {
+        userFollowersFollowing.value = [];
+      }  else {
+        userFollowersFollowing.value = users;
+      }
+
+      gettingFollowers.value = false;
+
+    } catch (e, s) {
+      gettingFollowers.value = false;
+      printOut("Error getting user following $e $s");
     }
   }
 

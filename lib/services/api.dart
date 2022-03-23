@@ -57,7 +57,6 @@ class Api {
       Helper.debug("headers ${headers}");
       Helper.debug("url ${url}");
       Helper.debug("body ${body}");
-      Helper.debug("body ${jsonEncode(body)}");
       final response = await client.post(url, body: jsonEncode(body), headers: headers);
       Helper.debug("result ${response.body}");
       return jsonDecode(response.body);

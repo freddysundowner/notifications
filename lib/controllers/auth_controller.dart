@@ -10,7 +10,7 @@ import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/user_api.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -53,8 +53,8 @@ class AuthController extends GetxController {
       ).toJson();
       Map<String, dynamic> user = await UserAPI.authenticate(auth, "register");
 
-      if (user["status"] == 400) {
-        error.value = user["message"];
+      if (user["success"] == false) {
+        error.value = user["info"]["message"];
       } else {
         UserModel userModel = UserModel.fromJson(user["data"]);
         try {
@@ -66,6 +66,9 @@ class AuthController extends GetxController {
         return signInWithCustomToken(
             userModel.userName!, user["authtoken"], user["accessToken"]);
       }
+
+    } catch(e, s) {
+      printOut("Error authenticating $e $s");
     } finally {
       isLoading(false);
     }

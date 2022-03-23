@@ -108,18 +108,22 @@ class UserAPI {
     }
   }
 
-  static Future<Map<String, dynamic>> authenticate(data, String type) async {
+  static authenticate(data, String type) async {
     Helper.debug("data $data");
     Helper.debug("type $type");
     var response;
     if (type == "register") {
-      response = await Api.callApi(
-          method: config.post, endpoint: config.register, body: data);
+      response = await DbBase().databaseRequest(
+          config.register, DbBase().postRequestType, body: data);
     } else {
-      response = await Api.callApi(
-          method: config.post, endpoint: config.authenticatation, body: data);
+
+      response = await DbBase().databaseRequest(
+          config.authenticatation, DbBase().postRequestType, body: data);
+
     }
-    return response;
+
+    printOut(response);
+    return jsonDecode(response);
   }
 
   static Future<UserModel> getUserById() async {

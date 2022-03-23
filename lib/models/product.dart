@@ -36,9 +36,9 @@ class Product {
   }
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        images: List<String>.from(json["images"].map((x) => x)),
+        images: List<String>.from(json["images"] ?? [].map((x) => x)),
         id: json["_id"],
-        name: json["name"],
+        name: json["name"] ?? "",
         price: json["price"],
         quantity: json["quantity"],
         variations: json["variations"] == null

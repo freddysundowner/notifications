@@ -107,9 +107,7 @@ class ShopView extends StatelessWidget {
                           await ProductController.getProductsByShop(
                               currentShop.id),
                   builder: (_) {
-                    if (_.products.isEmpty) {
-                      return Text("No Products yet");
-                    }
+
                     if (_.products.length > 0) {
                       return Container(
                         height: MediaQuery.of(context).size.height,

@@ -133,8 +133,81 @@ class Profile extends StatelessWidget {
                             style:
                                 TextStyle(fontSize: 14.sp, color: Colors.black),
                           ),
+                          if (profile.id !=
+                              FirebaseAuth.instance.currentUser!.uid)
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 0.03.sh,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    if (profile.followers!.contains(FirebaseAuth
+                                        .instance.currentUser!.uid)) {
+                                      _userController
+                                          .currentProfile.value.followers!
+                                          .remove(FirebaseAuth
+                                              .instance.currentUser!.uid);
+                                      _userController.currentProfile.value
+                                          .followersCount = _userController
+                                              .currentProfile
+                                              .value
+                                              .followersCount! -
+                                          1;
+                                      _userController.currentProfile.refresh();
+
+                                      await UserAPI().unFollowAUser(
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          profile.id!);
+                                    } else {
+                                      _userController
+                                          .currentProfile.value.followers!
+                                          .add(FirebaseAuth
+                                              .instance.currentUser!.uid);
+                                      _userController.currentProfile.value
+                                          .followersCount = _userController
+                                              .currentProfile
+                                              .value
+                                              .followersCount! +
+                                          1;
+
+                                      _userController.currentProfile.refresh();
+
+                                      await UserAPI().followAUser(
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          profile.id!);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 0.2.sw,
+                                    height: 0.04.sh,
+                                    decoration: BoxDecoration(
+                                      color: profile.followers!.contains(
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid)
+                                          ? Colors.grey
+                                          : Colors.green,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        profile.followers!.contains(FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                            ? "UnFollow"
+                                            : "Follow",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           SizedBox(
-                            height: 20.h,
+                            height: 0.03.sh,
                           ),
                           Row(
                             children: [
@@ -441,7 +514,6 @@ class Profile extends StatelessWidget {
                             lastNameController.text;
 
                         _userController.currentProfile.refresh();
-
                       } else {
                         printOut("Failed Validating");
                       }
@@ -569,7 +641,6 @@ class Profile extends StatelessWidget {
                       if (_bioFormKey.currentState!.validate()) {
                         printOut("Validated");
 
-
                         Get.back();
 
                         await UserAPI().updateUser({"bio": bioController.text},
@@ -580,7 +651,6 @@ class Profile extends StatelessWidget {
                         _userController.currentProfile.value.bio =
                             bioController.text;
                         _userController.currentProfile.refresh();
-
                       } else {
                         printOut("Failed Validating");
                       }

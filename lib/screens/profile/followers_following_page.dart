@@ -8,6 +8,8 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
+import 'profile.dart';
+
 class FollowersFollowingPage extends StatelessWidget {
   String type;
   final UserController _userController = Get.find<UserController>();
@@ -40,102 +42,109 @@ class FollowersFollowingPage extends StatelessWidget {
                         printOut("Do i follow this person? ${user.followers!.contains(FirebaseAuth
                             .instance.currentUser!.uid)}");
 
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  user.profilePhoto == null
-                                      ? const CircleAvatar(
-                                          radius: 20,
-                                          backgroundImage: AssetImage(
-                                              "assets/icons/profile_placeholder.png"),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 20,
-                                          backgroundImage:
-                                              NetworkImage(user.profilePhoto!),
+                        return InkWell(
+                          onTap: () {
+                            _userController.getUserProfile(user.id!);
+                            Get.to(Profile());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    user.profilePhoto == null
+                                        ? const CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage: AssetImage(
+                                                "assets/icons/profile_placeholder.png"),
+                                          )
+                                        : CircleAvatar(
+                                            radius: 20,
+                                            backgroundImage:
+                                                NetworkImage(user.profilePhoto!),
+                                          ),
+                                    SizedBox(
+                                      width: 0.03.sw,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${user.firstName} ${user.lastName}"
+                                                      .length >
+                                                  30
+                                              ? "${user.firstName} ${user.lastName}"
+                                                      .substring(0, 30) +
+                                                  "..."
+                                              : "${user.firstName} ${user.lastName}",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14.sp),
                                         ),
-                                  SizedBox(
-                                    width: 0.03.sw,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${user.firstName} ${user.lastName}"
-                                                    .length >
-                                                30
-                                            ? "${user.firstName} ${user.lastName}"
-                                                    .substring(0, 30) +
-                                                "..."
-                                            : "${user.firstName} ${user.lastName}",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14.sp),
-                                      ),
-                                      Text(
-                                        user.userName!,
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 14.sp),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              InkWell(
-                                onTap: () async {
+                                        Text(
+                                          user.userName!,
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 14.sp),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                               if(user.id != FirebaseAuth
+                                   .instance.currentUser!.uid) InkWell(
+                                  onTap: () async {
 
-                                  if (user.followers!.contains(FirebaseAuth
-                                      .instance.currentUser!.uid)) {
-                                    _userController
-                                        .userFollowersFollowing
-                                        .elementAt(index)["followers"].remove(FirebaseAuth
-                                        .instance.currentUser!.uid);
-                                    _userController.userFollowersFollowing.refresh();
-                                    await UserAPI().unFollowAUser(FirebaseAuth
-                                        .instance.currentUser!.uid, user.id!);
+                                    if (user.followers!.contains(FirebaseAuth
+                                        .instance.currentUser!.uid)) {
+                                      _userController
+                                          .userFollowersFollowing
+                                          .elementAt(index)["followers"].remove(FirebaseAuth
+                                          .instance.currentUser!.uid);
+                                      _userController.userFollowersFollowing.refresh();
+                                      await UserAPI().unFollowAUser(FirebaseAuth
+                                          .instance.currentUser!.uid, user.id!);
 
-                                  }  else {
-                                    _userController
-                                        .userFollowersFollowing
-                                        .elementAt(index)["followers"].add(FirebaseAuth
-                                        .instance.currentUser!.uid);
-                                    _userController.userFollowersFollowing.refresh();
-                                    await UserAPI().followAUser(FirebaseAuth
-                                        .instance.currentUser!.uid, user.id!);
+                                    }  else {
+                                      _userController
+                                          .userFollowersFollowing
+                                          .elementAt(index)["followers"].add(FirebaseAuth
+                                          .instance.currentUser!.uid);
+                                      _userController.userFollowersFollowing.refresh();
+                                      await UserAPI().followAUser(FirebaseAuth
+                                          .instance.currentUser!.uid, user.id!);
 
-                                  }
+                                    }
 
-                                },
-                                child: Container(
-                                  width: 0.24.sw,
-                                  height: 0.05.sh,
-                                  decoration: BoxDecoration(
-                                    color: user.followers!.contains(FirebaseAuth
-                                        .instance.currentUser!.uid)
-                                        ? Colors.grey
-                                        : Colors.green,
-
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      user.followers!.contains(FirebaseAuth
+                                  },
+                                  child: Container(
+                                    width: 0.24.sw,
+                                    height: 0.05.sh,
+                                    decoration: BoxDecoration(
+                                      color: user.followers!.contains(FirebaseAuth
                                           .instance.currentUser!.uid)
-                                          ? "UnFollow"
-                                          : "Follow",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16.sp),
+                                          ? Colors.grey
+                                          : Colors.green,
+
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        user.followers!.contains(FirebaseAuth
+                                            .instance.currentUser!.uid)
+                                            ? "UnFollow"
+                                            : "Follow",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16.sp),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         );
                       })

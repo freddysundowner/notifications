@@ -126,7 +126,7 @@ class FullProduct extends StatelessWidget {
                       ),
                     ),
 
-                    Expanded(
+                    product.shopId!.open! ? Expanded(
                       child: GestureDetector(
                         onTap: () {
                           checkOutController.product.value = product;
@@ -161,7 +161,7 @@ class FullProduct extends StatelessWidget {
                           ),
                         ),
                       ),
-                    )
+                    ) : Container()
                   ],
                 ),
               ) : Container()

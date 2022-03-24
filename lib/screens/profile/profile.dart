@@ -118,7 +118,7 @@ class Profile extends StatelessWidget {
                                     ),
                                   ),
                                   placeholder: (context, url) =>
-                                      CircularProgressIndicator(),
+                                      const CircularProgressIndicator(),
                                   errorWidget: (context, url, error) =>
                                       const Icon(
                                     Icons.error,

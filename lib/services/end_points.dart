@@ -1,7 +1,7 @@
 const baseUrl = "http://52.43.151.113";
 const tokenPath =
     "http://us-central1-gisthouse-887e3.cloudfunctions.net/generateagoratoken";
-const imageUrl = baseUrl + "/public/img/";
+const imageUrl = "";
 const rooms = baseUrl + "/rooms";
 const user = baseUrl + "/users";
 const shop = baseUrl + "/shop/";

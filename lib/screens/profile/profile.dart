@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
@@ -22,6 +23,7 @@ import 'package:get/get.dart';
 class Profile extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
   final UserController _userController = Get.find<UserController>();
+  ShopController shopController = Get.find<ShopController>();
   final _nameFormKey = GlobalKey<FormState>();
   final _bioFormKey = GlobalKey<FormState>();
   var nameError = "";
@@ -45,8 +47,9 @@ class Profile extends StatelessWidget {
                     onTap: () {
                       if (authController.currentuser!.shopId != null &&
                           authController.currentuser!.shopId!.id != "") {
-                        Get.to(() =>
-                            ShopView(authController.currentuser!.shopId!));
+                        shopController.currentShop.value =
+                            authController.currentuser!.shopId!;
+                        Get.to(() => ShopView());
                       }
                     },
                     child: const Icon(
@@ -91,7 +94,7 @@ class Profile extends StatelessWidget {
                 UserModel profile = _userController.currentProfile.value;
                 return _userController.profileLoading.isFalse
                     ? SingleChildScrollView(
-                      child: Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             InkWell(
@@ -132,8 +135,8 @@ class Profile extends StatelessWidget {
                             ),
                             Text(
                               "@${profile.userName!}",
-                              style:
-                                  TextStyle(fontSize: 14.sp, color: Colors.black),
+                              style: TextStyle(
+                                  fontSize: 14.sp, color: Colors.black),
                             ),
                             if (profile.id !=
                                 FirebaseAuth.instance.currentUser!.uid)
@@ -144,8 +147,9 @@ class Profile extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () async {
-                                      if (profile.followers!.contains(FirebaseAuth
-                                          .instance.currentUser!.uid)) {
+                                      if (profile.followers!.contains(
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid)) {
                                         _userController
                                             .currentProfile.value.followers!
                                             .remove(FirebaseAuth
@@ -156,7 +160,8 @@ class Profile extends StatelessWidget {
                                                 .value
                                                 .followersCount! -
                                             1;
-                                        _userController.currentProfile.refresh();
+                                        _userController.currentProfile
+                                            .refresh();
 
                                         await UserAPI().unFollowAUser(
                                             FirebaseAuth
@@ -174,7 +179,8 @@ class Profile extends StatelessWidget {
                                                 .followersCount! +
                                             1;
 
-                                        _userController.currentProfile.refresh();
+                                        _userController.currentProfile
+                                            .refresh();
 
                                         await UserAPI().followAUser(
                                             FirebaseAuth
@@ -195,8 +201,9 @@ class Profile extends StatelessWidget {
                                       ),
                                       child: Center(
                                         child: Text(
-                                          profile.followers!.contains(FirebaseAuth
-                                                  .instance.currentUser!.uid)
+                                          profile.followers!.contains(
+                                                  FirebaseAuth.instance
+                                                      .currentUser!.uid)
                                               ? "UnFollow"
                                               : "Follow",
                                           style: TextStyle(
@@ -215,7 +222,8 @@ class Profile extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    _userController.getUserFollowing(profile.id!);
+                                    _userController
+                                        .getUserFollowing(profile.id!);
                                     Get.to(FollowersFollowingPage("Following"));
                                   },
                                   child: Row(
@@ -247,7 +255,8 @@ class Profile extends StatelessWidget {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    _userController.getUserFollowers(profile.id!);
+                                    _userController
+                                        .getUserFollowers(profile.id!);
                                     Get.to(FollowersFollowingPage("Followers"));
                                   },
                                   child: Row(
@@ -303,7 +312,8 @@ class Profile extends StatelessWidget {
                                   ),
                                   child: Text("View all",
                                       style: TextStyle(
-                                          fontSize: 13.sp, color: primarycolor)),
+                                          fontSize: 13.sp,
+                                          color: primarycolor)),
                                 )
                               ],
                             ),
@@ -313,12 +323,20 @@ class Profile extends StatelessWidget {
                             GetX<ProductController>(
                                 initState: (_) async =>
                                     Get.find<ProductController>().products =
-                                        await ProductController.getProductsByShop(
-                                            profile.shopId!.id),
+                                        await ProductController
+                                            .getProductsByShop(
+                                                profile.shopId!.id!),
                                 builder: (_) {
                                   printOut(_.products.length);
                                   if (_.products.isEmpty) {
-                                    return SizedBox(height: 0.3.sh,child: Text("No Products yet", style: TextStyle(color: Colors.grey, fontSize: 16.sp),));
+                                    return SizedBox(
+                                        height: 0.3.sh,
+                                        child: Text(
+                                          "No Products yet",
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 16.sp),
+                                        ));
                                   }
                                   if (_.products.isNotEmpty) {
                                     return SizedBox(
@@ -331,7 +349,8 @@ class Profile extends StatelessWidget {
                                               SizedBox(
                                             height: 0.1.sh,
                                           ),
-                                          physics: const BouncingScrollPhysics(),
+                                          physics:
+                                              const BouncingScrollPhysics(),
                                           itemCount: _.products.length,
                                           itemBuilder: (context, index) {
                                             return ProductCard(
@@ -348,7 +367,9 @@ class Profile extends StatelessWidget {
                                     //   children: _.products.map((e) => Text(e.name)).toList(),
                                     // );
                                   }
-                                  return Text("No Products yet", style: TextStyle(color: Colors.grey, fontSize: 16.sp));
+                                  return Text("No Products yet",
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 16.sp));
                                 }),
                             SizedBox(
                               height: 0.03.sh,
@@ -356,42 +377,46 @@ class Profile extends StatelessWidget {
                             if (profile.id ==
                                 FirebaseAuth.instance.currentUser!.uid)
                               Obx(() {
-                                  return _userController.currentProfile.value.memberShip == 0 ? Center(
-                                    child: InkWell(
-                                      onTap: () {
-                                        showPremiumAlert(context);
-                                      },
-                                      child: Container(
-                                        width: 0.7.sw,
-                                        height: 0.07.sh,
-                                        decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.circular(10),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Colors.black12,
-                                                spreadRadius: 0.5,
-                                                blurRadius: 0.8,
-                                                offset:
-                                                Offset(0, 5), // changes position of shadow
+                                return _userController
+                                            .currentProfile.value.memberShip ==
+                                        0
+                                    ? Center(
+                                        child: InkWell(
+                                          onTap: () {
+                                            showPremiumAlert(context);
+                                          },
+                                          child: Container(
+                                            width: 0.7.sw,
+                                            height: 0.07.sh,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                    color: Colors.black12,
+                                                    spreadRadius: 0.5,
+                                                    blurRadius: 0.8,
+                                                    offset: Offset(0,
+                                                        5), // changes position of shadow
+                                                  ),
+                                                ]),
+                                            child: Center(
+                                              child: Text(
+                                                "Upgrade account",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18.sp),
                                               ),
-                                            ]
-                                        ),
-                                        child: Center(
-                                          child: Text("Upgrade account",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18.sp),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ) : Container();
-                                }
-                              ),
+                                      )
+                                    : Container();
+                              }),
                           ],
                         ),
-                    )
+                      )
                     : SizedBox(
                         height: 0.5.sh,
                         child:
@@ -720,6 +745,4 @@ class Profile extends StatelessWidget {
       },
     );
   }
-
-
 }

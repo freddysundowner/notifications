@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 
+import 'shop.dart';
+
 UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
 
 String userToJson(UserModel data) => json.encode(data.toJson());
@@ -28,7 +30,7 @@ class UserModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? profilePhoto;
-  ShopId? shopId;
+  Shop? shopId;
   int? memberShip;
   int? upgradedDate;
   UserModel({
@@ -79,7 +81,7 @@ class UserModel {
         email: json["email"],
         password: json["password"],
         shopId: json["shopId"] != null && json["shopId"] != ""
-            ? ShopId.fromJson(json["shopId"])
+            ? Shop.fromJson(json["shopId"])
             : null,
         phonenumber: json["phonenumber"],
         profilePhoto: json["profilePhoto"],

@@ -14,6 +14,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
@@ -66,8 +67,7 @@ class AuthController extends GetxController {
         return signInWithCustomToken(
             userModel.userName!, user["authtoken"], user["accessToken"]);
       }
-
-    } catch(e, s) {
+    } catch (e, s) {
       printOut("Error authenticating $e $s");
     } finally {
       isLoading(false);
@@ -111,6 +111,10 @@ class AuthController extends GetxController {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("access_token", accesstoken);
 
+        var userOneSignalId = await OneSignal.shared.getDeviceState();
+        await UserAPI().updateUser({"notificationToken": userOneSignalId!.userId},
+            FirebaseAuth.instance.currentUser!.uid);
+
         return Get.offAll(() => HomePage());
       } else {
         printOut("User null");
@@ -130,7 +134,6 @@ class AuthController extends GetxController {
 
     dispose();
     ChatController().dispose();
-
   }
 
   handleAuth() {
@@ -153,5 +156,4 @@ class AuthController extends GetxController {
       },
     );
   }
-
 }

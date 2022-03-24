@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/screens/auth/forgot_password.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
 
 class Login extends StatelessWidget {
@@ -129,7 +129,7 @@ class Login extends StatelessWidget {
 
   Future<void> signInButtonCallback(BuildContext context) async {
     if (_formLoginkey.currentState!.validate()) {
-      String snackbarMessage = "Error loggin in, check email and password";
+      String snackbarMessage = "Error login in, check email and password";
       try {
         var login = authController.authenticate();
         await showDialog(
@@ -137,14 +137,14 @@ class Login extends StatelessWidget {
           builder: (context) {
             return AsyncProgressDialog(
               login,
-              message: Text("Signing in to your account"),
+              message: const Text("Signing in to your account"),
               onError: (e) {
                 snackbarMessage = e.toString();
               },
             );
           },
         );
-        snackbarMessage = authController.error.value;
+        snackbarMessage = authController.error.value.isEmpty ? snackbarMessage :authController.error.value;
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

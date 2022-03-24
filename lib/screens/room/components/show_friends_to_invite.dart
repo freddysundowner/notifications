@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -27,7 +29,8 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
               return Obx(() {
                 _homeController.fetchAllUsers();
                 return Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10, top: 10, bottom: 2),
+                  padding: const EdgeInsets.only(
+                      left: 10.0, right: 10, top: 10, bottom: 2),
                   child: Column(
                     children: [
                       Row(
@@ -41,16 +44,23 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                               ),
                               Text(
                                 "Invite friends",
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 14.sp),
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14.sp),
                               ),
                             ],
                           ),
-                          IconButton(onPressed: () {
-                            Get.back();
-
-                          }, icon: const Icon(Icons.done))
-
+                          IconButton(
+                              onPressed: () async {
+                                Get.back();
+                                await NotificationApi().sendNotification(
+                                    _homeController.toInviteUsers,
+                                    "Room invite",
+                                    "You've been invited to join room ${_homeController.currentRoom.value.title} by "
+                                        "${FirebaseAuth.instance.currentUser!.displayName}",
+                                    "RoomScreen",
+                                    _homeController.currentRoom.value.id!);
+                              },
+                              icon: const Icon(Icons.done))
                         ],
                       ),
                       SizedBox(
@@ -112,8 +122,8 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                                                 "assets/icons/picked.png")
                                                             : null,
                                                         backgroundImage:
-                                                            NetworkImage(
-                                                                user.profilePhoto!),
+                                                            NetworkImage(user
+                                                                .profilePhoto!),
                                                       ),
                                               );
                                             }),

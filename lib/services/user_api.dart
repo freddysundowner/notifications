@@ -10,6 +10,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 
 import 'client.dart';
 import 'end_points.dart';
+import 'notification_api.dart';
 
 // api //
 class UserAPI {
@@ -97,6 +98,13 @@ class UserAPI {
     try {
       var updated = await DbBase().databaseRequest(
           followUser + myId + "/" + toFollowId, DbBase().patchRequestType);
+
+      await NotificationApi().sendNotification(
+          [toFollowId],
+          "New follower",
+          "${FirebaseAuth.instance.currentUser!.displayName} just followed you",
+          "ProfileScreen",
+          myId);
 
       printOut("updatedUser $updated");
     } catch (e, s) {

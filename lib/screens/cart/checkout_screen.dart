@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -12,6 +13,7 @@ import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/components/product_short_detail_card.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/orders_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
@@ -430,11 +432,18 @@ class CheckOut extends StatelessWidget {
     orderFuture.then((orderedProductsUid) async {
       Get.back();
       if (orderedProductsUid != null) {
-        String snackbarmMessage = "Products ordered Successfully";
-        try {} catch (e) {
-          snackbarmMessage = e.toString();
+        String snackbarMessage = "Products ordered Successfully";
+        try {
+          await NotificationApi().sendNotification(
+              [checkOutController.product.value!.ownerId!.id],
+              "New Order",
+              "Your product ${checkOutController.product.value!.name} just got ordered",
+              "OrderScreen",
+              FirebaseAuth.instance.currentUser!.uid);
+        } catch (e) {
+          snackbarMessage = e.toString();
         } finally {
-          Helper.showSnackBack(context, snackbarmMessage);
+          Helper.showSnackBack(context, snackbarMessage);
           Get.back();
         }
       } else {

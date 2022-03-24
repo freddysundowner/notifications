@@ -13,6 +13,7 @@ const addresses = address + "/all/";
 const activities = baseUrl + "/activities";
 const transactions = baseUrl + "/transactions";
 const orders = baseUrl + "/orders";
+const notifications = baseUrl + "/notifications";
 
 const allRooms = rooms + "/";
 const roomById = rooms + "/rooms/";
@@ -51,3 +52,4 @@ const userActivities = activities + "/to/";
 const userTransactions = transactions + "/";
 
 const userOrders = orders + "/";
+

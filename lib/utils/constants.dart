@@ -3,10 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const String appName = "GistShop";
 const String agoraAppID = "eb2b573198f24c98a285c82094696299";
+const String oneSignalAppID = "a69f5c54-a5c1-472e-9d88-74713fcc6f85";
 const String currencySymbol = "GC ";
 const String currencyName = "Gistcoins ";
 const String imageplaceholder = "assets/images/productavatar.jpeg";
 const String userimageplaceholder = "assets/images/userimageplaceholder.jpeg";
+const int PREMIUM_UPGRADE_COINS_AMOUNT = 200;
+const String gccurrency = "GC";
 
 // Form Error
 final RegExp emailValidatorRegExp =

@@ -10,6 +10,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 
 import 'client.dart';
 import 'end_points.dart';
+import 'notification_api.dart';
 
 // api //
 class UserAPI {
@@ -22,42 +23,122 @@ class UserAPI {
 
   getUserProfile(String uid) async {
     var user =
-    await DbBase().databaseRequest(userById + uid, DbBase().getRequestType);
+        await DbBase().databaseRequest(userById + uid, DbBase().getRequestType);
 
     if (user == null) {
       return null;
-    }  else {
+    } else {
       return jsonDecode(user);
     }
   }
 
+  getUserFollowers(String uid) async {
+    var users = await DbBase()
+        .databaseRequest(userFollowers + uid, DbBase().getRequestType);
+
+    if (users == null) {
+      return null;
+    } else {
+      return jsonDecode(users);
+    }
+  }
+
+  getUserFollowing(String uid) async {
+    var users = await DbBase()
+        .databaseRequest(userFollowing + uid, DbBase().getRequestType);
+
+    if (users == null) {
+      return null;
+    } else {
+      return jsonDecode(users);
+    }
+  }
+
   searchUser(String text) async {
-    var users =
-    await DbBase().databaseRequest(searchUsersByFirstName + text, DbBase().getRequestType);
+    var users = await DbBase().databaseRequest(
+        searchUsersByFirstName + text, DbBase().getRequestType);
 
     return jsonDecode(users);
   }
 
-  getUserOrders(String uid)async {
-    var orders =
-    await DbBase().databaseRequest(userOrders + uid, DbBase().getRequestType);
+  getUserOrders(String uid) async {
+    var orders = await DbBase()
+        .databaseRequest(userOrders + uid, DbBase().getRequestType);
 
     return jsonDecode(orders);
-
   }
 
-  static Future<Map<String, dynamic>> authenticate(data, String type) async {
+  updateUser(Map<String, dynamic> body, String id) async {
+    try {
+      printOut("updating user $body");
+
+      var updated = await DbBase().databaseRequest(
+          editUser + id, DbBase().patchRequestType,
+          body: body);
+
+      printOut("updatedUser $updated");
+    } catch (e) {
+      printOut("Error updating user $e");
+    }
+  }
+
+  upgradeAUser() async {
+    try {
+      var updated = await DbBase().databaseRequest(
+          upgradeUser + FirebaseAuth.instance.currentUser!.uid,
+          DbBase().patchRequestType);
+
+      printOut("updatedUser $updated");
+    } catch (e) {
+      printOut("Error upgrading user $e");
+    }
+  }
+
+  followAUser(String myId, String toFollowId) async {
+    try {
+      var updated = await DbBase().databaseRequest(
+          followUser + myId + "/" + toFollowId, DbBase().patchRequestType);
+
+      await NotificationApi().sendNotification(
+          [toFollowId],
+          "New follower",
+          "${FirebaseAuth.instance.currentUser!.displayName} just followed you",
+          "ProfileScreen",
+          myId);
+
+      printOut("updatedUser $updated");
+    } catch (e, s) {
+      printOut("Error following user $e $s");
+    }
+  }
+
+  unFollowAUser(String myId, String toUnFollowId) async {
+    try {
+      var updated = await DbBase().databaseRequest(
+          unFollowUser + myId + "/" + toUnFollowId, DbBase().patchRequestType);
+
+      printOut("updatedUser $updated");
+    } catch (e, s) {
+      printOut("Error following user $e $s");
+    }
+  }
+
+  static authenticate(data, String type) async {
     Helper.debug("data $data");
     Helper.debug("type $type");
     var response;
     if (type == "register") {
-      response = await Api.callApi(
-          method: config.post, endpoint: config.register, body: data);
+      response = await DbBase().databaseRequest(
+          config.register, DbBase().postRequestType,
+          body: data);
     } else {
-      response = await Api.callApi(
-          method: config.post, endpoint: config.authenticatation, body: data);
+      response = await DbBase().databaseRequest(
+          config.authenticatation, DbBase().postRequestType,
+          body: data);
     }
-    return response;
+
+    printOut(response);
+    return jsonDecode(response);
   }
 
   static Future<UserModel> getUserById() async {
@@ -118,6 +199,4 @@ class UserAPI {
   }
 
   static removeDisplayPictureForCurrentUser() {}
-
-
 }

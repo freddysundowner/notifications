@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
@@ -12,6 +13,8 @@ class UserController extends GetxController {
   var profileLoading = false.obs;
   var ordersLoading = false.obs;
   var userOrders = [].obs;
+  var userFollowersFollowing = [].obs;
+  var gettingFollowers = false.obs;
 
   getUserProfile(String userId) async {
 
@@ -47,6 +50,66 @@ class UserController extends GetxController {
     } catch(e, s) {
       ordersLoading.value = false;
       printOut("Error getting user orders $e $s");
+    }
+  }
+
+  getUserFollowers(String uid) async {
+
+    try {
+      gettingFollowers.value = true;
+
+      userFollowersFollowing.value = [];
+
+      var users = await UserAPI().getUserFollowers(uid);
+
+      if (users == null) {
+        userFollowersFollowing.value = [];
+      }  else {
+        userFollowersFollowing.value = users;
+      }
+
+      gettingFollowers.value = false;
+
+    } catch (e, s) {
+      gettingFollowers.value = false;
+      printOut("Error getting user followers $e $s");
+    }
+  }
+
+  getUserFollowing(String uid) async {
+
+    try {
+      gettingFollowers.value = true;
+
+      userFollowersFollowing.value = [];
+
+      var users = await UserAPI().getUserFollowing(uid);
+
+      if (users == null) {
+        userFollowersFollowing.value = [];
+      }  else {
+        userFollowersFollowing.value = users;
+      }
+
+      gettingFollowers.value = false;
+
+    } catch (e, s) {
+      gettingFollowers.value = false;
+      printOut("Error getting user following $e $s");
+    }
+  }
+
+  upgradeAccount() async {
+    try {
+      await UserAPI().upgradeAUser();
+      currentProfile.value.memberShip = 1;
+      currentProfile.value.wallet = currentProfile.value.wallet! - PREMIUM_UPGRADE_COINS_AMOUNT;
+      currentProfile.refresh();
+      Get.snackbar("", "You have successfully upgraded your account o premium membership, Enjoy Gisting",);
+
+    }catch(e, s) {
+      printOut("Error upgrading account $e $s");
+      Get.snackbar("", "An error occured while upgrading your account. Try again later",);
     }
   }
 

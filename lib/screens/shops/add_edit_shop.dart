@@ -6,14 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
-import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
-import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../utils/utils.dart';
 
@@ -61,7 +58,7 @@ class NewShop extends StatelessWidget {
       print("one");
       backImage = MemoryImage(shopController.chosenImage.readAsBytesSync());
     } else if (authController.currentuser!.shopId!.image != null &&
-        authController.currentuser!.shopId!.image.isNotEmpty) {
+        authController.currentuser!.shopId!.image!.isNotEmpty) {
       print("two ${authController.currentuser!.shopId!.image}");
       final String? url = authController.currentuser!.shopId!.image;
       if (url != null) backImage = NetworkImage(url);
@@ -103,19 +100,19 @@ class NewShop extends StatelessWidget {
   Widget build(BuildContext context) {
     if (authController.currentuser!.shopId != null) {
       shopController.nameController.text =
-          authController.currentuser!.shopId!.name;
+          authController.currentuser!.shopId!.name!;
 
       shopController.emailController.text =
-          authController.currentuser!.shopId!.email;
+          authController.currentuser!.shopId!.email!;
 
       shopController.mobileController.text =
-          authController.currentuser!.shopId!.phoneNumber;
+          authController.currentuser!.shopId!.phoneNumber!;
 
       shopController.daddressController.text =
-          authController.currentuser!.shopId!.location;
+          authController.currentuser!.shopId!.location!;
 
       shopController.descriptionController.text =
-          authController.currentuser!.shopId!.description;
+          authController.currentuser!.shopId!.description!;
     }
     return Scaffold(
       key: _scaffoldKey,
@@ -131,7 +128,7 @@ class NewShop extends StatelessWidget {
                 if (authController.currentuser!.shopId != "" ||
                     authController.currentuser!.shopId != null) {
                   response = shopController
-                      .updateShop(authController.currentuser!.shopId!.id);
+                      .updateShop(authController.currentuser!.shopId!.id!);
                 }
                 if (authController.currentuser!.shopId == null ||
                     authController.currentuser!.shopId == "") {

@@ -40,29 +40,33 @@ class ProductCard extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: product.images!.length == 0
+          child: product.images!.isEmpty
               ? Image.asset(
                   imageplaceholder,
                   fit: BoxFit.contain,
                   height: 120,
                   width: double.infinity,
                 )
-              : CachedNetworkImage(
-                  imageUrl: product.images![0],
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: double.infinity,
-                    height: 120.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.fitWidth),
+              : Center(
+                child: CachedNetworkImage(
+                    imageUrl: product.images![0],
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: double.infinity,
+                      height: 120.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.fitWidth),
+                      ),
+                    ),
+                    placeholder: (context, url) => const CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                    errorWidget: (context, url, error) => Icon(
+                      Icons.error,
+                      size: 120,
                     ),
                   ),
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                    size: 120,
-                  ),
-                ),
+              ),
         ),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 15),

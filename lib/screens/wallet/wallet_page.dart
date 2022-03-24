@@ -82,7 +82,7 @@ class WalletPage extends StatelessWidget {
               ),
               Obx(() {
                   return SizedBox(
-                      height: 0.629.sh,
+                      height: 0.59.sh,
                       child: _walletController.transactionsLoading.isFalse
                           ? ListView.builder(
                               itemCount: _walletController.userTransaction.length,

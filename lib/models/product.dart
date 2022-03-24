@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:fluttergistshop/models/shop.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 
 Product productFromJson(String str) => Product.fromJson(json.decode(str));
@@ -14,8 +16,8 @@ class Product {
   int? price;
   int? quantity;
   int? discountPrice;
-  String? shopId;
-  String? ownerId;
+  Shop? shopId;
+  UserModel? ownerId;
   String? description;
 
   Product({
@@ -36,16 +38,16 @@ class Product {
   }
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        images: List<String>.from(json["images"].map((x) => x)),
+        images: List<String>.from(json["images"] ?? [].map((x) => x)),
         id: json["_id"],
-        name: json["name"],
+        name: json["name"] ?? "",
         price: json["price"],
         quantity: json["quantity"],
         variations: json["variations"] == null
             ? []
             : List<String>.from(json["variations"].map((x) => x)),
-        shopId: json["shopId"],
-        ownerId: json["ownerId"],
+        shopId: Shop.fromJson(json["shopId"] ?? {}),
+        ownerId: UserModel.fromJson(json["ownerId"] ?? {}),
         description: json["description"],
       );
 
@@ -55,8 +57,8 @@ class Product {
         "price": price,
         "quantity": quantity,
         "variations": variations,
-        "shopId": shopId,
-        "ownerId": ownerId,
+        "shopId": shopId?.toJson(),
+        "ownerId": ownerId?.toJson(),
         "description": description,
       };
 }

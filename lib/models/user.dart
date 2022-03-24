@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 
+import 'shop.dart';
+
 UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
 
 String userToJson(UserModel data) => json.encode(data.toJson());
@@ -23,13 +25,17 @@ class UserModel {
   String? email;
   String? password;
   String? phonenumber;
+  int? followersCount;
+  int? followingCount;
   DateTime? createdAt;
   DateTime? updatedAt;
   String? profilePhoto;
-  ShopId? shopId;
+  Shop? shopId;
   int? memberShip;
   int? upgradedDate;
   UserModel({
+    @required this.followersCount,
+    @required this.followingCount,
     @required this.followers,
     @required this.following,
     @required this.wallet,
@@ -59,8 +65,8 @@ class UserModel {
       this.phonenumber, this.profilePhoto);
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        // followers: List<String>.from(json["followers"].map((x) => x)),
-        // following: List<String>.from(json["following"].map((x) => x)),
+        followers: json["followers"] == null ? [] : List<String>.from(json["followers"].map((x) => x)),
+        following: json["followers"] == null ? [] : List<String>.from(json["following"].map((x) => x)),
         wallet: json["wallet"],
         currentRoom: json["currentRoom"] ?? "",
         facebook: json["facebook"],
@@ -75,17 +81,21 @@ class UserModel {
         email: json["email"],
         password: json["password"],
         shopId: json["shopId"] != null && json["shopId"] != ""
-            ? ShopId.fromJson(json["shopId"])
+            ? Shop.fromJson(json["shopId"])
             : null,
         phonenumber: json["phonenumber"],
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],
         upgradedDate: json["upgradedDate"],
+    followersCount: json["followersCount"],
+    followingCount: json["followingCount"],
       );
 
   Map<String, dynamic> toJson() => {
         // "followers": List<dynamic>.from(followers!.map((x) => x)),
         // "following": List<dynamic>.from(following!.map((x) => x)),
+    "followingCount": followingCount,
+    "followersCount": followersCount,
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,

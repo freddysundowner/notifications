@@ -90,15 +90,19 @@ class HomePage extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: authController.currentuser!.profilePhoto!,
                 imageBuilder: (context, imageProvider) => Container(
-                  width: 20.0,
-                  height: 20.0,
+                  width: 0.08.sw,
+                  height: 0.05.sh,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
                         image: imageProvider, fit: BoxFit.cover),
                   ),
                 ),
-                placeholder: (context, url) => CircularProgressIndicator(),
+                placeholder: (context, url) => Transform.scale(
+                    scale: 0.3,
+                    child: const CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
                 errorWidget: (context, url, error) => Icon(
                   Icons.error,
                   size: 20,

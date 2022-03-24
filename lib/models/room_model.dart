@@ -137,8 +137,8 @@ class OwnerId {
   int? upgradedDate;
 
   factory OwnerId.fromJson(Map<String, dynamic> json) => OwnerId(
-    // followers: List<String>.from(json["followers"].map((x) => x)),
-    // following: List<String>.from(json["following"].map((x) => x)),
+    followers: json["followers"] != null ? List<String>.from(json["followers"].map((x) => x)) : [],
+    following: json["following"] != null ? List<String>.from(json["following"].map((x) => x)) : [],
     wallet: json["wallet"],
     currentRoom: json["currentRoom"] ?? "",
     facebook: json["facebook"],

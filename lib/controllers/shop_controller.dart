@@ -16,6 +16,7 @@ class ShopController extends GetxController {
   var searchedShops = [].obs;
   var isSearchingShop = false.obs;
   var allShops = [].obs;
+  var currentShop = Shop().obs;
 
   Rx<File> _chosenImage = Rx(File(""));
   File get chosenImage => _chosenImage.value;
@@ -57,12 +58,12 @@ class ShopController extends GetxController {
 
   updateShop(String id) async {
     try {
-      String imageurl = Get.find<AuthController>().currentuser!.shopId!.image;
+      String imageurl = Get.find<AuthController>().currentuser!.shopId!.image!;
       if (chosenImage.path.isNotEmpty) {
         imageurl = await FirestoreFilesAccess().uploadFileToPath(
             chosenImage,
             ShopApi.getPathForShop(
-                Get.find<AuthController>().currentuser!.shopId!.id));
+                Get.find<AuthController>().currentuser!.shopId!.id!));
       }
       Map<String, dynamic> productdata = new Shop(
               name: nameController.text,

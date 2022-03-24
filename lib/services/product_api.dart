@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:fluttergistshop/controllers/auth_controller.dart';
-import 'package:fluttergistshop/models/product.dart';
+import 'package:fluttergistshop/services/api.dart';
+import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:get/get.dart';
 
 import 'client.dart';
 import 'end_points.dart';
-
-import 'package:fluttergistshop/services/api.dart';
-import 'package:fluttergistshop/services/configs.dart' as config;
 
 class ProductPI {
   getAllRooms() async {
@@ -43,7 +41,7 @@ class ProductPI {
     var response = await Api.callApi(
         method: config.post,
         endpoint: config.products +
-            Get.find<AuthController>().currentuser!.shopId!.id,
+            Get.find<AuthController>().currentuser!.shopId!.id!,
         body: productdata);
     return response;
   }

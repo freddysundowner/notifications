@@ -4,6 +4,7 @@ import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -118,7 +119,6 @@ class ChatController extends GetxController {
   }
 
   readChats() async {
-
     if (currentChatId.value != "") {
       await db
           .collection("chats")
@@ -152,7 +152,7 @@ class ChatController extends GetxController {
     db
         .collection("chats/${currentChatId.value}/messages")
         .add(newChat.toMap())
-        .then((value) {
+        .then((value) async {
       currentChat.add(newChat);
       sendingMessage.value = false;
 
@@ -162,6 +162,8 @@ class ChatController extends GetxController {
         "lastSender": Get.find<AuthController>().usermodel.value!.id,
         otherUser.id!: FieldValue.increment(1)
       }, SetOptions(merge: true));
+      await NotificationApi().sendNotification([otherUser.id], "New Message",
+          message, "ChatScreen", currentChatId.value);
       printOut("Chat message saved");
     });
   }
@@ -226,7 +228,8 @@ class ChatController extends GetxController {
           0);
       allUserChats.add(allChatsModel);
 
-      allUserChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      allUserChats
+          .sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
 
       printOut("Chat saved successfully ");
     });

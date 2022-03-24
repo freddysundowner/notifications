@@ -10,10 +10,11 @@ import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/user_api.dart';
-import 'package:fluttergistshop/utils/Functions.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
@@ -53,8 +54,8 @@ class AuthController extends GetxController {
       ).toJson();
       Map<String, dynamic> user = await UserAPI.authenticate(auth, "register");
 
-      if (user["status"] == 400) {
-        error.value = user["message"];
+      if (user["success"] == false) {
+        error.value = user["info"]["message"];
       } else {
         UserModel userModel = UserModel.fromJson(user["data"]);
         try {
@@ -66,6 +67,8 @@ class AuthController extends GetxController {
         return signInWithCustomToken(
             userModel.userName!, user["authtoken"], user["accessToken"]);
       }
+    } catch (e, s) {
+      printOut("Error authenticating $e $s");
     } finally {
       isLoading(false);
     }
@@ -108,6 +111,10 @@ class AuthController extends GetxController {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("access_token", accesstoken);
 
+        var userOneSignalId = await OneSignal.shared.getDeviceState();
+        await UserAPI().updateUser({"notificationToken": userOneSignalId!.userId},
+            FirebaseAuth.instance.currentUser!.uid);
+
         return Get.offAll(() => HomePage());
       } else {
         printOut("User null");
@@ -127,7 +134,6 @@ class AuthController extends GetxController {
 
     dispose();
     ChatController().dispose();
-
   }
 
   handleAuth() {
@@ -135,7 +141,7 @@ class AuthController extends GetxController {
       future: UserAPI.getUserById(),
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
+          return const Scaffold(
             backgroundColor: primarycolor,
             body: Center(
               child: CircularProgressIndicator(),
@@ -150,5 +156,4 @@ class AuthController extends GetxController {
       },
     );
   }
-
 }

@@ -2,7 +2,6 @@
 //
 //     final shop = shopFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 Shop shopFromJson(String str) => Shop.fromJson(json.decode(str));
@@ -31,7 +30,7 @@ class Shop {
   String? description;
 
   factory Shop.fromJson(Map<String, dynamic> json) => Shop(
-        open: json["open"] ?? "",
+        open: json["open"] ?? true,
         id: json["_id"] ?? "",
         name: json["name"] ?? "",
         email: json["email"] ?? "",

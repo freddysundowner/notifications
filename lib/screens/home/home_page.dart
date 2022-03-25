@@ -279,16 +279,20 @@ class HomePage extends StatelessWidget {
                                               ));
                                   }),
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                roomModel.title!,
-                                style: const TextStyle(color: Colors.red),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 0.01.sh,
-                            ),
+                            roomModel.title != " "  ? Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    roomModel.title!,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.01.sh,
+                                ),
+                              ],
+                            ) : Container(),
                             Divider(
                               color: Colors.grey[200],
                               height: 0.001.sh,
@@ -297,36 +301,31 @@ class HomePage extends StatelessWidget {
                               height: 0.01.sh,
                             ),
                             SizedBox(
-                              height: 0.12.sh,
+                              height: 0.06.sh,
                               child: roomModel.productIds!.isNotEmpty
                                   ? ListView.builder(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: roomModel
-                                          .productIds![0].images!.length,
+                                      itemCount: roomModel.productImages!.length,
                                       itemBuilder: (context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                color: Colors.white),
-                                            child: Center(
-                                              child:
-                                                CachedNetworkImage(
-                                                  imageUrl: roomModel.productIds![0]
-                                                      .images![index],
-                                                  height: 0.08.sh,
-                                                  width: 0.12.sw,
-                                                  fit: BoxFit.fill,
-                                                  placeholder: (context, url) =>
-                                                  const CircularProgressIndicator(),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                  const Icon(Icons.error),
-                                                )
-                                            ),
+                                        return Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.white),
+                                          child: Center(
+                                            child:
+                                              CachedNetworkImage(
+                                                imageUrl: roomModel.productImages![index],
+                                                height: 0.06.sh,
+                                                width: 0.12.sw,
+                                                fit: BoxFit.fill,
+                                                placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                const Icon(Icons.error),
+                                              )
                                           ),
                                         );
                                       })

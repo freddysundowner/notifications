@@ -28,6 +28,11 @@ class ShopShortDetailCard extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 child: product!.images!.length > 0
                     ? CachedNetworkImage(
+                  errorWidget: (context, String, dynamic)=> Image.asset(
+                    imageplaceholder,
+                    fit: BoxFit.contain,
+                  ),
+
                         imageUrl: product!.images![0],
                         fit: BoxFit.contain,
                       )

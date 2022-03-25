@@ -237,7 +237,7 @@ class RoomController extends GetxController {
         Get.snackbar('', "Room has ended");
       }
       isCurrentRoomLoading.value = false;
-      update();
+
       printOut("Room $roomResponse");
     } catch (e, s) {
       printOut("Error getting individual room $e $s");
@@ -394,25 +394,58 @@ class RoomController extends GetxController {
   Future<void> joinRoom(String roomId) async {
     await fetchRoom(roomId);
 
-    OwnerId currentUser = OwnerId(
-        id: Get.find<AuthController>().usermodel.value!.id,
-        bio: Get.find<AuthController>().usermodel.value!.bio,
-        email: Get.find<AuthController>().usermodel.value!.email,
-        firstName: Get.find<AuthController>().usermodel.value!.firstName,
-        lastName: Get.find<AuthController>().usermodel.value!.lastName,
-        userName: Get.find<AuthController>().usermodel.value!.userName,
-        profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
+    if (currentRoom.value.id != null) {
+      OwnerId currentUser = OwnerId(
+          id: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .id,
+          bio: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .bio,
+          email: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .email,
+          firstName: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .firstName,
+          lastName: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .lastName,
+          userName: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .userName,
+          profilePhoto: Get
+              .find<AuthController>()
+              .usermodel
+              .value!
+              .profilePhoto);
 
-    await addUserToRoom(currentUser);
+      await addUserToRoom(currentUser);
 
-    if (currentRoom.value.token != null) {
-      Get.to(RoomPage(
-        roomId: roomId,
-      ));
-    } else {
-      roomsList.removeWhere((element) => element.id == roomId);
-      Get.snackbar(
-          '', "There was an error adding you to the room, Try again later");
+      if (currentRoom.value.token != null) {
+        Get.to(RoomPage(
+          roomId: roomId,
+        ));
+      } else {
+        roomsList.removeWhere((element) => element.id == roomId);
+        Get.snackbar(
+            '', "There was an error adding you to the room, Try again later");
+      }
+    } else{
+
+      await fetchRooms();
     }
   }
 

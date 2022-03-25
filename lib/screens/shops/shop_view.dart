@@ -232,7 +232,7 @@ class ShopView extends StatelessWidget {
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           final confirmation = await showConfirmationDialog(
-              context, "Are you sure to Delete Product?");
+              context, "Are you sure you want to Delete Product?");
           if (confirmation) {
             for (int i = 0; i < product.images!.length; i++) {}
 
@@ -242,7 +242,7 @@ class ShopView extends StatelessWidget {
               if (productInfoDeleted == true) {
                 snackbarMessage = "Product deleted successfully";
               } else {
-                throw "Coulnd't delete product, please retry";
+                throw "Couldn't delete product, please retry";
               }
             } catch (e) {
               snackbarMessage = e.toString();

@@ -410,6 +410,7 @@ class RoomController extends GetxController {
         roomId: roomId,
       ));
     } else {
+      roomsList.removeWhere((element) => element.id == roomId);
       Get.snackbar(
           '', "There was an error adding you to the room, Try again later");
     }
@@ -511,6 +512,8 @@ class RoomController extends GetxController {
   void initAgora(String token, String roomId) async {
     try {
       printOut("Joining agora room");
+
+      await leaveAgora();
 
       // Get microphone permission
       await [Permission.microphone].request();

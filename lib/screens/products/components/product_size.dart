@@ -26,8 +26,9 @@ class ProductSize extends StatelessWidget {
                 checkOutController.selectetedvariation.value = i;
               },
               child: Obx(() => Container(
-                    width: 0.1.sw,
+                   // width: 0.1.sw,
                     height: 0.06.sh,
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: checkOutController.selectetedvariation.value == i
                           ? primarycolor

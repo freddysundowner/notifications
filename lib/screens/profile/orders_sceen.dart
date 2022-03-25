@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/orders_model.dart';
 import 'package:fluttergistshop/screens/profile/individual_order.dart';
-import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 
@@ -68,14 +68,18 @@ class OrdersScreen extends StatelessWidget {
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
-                                          child: Image.network(
-                                            imageUrl +
-                                                ordersModel.itemId!.productId!
-                                                    .images!.first,
-                                            height: 0.1.sh,
-                                            width: 0.2.sw,
-                                            fit: BoxFit.fill,
-                                          ),
+                                          child:
+                                            CachedNetworkImage(
+                                              imageUrl: ordersModel.itemId!.productId!
+                                                  .images!.first,
+                                              height: 0.1.sh,
+                                              width: 0.2.sw,
+                                              fit: BoxFit.fill,
+                                              placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) => Image.asset("assets/icons/no_image.png"),
+                                            )
                                         ),
                                       ),
                                     ),

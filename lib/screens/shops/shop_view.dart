@@ -104,7 +104,7 @@ class ShopView extends StatelessWidget {
                     ),
                   ),
                   if (shopController.currentShop.value.id ==
-                      authController.currentuser!.shopId!.id)
+                      authController.currentuser!.shopId?.id)
                     InkWell(
                       onTap: () {
                         Get.to(() => NewShop());
@@ -145,7 +145,7 @@ class ShopView extends StatelessWidget {
                               itemCount: _.products.length,
                               itemBuilder: (context, index) {
                                 return shopController.currentShop.value.id ==
-                                        authController.currentuser!.shopId!.id
+                                        authController.currentuser!.shopId?.id
                                     ? buildProductDismissible(
                                         _.products[index], context)
                                     : ShopShortDetailCard(
@@ -164,7 +164,7 @@ class ShopView extends StatelessWidget {
                     // );
                   }),
                   if (shopController.currentShop.value.id !=
-                      authController.currentuser!.shopId!.id)
+                      authController.currentuser!.shopId?.id)
                     Obx(() {
                       return shopController.currentShop.value.open == false
                           ? Center(
@@ -183,7 +183,7 @@ class ShopView extends StatelessWidget {
         ),
       ),
       floatingActionButton: shopController.currentShop.value.id ==
-              authController.currentuser!.shopId!.id
+              authController.currentuser!.shopId?.id
           ? FloatingActionButton(
               child: const Icon(Icons.add),
               elevation: 4,

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
-import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class ChatRoomPage extends StatelessWidget {
-  OwnerId user;
+  UserModel user;
   final ChatController _chatController = Get.find<ChatController>();
   TextEditingController messageController = TextEditingController();
 

@@ -28,7 +28,7 @@ class MyProducts extends StatelessWidget {
       appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
             child: SizedBox(
@@ -39,12 +39,12 @@ class MyProducts extends StatelessWidget {
                   if (edit)
                     Text(
                       "Swipe LEFT to Edit, Swipe RIGHT to Delete",
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12.sp),
                     ),
                   if (edit == false)
                     Text(
                       "Swipe LEFT to Buy, Swipe RIGHT to Favorite",
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(fontSize: 12.sp),
                     ),
                   SizedBox(height: 20.h),
                   Column(
@@ -69,7 +69,7 @@ class MyProducts extends StatelessWidget {
       direction: DismissDirection.horizontal,
       background: buildDismissibleSecondaryBackground(product),
       secondaryBackground: buildDismissiblePrimaryBackground(product),
-      dismissThresholds: {
+      dismissThresholds: const {
         DismissDirection.endToStart: 0.65,
         DismissDirection.startToEnd: 0.65,
       },
@@ -86,7 +86,7 @@ class MyProducts extends StatelessWidget {
               for (int i = 0; i < product.images!.length; i++) {}
 
               bool productInfoDeleted = false;
-              String snackbarMessage;
+              String snackbarMessage = "Product deleted successfully";
               try {
                 if (productInfoDeleted == true) {
                   snackbarMessage = "Product deleted successfully";
@@ -95,7 +95,9 @@ class MyProducts extends StatelessWidget {
                 }
               } catch (e) {
                 snackbarMessage = e.toString();
-              } finally {}
+              } finally {
+                GetSnackBar(message: snackbarMessage,);
+              }
             }
             await refreshPage();
             return confirmation;
@@ -107,13 +109,17 @@ class MyProducts extends StatelessWidget {
             return false;
           }
         } else {
-          if (product.ownerId != FirebaseAuth.instance.currentUser!.uid ) {
+          if (product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ) {
             if (direction == DismissDirection.startToEnd) {
               final confirmation = await showConfirmationDialog(
                   context, "Continue to buying this product?");
               checkOutController.product.value = product;
               checkOutController.qty.value = 1;
-              Get.to(() => CheckOut());
+
+              if (confirmation) {
+                Get.to(() => CheckOut());
+              }
+
 
               return false;
             } else if (direction == DismissDirection.endToStart) {
@@ -135,9 +141,9 @@ class MyProducts extends StatelessWidget {
 
   Widget buildDismissiblePrimaryBackground(Product product) {
     return Container(
-      padding: EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
-        color: product.ownerId != FirebaseAuth.instance.currentUser!.uid ? Colors.green : Colors.transparent,
+        color: product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? Colors.green : Colors.transparent,
         borderRadius: BorderRadius.circular(15),
       ),
       child: edit
@@ -160,10 +166,10 @@ class MyProducts extends StatelessWidget {
                 ),
               ],
             )
-          : product.ownerId != FirebaseAuth.instance.currentUser!.uid ? Row(
+          : product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+              children: const [
                 Icon(
                   Icons.favorite,
                   color: Colors.white,
@@ -184,16 +190,16 @@ class MyProducts extends StatelessWidget {
 
   Widget buildDismissibleSecondaryBackground(Product product) {
     return Container(
-      padding: EdgeInsets.only(left: 20),
+      padding: const EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
-        color: edit ? Colors.red : product.ownerId != FirebaseAuth.instance.currentUser!.uid ? primarycolor : Colors.transparent,
+        color: edit ? Colors.red : product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? primarycolor : Colors.transparent,
         borderRadius: BorderRadius.circular(15),
       ),
       child: edit
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const[
                 Text(
                   "Delete",
                   style: TextStyle(
@@ -209,10 +215,10 @@ class MyProducts extends StatelessWidget {
                 ),
               ],
             )
-          : product.ownerId != FirebaseAuth.instance.currentUser!.uid ? Row(
+          : product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 Text(
                   "Buy",
                   style: TextStyle(

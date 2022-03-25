@@ -131,15 +131,14 @@ class ShopView extends StatelessWidget {
               Stack(
                 children: [
                   GetX<ProductController>(
-                      initState: (_) async =>
+                      initState: (_) async {
                           Get.find<ProductController>().products =
                               await ProductController.getProductsByShop(
-                                  shopController.currentShop.value.id!),
+                                  shopController.currentShop.value.id!); },
                       builder: (_) {
-                        if (_.products.length > 0) {
-                          return Container(
+                          return SizedBox(
                             height: MediaQuery.of(context).size.height,
-                            child: ListView.builder(
+                            child: _.products.isNotEmpty ? ListView.builder(
                                 itemCount: _.products.length,
                                 itemBuilder: (context, index) {
                                   return shopController.currentShop.value.id ==
@@ -155,13 +154,12 @@ class ShopView extends StatelessWidget {
 
                                           },
                                         );
-                                }),
+                                }) : const Text("No Products yet"),
                           );
                           // return Column(
                           //   children: _.products.map((e) => Text(e.name)).toList(),
                           // );
-                        }
-                        return const Text("No Products yet");
+
                       }),
                   if (shopController.currentShop.value.id != authController.currentuser!.shopId!.id)
                     Obx(() {

@@ -209,7 +209,8 @@ class RoomController extends GetxController {
     try {
       isLoading.value = true;
 
-      var room = await RoomAPI().getRoomById("61fb9094d59efb5046a99946");
+      var room = await RoomAPI()
+          .getRoomById(Get.find<AuthController>().usermodel.value!.id!);
 
       if (room != null) {
         currentRoom.value = RoomModel.fromJson(room);
@@ -483,7 +484,6 @@ class RoomController extends GetxController {
           .getUserProducts(FirebaseAuth.instance.currentUser!.uid);
 
       if (products != null) {
-
         printOut(products.length);
 
         //if a product has images, add it to the user products list

@@ -64,8 +64,8 @@ class ProductController extends GetxController {
 
   void addNewSelectedImage(CustomImage image) {
     print("addNewSelectedImage ${image.path}");
-    _selectedImages.value.add(image);
-    print("addNewSelectedImage length ${_selectedImages.value.length}");
+    _selectedImages.add(image);
+    print("addNewSelectedImage length ${_selectedImages.length}");
   }
 
   @override
@@ -111,7 +111,6 @@ class ProductController extends GetxController {
 
   static Future<List<Product>> getProductsByShop(String id) async {
 
-    _products.value = [];
     List<dynamic> response = await ShopApi.getProductsByShop(id);
     _products.value = response.map((e) => Product.fromJson(e)).toList();
     print("after ${_products.value!.length}");

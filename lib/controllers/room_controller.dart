@@ -513,7 +513,12 @@ class RoomController extends GetxController {
     try {
       printOut("Joining agora room");
 
-      await leaveAgora();
+      try {
+        await leaveAgora();
+      } catch(e, s) {
+        printOut("Error leaving agora $e $s");
+      }
+
 
       // Get microphone permission
       await [Permission.microphone].request();

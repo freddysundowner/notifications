@@ -48,12 +48,14 @@ class ShopController extends GetxController {
             chosenImage, ShopApi.getPathForShop(response["data"]["_id"]));
         await ShopApi.updateShop(
             {"image": downloadUrl}, response["data"]["_id"]);
-        Get.back();
+
       } else {
         error.value = response["message"];
       }
       return response;
-    } catch (e) {}
+    } catch (e, s) {
+      printOut("Error saving product $e $s");
+    }
   }
 
   updateShop(String id) async {

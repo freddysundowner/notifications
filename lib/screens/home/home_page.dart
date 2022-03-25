@@ -270,6 +270,7 @@ class HomePage extends StatelessWidget {
                                                 backgroundImage: AssetImage(
                                                     "assets/icons/profile_placeholder.png"))
                                             : CircleAvatar(
+                                          onBackgroundImageError: (Object, Stacktrace) => const Icon(Icons.error),
                                                 backgroundImage: NetworkImage(
                                                     imageUrl +
                                                         roomModel
@@ -312,14 +313,19 @@ class HomePage extends StatelessWidget {
                                                     BorderRadius.circular(5),
                                                 color: Colors.white),
                                             child: Center(
-                                              child: Image.network(
-                                                imageUrl +
-                                                    roomModel.productIds![0]
-                                                        .images![index],
-                                                height: 0.08.sh,
-                                                width: 0.12.sw,
-                                                fit: BoxFit.fill,
-                                              ),
+                                              child:
+                                                CachedNetworkImage(
+                                                  imageUrl: roomModel.productIds![0]
+                                                      .images![index],
+                                                  height: 0.08.sh,
+                                                  width: 0.12.sw,
+                                                  fit: BoxFit.fill,
+                                                  placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                  const Icon(Icons.error),
+                                                )
                                             ),
                                           ),
                                         );

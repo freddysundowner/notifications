@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -288,14 +289,19 @@ class RoomPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                               color: Colors.white),
                           child: Center(
-                            child: Image.network(
-                              imageUrl +
-                                  _homeController.currentRoom.value.productImages!
-                                      .elementAt(index),
-                              height: 0.08.sh,
-                              width: 0.12.sw,
-                              fit: BoxFit.fill,
-                            ),
+                            child:
+                              CachedNetworkImage(
+                                imageUrl: _homeController.currentRoom.value.productImages!
+                                    .elementAt(index),
+                                height: 0.08.sh,
+                                width: 0.12.sw,
+                                fit: BoxFit.fill,
+                                placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                                errorWidget:
+                                    (context, url, error) =>
+                                const Icon(Icons.error),
+                              )
                           ),
                         ),
                       ),

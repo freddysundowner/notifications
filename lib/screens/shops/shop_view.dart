@@ -194,7 +194,7 @@ class ShopView extends StatelessWidget {
 
                     print("EditProductScreen");
                     Get.to(() => EditProductScreen(
-                          product: productController.productObservable.value,
+
                         ));
                   },
                   backgroundColor: Colors.pink,

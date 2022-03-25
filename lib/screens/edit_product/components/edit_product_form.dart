@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/models/product.dart';
@@ -121,7 +122,7 @@ class EditProductForm extends StatelessWidget {
               if (_basicDetailsFormKey.currentState!.validate()) {
                 String snackbarMessage = "";
                 var response;
-                if (productController.productObservable.value != null) {
+                if (product != null) {
                   response = productController
                       .updateProduct(productController.product.id!);
                 } else {
@@ -160,10 +161,12 @@ class EditProductForm extends StatelessWidget {
 
                 var waitedResponse = await response;
                 printOut("Save image response $waitedResponse");
-                productController.product = Product.fromJson( waitedResponse["data"]);
+                Product productresponse = Product.fromJson( waitedResponse["data"]);
+                productresponse.ownerId = Get.find<AuthController>().usermodel.value;
+                productresponse.shopId = Get.find<AuthController>().usermodel.value!.shopId;
 
                 await uploadProductImages(
-                    productController.product.id!, context);
+                    productresponse.id!, context);
 
                 List<dynamic> downloadUrls = productController.selectedImages
                     .map((e) => e.imgType == ImageType.network ? e.path : null)
@@ -172,18 +175,18 @@ class EditProductForm extends StatelessWidget {
                 bool productFinalizeUpdate = false;
                 try {
                   final updateProductFuture = ProductPI.updateProductsImages(
-                      productController.product.id!, downloadUrls);
+                      productresponse.id!, downloadUrls);
                   productFinalizeUpdate = await showDialog(
                     context: context,
                     builder: (context) {
                       return AsyncProgressDialog(
                         updateProductFuture,
-                        message: Text("Saving Product"),
+                        message: const Text("Saving Product"),
                       );
                     },
                   );
                   if (productFinalizeUpdate == true) {
-                    snackbarMessage = productController.product.id != null
+                    snackbarMessage = product != null
                         ? "Product updated successfully"
                         : "Product uploaded successfully";
                   } else {
@@ -199,10 +202,7 @@ class EditProductForm extends StatelessWidget {
                       content: Text(snackbarMessage),
                     ),
                   );
-
-                  if (productController.product.id != null) {
-                    Get.back();
-                  }
+                  Get.back();
                 }
               }
             }),

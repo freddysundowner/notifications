@@ -19,7 +19,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: press,
       child: Container(
-        width: 0.3.sw,
+        width: 0.35.sw,
         margin: const EdgeInsets.only(right: 25),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -43,8 +43,8 @@ class ProductCard extends StatelessWidget {
           child: product.images!.isEmpty
               ? Image.asset(
                   imageplaceholder,
-                  fit: BoxFit.contain,
-                  height: 0.2.sh,
+                  fit: BoxFit.fill,
+                  height: 0.16.sh,
                   width: double.infinity,
                 )
               : Center(
@@ -52,10 +52,10 @@ class ProductCard extends StatelessWidget {
                     imageUrl: product.images![0],
                     imageBuilder: (context, imageProvider) => Container(
                       width: double.infinity,
-                      height: 120.0,
+                      height: 0.16.sh,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.fitWidth),
+                            image: imageProvider, fit: BoxFit.fill),
                       ),
                     ),
                     placeholder: (context, url) => const CircularProgressIndicator(

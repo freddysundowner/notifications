@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -92,7 +94,7 @@ class ProductController extends GetxController {
     }
   }
 
-  updateProduct(String productid) {
+  updateProduct(String productid) async {
     try {
       Map<String, dynamic> productdata = {
         "name": titleFieldController.text,
@@ -102,9 +104,11 @@ class ProductController extends GetxController {
         "variations": variantFieldController.text
       };
       print("updateProduct $productdata");
-      return DbBase().databaseRequest(
+      var response =  await DbBase().databaseRequest(
           config.updateproduct + productid, DbBase().patchRequestType,
           body: productdata);
+
+      return jsonDecode(response);
     } catch (e) {
       print("Error ${e.toString()}");
     }

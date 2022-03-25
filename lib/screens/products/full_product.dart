@@ -93,7 +93,7 @@ class FullProduct extends StatelessWidget {
                     ),
                   ],
                 ),
-              product.ownerId!.id == FirebaseAuth.instance.currentUser!.uid ?
+              product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ?
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Row(

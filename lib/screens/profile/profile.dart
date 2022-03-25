@@ -321,11 +321,12 @@ class Profile extends StatelessWidget {
                               height: 0.02.sh,
                             ),
                             GetX<ProductController>(
-                                initState: (_) async =>
+                                initState: (_) async {
+                                  Get.find<ProductController>().products = [];
                                     Get.find<ProductController>().products =
                                         await ProductController
                                             .getProductsByShop(
-                                                profile.shopId!.id!),
+                                                profile.shopId!.id!);},
                                 builder: (_) {
                                   printOut(_.products.length);
                                   if (_.products.isEmpty) {

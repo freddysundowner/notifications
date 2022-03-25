@@ -121,7 +121,7 @@ class FollowersFollowingPage extends StatelessWidget {
 
                                   },
                                   child: Container(
-                                    width: 0.24.sw,
+                                    width: 0.25.sw,
                                     height: 0.05.sh,
                                     decoration: BoxDecoration(
                                       color: user.followers!.contains(FirebaseAuth
@@ -138,7 +138,7 @@ class FollowersFollowingPage extends StatelessWidget {
                                             ? "UnFollow"
                                             : "Follow",
                                         style: TextStyle(
-                                            color: Colors.white, fontSize: 16.sp),
+                                            color: Colors.white, fontSize: 14.sp),
                                       ),
                                     ),
                                   ),
@@ -150,9 +150,11 @@ class FollowersFollowingPage extends StatelessWidget {
                       })
                   : SizedBox(
                       height: 0.5.sh,
-                      child: Text(
-                        "You have now $type yet",
-                        style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                      child: Center(
+                        child: Text(
+                          type == "Following" ? "You are not following anyone" : "You have no followers yet",
+                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+                        ),
                       ),
                     )
               : SizedBox(

@@ -72,7 +72,8 @@ class RoomPage extends StatelessWidget {
               ),
               Row(
                 children: [
-                  (_homeController.currentRoom.value.speakerIds!
+                  _homeController.currentRoom.value.speakerIds != null
+                      && (_homeController.currentRoom.value.speakerIds!
                       .indexWhere((e) => e.id == currentUser.id) ==
                       -1) ?
                   IconButton(
@@ -196,13 +197,13 @@ class RoomPage extends StatelessWidget {
         ),
       ),
       body: Obx(() {
-        return _homeController.isCurrentRoomLoading.isFalse
-            ? RefreshIndicator(
+        return RefreshIndicator(
                 onRefresh: () {
                   return _homeController
                       .fetchRoom(_homeController.currentRoom.value.id!);
                 },
-                child: _homeController.currentRoom.value.id != null
+                child: _homeController.isCurrentRoomLoading.isFalse
+                    ? _homeController.currentRoom.value.id != null
                     ? ListView(children: [
                         _homeController.userJoinedRoom.isFalse
                             ? Transform.scale(
@@ -240,12 +241,12 @@ class RoomPage extends StatelessWidget {
                             : Container(),
                         RoomUser("Audience"),
                       ])
-                    : const Center(child: CircularProgressIndicator()),
-              )
-            : const Center(
-                child: CircularProgressIndicator(
-                color: Colors.black87,
-              ));
+                    : const Center(child: CircularProgressIndicator())
+                    : const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black87,
+                    )),
+              );
       }),
     );
   }

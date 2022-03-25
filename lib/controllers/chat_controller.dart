@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
-import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -93,7 +92,7 @@ class ChatController extends GetxController {
     currentChatLoading.value = false;
   }
 
-  getPreviousChat(OwnerId otherUser) {
+  getPreviousChat(UserModel otherUser) {
     currentChatLoading.value = true;
     currentChatUsers.add(otherUser.id);
     currentChatUsers.add(Get.find<AuthController>().usermodel.value!.id);
@@ -131,7 +130,7 @@ class ChatController extends GetxController {
     }
   }
 
-  sendMessage(String message, OwnerId otherUser) {
+  sendMessage(String message, UserModel otherUser) {
     sendingMessage.value = true;
 
     if (currentChatId.value == "") {
@@ -170,7 +169,7 @@ class ChatController extends GetxController {
     });
   }
 
-  void createChat(String message, OwnerId otherUser, chatId) {
+  void createChat(String message, UserModel otherUser, chatId) {
     UserModel currentUser = Get.find<AuthController>().usermodel.value!;
     //Create a new chat
     var data = {

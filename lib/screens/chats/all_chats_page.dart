@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
-import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/chats/chat_room_page.dart';
 import 'package:fluttergistshop/screens/chats/new_chat_page.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -211,12 +211,12 @@ class AllChatsPage extends StatelessWidget {
     );
   }
 
-  OwnerId getOtherUser(AllChatsModel allChatsModel) {
-    OwnerId user = OwnerId.fromJson({});
+  UserModel getOtherUser(AllChatsModel allChatsModel) {
+    UserModel user = UserModel.fromJson({});
 
     for (var i = 0; i < allChatsModel.users.length; i++) {
       if (allChatsModel.userIds.elementAt(i) != _chatController.userId) {
-        user = OwnerId.fromJson(allChatsModel.users.elementAt(i));
+        user = UserModel.fromJson(allChatsModel.users.elementAt(i));
         user.id = allChatsModel.users.elementAt(i)["id"];
         printOut("other user chat ${user.userName}");
       }

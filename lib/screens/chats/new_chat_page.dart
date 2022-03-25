@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
-import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/models/user.dart';
 import 'package:fluttergistshop/screens/chats/chat_room_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:get/get.dart';
@@ -89,7 +89,7 @@ class NewChatPage extends StatelessWidget {
                                     shrinkWrap: true,
                                     itemCount: _dx.searchedUsers.length,
                                     itemBuilder: (context, index) {
-                                      OwnerId user = OwnerId.fromJson(
+                                      UserModel user = UserModel.fromJson(
                                           _dx.searchedUsers.elementAt(index));
                                       return Container(
                                         padding: const EdgeInsets.all(10),
@@ -101,7 +101,6 @@ class NewChatPage extends StatelessWidget {
                                                 .currentChatId.value = "";
                                             _chatController
                                                 .getPreviousChat(user);
-
 
                                             Get.to(ChatRoomPage(user));
                                           },
@@ -124,9 +123,13 @@ class NewChatPage extends StatelessWidget {
                                                                     "assets/icons/profile_placeholder.png"))
                                                         : CircleAvatar(
                                                             radius: 25,
+                                                            onBackgroundImageError:
+                                                                (Object,
+                                                                        StackTrace) =>
+                                                                    Image.asset(
+                                                                        "assets/icons/profile_placeholder.png"),
                                                             backgroundColor:
-                                                                Colors
-                                                                    .transparent,
+                                                                Colors.black38,
                                                             backgroundImage:
                                                                 NetworkImage(
                                                                     imageUrl +
@@ -152,13 +155,12 @@ class NewChatPage extends StatelessWidget {
                                       );
                                     })
                                 : Center(
-                                  child: Text(
-                                    "No users matching that name",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.sp),
-                                  ),
-                                );
+                                    child: Text(
+                                      "No users matching that name",
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 16.sp),
+                                    ),
+                                  );
                           })
                         : const Center(
                             child: CircularProgressIndicator(

@@ -6,6 +6,7 @@ import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -113,7 +114,7 @@ class ProductController extends GetxController {
 
     List<dynamic> response = await ShopApi.getProductsByShop(id);
     _products.value = response.map((e) => Product.fromJson(e)).toList();
-    print("after ${_products.value!.length}");
+    printOut("after ${_products.value!.length}");
 
     return response.map((e) => Product.fromJson(e)).toList();
   }

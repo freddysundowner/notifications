@@ -18,7 +18,7 @@ class ProductPI {
 
   static updateProduct(
       Map<String, dynamic> productdata, String productid) async {
-    List<dynamic> response = await Api.callApi(
+    var response = await Api.callApi(
         method: config.put,
         endpoint: config.updateproduct + productid,
         body: productdata);

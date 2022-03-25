@@ -10,6 +10,7 @@ import 'package:fluttergistshop/screens/products/components/shop_short_details_c
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:get/get.dart';
 
@@ -237,6 +238,10 @@ class ShopView extends StatelessWidget {
             for (int i = 0; i < product.images!.length; i++) {}
 
             bool productInfoDeleted = false;
+
+            var deleteProduct = await ProductPI.updateProduct(
+                {"available": false}, product.id!);
+            productInfoDeleted = deleteProduct["success"];
             String snackbarMessage = "";
             try {
               if (productInfoDeleted == true) {

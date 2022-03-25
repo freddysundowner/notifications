@@ -43,6 +43,9 @@ class AllChatsPage extends StatelessWidget {
                                     allChatsModel.id;
                                 _chatController.currentChatUsers.value =
                                     allChatsModel.users;
+                                _chatController.allUserChats.elementAt(index).unread = 0;
+                                _chatController.allUserChats.refresh();
+
                                 Get.to(
                                     ChatRoomPage(getOtherUser(allChatsModel)));
                                 _chatController.getChatById(allChatsModel.id);

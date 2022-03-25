@@ -125,8 +125,10 @@ class MyProducts extends StatelessWidget {
             } else if (direction == DismissDirection.endToStart) {
               final confirmation =
               await showConfirmationDialog(context, "Add to favorite");
-              Helper.showSnackBack(context, "Added to favorite");
-              if (confirmation) {}
+
+              if (confirmation) {
+                Helper.showSnackBack(context, "Added to favorite");
+              }
               return false;
             }
           }

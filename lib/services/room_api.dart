@@ -19,6 +19,7 @@ class RoomAPI {
   getRoomById(String roomId) async {
     var room = await DbBase()
         .databaseRequest(roomById + roomId, DbBase().getRequestType);
+    printOut("Getting room ${jsonDecode(room)}");
     return jsonDecode(room);
   }
 

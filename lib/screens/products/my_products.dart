@@ -10,6 +10,7 @@ import 'package:fluttergistshop/services/helper.dart';
 import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
+import 'full_product.dart';
 
 class MyProducts extends StatelessWidget {
   CheckOutController checkOutController = Get.find<CheckOutController>();
@@ -46,13 +47,14 @@ class MyProducts extends StatelessWidget {
                       "Swipe LEFT to Buy, Swipe RIGHT to Favorite",
                       style: TextStyle(fontSize: 12.sp),
                     ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 0.02.sh),
                   Column(
                     children: Get.find<ProductController>()
                         .products
                         .map((e) => buildProductDismissible(e, context))
                         .toList(),
                   ),
+                  SizedBox(height: 0.02.sh),
                 ],
               ),
             ),
@@ -75,7 +77,11 @@ class MyProducts extends StatelessWidget {
       },
       child: ShopShortDetailCard(
         product: product,
-        onPressed: () {},
+        onPressed: () {
+          Get.to(FullProduct(
+            product: product,
+          ));
+        },
       ),
       confirmDismiss: (direction) async {
         if (edit) {

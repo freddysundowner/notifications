@@ -93,7 +93,7 @@ class FullProduct extends StatelessWidget {
                     ),
                   ],
                 ),
-              product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ?
+              product.ownerId!.id == FirebaseAuth.instance.currentUser!.uid ?
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Row(
@@ -105,8 +105,8 @@ class FullProduct extends StatelessWidget {
                         GetSnackBar(message: _snackBarMessage,);
                       },
                       child: Container(
-                        width: 50.0.w,
-                        height: 50.0.h,
+                        width: 0.15.sw,
+                        height: 0.08.sh,
                         decoration: BoxDecoration(
                           color: const Color(0xFFDCDCDC),
                           borderRadius: BorderRadius.circular(12.0),
@@ -116,7 +116,7 @@ class FullProduct extends StatelessWidget {
                           image: const AssetImage(
                             "assets/images/tab_saved.png",
                           ),
-                          height: 22.0.h,
+                          height: 0.035.sh,
                         ),
                       ),
                     ),
@@ -138,7 +138,7 @@ class FullProduct extends StatelessWidget {
                           Get.to(() => CheckOut());
                         },
                         child: Container(
-                          height: 50.0.h,
+                          height: 0.08.sh,
                           margin: const EdgeInsets.only(
                             left: 16.0,
                           ),

@@ -239,8 +239,8 @@ class RoomController extends GetxController {
       isCurrentRoomLoading.value = false;
       update();
       printOut("Room $roomResponse");
-    } catch (e) {
-      printOut("Error getting individual room " + e.toString());
+    } catch (e, s) {
+      printOut("Error getting individual room $e $s");
       isCurrentRoomLoading.value = false;
     }
   }

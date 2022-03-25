@@ -83,34 +83,35 @@ class ShopSearchResults extends StatelessWidget {
                                             SizedBox(
                                               width: 0.04.sw,
                                             ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  e["name"],
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 16.sp),
-                                                ),
-                                                Text(
-                                                  e[
-                                                                  "description"]
-                                                              .toString()
-                                                              .length >
-                                                          40
-                                                      ? e["description"]
-                                                              .toString()
-                                                              .substring(
-                                                                  0, 40) +
-                                                          "..."
-                                                      : e["description"]
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 14.sp),
-                                                )
-                                              ],
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    e["name"],
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16.sp),
+                                                  ),
+                                                  Text(
+                                                    e["description"]
+                                                                .toString()
+                                                                .length >
+                                                            40
+                                                        ? e["description"]
+                                                                .toString()
+                                                                .substring(
+                                                                    0, 40) +
+                                                            "..."
+                                                        : e["description"]
+                                                            .toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 14.sp),
+                                                  )
+                                                ],
+                                              ),
                                             )
                                           ],
                                         ),

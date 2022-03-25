@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -181,17 +180,46 @@ class HomePage extends StatelessWidget {
             );
           }),
         ),
-        body: Obx(() {
-          if (_homeController.isLoading.isFalse ||
-              _homeController.isCurrentRoomLoading.isFalse) {
-            return buildIndividualRoomCard();
-          } else {
-            return const Center(
-                child: CircularProgressIndicator(
-              color: Colors.black87,
-            ));
-          }
-        }));
+        body: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.sm),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: TextField(
+                  autofocus: false,
+                  controller: _shopController.searchShopController,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    hintText: "Search Shops",
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 20.sm, vertical: 9.sm),
+                  ),
+                  onChanged: (c) => _shopController.searchShops(),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Obx(() {
+                if (_homeController.isLoading.isFalse ||
+                    _homeController.isCurrentRoomLoading.isFalse) {
+                  return buildIndividualRoomCard();
+                } else {
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black87,
+                  ));
+                }
+              }),
+            )
+          ],
+        ));
   }
 
   buildIndividualRoomCard() {
@@ -270,7 +298,9 @@ class HomePage extends StatelessWidget {
                                                 backgroundImage: AssetImage(
                                                     "assets/icons/profile_placeholder.png"))
                                             : CircleAvatar(
-                                          onBackgroundImageError: (Object, Stacktrace) => const Icon(Icons.error),
+                                                onBackgroundImageError:
+                                                    (Object, Stacktrace) =>
+                                                        const Icon(Icons.error),
                                                 backgroundImage: NetworkImage(
                                                     imageUrl +
                                                         roomModel
@@ -279,20 +309,23 @@ class HomePage extends StatelessWidget {
                                               ));
                                   }),
                             ),
-                            roomModel.title != " "  ? Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    roomModel.title!,
-                                    style: const TextStyle(color: Colors.red),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 0.01.sh,
-                                ),
-                              ],
-                            ) : Container(),
+                            roomModel.title != " "
+                                ? Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          roomModel.title!,
+                                          style: const TextStyle(
+                                              color: Colors.red),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 0.01.sh,
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
                             Divider(
                               color: Colors.grey[200],
                               height: 0.001.sh,
@@ -305,7 +338,8 @@ class HomePage extends StatelessWidget {
                               child: roomModel.productIds!.isNotEmpty
                                   ? ListView.builder(
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: roomModel.productImages!.length,
+                                      itemCount:
+                                          roomModel.productImages!.length,
                                       itemBuilder: (context, index) {
                                         return Container(
                                           padding: const EdgeInsets.all(5),
@@ -314,19 +348,18 @@ class HomePage extends StatelessWidget {
                                                   BorderRadius.circular(5),
                                               color: Colors.white),
                                           child: Center(
-                                            child:
-                                              CachedNetworkImage(
-                                                imageUrl: roomModel.productImages![index],
-                                                height: 0.06.sh,
-                                                width: 0.12.sw,
-                                                fit: BoxFit.fill,
-                                                placeholder: (context, url) =>
+                                              child: CachedNetworkImage(
+                                            imageUrl:
+                                                roomModel.productImages![index],
+                                            height: 0.06.sh,
+                                            width: 0.12.sw,
+                                            fit: BoxFit.fill,
+                                            placeholder: (context, url) =>
                                                 const CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                const Icon(Icons.error),
-                                              )
-                                          ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          )),
                                         );
                                       })
                                   : Container(),

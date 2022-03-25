@@ -285,7 +285,7 @@ class CheckOut extends StatelessWidget {
 
   Widget buildCartItemsList(BuildContext context) {
     checkOutController.ordertotal.value =
-            checkOutController.product.value!.price!;
+        checkOutController.product.value!.price!;
     return Column(
       children: [
         DefaultButton(
@@ -293,8 +293,7 @@ class CheckOut extends StatelessWidget {
           press: () {
             if (checkOutController.address.value == null) {
               const GetSnackBar(message: "Pick address first").show();
-
-            }  else {
+            } else {
               _settingModalBottomSheet(context);
             }
           },
@@ -420,12 +419,13 @@ class CheckOut extends StatelessWidget {
     Order order = Order(
         shippingId: checkOutController.address.value!.id,
         productId: checkOutController.product.value!.id!,
-        shopId: checkOutController.product.value!.shopId.toString(),
+        shopId: checkOutController.product.value!.shopId!.id.toString(),
         subTotal: checkOutController.ordertotal.value.toString(),
         tax: checkOutController.tax.value.toString(),
         shippingFee: checkOutController.shipping.value.toString(),
         quantity: int.parse(checkOutController.qty.value.toString()),
-        productOwnerId: checkOutController.product.value!.ownerId.toString());
+        productOwnerId:
+            checkOutController.product.value!.ownerId!.id.toString());
     // Checkout checkout = new Checkout(order: order);
     // checkOutController.checkout.value = checkOutController.checkout.value.
     final orderFuture = OrderApi.checkOut(order);

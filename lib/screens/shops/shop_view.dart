@@ -35,25 +35,26 @@ class ShopView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         actions: [
-          Obx(() {
-            return Container(
-              child: shopController.currentShop.value.id == authController.currentuser!.shopId!.id
-                  ? InkWell(
-                      onTap: () async {
-                        await openOrCloseShop();
-                      },
-                      child: Image.asset(
-                        shopController.currentShop.value.open == true
-                            ? closeShopIcon
-                            : openShopIcon,
-                        color: Colors.black,
-                        height: 0.01.sh,
-                        width: 0.1.sw,
-                      ),
-                    )
-                  : Container(),
-            );
-          }),
+          // Obx(() {
+          //   return Container(
+          //     child: shopController.currentShop.value.id ==
+          //             authController.currentuser!.shopId!.id
+          //         ? InkWell(
+          //             onTap: () async {
+          //               await openOrCloseShop();
+          //             },
+          //             // child: Image.asset(
+          //             //   shopController.currentShop.value.open == true
+          //             //       ? closeShopIcon
+          //             //       : openShopIcon,
+          //             //   color: Colors.black,
+          //             //   height: 0.01.sh,
+          //             //   width: 0.1.sw,
+          //             // ),
+          //           )
+          //         : Container(),
+          //   );
+          // }),
           SizedBox(
             width: 0.03.sw,
           )
@@ -76,8 +77,8 @@ class ShopView extends StatelessWidget {
                           image: shopController.currentShop.value.image != ""
                               ? DecorationImage(
                                   fit: BoxFit.fill,
-                                  image: CachedNetworkImageProvider(
-                                      imageUrl + shopController.currentShop.value.image!))
+                                  image: CachedNetworkImageProvider(imageUrl +
+                                      shopController.currentShop.value.image!))
                               : const DecorationImage(
                                   fit: BoxFit.fill,
                                   image: AssetImage(
@@ -102,7 +103,8 @@ class ShopView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (shopController.currentShop.value.id == authController.currentuser!.shopId!.id)
+                  if (shopController.currentShop.value.id ==
+                      authController.currentuser!.shopId!.id)
                     InkWell(
                       onTap: () {
                         Get.to(() => NewShop());
@@ -131,38 +133,38 @@ class ShopView extends StatelessWidget {
               Text("Products", style: headingStyle),
               Stack(
                 children: [
-                  GetX<ProductController>(
-                      initState: (_) async {
-                          Get.find<ProductController>().products =
-                              await ProductController.getProductsByShop(
-                                  shopController.currentShop.value.id!); },
-                      builder: (_) {
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            child: _.products.isNotEmpty ? ListView.builder(
-                                itemCount: _.products.length,
-                                itemBuilder: (context, index) {
-                                  return shopController.currentShop.value.id ==
-                                          authController.currentuser!.shopId!.id
-                                      ? buildProductDismissible(
-                                          _.products[index], context)
-                                      : ShopShortDetailCard(
-                                          product: _.products[index],
-                                          onPressed: () {
-                                            printOut("v");
-                                              Get.to(() => FullProduct(
-                                                  product: _.products[index]));
-
-                                          },
-                                        );
-                                }) : const Text("No Products yet"),
-                          );
-                          // return Column(
-                          //   children: _.products.map((e) => Text(e.name)).toList(),
-                          // );
-
-                      }),
-                  if (shopController.currentShop.value.id != authController.currentuser!.shopId!.id)
+                  GetX<ProductController>(initState: (_) async {
+                    Get.find<ProductController>().products =
+                        await ProductController.getProductsByShop(
+                            shopController.currentShop.value.id!);
+                  }, builder: (_) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: _.products.isNotEmpty
+                          ? ListView.builder(
+                              itemCount: _.products.length,
+                              itemBuilder: (context, index) {
+                                return shopController.currentShop.value.id ==
+                                        authController.currentuser!.shopId!.id
+                                    ? buildProductDismissible(
+                                        _.products[index], context)
+                                    : ShopShortDetailCard(
+                                        product: _.products[index],
+                                        onPressed: () {
+                                          printOut("v");
+                                          Get.to(() => FullProduct(
+                                              product: _.products[index]));
+                                        },
+                                      );
+                              })
+                          : const Text("No Products yet"),
+                    );
+                    // return Column(
+                    //   children: _.products.map((e) => Text(e.name)).toList(),
+                    // );
+                  }),
+                  if (shopController.currentShop.value.id !=
+                      authController.currentuser!.shopId!.id)
                     Obx(() {
                       return shopController.currentShop.value.open == false
                           ? Center(
@@ -180,26 +182,24 @@ class ShopView extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton:
-      shopController.currentShop.value.id == authController.currentuser!.shopId!.id
-              ? FloatingActionButton(
-                  child: const Icon(Icons.add),
-                  elevation: 4,
-                  hoverColor: Colors.green,
-                  splashColor: Colors.green,
-                  onPressed: () {
-                    // if (productController.product != null) {
-                    //   productController.product.id = null;
-                    // }
+      floatingActionButton: shopController.currentShop.value.id ==
+              authController.currentuser!.shopId!.id
+          ? FloatingActionButton(
+              child: const Icon(Icons.add),
+              elevation: 4,
+              hoverColor: Colors.green,
+              splashColor: Colors.green,
+              onPressed: () {
+                // if (productController.product != null) {
+                //   productController.product.id = null;
+                // }
 
-                    print("EditProductScreen");
-                    Get.to(() => EditProductScreen(
-
-                        ));
-                  },
-                  backgroundColor: Colors.pink,
-                )
-              : Container(),
+                print("EditProductScreen");
+                Get.to(() => EditProductScreen());
+              },
+              backgroundColor: Colors.pink,
+            )
+          : Container(),
     );
   }
 

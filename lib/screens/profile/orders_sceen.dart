@@ -30,6 +30,8 @@ class OrdersScreen extends StatelessWidget {
                 ? ListView.builder(
                     itemCount: _userController.userOrders.length,
                     itemBuilder: (context, index) {
+                      print(
+                          "_userController.userOrders ${_userController.userOrders}");
                       OrdersModel ordersModel = OrdersModel.fromJson(
                           _userController.userOrders.elementAt(index));
                       return InkWell(
@@ -48,7 +50,9 @@ class OrdersScreen extends StatelessWidget {
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 12.sp),
                                   )),
-                              SizedBox(height: 0.01.sh,),
+                              SizedBox(
+                                height: 0.01.sh,
+                              ),
                               Container(
                                 padding: const EdgeInsets.all(20),
                                 decoration: BoxDecoration(
@@ -58,13 +62,16 @@ class OrdersScreen extends StatelessWidget {
                                   children: [
                                     Container(
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           color: Colors.white),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
-                                          child:Image.network(
-                                            imageUrl + ordersModel.itemId!.productId!.images!.first,
+                                          child: Image.network(
+                                            imageUrl +
+                                                ordersModel.itemId!.productId!
+                                                    .images!.first,
                                             height: 0.1.sh,
                                             width: 0.2.sw,
                                             fit: BoxFit.fill,
@@ -72,28 +79,35 @@ class OrdersScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: 0.02.sw,),
+                                    SizedBox(
+                                      width: 0.02.sw,
+                                    ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Align(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
-                                              ordersModel.itemId!.productId!.name!,
+                                              ordersModel
+                                                  .itemId!.productId!.name!,
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 16.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 16.sp),
                                             )),
                                         Row(
                                           children: [
                                             Text(
                                               "Status: ",
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 12.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 12.sp),
                                             ),
                                             Text(
                                               ordersModel.status!,
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 12.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 12.sp),
                                             ),
                                           ],
                                         ),
@@ -102,12 +116,15 @@ class OrdersScreen extends StatelessWidget {
                                             Text(
                                               "Quantity: ",
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 12.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 12.sp),
                                             ),
                                             Text(
-                                              ordersModel.itemId!.quantity.toString(),
+                                              ordersModel.itemId!.quantity
+                                                  .toString(),
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 12.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 12.sp),
                                             ),
                                           ],
                                         ),
@@ -116,12 +133,14 @@ class OrdersScreen extends StatelessWidget {
                                             Text(
                                               "Total: ",
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 12.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 12.sp),
                                             ),
                                             Text(
                                               ordersModel.totalCost.toString(),
                                               style: TextStyle(
-                                                  color: Colors.black, fontSize: 12.sp),
+                                                  color: Colors.black,
+                                                  fontSize: 12.sp),
                                             ),
                                           ],
                                         ),

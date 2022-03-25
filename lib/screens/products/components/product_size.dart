@@ -26,23 +26,24 @@ class ProductSize extends StatelessWidget {
                 checkOutController.selectetedvariation.value = i;
               },
               child: Obx(() => Container(
-                    width: 42.0.sm,
-                    height: 42.0.sm,
+                   // width: 0.1.sw,
+                    height: 0.06.sh,
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: checkOutController.selectetedvariation == i
+                      color: checkOutController.selectetedvariation.value == i
                           ? primarycolor
-                          : Color(0xFFDCDCDC),
+                          : const Color(0xFFDCDCDC),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(
                       horizontal: 4.0,
                     ),
                     child: Text(
                       "${productSizes[i]}",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: checkOutController.selectetedvariation == i
+                        color: checkOutController.selectetedvariation.value == i
                             ? Colors.white
                             : Colors.black,
                         fontSize: 16.0.sp,

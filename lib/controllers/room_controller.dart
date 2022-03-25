@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
@@ -86,7 +87,6 @@ class RoomController extends GetxController {
 
       printOut("Room title ${roomTitleController.text}");
 
-
       String roomTitle =
           roomTitleController.text.isEmpty ? " " : roomTitleController.text;
 
@@ -106,8 +106,6 @@ class RoomController extends GetxController {
       };
 
       var rooms = await RoomAPI().createARoom(roomData);
-
-
 
       printOut("room created $rooms");
 
@@ -129,7 +127,6 @@ class RoomController extends GetxController {
 
           Get.back();
           Get.to(RoomPage(roomId: roomId));
-
         } else {
           Get.back();
           Get.snackbar(
@@ -152,7 +149,6 @@ class RoomController extends GetxController {
   }
 
   Future<void> uploadImageToFireStorage(String roomId) async {
-
     String snackBarMessage = "";
 
     try {
@@ -179,14 +175,11 @@ class RoomController extends GetxController {
       }, roomId);
 
       roomPickedImages.value = [];
-
-
     } on FirebaseException catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } finally {
-
       GetSnackBar(title: "", message: snackBarMessage);
     }
   }
@@ -216,7 +209,8 @@ class RoomController extends GetxController {
     try {
       isLoading.value = true;
 
-      var room = await RoomAPI().getRoomById("61fb9094d59efb5046a99946");
+      var room = await RoomAPI()
+          .getRoomById(Get.find<AuthController>().usermodel.value!.id!);
 
       if (room != null) {
         currentRoom.value = RoomModel.fromJson(room);
@@ -245,8 +239,8 @@ class RoomController extends GetxController {
       isCurrentRoomLoading.value = false;
       update();
       printOut("Room $roomResponse");
-    } catch (e) {
-      printOut("Error getting individual room " + e.toString());
+    } catch (e, s) {
+      printOut("Error getting individual room $e $s");
       isCurrentRoomLoading.value = false;
     }
   }
@@ -416,6 +410,7 @@ class RoomController extends GetxController {
         roomId: roomId,
       ));
     } else {
+      roomsList.removeWhere((element) => element.id == roomId);
       Get.snackbar(
           '', "There was an error adding you to the room, Try again later");
     }
@@ -485,14 +480,22 @@ class RoomController extends GetxController {
   Future<void> fetchUserProducts() async {
     try {
       userProductsLoading.value = true;
-
+      userProducts.value = [];
       var products = await ProductPI()
-          .getUserProducts(Get.find<AuthController>().usermodel.value!.id!);
-
-      printOut("products $products");
+          .getUserProducts(FirebaseAuth.instance.currentUser!.uid);
 
       if (products != null) {
-        userProducts.value = products;
+        printOut(products.length);
+
+        //if a product has images, add it to the user products list
+        for (var i = 0; i < products.length; i++) {
+          Product product = Product.fromJson(products.elementAt(i));
+          printOut(product.images);
+          if (product.images != null && product.images!.isNotEmpty) {
+            userProducts.add(products.elementAt(i));
+          }
+        }
+        printOut(userProducts.length);
       } else {
         userProducts.value = [];
       }
@@ -509,6 +512,8 @@ class RoomController extends GetxController {
   void initAgora(String token, String roomId) async {
     try {
       printOut("Joining agora room");
+
+      await leaveAgora();
 
       // Get microphone permission
       await [Permission.microphone].request();

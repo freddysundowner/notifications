@@ -19,12 +19,12 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: press,
       child: Container(
-        width: 150.w,
-        margin: EdgeInsets.only(right: 25),
+        width: 0.3.sw,
+        margin: const EdgeInsets.only(right: 25),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: kTextColor.withOpacity(0.15)),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(16),
           ),
         ),
@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
               ? Image.asset(
                   imageplaceholder,
                   fit: BoxFit.contain,
-                  height: 120,
+                  height: 0.2.sh,
                   width: double.infinity,
                 )
               : Center(
@@ -61,7 +61,7 @@ class ProductCard extends StatelessWidget {
                     placeholder: (context, url) => const CircularProgressIndicator(
                       color: Colors.black,
                     ),
-                    errorWidget: (context, url, error) => Icon(
+                    errorWidget: (context, url, error) => const Icon(
                       Icons.error,
                       size: 120,
                     ),
@@ -69,7 +69,7 @@ class ProductCard extends StatelessWidget {
               ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -94,7 +94,7 @@ class ProductCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text:
-                          "${product.htmlPrice(product.discountPrice).toString()}",
+                          product.htmlPrice(product.discountPrice).toString(),
                       style: TextStyle(
                         color: kTextColor,
                         decoration: TextDecoration.lineThrough,

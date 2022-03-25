@@ -119,7 +119,9 @@ class ChatController extends GetxController {
   }
 
   readChats() async {
+
     if (currentChatId.value != "") {
+
       await db
           .collection("chats")
           .doc(currentChatId.value)

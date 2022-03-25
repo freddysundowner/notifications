@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/services/api.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
+import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 
 import 'client.dart';
@@ -18,7 +19,7 @@ class ProductPI {
 
   static updateProduct(
       Map<String, dynamic> productdata, String productid) async {
-    List<dynamic> response = await Api.callApi(
+    var response = await Api.callApi(
         method: config.put,
         endpoint: config.updateproduct + productid,
         body: productdata);
@@ -38,22 +39,23 @@ class ProductPI {
   }
 
   static saveProduct(Map<String, dynamic> productdata) async {
-    var response = await Api.callApi(
-        method: config.post,
-        endpoint: config.products +
-            Get.find<AuthController>().currentuser!.shopId!.id!,
+
+    var response = await DbBase().databaseRequest(
+        config.products +
+            Get.find<AuthController>().currentuser!.shopId!.id!, DbBase().postRequestType,
         body: productdata);
-    return response;
+    return jsonDecode(response);
   }
 
   static Future<bool> updateProductsImages(
       String productId, List<dynamic> imgUrl) async {
     print("updateProductsImages $imgUrl");
     print("productId $productId");
-    await DbBase().databaseRequest(
+    var respinse = await DbBase().databaseRequest(
         config.updateproductimages + productId, DbBase().patchRequestType,
         body: {"images": imgUrl});
 
+    printOut("Update product image respinse $respinse");
     return true;
   }
 }

@@ -13,6 +13,7 @@ import 'package:fluttergistshop/screens/profile/change_display_picture_screen.da
 import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/settings_page.dart';
 import 'package:fluttergistshop/screens/profile/upgrade_account.dart';
+import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/styles.dart';
@@ -50,6 +51,8 @@ class Profile extends StatelessWidget {
                         shopController.currentShop.value =
                             authController.currentuser!.shopId!;
                         Get.to(() => ShopView());
+                      } else {
+                        Get.to(() => NewShop());
                       }
                     },
                     child: const Icon(

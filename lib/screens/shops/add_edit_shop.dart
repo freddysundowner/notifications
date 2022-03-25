@@ -57,7 +57,7 @@ class NewShop extends StatelessWidget {
     if (shopController.chosenImage.path != "") {
       print("one");
       backImage = MemoryImage(shopController.chosenImage.readAsBytesSync());
-    } else if (authController.currentuser!.shopId!.image != null &&
+    } else if (authController.currentuser!.shopId != null && authController.currentuser!.shopId!.image != null &&
         authController.currentuser!.shopId!.image!.isNotEmpty) {
       print("two ${authController.currentuser!.shopId!.image}");
       final String? url = authController.currentuser!.shopId!.image;
@@ -125,8 +125,7 @@ class NewShop extends StatelessWidget {
               if (_formKey.currentState!.validate()) {
                 String snackbarMessage = "";
                 var response;
-                if (authController.currentuser!.shopId != "" ||
-                    authController.currentuser!.shopId != null) {
+                if (authController.currentuser!.shopId != null) {
                   response = shopController
                       .updateShop(authController.currentuser!.shopId!.id!);
                 }

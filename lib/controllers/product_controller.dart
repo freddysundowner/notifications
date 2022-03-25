@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -6,6 +8,7 @@ import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -91,7 +94,7 @@ class ProductController extends GetxController {
     }
   }
 
-  updateProduct(String productid) {
+  updateProduct(String productid) async {
     try {
       Map<String, dynamic> productdata = {
         "name": titleFieldController.text,
@@ -101,9 +104,11 @@ class ProductController extends GetxController {
         "variations": variantFieldController.text
       };
       print("updateProduct $productdata");
-      return DbBase().databaseRequest(
+      var response =  await DbBase().databaseRequest(
           config.updateproduct + productid, DbBase().patchRequestType,
           body: productdata);
+
+      return jsonDecode(response);
     } catch (e) {
       print("Error ${e.toString()}");
     }
@@ -113,7 +118,7 @@ class ProductController extends GetxController {
 
     List<dynamic> response = await ShopApi.getProductsByShop(id);
     _products.value = response.map((e) => Product.fromJson(e)).toList();
-    print("after ${_products.value!.length}");
+    printOut("after ${_products.value!.length}");
 
     return response.map((e) => Product.fromJson(e)).toList();
   }

@@ -19,6 +19,7 @@ class Product {
   Shop? shopId;
   UserModel? ownerId;
   String? description;
+  bool? available;
 
   Product({
     this.images = const [],
@@ -31,6 +32,7 @@ class Product {
     this.variations,
     this.ownerId,
     this.description,
+    this.available,
   });
 
   htmlPrice(price) {
@@ -49,6 +51,7 @@ class Product {
         shopId: Shop.fromJson(json["shopId"] ?? {}),
         ownerId: UserModel.fromJson(json["ownerId"] ?? {}),
         description: json["description"],
+        available: json["available"],
       );
 
   Map<String, dynamic> toJson() => {

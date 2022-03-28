@@ -103,8 +103,9 @@ class HomePage extends StatelessWidget {
                     )),
                 errorWidget: (context, url, error) => Image.asset(
                   "assets/icons/profile_placeholder.png",
-                    width: 0.08.sw,
-                    height: 0.05.sh,),
+                  width: 0.08.sw,
+                  height: 0.05.sh,
+                ),
               ),
             ),
             SizedBox(
@@ -265,19 +266,18 @@ class HomePage extends StatelessWidget {
                                                     .profilePhoto ==
                                                 ""
                                             ? const CircleAvatar(
-                                          radius: 22,
+                                                radius: 22,
                                                 backgroundImage: AssetImage(
                                                     "assets/icons/profile_placeholder.png"))
                                             : CircleAvatar(
-                                          radius: 22,
-                                                onBackgroundImageError:
-                                                    (object, stacktrace) =>
-                                                        const AssetImage(
-                                            "assets/icons/profile_placeholder.png"),
+                                                radius: 22,
+                                                onBackgroundImageError: (object,
+                                                        stacktrace) =>
+                                                    const AssetImage(
+                                                        "assets/icons/profile_placeholder.png"),
                                                 backgroundImage: NetworkImage(
-                                                        roomModel
-                                                            .hostIds![index]
-                                                            .profilePhoto!),
+                                                    roomModel.hostIds![index]
+                                                        .profilePhoto!),
                                               ));
                                   }),
                             ),
@@ -333,14 +333,14 @@ class HomePage extends StatelessWidget {
                                                     placeholder: (context,
                                                             url) =>
                                                         const CircularProgressIndicator(),
-                                                    errorWidget: (context, url,
-                                                            error) =>
-                                                        Image.asset(
-                                                          "assets/icons/no_image.png",
-                                                          height: 0.06.sh,
-                                                          width: 0.12.sw,
-                                                          fit: BoxFit.fill,
-                                                        ),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image.asset(
+                                                      "assets/icons/no_image.png",
+                                                      height: 0.06.sh,
+                                                      width: 0.12.sw,
+                                                      fit: BoxFit.fill,
+                                                    ),
                                                   )
                                                 : Image.asset(
                                                     "assets/icons/no_image.png",
@@ -393,23 +393,22 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Stack(
-                children: room.hostIds!.map((e) {
-                  var index = room.hostIds!.indexOf(e);
-                  return Padding(
-                    padding: EdgeInsets.only(left: (30.0 * index)),
-                    child: e.profilePhoto == ""
-                          ? const CircleAvatar(
-                              radius: 25,
-                              backgroundImage: AssetImage(
-                                  "assets/icons/profile_placeholder.png"))
-                          : CircleAvatar(
-                              radius: 25,
-                              backgroundImage: NetworkImage(imageUrl +
-                                  e.profilePhoto!),
-                            ),
-                  );
-                }).toList()
-              ),
+                  children: room.hostIds!.map((e) {
+                var index = room.hostIds!.indexOf(e);
+                return Padding(
+                  padding: EdgeInsets.only(left: (30.0 * index)),
+                  child: e.profilePhoto == ""
+                      ? const CircleAvatar(
+                          radius: 25,
+                          backgroundImage: AssetImage(
+                              "assets/icons/profile_placeholder.png"))
+                      : CircleAvatar(
+                          radius: 25,
+                          backgroundImage:
+                              NetworkImage(imageUrl + e.profilePhoto!),
+                        ),
+                );
+              }).toList()),
               Row(
                 children: [
                   InkWell(
@@ -425,30 +424,32 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     width: 0.01.sw,
                   ),
-                  (_homeController.currentRoom.value.speakerIds!
-                              .indexWhere((e) => e.id == currentUser.id) ==
-                          -1)
-                      ? IconButton(
-                          onPressed: () async {
-                            if ((_homeController.currentRoom.value.hostIds!
-                                    .indexWhere(
-                                        (e) => e.id == currentUser.id) ==
-                                0)) {
-                              showRaisedHandsBottomSheet(context);
-                            } else {
-                              await _homeController
-                                  .addUserToRaisedHands(currentUser);
-                            }
-                          },
-                          icon: const Icon(
-                            Ionicons.hand_right,
-                            color: Colors.black54,
-                            size: 30,
-                          ),
-                        )
-                      : Container(
-                          height: 0.06.sh,
-                        ),
+                  Obx(() {
+                    return (_homeController.currentRoom.value.speakerIds!
+                                .indexWhere((e) => e.id == currentUser.id) ==
+                            -1)
+                        ? IconButton(
+                            onPressed: () async {
+                              if ((_homeController.currentRoom.value.hostIds!
+                                      .indexWhere(
+                                          (e) => e.id == currentUser.id) ==
+                                  0)) {
+                                showRaisedHandsBottomSheet(context);
+                              } else {
+                                await _homeController
+                                    .addUserToRaisedHands(currentUser);
+                              }
+                            },
+                            icon: const Icon(
+                              Ionicons.hand_right,
+                              color: Colors.black54,
+                              size: 30,
+                            ),
+                          )
+                        : Container(
+                            height: 0.06.sh,
+                          );
+                  }),
                   SizedBox(
                     width: 0.01.sw,
                   ),

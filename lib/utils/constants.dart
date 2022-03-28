@@ -16,6 +16,7 @@ final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 const String kEmailNullError = "Please Enter email";
 const String kUsernameNullError = "Please Enter your username";
+const String kBioNullError = "Please Enter your bio";
 const String kFnamesNullError = "Please Enter your full names";
 const String kInvalidEmailError = "Please Enter Valid Email";
 const String kPassNullError = "Please Enter your password";

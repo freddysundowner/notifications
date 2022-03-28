@@ -81,7 +81,7 @@ class SignUpScreen extends StatelessWidget {
                         TextFormField(
                           controller: authController.usernameFieldController,
                           keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: "Enter your username",
                             labelText: "Username",
                             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -90,6 +90,27 @@ class SignUpScreen extends StatelessWidget {
                           validator: (value) {
                             if (authController
                                 .usernameFieldController.text.isEmpty) {
+                              return kUsernameNullError;
+                            }
+                            return null;
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                        ),
+                        SizedBox(height: 30.sp),
+                        TextFormField(
+                          controller: authController.bioFieldController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          minLines: 3,
+                          decoration: const InputDecoration(
+                            hintText: "Enter your bio",
+                            labelText: "Bio",
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            suffixIcon: Icon(Icons.description),
+                          ),
+                          validator: (value) {
+                            if (authController
+                                .bioFieldController.text.isEmpty) {
                               return kUsernameNullError;
                             }
                             return null;

@@ -27,6 +27,8 @@ class AuthController extends GetxController {
   final TextEditingController usernameFieldController = TextEditingController();
   final TextEditingController confirmPasswordFieldController =
       TextEditingController();
+  final TextEditingController bioFieldController =
+      TextEditingController();
 
   var error = "".obs;
   var isLoading = true.obs;
@@ -51,6 +53,7 @@ class AuthController extends GetxController {
         userName: usernameFieldController.text,
         firstName: fnameFieldController.text,
         lastName: lnameFieldController.text,
+        bio: bioFieldController.text
       ).toJson();
       Map<String, dynamic> user = await UserAPI.authenticate(auth, "register");
 

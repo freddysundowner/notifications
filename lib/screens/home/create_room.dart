@@ -617,7 +617,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3,
-                                        childAspectRatio: 0.99,
+                                        childAspectRatio: 0.9,
                                       ),
                                       itemCount:
                                           _homeController.allUsers.length,
@@ -664,8 +664,8 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                         : CircleAvatar(
                                                             radius: 35,
                                                             onBackgroundImageError:
-                                                                (Object,
-                                                                        StackTrace) =>
+                                                                (object,
+                                                                        stackTrace) =>
                                                                     const Icon(Icons
                                                                         .error),
                                                             backgroundColor:
@@ -686,7 +686,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                 );
                                               }),
                                               Text(
-                                                user.userName!,
+                                                "${user.userName}",
                                                 style: TextStyle(
                                                     color: Colors.black87,
                                                     fontSize: 16.sp),

@@ -122,6 +122,7 @@ class RoomController extends GetxController {
 
           await fetchRoom(roomId);
 
+          leaveAgora();
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
@@ -371,7 +372,7 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-    leaveAgora();
+
 
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
@@ -429,9 +430,13 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveAgora() async {
-    await engine.leaveChannel();
-    await engine.disableAudio();
-    await engine.destroy();
+
+    // if (engine != null) {
+
+      await engine.leaveChannel();
+      await engine.muteLocalAudioStream(true);
+      await engine.destroy();
+    // }
   }
 
   Future<void> fetchAllUsers() async {
@@ -555,6 +560,8 @@ class RoomController extends GetxController {
 
       await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
       await engine.enableAudioVolumeIndication(500, 3, true);
+      await engine.enableAudio();
+      await engine.muteLocalAudioStream(true);
       await engine.setDefaultAudioRoutetoSpeakerphone(true);
 
       await engine.setClientRole(ClientRole.Broadcaster);

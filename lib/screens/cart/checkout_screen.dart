@@ -440,6 +440,9 @@ class CheckOut extends StatelessWidget {
               "Your product ${checkOutController.product.value!.name} just got ordered",
               "OrderScreen",
               FirebaseAuth.instance.currentUser!.uid);
+          authController.currentuser!.wallet =
+              authController.currentuser!.wallet! -
+                  (checkOutController.ordertotal.value + checkOutController.shipping.value + checkOutController.tax.value);
         } catch (e) {
           snackbarMessage = e.toString();
         } finally {

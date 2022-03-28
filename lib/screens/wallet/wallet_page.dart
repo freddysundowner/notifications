@@ -47,19 +47,19 @@ class WalletPage extends StatelessWidget {
                       children: [
                         Text(
                           "Wallet Balance:",
-                          style: TextStyle(color: Colors.white, fontSize: 14.sp),
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14.sp),
                         ),
-                        Obx((){
-                            return Text(
-                              "$gccurrency " +
-                                  authController.currentuser!.wallet!.toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold),
-                            );
-                          }
-                        )
+                        Obx(() {
+                          return Text(
+                            "$gccurrency " +
+                                authController.currentuser!.wallet!.toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                          );
+                        })
                       ],
                     ),
                   ),
@@ -82,66 +82,80 @@ class WalletPage extends StatelessWidget {
                 height: 0.01.sh,
               ),
               Obx(() {
-                  return SizedBox(
-                      height: 0.59.sh,
-                      child: _walletController.transactionsLoading.isFalse
-                          ? ListView.builder(
-                              itemCount: _walletController.userTransaction.length,
-                              itemBuilder: (context, index) {
-                                TransactionModel transaction =
-                                    TransactionModel.fromJson(_walletController
-                                        .userTransaction
-                                        .elementAt(index));
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      convertTime(transaction.date.toString()),
-                                      style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 16.sp),
-                                    ),
-                                    SizedBox(
-                                      height: 0.02.sh,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          transaction.reason.trim().length > 25
-                                              ? transaction.reason
-                                                      .trim()
-                                                      .capitalizeFirst!
-                                                      .substring(0, 25) +
-                                                  "..."
-                                              : transaction.reason
-                                                  .trim()
-                                                  .capitalizeFirst!,
-                                          style: TextStyle(
-                                              color: Colors.black, fontSize: 16.sp),
-                                        ),
-                                        Text(
-                                          "$gccurrency ${transaction.amount}",
-                                          style: TextStyle(
-                                              color: Colors.red, fontSize: 16.sp),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 0.02.sh,
-                                    ),
-                                    Divider()
-                                  ],
-                                );
-                              })
-                          : Center(
-                              child: const CircularProgressIndicator(
-                                color: Colors.black,
-                              ),
-                            ));
-                }
-              )
+                return SizedBox(
+                    height: 0.55.sh,
+                    child: _walletController.transactionsLoading.isFalse
+                        ? _walletController.userTransaction.isNotEmpty
+                            ? ListView.builder(
+                                itemCount:
+                                    _walletController.userTransaction.length,
+                                itemBuilder: (context, index) {
+                                  TransactionModel transaction =
+                                      TransactionModel.fromJson(
+                                          _walletController.userTransaction
+                                              .elementAt(index));
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        convertTime(
+                                            transaction.date.toString()),
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: 16.sp),
+                                      ),
+                                      SizedBox(
+                                        height: 0.02.sh,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            transaction.reason.trim().length >
+                                                    20
+                                                ? transaction.reason
+                                                        .trim()
+                                                        .capitalizeFirst!
+                                                        .substring(0, 20) +
+                                                    "..."
+                                                : transaction.reason
+                                                    .trim()
+                                                    .capitalizeFirst!,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16.sp), maxLines: 2,
+                                          ),
+                                          Text(
+                                            "$gccurrency ${transaction.amount}",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 16.sp),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 0.02.sh,
+                                      ),
+                                      Divider()
+                                    ],
+                                  );
+                                })
+                            : Center(
+                                child: Text(
+                                  "You have no transactions yet",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 16.sp),
+                                ),
+                              )
+                        : const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          ));
+              })
             ],
           ),
         ),

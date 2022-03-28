@@ -103,11 +103,9 @@ class ProductController extends GetxController {
         "description": desciptionFieldController.text,
         "variations": variantFieldController.text
       };
-      print("updateProduct $productdata");
-      var response =  await DbBase().databaseRequest(
+      var response = await DbBase().databaseRequest(
           config.updateproduct + productid, DbBase().patchRequestType,
           body: productdata);
-
       return jsonDecode(response);
     } catch (e) {
       print("Error ${e.toString()}");
@@ -115,10 +113,8 @@ class ProductController extends GetxController {
   }
 
   static Future<List<Product>> getProductsByShop(String id) async {
-
     List<dynamic> response = await ShopApi.getProductsByShop(id);
     _products.value = response.map((e) => Product.fromJson(e)).toList();
-    printOut("after ${_products.value!.length}");
 
     return response.map((e) => Product.fromJson(e)).toList();
   }

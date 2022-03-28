@@ -25,6 +25,7 @@ class Profile extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
   final UserController _userController = Get.find<UserController>();
   ShopController shopController = Get.find<ShopController>();
+  ProductController productController = Get.find<ProductController>();
   final _nameFormKey = GlobalKey<FormState>();
   final _bioFormKey = GlobalKey<FormState>();
   var nameError = "";
@@ -298,75 +299,69 @@ class Profile extends StatelessWidget {
                             SizedBox(
                               height: 0.03.sh,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Products",
-                                    style: TextStyle(
-                                        fontSize: 13.sp, color: primarycolor)),
-                                InkWell(
-                                  onTap: () => Get.to(
-                                    () => MyProducts(
-                                        title: "${profile.firstName} Products",
-                                        edit: false),
-                                  ),
-                                  child: Text("View all",
-                                      style: TextStyle(
-                                          fontSize: 13.sp,
-                                          color: primarycolor)),
-                                )
-                              ],
-                            ),
                             SizedBox(
                               height: 0.02.sh,
                             ),
-                            GetX<ProductController>(initState: (_) async {
-                              Get.find<ProductController>().products = [];
-                              Get.find<ProductController>().products =
-                                  await ProductController.getProductsByShop(
-                                      profile.shopId!.id!);
-                            }, builder: (_) {
-                              printOut(_.products.length);
-                              if (_.products.isEmpty) {
-                                return SizedBox(
-                                    height: 0.3.sh,
-                                    child: Text(
-                                      "No Products yet",
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 16.sp),
-                                    ));
-                              }
-                              if (_.products.isNotEmpty) {
-                                return SizedBox(
-                                    height: 0.3.sh,
-                                    width: double.infinity,
-                                    child: ListView.separated(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      separatorBuilder: (context, index) =>
-                                          SizedBox(
-                                        height: 0.1.sh,
-                                      ),
-                                      physics: const BouncingScrollPhysics(),
-                                      itemCount: _.products.length,
-                                      itemBuilder: (context, index) {
-                                        return ProductCard(
-                                          product: _.products[index],
-                                          press: () {
-                                            Get.to(FullProduct(
-                                              product: _.products[index],
-                                            ));
+                            Obx(() {
+                              if (productController.products.length > 0) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Products",
+                                            style: TextStyle(
+                                                fontSize: 13.sp,
+                                                color: primarycolor)),
+                                        InkWell(
+                                          onTap: () => Get.to(
+                                            () => MyProducts(
+                                                title:
+                                                    "${profile.firstName} Products",
+                                                edit: false),
+                                          ),
+                                          child: Text("View all",
+                                              style: TextStyle(
+                                                  fontSize: 13.sp,
+                                                  color: primarycolor)),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 0.03.sh,
+                                    ),
+                                    SizedBox(
+                                        height: 0.3.sh,
+                                        width: double.infinity,
+                                        child: ListView.separated(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          separatorBuilder: (context, index) =>
+                                              SizedBox(
+                                            height: 0.1.sh,
+                                          ),
+                                          physics:
+                                              const BouncingScrollPhysics(),
+                                          itemCount:
+                                              productController.products.length,
+                                          itemBuilder: (context, index) {
+                                            return ProductCard(
+                                              product: productController
+                                                  .products[index],
+                                              press: () {
+                                                Get.to(FullProduct(
+                                                  product: productController
+                                                      .products[index],
+                                                ));
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                    ));
-                                // return Column(
-                                //   children: _.products.map((e) => Text(e.name)).toList(),
-                                // );
+                                        )),
+                                  ],
+                                );
                               }
-                              return Text("No Products yet",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 16.sp));
+                              return Container();
                             }),
                             SizedBox(
                               height: 0.03.sh,

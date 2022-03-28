@@ -22,6 +22,7 @@ class UserAPI {
   }
 
   getUserProfile(String uid) async {
+    print("getUserprofile ${userById + uid}");
     var user =
         await DbBase().databaseRequest(userById + uid, DbBase().getRequestType);
 

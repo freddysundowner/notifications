@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -26,6 +27,11 @@ class UserController extends GetxController {
       }
 
       profileLoading.value = false;
+
+      if (currentProfile.value.shopId != null) {
+        await ProductController.getProductsByShop(
+            currentProfile.value.shopId!.id!);
+      }
     } catch (e, s) {
       profileLoading.value = false;
       printOut("Error getting user $userId profile $e $s");

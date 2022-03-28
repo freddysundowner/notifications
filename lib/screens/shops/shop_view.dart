@@ -105,7 +105,7 @@ class ShopView extends StatelessWidget {
                   ),
                   if (authController.currentuser!.shopId != null &&
                       shopController.currentShop.value.id ==
-                          authController.currentuser!.shopId!.id)
+                          authController.currentuser!.shopId?.id)
                     InkWell(
                       onTap: () {
                         Get.to(() => NewShop());
@@ -171,7 +171,7 @@ class ShopView extends StatelessWidget {
                   }),
                   if (authController.currentuser!.shopId != null &&
                       shopController.currentShop.value.id !=
-                          authController.currentuser!.shopId!.id)
+                          authController.currentuser!.shopId?.id)
                     Obx(() {
                       return shopController.currentShop.value.open == false
                           ? Center(

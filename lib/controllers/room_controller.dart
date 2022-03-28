@@ -439,9 +439,17 @@ class RoomController extends GetxController {
         allUsersLoading.value = true;
 
         var users = await UserAPI().getAllUsers();
+        var list = [];
 
         if (users != null) {
-          allUsers.value = users;
+
+          for(var i = 0; i < users.length; i++) {
+            if (users.elementAt(i)["_id"] != FirebaseAuth.instance.currentUser!.uid) {
+              list.add(users.elementAt(i));
+
+            }
+          }
+          allUsers.value = list;
         } else {
           allUsers.value = [];
         }
@@ -466,8 +474,17 @@ class RoomController extends GetxController {
         var users =
             await UserAPI().searchUser(searchChatUsersController.text.trim());
 
+        var list = [];
+
         if (users != null) {
-          searchedUsers.value = users;
+
+          for(var i = 0; i < users.length; i++) {
+            if (users.elementAt(i)["_id"] != FirebaseAuth.instance.currentUser!.uid) {
+              list.add(users.elementAt(i));
+
+            }
+          }
+          searchedUsers.value = list;
         } else {
           searchedUsers.value = [];
         }

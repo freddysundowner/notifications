@@ -93,7 +93,7 @@ class ChatController extends GetxController {
     currentChatLoading.value = false;
   }
 
-  getPreviousChat(OwnerId otherUser) {
+  getPreviousChat(UserModel otherUser) {
     currentChatLoading.value = true;
     currentChatUsers.add(otherUser.id);
     currentChatUsers.add(Get.find<AuthController>().usermodel.value!.id);
@@ -129,7 +129,7 @@ class ChatController extends GetxController {
     }
   }
 
-  sendMessage(String message, OwnerId otherUser) {
+  sendMessage(String message, UserModel otherUser) {
     sendingMessage.value = true;
 
     if (currentChatId.value == "") {
@@ -168,7 +168,7 @@ class ChatController extends GetxController {
     });
   }
 
-  void createChat(String message, OwnerId otherUser, chatId) {
+  void createChat(String message, UserModel otherUser, chatId) {
     UserModel currentUser = Get.find<AuthController>().usermodel.value!;
     //Create a new chat
     var data = {

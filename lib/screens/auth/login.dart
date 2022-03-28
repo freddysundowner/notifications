@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -15,6 +17,7 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _tryConnection();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -64,7 +67,23 @@ class Login extends StatelessWidget {
       ),
     );
   }
+  Future<void> _tryConnection() async {
+    try {
+      final response = await InternetAddress.lookup('google.com');
 
+      printOut(" responseyuu "  + response.toString());
+      if (response.isEmpty) {
+        Get.snackbar('', "Check your rrrrryyyy connection").show();
+
+      }
+    } on SocketException catch (e) {
+      printOut(e.message);
+
+      Get.snackbar('', "Check your rrrrr connection").show();
+    } catch(e, s) {
+      printOut("error accenssing internet $e $s");
+    }
+  }
   Row buildForgotPasswordWidget(BuildContext context) {
     return Row(
       children: [

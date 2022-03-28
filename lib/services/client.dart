@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'configs.dart';
+
 class DbBase {
   var postRequestType = "POST";
   var getRequestType = "GET";
@@ -14,7 +16,7 @@ class DbBase {
 
   databaseRequest(String link, String type,
       {Map<String, dynamic>? body}) async {
-    _tryConnection();
+    tryConnection();
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
@@ -50,19 +52,23 @@ class DbBase {
     }
   }
 
-  Future<void> _tryConnection() async {
+  Future<void> tryConnection() async {
     try {
-      final response = await InternetAddress.lookup('www.google.com');
+      final response = await InternetAddress.lookup(api_url);
 
+      printOut(response.toString());
       if (response.isEmpty) {
         Get.snackbar('', "Check your internet connection");
 
         printOut(response.toString());
       }
+
     } on SocketException catch (e) {
-      printOut(e.message);
+      printOut(" error accessing internet " + e.message);
 
       Get.snackbar('', "Check your internet connection");
+    } catch(e) {
+      printOut(" error accessing internet catch $e");
     }
   }
 }

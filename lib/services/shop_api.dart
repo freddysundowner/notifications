@@ -31,10 +31,12 @@ class ShopApi {
     return response;
   }
 
-  searchItems(String text, String searchOption) async {
+  searchItems(String text, String searchOption, {last = ""}) async {
+    print({"lastid": last});
     var shops = await DbBase().databaseRequest(
         baseUrl + "/" + searchOption + "/search/" + text,
-        DbBase().getRequestType);
+        DbBase().getRequestType,
+        body: {"lastid": last});
     print(jsonDecode(shops));
     return jsonDecode(shops);
   }

@@ -475,14 +475,14 @@ class HomePage extends StatelessWidget {
                         : 0.001.sh,
                     child: Obx(() {
                       //If user is not a speaker or a host, disable their audio
-                      if (_homeController.currentRoom.value.hostIds!
+                      if ((_homeController.currentRoom.value.hostIds!
                                   .indexWhere((e) => e.id == currentUser.id) ==
-                              -1 &&
-                          _homeController.currentRoom.value.speakerIds!
+                              0 )&&
+                          (_homeController.currentRoom.value.speakerIds!
                                   .indexWhere((e) => e.id == currentUser.id) ==
-                              -1) {
+                              0)) {
                         try {
-                          _homeController.engine.disableAudio();
+                          _homeController.engine.enableLocalAudio(true);
                         } catch (e) {
                           printOut("Error disabling audio $e");
                         }
@@ -493,25 +493,25 @@ class HomePage extends StatelessWidget {
                         return Container(
 
                             //If user is a speaker or host, show the mic icon, else don't show it
-                            child: _homeController.currentRoom.value.hostIds!
+                            child: (_homeController.currentRoom.value.hostIds!
                                             .indexWhere((e) =>
                                                 e.id == currentUser.id) ==
-                                        0 ||
-                                    _homeController
+                                        0 )||
+                                    (_homeController
                                             .currentRoom.value.speakerIds!
                                             .indexWhere((e) =>
                                                 e.id == currentUser.id) ==
-                                        0
+                                        0)
                                 ? IconButton(
                                     onPressed: () {
                                       //If user is muted, unmute and enbale their audio vice versa
                                       if (_homeController.audioMuted.isFalse) {
                                         _homeController.audioMuted.value = true;
-                                        _homeController.engine.disableAudio();
+                                        _homeController.engine.muteLocalAudioStream(true);
                                       } else {
                                         _homeController.audioMuted.value =
                                             false;
-                                        _homeController.engine.enableAudio();
+                                        _homeController.engine.muteLocalAudioStream(false);
                                       }
                                     },
                                     icon: Icon(

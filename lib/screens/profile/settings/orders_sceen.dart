@@ -70,7 +70,8 @@ class OrdersScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Center(
                                           child:
-                                            CachedNetworkImage(
+                                          ordersModel.itemId!.productId!
+                                              .images!.isNotEmpty ? CachedNetworkImage(
                                               imageUrl: ordersModel.itemId!.productId!
                                                   .images!.first,
                                               height: 0.1.sh,
@@ -80,7 +81,9 @@ class OrdersScreen extends StatelessWidget {
                                               const CircularProgressIndicator(),
                                               errorWidget:
                                                   (context, url, error) => Image.asset("assets/icons/no_image.png"),
-                                            )
+                                            ) : Image.asset("assets/icons/no_image.png", height: 0.1.sh,
+                                            width: 0.2.sw,
+                                            fit: BoxFit.fill,)
                                         ),
                                       ),
                                     ),

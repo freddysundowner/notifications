@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
@@ -27,137 +28,123 @@ class ShopSearchResults extends StatelessWidget {
 
   List<String> searchOptions = ["Shop", "Users", "Products", "Rooms"];
   List<Product> products = getProducts();
+// Create a variable
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.sm),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: TextField(
-                                controller:
-                                    _globalController.searchShopController,
-                                textInputAction: TextInputAction.search,
-                                decoration: InputDecoration(
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  hintText: "Search...",
-                                  prefixIcon: const Icon(Icons.search),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 20.sm, vertical: 9.sm),
-                                ),
-                                onChanged: (c) {
-                                  if (c.isNotEmpty) {
-                                    _globalController.searchresults.value = [];
-                                    _search(_globalController
-                                        .currentsearchtab.value);
-                                  } else {
-                                    _globalController.searchresults.value = [];
-                                  }
-                                },
-                              ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(right: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.sm),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TextField(
+                            controller: _globalController.searchShopController,
+                            textInputAction: TextInputAction.search,
+                            keyboardType: TextInputType.visiblePassword,
+                            decoration: InputDecoration(
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              hintText: "Search...",
+                              prefixIcon: const Icon(Icons.search),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20.sm, vertical: 9.sm),
                             ),
+                            onChanged: (c) {
+                              if (c.isNotEmpty) {
+                                // _globalController.searchShopController.text = c;
+                                _globalController.searchresults.value = [];
+                                _search(
+                                    _globalController.currentsearchtab.value);
+                              } else {
+                                _globalController.searchresults.value = [];
+                              }
+                            },
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            _globalController.searchShopController.text = "";
-                            Get.back();
-                          },
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                  Obx(() {
-                    return Column(
-                      children: [
-                        if (_globalController.isSearching.isTrue)
-                          SizedBox(
-                            height: 0.5.sh,
-                            child: const Center(
-                                child: CircularProgressIndicator(
-                              color: Colors.black,
-                            )),
-                          ),
-                        if (_globalController
-                                .searchShopController.text.isNotEmpty &&
-                            _globalController.isSearching.isFalse)
-                          _searchTabs(),
-                      ],
-                    );
-
-                    return Container();
-                  }),
-                  Obx(() {
-                    if (_globalController.searchresults.value.length == 0 &&
-                        _globalController.searchShopController.text.isNotEmpty)
-                      return Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: Text("No results"));
-                    if (_globalController.searchresults.value.length > 0 &&
-                        _globalController.isSearching.isFalse)
-                      return Column(
-                        children: List.generate(
-                            _globalController.searchresults.value.length,
-                            (index) => Column(
-                                  children: _globalController
-                                      .searchresults.value
-                                      .map((e) {
-                                    if (_globalController
-                                            .currentsearchtab.value ==
-                                        0) {
-                                      return _singleItemShop(Shop.fromJson(e));
-                                    }
-                                    if (_globalController
-                                            .currentsearchtab.value ==
-                                        1) {
-                                      return _singleItemUser(
-                                          UserModel.fromJson(e));
-                                    }
-                                    if (_globalController
-                                            .currentsearchtab.value ==
-                                        2) {
-                                      return _singleItemProduct(
-                                          Product.fromJson(e));
-                                    }
-                                    if (_globalController
-                                            .currentsearchtab.value ==
-                                        3) {
-                                      return _singleItemRoom(
-                                          RoomModel.fromJson(e));
-                                    }
-                                    return Container();
-                                  }).toList(),
-                                )),
-                      );
-                    return Container();
-                  })
-                ],
+                    InkWell(
+                      onTap: () {
+                        _globalController.searchShopController.text = "";
+                        Get.back();
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
+              Obx(() {
+                return Column(
+                  children: [
+                    if (_globalController.isSearching.isTrue)
+                      Expanded(
+                        child: SizedBox(
+                          height: 0.5.sh,
+                          child: const Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.black,
+                          )),
+                        ),
+                      ),
+                    if (_globalController
+                            .searchShopController.text.isNotEmpty &&
+                        _globalController.isSearching.isFalse)
+                      _searchTabs(),
+                  ],
+                );
+              }),
+              Expanded(
+                child: Obx(() {
+                  if (_globalController.searchresults.value.length == 0 &&
+                      _globalController.searchShopController.text.isNotEmpty)
+                    return Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: Text("No results"));
+                  if (_globalController.searchresults.value.length > 0 &&
+                      _globalController.isSearching.isFalse)
+                    return ListView.builder(
+                      controller: _globalController.scrollcontroller,
+                      itemBuilder: (_, i) => Column(
+                        children:
+                            _globalController.searchresults.value.map((e) {
+                          if (_globalController.currentsearchtab.value == 0) {
+                            return _singleItemShop(Shop.fromJson(e));
+                          }
+                          if (_globalController.currentsearchtab.value == 1) {
+                            return _singleItemUser(UserModel.fromJson(e));
+                          }
+                          if (_globalController.currentsearchtab.value == 2) {
+                            return _singleItemProduct(Product.fromJson(e));
+                          }
+                          if (_globalController.currentsearchtab.value == 3) {
+                            return _singleItemRoom(RoomModel.fromJson(e));
+                          }
+                          return Container();
+                        }).toList(),
+                      ),
+                      itemCount: _globalController.searchresults.value.length,
+                    );
+                  return Container();
+                }),
+              )
+            ],
           ),
         ),
       ),
@@ -283,7 +270,9 @@ class ShopSearchResults extends StatelessWidget {
 
   InkWell _singleItemRoom(RoomModel e) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Get.find<RoomController>().joinRoom(e.id!);
+      },
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
@@ -323,6 +312,7 @@ class ShopSearchResults extends StatelessWidget {
 
   _search(int index) {
     _globalController.currentsearchtab.value = index;
+    _globalController.searchoption.value = searchOptions[index].toLowerCase();
     _globalController.search(searchOptions[index].toLowerCase());
   }
 

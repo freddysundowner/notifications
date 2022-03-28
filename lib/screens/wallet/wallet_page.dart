@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/wallet_controller.dart';
 import 'package:fluttergistshop/models/transaction_model.dart';
+import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 
@@ -50,7 +51,7 @@ class WalletPage extends StatelessWidget {
                         ),
                         Obx((){
                             return Text(
-                              "GIST " +
+                              "$gccurrency " +
                                   authController.currentuser!.wallet!.toString(),
                               style: TextStyle(
                                   color: Colors.white,
@@ -121,7 +122,7 @@ class WalletPage extends StatelessWidget {
                                               color: Colors.black, fontSize: 16.sp),
                                         ),
                                         Text(
-                                          "GIST ${transaction.amount}",
+                                          "$gccurrency ${transaction.amount}",
                                           style: TextStyle(
                                               color: Colors.red, fontSize: 16.sp),
                                         ),

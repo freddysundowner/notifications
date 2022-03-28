@@ -252,7 +252,7 @@ class RoomPage extends StatelessWidget {
                       RoomUser("Audience"),
                     ])
                   : const Center(child: CircularProgressIndicator())
-              : const Center(
+              : Center(
                   child: CircularProgressIndicator(
                   color: Colors.black87,
                 )),

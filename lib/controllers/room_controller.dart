@@ -230,6 +230,7 @@ class RoomController extends GetxController {
 
       if (roomResponse != null) {
         RoomModel room = RoomModel.fromJson(roomResponse);
+        printOut("currentRoom token ${room.token}");
         if (room.token != null) {
           currentRoom.value = room;
         }
@@ -442,11 +443,10 @@ class RoomController extends GetxController {
         var list = [];
 
         if (users != null) {
-
-          for(var i = 0; i < users.length; i++) {
-            if (users.elementAt(i)["_id"] != FirebaseAuth.instance.currentUser!.uid) {
+          for (var i = 0; i < users.length; i++) {
+            if (users.elementAt(i)["_id"] !=
+                FirebaseAuth.instance.currentUser!.uid) {
               list.add(users.elementAt(i));
-
             }
           }
           allUsers.value = list;
@@ -477,11 +477,10 @@ class RoomController extends GetxController {
         var list = [];
 
         if (users != null) {
-
-          for(var i = 0; i < users.length; i++) {
-            if (users.elementAt(i)["_id"] != FirebaseAuth.instance.currentUser!.uid) {
+          for (var i = 0; i < users.length; i++) {
+            if (users.elementAt(i)["_id"] !=
+                FirebaseAuth.instance.currentUser!.uid) {
               list.add(users.elementAt(i));
-
             }
           }
           searchedUsers.value = list;
@@ -515,7 +514,7 @@ class RoomController extends GetxController {
           printOut(product.images);
           userProducts.add(products.elementAt(i));
 
-       /*   if (product.images != null && product.images!.isNotEmpty) {
+          /*   if (product.images != null && product.images!.isNotEmpty) {
             userProducts.add(products.elementAt(i));
           }*/
         }
@@ -534,6 +533,7 @@ class RoomController extends GetxController {
   }
 
   void initAgora(String token, String roomId) async {
+
     try {
       printOut("Joining agora room");
 
@@ -567,8 +567,21 @@ class RoomController extends GetxController {
 
   void agoraListeners() {
     // Define event handling logic
-    engine.setEventHandler(RtcEngineEventHandler(
-        joinChannelSuccess: (String channel, int uid, int elapsed) {
+    engine.setEventHandler(RtcEngineEventHandler(error: (error) async {
+
+      printOut("Error in agora ${error.name}");
+      if (error.name == "InvalidToken" || error.name == "TokenExpired") {
+        Get.back();
+        roomsList.removeWhere((element) => element["_id"] == currentRoom.value.id);
+        Get.snackbar(
+            '', "Room has ended");
+
+        await RoomAPI().deleteARoom(currentRoom.value.id!);
+        currentRoom.value = RoomModel();
+
+        leaveAgora();
+      }
+    }, joinChannelSuccess: (String channel, int uid, int elapsed) {
       printOut('joinChannelSuccess $channel $uid');
       userJoinedRoom.value = true;
     }, userJoined: (int uid, int elapsed) {

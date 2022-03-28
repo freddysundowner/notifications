@@ -315,20 +315,29 @@ Future<dynamic> showProductBottomSheet(BuildContext context) async {
                                                             5),
                                                   ),
                                                   child: Center(
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          product.images!.first,
-                                                      height: 0.1.sh,
-                                                      width: 0.2.sw,
-                                                      fit: BoxFit.fill,
-                                                      placeholder: (context,
-                                                              url) =>
-                                                          const CircularProgressIndicator(),
-                                                      errorWidget: (context,
-                                                              url, error) =>
-                                                          const Icon(
-                                                              Icons.error),
-                                                    ),
+                                                    child: product
+                                                            .images!.isNotEmpty
+                                                        ? CachedNetworkImage(
+                                                            imageUrl: product
+                                                                .images!.first,
+                                                            height: 0.1.sh,
+                                                            width: 0.2.sw,
+                                                            fit: BoxFit.fill,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                const CircularProgressIndicator(),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                const Icon(Icons
+                                                                    .error),
+                                                          )
+                                                        : Image.asset(
+                                                            "assets/icons/no_image.png",
+                                                            height: 0.1.sh,
+                                                            width: 0.2.sw,
+                                                            fit: BoxFit.fill,
+                                                          ),
                                                   ),
                                                 ),
                                                 Center(
@@ -654,10 +663,13 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                                     "assets/icons/profile_placeholder.png"))
                                                         : CircleAvatar(
                                                             radius: 35,
-                                                            onBackgroundImageError: (Object, StackTrace) => const Icon(Icons.error),
+                                                            onBackgroundImageError:
+                                                                (Object,
+                                                                        StackTrace) =>
+                                                                    const Icon(Icons
+                                                                        .error),
                                                             backgroundColor:
-                                                                Colors
-                                                                    .black38,
+                                                                Colors.black38,
                                                             foregroundImage: _homeController
                                                                     .roomHosts
                                                                     .contains(
@@ -665,8 +677,8 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                                 ? const AssetImage(
                                                                     "assets/icons/picked.png")
                                                                 : null,
-
-                                                            backgroundImage: NetworkImage(
+                                                            backgroundImage:
+                                                                NetworkImage(
                                                                     imageUrl +
                                                                         user.profilePhoto!),
                                                           ),

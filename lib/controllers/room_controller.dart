@@ -541,9 +541,11 @@ class RoomController extends GetxController {
         for (var i = 0; i < products.length; i++) {
           Product product = Product.fromJson(products.elementAt(i));
           printOut(product.images);
-          if (product.images != null && product.images!.isNotEmpty) {
+          userProducts.add(products.elementAt(i));
+
+       /*   if (product.images != null && product.images!.isNotEmpty) {
             userProducts.add(products.elementAt(i));
-          }
+          }*/
         }
         printOut(userProducts.length);
       } else {

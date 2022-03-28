@@ -27,8 +27,7 @@ class AuthController extends GetxController {
   final TextEditingController usernameFieldController = TextEditingController();
   final TextEditingController confirmPasswordFieldController =
       TextEditingController();
-  final TextEditingController bioFieldController =
-      TextEditingController();
+  final TextEditingController bioFieldController = TextEditingController();
 
   var error = "".obs;
   var isLoading = true.obs;
@@ -48,13 +47,13 @@ class AuthController extends GetxController {
     try {
       isLoading(true);
       Map<String, dynamic> auth = Authenticate(
-        email: emailFieldController.text,
-        password: passwordFieldController.text,
-        userName: usernameFieldController.text,
-        firstName: fnameFieldController.text,
-        lastName: lnameFieldController.text,
-        bio: bioFieldController.text
-      ).toJson();
+              email: emailFieldController.text,
+              password: passwordFieldController.text,
+              userName: usernameFieldController.text,
+              firstName: fnameFieldController.text,
+              lastName: lnameFieldController.text,
+              bio: bioFieldController.text)
+          .toJson();
       Map<String, dynamic> user = await UserAPI.authenticate(auth, "register");
 
       if (user["success"] == false) {
@@ -156,7 +155,23 @@ class AuthController extends GetxController {
           usermodel.value = snapshot.data as UserModel?;
           return HomePage();
         }
-        return Login();
+        try {
+          InternetAddress.lookup('example.com').then((result) {
+            if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+              return Login();
+            }
+          });
+        } on SocketException catch (_) {
+          GetSnackBar(
+            message: "Check your internet connectioon",
+          );
+        }
+        return const Scaffold(
+          backgroundColor: primarycolor,
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }

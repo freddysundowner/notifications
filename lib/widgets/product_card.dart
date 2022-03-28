@@ -38,12 +38,18 @@ class ProductCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        Container(
+          padding: product.images!.length == 0
+              ? EdgeInsets.all(8.0)
+              : EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+              color: Color(0XFFC9C9C9),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8), topLeft: Radius.circular(8))),
           child: product.images!.isEmpty
               ? Image.asset(
                   imageplaceholder,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                   height: 0.16.sh,
                   width: double.infinity,
                 )

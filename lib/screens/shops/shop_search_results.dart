@@ -66,7 +66,6 @@ class ShopSearchResults extends StatelessWidget {
                                       horizontal: 20.sm, vertical: 9.sm),
                                 ),
                                 onChanged: (c) {
-                                  print("enetr $c");
                                   if (c.isNotEmpty) {
                                     _globalController.searchresults.value = [];
                                     _search(_globalController

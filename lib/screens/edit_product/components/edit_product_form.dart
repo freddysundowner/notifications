@@ -115,7 +115,13 @@ class EditProductForm extends StatelessWidget {
         buildDescribeProductTile(context),
         SizedBox(height: 10.h),
         buildUploadImagesTile(context),
-        SizedBox(height: 80.h),
+        Obx(() {
+          if (productController.selectedImages.value.length > 0) {
+            return SizedBox(height: 80.h);
+          } else {
+            return SizedBox(height: 20.h);
+          }
+        }),
         DefaultButton(
             text: btnTxt,
             press: () async {
@@ -128,16 +134,15 @@ class EditProductForm extends StatelessWidget {
                 } else {
                   response = productController.saveProduct();
                 }
-
-                // try {
                 await showDialog(
                   context: context,
                   builder: (context) {
                     return AsyncProgressDialog(
                       response,
-                      message: Text(productController.productObservable.value != null
-                          ? "Updating product"
-                          : "Creating product"),
+                      message: Text(
+                          productController.productObservable.value != null
+                              ? "Updating product"
+                              : "Creating product"),
                       onError: (e) {
                         snackbarMessage = e.toString();
                       },
@@ -145,28 +150,16 @@ class EditProductForm extends StatelessWidget {
                   },
                 );
                 snackbarMessage = productController.error.value;
-                // } finally {
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     SnackBar(
-                //       content: Text(snackbarMessage),
-                //     ),
-                //   );
-                //   if (productController.error.value == "") {
-                //     Get.find<ProductController>().products =
-                //         await ProductController.getProductsByShop(
-                //             productController.product.shopId!);
-                //     Get.back();
-                //   }
-                // }
 
                 var waitedResponse = await response;
-                printOut("Save image response $waitedResponse");
-                Product productresponse = Product.fromJson( waitedResponse["data"]);
-                productresponse.ownerId = Get.find<AuthController>().usermodel.value;
-                productresponse.shopId = Get.find<AuthController>().usermodel.value!.shopId;
+                Product productresponse =
+                    Product.fromJson(waitedResponse["data"]);
+                productresponse.ownerId =
+                    Get.find<AuthController>().usermodel.value;
+                productresponse.shopId =
+                    Get.find<AuthController>().usermodel.value!.shopId;
 
-                await uploadProductImages(
-                    productresponse.id!, context);
+                await uploadProductImages(productresponse.id!, context);
 
                 List<dynamic> downloadUrls = productController.selectedImages
                     .map((e) => e.imgType == ImageType.network ? e.path : null)
@@ -189,6 +182,15 @@ class EditProductForm extends StatelessWidget {
                     snackbarMessage = product != null
                         ? "Product updated successfully"
                         : "Product uploaded successfully";
+                    if (product == null) {
+                      await ProductController.getProductsByShop(
+                          Get.find<AuthController>()
+                              .usermodel
+                              .value!
+                              .shopId!
+                              .id!);
+                    }
+                    productController.selectedImages.value = [];
                   } else {
                     throw "Couldn't upload product properly, please retry";
                   }
@@ -263,32 +265,12 @@ class EditProductForm extends StatelessWidget {
 
   Future<void> addImageButtonCallback(BuildContext context,
       {int? index}) async {
-    // if (index == null && productController.selectedImages.length >= 3) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text("Max 3 images can be uploaded")));
-    //   return;
-    // }
     String path = "";
-
-    // try {
     path = await choseImageFromLocalFiles(context);
     print(path);
     if (path == null) {
       throw LocalImagePickingUnknownReasonFailureException();
     }
-    // } on LocalFileHandlingException catch (e) {
-    //   snackbarMessage = e.toString();
-    // } catch (e) {
-    //   snackbarMessage = e.toString();
-    // } finally {
-    //   if (snackbarMessage != null) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //         content: Text(snackbarMessage),
-    //       ),
-    //     );
-    //   }
-    // }
     if (path == null) {
       return;
     }
@@ -310,10 +292,10 @@ class EditProductForm extends StatelessWidget {
         style: Theme.of(context).textTheme.headline6,
       ),
       leading: Icon(Icons.image),
-      childrenPadding: EdgeInsets.symmetric(vertical: 20),
+      childrenPadding: EdgeInsets.symmetric(horizontal: 20),
       children: [
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: IconButton(
               icon: Icon(
                 Icons.add_a_photo,
@@ -324,14 +306,15 @@ class EditProductForm extends StatelessWidget {
               }),
         ),
         Obx(() => Container(
-              height: 80.h,
+              height:
+                  productController.selectedImages.value.length == 0 ? 0 : 90.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: productController.selectedImages.length,
                 itemBuilder: (context, index) {
                   return SizedBox(
-                    width: 80,
-                    height: 80,
+                    width: 90.h,
+                    height: 90.h,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: GestureDetector(

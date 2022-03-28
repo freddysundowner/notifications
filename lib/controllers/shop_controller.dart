@@ -30,7 +30,6 @@ class ShopController extends GetxController {
       daddressController = TextEditingController(),
       emailController = TextEditingController();
 
-
   saveShop() async {
     try {
       Map<String, dynamic> productdata = new Shop(
@@ -75,11 +74,13 @@ class ShopController extends GetxController {
               location: daddressController.text,
               email: emailController.text)
           .toJson();
-      print("productdata $productdata");
       var response = await ShopApi.updateShop(productdata, id);
+      print("response $response");
       error.value = "";
       if (response["success"]) {
-        Get.back();
+        error.value = "updated successfully";
+        _shop.value = Shop.fromJson(response["data"]);
+        currentShop.value = Shop.fromJson(response["data"]);
       } else {
         error.value = response["message"];
       }

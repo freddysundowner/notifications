@@ -73,26 +73,31 @@ class RoomPage extends StatelessWidget {
               ),
               Row(
                 children: [
-                  _homeController.currentRoom.value.speakerIds != null
-                      && (_homeController.currentRoom.value.speakerIds!
-                      .indexWhere((e) => e.id == currentUser.id) ==
-                      -1) ?
-                  IconButton(
-                    onPressed: () async {
-                      if ((_homeController.currentRoom.value.hostIds!
-                              .indexWhere((e) => e.id == currentUser.id) ==
-                          0)) {
-                        showRaisedHandsBottomSheet(context);
-                      } else {
-                        await _homeController.addUserToRaisedHands(currentUser);
-                      }
-                    },
-                    icon: const Icon(
-                      Ionicons.hand_right,
-                      color: Colors.black54,
-                      size: 30,
-                    ),
-                  ) : Container(height: 0.06.sh,),
+                  _homeController.currentRoom.value.speakerIds != null &&
+                          (_homeController.currentRoom.value.speakerIds!
+                                  .indexWhere((e) => e.id == currentUser.id) ==
+                              -1)
+                      ? IconButton(
+                          onPressed: () async {
+                            if ((_homeController.currentRoom.value.hostIds!
+                                    .indexWhere(
+                                        (e) => e.id == currentUser.id) ==
+                                0)) {
+                              showRaisedHandsBottomSheet(context);
+                            } else {
+                              await _homeController
+                                  .addUserToRaisedHands(currentUser);
+                            }
+                          },
+                          icon: const Icon(
+                            Ionicons.hand_right,
+                            color: Colors.black54,
+                            size: 30,
+                          ),
+                        )
+                      : Container(
+                          height: 0.06.sh,
+                        ),
                   SizedBox(
                     width: 0.01.sw,
                   ),
@@ -199,55 +204,55 @@ class RoomPage extends StatelessWidget {
       ),
       body: Obx(() {
         return RefreshIndicator(
-                onRefresh: () {
-                  return _homeController
-                      .fetchRoom(_homeController.currentRoom.value.id!);
-                },
-                child: _homeController.isCurrentRoomLoading.isFalse
-                    ? _homeController.currentRoom.value.id != null
-                    ? ListView(children: [
-                        _homeController.userJoinedRoom.isFalse
-                            ? Transform.scale(
-                            scale: 0.2,
-                            child: const CircularProgressIndicator(
-                              color: Colors.black,
-                            ))
-                            : Container(),
-                        RoomUser("Hosts"),
-                        SizedBox(
-                          width: 0.9.sw,
-                          child: const Divider(
-                            color: Colors.black12,
-                          ),
+          onRefresh: () {
+            return _homeController
+                .fetchRoom(_homeController.currentRoom.value.id!);
+          },
+          child: _homeController.isCurrentRoomLoading.isFalse
+              ? _homeController.currentRoom.value.id != null
+                  ? ListView(children: [
+                      _homeController.userJoinedRoom.isFalse
+                          ? Transform.scale(
+                              scale: 0.2,
+                              child: const CircularProgressIndicator(
+                                color: Colors.black,
+                              ))
+                          : Container(),
+                      RoomUser("Hosts"),
+                      SizedBox(
+                        width: 0.9.sw,
+                        child: const Divider(
+                          color: Colors.black12,
                         ),
-                        buildProducts(),
-                        SizedBox(
-                          width: 0.9.sw,
-                          child: const Divider(
-                            color: Colors.black12,
-                          ),
+                      ),
+                      buildProducts(),
+                      SizedBox(
+                        width: 0.9.sw,
+                        child: const Divider(
+                          color: Colors.black12,
                         ),
-                        _homeController.currentRoom.value.speakerIds!.isNotEmpty
-                            ? Column(
-                                children: [
-                                  RoomUser("Speakers"),
-                                  SizedBox(
-                                    width: 0.9.sw,
-                                    child: const Divider(
-                                      color: Colors.black12,
-                                    ),
+                      ),
+                      _homeController.currentRoom.value.speakerIds!.isNotEmpty
+                          ? Column(
+                              children: [
+                                RoomUser("Speakers"),
+                                SizedBox(
+                                  width: 0.9.sw,
+                                  child: const Divider(
+                                    color: Colors.black12,
                                   ),
-                                ],
-                              )
-                            : Container(),
-                        RoomUser("Audience"),
-                      ])
-                    : const Center(child: CircularProgressIndicator())
-                    : const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black87,
-                    )),
-              );
+                                ),
+                              ],
+                            )
+                          : Container(),
+                      RoomUser("Audience"),
+                    ])
+                  : const Center(child: CircularProgressIndicator())
+              : const Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.black87,
+                )),
+        );
       }),
     );
   }
@@ -275,12 +280,15 @@ class RoomPage extends StatelessWidget {
               padding: const EdgeInsets.only(left: 10.0, right: 8.0),
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _homeController.currentRoom.value.productImages!
-                      .length,
+                  itemCount: _homeController
+                          .currentRoom.value.productImages!.isNotEmpty
+                      ? _homeController.currentRoom.value.productImages!.length
+                      : 1,
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: () => Get.to(FullProduct(product: _homeController.currentRoom.value.productIds!
-                          .elementAt(0))),
+                      onTap: () => Get.to(FullProduct(
+                          product: _homeController.currentRoom.value.productIds!
+                              .elementAt(0))),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Container(
@@ -289,19 +297,26 @@ class RoomPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                               color: Colors.white),
                           child: Center(
-                            child:
-                              CachedNetworkImage(
-                                imageUrl: _homeController.currentRoom.value.productImages!
-                                    .elementAt(index),
-                                height: 0.08.sh,
-                                width: 0.12.sw,
-                                fit: BoxFit.fill,
-                                placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                                errorWidget:
-                                    (context, url, error) =>
-                                const Icon(Icons.error),
-                              )
+                            child: _homeController
+                                    .currentRoom.value.productImages!.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: _homeController
+                                        .currentRoom.value.productImages!
+                                        .elementAt(index),
+                                    height: 0.08.sh,
+                                    width: 0.12.sw,
+                                    fit: BoxFit.fill,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  )
+                                : Image.asset(
+                                    "assets/icons/no_image.png",
+                                    height: 0.08.sh,
+                                    width: 0.12.sw,
+                                    fit: BoxFit.fill,
+                                  ),
                           ),
                         ),
                       ),
@@ -371,7 +386,7 @@ class RoomUser extends StatelessWidget {
                               Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: user.elementAt(index).profilePhoto ==
-                                          null
+                                          ""
                                       ? const CircleAvatar(
                                           radius: 30,
                                           backgroundImage: AssetImage(
@@ -400,7 +415,7 @@ class RoomUser extends StatelessWidget {
                             ])
                           : Padding(
                               padding: const EdgeInsets.all(3.0),
-                              child: user.elementAt(index).profilePhoto == null
+                              child: user.elementAt(index).profilePhoto == ""
                                   ? const CircleAvatar(
                                       radius: 30,
                                       backgroundImage: AssetImage(
@@ -461,7 +476,7 @@ class RoomUser extends StatelessWidget {
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
                         children: [
-                          user.profilePhoto == null
+                          user.profilePhoto == ""
                               ? const CircleAvatar(
                                   radius: 35,
                                   backgroundImage: AssetImage(

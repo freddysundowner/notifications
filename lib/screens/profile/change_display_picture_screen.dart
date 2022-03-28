@@ -109,7 +109,7 @@ class ChageProfileImage extends StatelessWidget {
     if (authController.chosenImage != null &&
         authController.chosenImage.path != "") {
       backImage = MemoryImage(authController.chosenImage.readAsBytesSync());
-    } else if (authController.currentuser!.profilePhoto != null) {
+    } else if (authController.currentuser!.profilePhoto != "") {
       final String? url = authController.currentuser!.profilePhoto;
       if (url != null) backImage = NetworkImage(url);
     }

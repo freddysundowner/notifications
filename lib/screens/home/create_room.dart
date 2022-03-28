@@ -644,7 +644,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                       const EdgeInsets.all(8.0),
                                                   child: Center(
                                                     child: user.profilePhoto ==
-                                                            null
+                                                            ""
                                                         ? CircleAvatar(
                                                             radius: 35,
                                                             backgroundColor:

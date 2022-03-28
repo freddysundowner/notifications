@@ -48,7 +48,7 @@ class ProductCard extends StatelessWidget {
                   width: double.infinity,
                 )
               : Center(
-                child: CachedNetworkImage(
+                  child: CachedNetworkImage(
                     imageUrl: product.images![0],
                     imageBuilder: (context, imageProvider) => Container(
                       width: double.infinity,
@@ -58,7 +58,8 @@ class ProductCard extends StatelessWidget {
                             image: imageProvider, fit: BoxFit.fill),
                       ),
                     ),
-                    placeholder: (context, url) => const CircularProgressIndicator(
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(
                       color: Colors.black,
                     ),
                     errorWidget: (context, url, error) => const Icon(
@@ -66,7 +67,7 @@ class ProductCard extends StatelessWidget {
                       size: 120,
                     ),
                   ),
-              ),
+                ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -93,8 +94,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text:
-                          product.htmlPrice(product.discountPrice).toString(),
+                      text: product.htmlPrice(product.discountPrice).toString(),
                       style: TextStyle(
                         color: kTextColor,
                         decoration: TextDecoration.lineThrough,

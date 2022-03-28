@@ -11,7 +11,7 @@ import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
 import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
-import 'package:fluttergistshop/screens/profile/settings_page.dart';
+import 'package:fluttergistshop/screens/profile/settings/settings_page.dart';
 import 'package:fluttergistshop/screens/profile/upgrade_account.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';

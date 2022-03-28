@@ -31,11 +31,11 @@ class IndividualOrderScreen extends StatelessWidget {
                     children: [
                       Text(
                         "Status: ",
-                        style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       Text(
                         ordersModel.status!,
-                        style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                     ],
                   ),
@@ -43,11 +43,11 @@ class IndividualOrderScreen extends StatelessWidget {
                     children: [
                       Text(
                         "OrderId: ",
-                        style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       Text(
                         ordersModel.id.toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                     ],
                   ),
@@ -55,12 +55,12 @@ class IndividualOrderScreen extends StatelessWidget {
                     children: [
                       Text(
                         "Date: ",
-                        style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       Text(
                         DateTime.fromMillisecondsSinceEpoch(ordersModel.date!)
                             .toString(),
-                        style: TextStyle(color: Colors.black, fontSize: 12.sp),
+                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                     ],
                   ),
@@ -103,6 +103,107 @@ class IndividualOrderScreen extends StatelessWidget {
             SizedBox(
               height: 0.02.sh,
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 15),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Name: ",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 0.03.sw,),
+                      Text(
+                        "${ordersModel.shippingId!.name}",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Phone: ",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 0.03.sw,),
+                      Text(
+                        "${ordersModel.shippingId!.phone}",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Address 1: ",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 0.03.sw,),
+                      Text(
+                        "${ordersModel.shippingId!.addrress1}",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Address 2: ",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 0.03.sw,),
+                      Text(
+                        "${ordersModel.shippingId!.addrress2}",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "City: ",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 0.03.sw,),
+                      Text(
+                        "${ordersModel.shippingId!.city}",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                    ],
+                  ),
+                  Row(
+
+                    children: [
+                      Text(
+                        "State: ",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                      SizedBox(width: 0.03.sw,),
+                      Text(
+                        "${ordersModel.shippingId!.state}",
+                        style: TextStyle(
+                            color: Colors.black54, fontSize: 16.sp),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 0.02.sh,
+            ),
             const Divider(
               color: Colors.black12,
               thickness: 10,
@@ -113,7 +214,7 @@ class IndividualOrderScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 15.0, right: 15),
               child: Text(
-                "Delivery information",
+                "Product information",
                 style: TextStyle(color: Colors.black, fontSize: 16.sp),
               ),
             ),
@@ -237,7 +338,10 @@ class IndividualOrderScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
+            SizedBox(
+              height: 0.03.sh,
+            ),
           ],
         ),
       ),

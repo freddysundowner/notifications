@@ -111,8 +111,7 @@ class Profile extends StatelessWidget {
                                   imageUrl: profile.profilePhoto!,
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
-                                    width: 120.0,
-                                    height: 120.0,
+                                        width: 0.25.sw, height: 0.14.sh,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
@@ -123,10 +122,8 @@ class Profile extends StatelessWidget {
                                   placeholder: (context, url) =>
                                       const CircularProgressIndicator(),
                                   errorWidget: (context, url, error) =>
-                                      const Icon(
-                                    Icons.error,
-                                    size: 120,
-                                  ),
+                                      Image.asset(
+                                          "assets/icons/profile_placeholder.png", width: 0.25.sw, height: 0.14.sh),
                                 )),
                             InkWell(
                               onTap: () => updateName(context),

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
@@ -396,41 +396,14 @@ class RoomController extends GetxController {
 
     if (currentRoom.value.id != null) {
       OwnerId currentUser = OwnerId(
-          id: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .id,
-          bio: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .bio,
-          email: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .email,
-          firstName: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .firstName,
-          lastName: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .lastName,
-          userName: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .userName,
-          profilePhoto: Get
-              .find<AuthController>()
-              .usermodel
-              .value!
-              .profilePhoto);
+          id: Get.find<AuthController>().usermodel.value!.id,
+          bio: Get.find<AuthController>().usermodel.value!.bio,
+          email: Get.find<AuthController>().usermodel.value!.email,
+          firstName: Get.find<AuthController>().usermodel.value!.firstName,
+          lastName: Get.find<AuthController>().usermodel.value!.lastName,
+          userName: Get.find<AuthController>().usermodel.value!.userName,
+          profilePhoto:
+              Get.find<AuthController>().usermodel.value!.profilePhoto);
 
       await addUserToRoom(currentUser);
 
@@ -443,8 +416,7 @@ class RoomController extends GetxController {
         Get.snackbar(
             '', "There was an error adding you to the room, Try again later");
       }
-    } else{
-
+    } else {
       await fetchRooms();
     }
   }
@@ -548,10 +520,9 @@ class RoomController extends GetxController {
 
       try {
         await leaveAgora();
-      } catch(e, s) {
+      } catch (e, s) {
         printOut("Error leaving agora $e $s");
       }
-
 
       // Get microphone permission
       await [Permission.microphone].request();

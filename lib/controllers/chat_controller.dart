@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -119,9 +119,7 @@ class ChatController extends GetxController {
   }
 
   readChats() async {
-
     if (currentChatId.value != "") {
-
       await db
           .collection("chats")
           .doc(currentChatId.value)

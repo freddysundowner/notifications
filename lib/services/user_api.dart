@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/address.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/api.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/helper.dart';

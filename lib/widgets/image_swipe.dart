@@ -13,7 +13,7 @@ class ImageSwipe extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400.0.h,
+      height: MediaQuery.of(context).size.height * 0.4.h,
       child: Stack(
         children: [
           PageView(
@@ -45,8 +45,7 @@ class ImageSwipe extends StatelessWidget {
                               scale: 0.3,
                               child: const CircularProgressIndicator(
                                 color: Colors.black,
-                              ))
-                      ),
+                              ))),
                       errorWidget: (context, url, error) => const Icon(
                         Icons.error,
                         size: 80,

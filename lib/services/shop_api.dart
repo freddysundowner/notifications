@@ -21,11 +21,6 @@ class ShopApi {
     var response = await DbBase().databaseRequest(
         config.updateshop + shopid, DbBase().patchRequestType,
         body: shopdata);
-    // var response = await Api.callApi(
-    //     method: config.put,
-    //     endpoint: config.updateshop + shopid,
-    //     body: shopdata);
-    print("updateShop $response");
     return jsonDecode(response);
   }
 
@@ -36,10 +31,11 @@ class ShopApi {
     return response;
   }
 
-  searchShop(String text) async {
-    var shops = await DbBase()
-        .databaseRequest(searchShopByName + text, DbBase().getRequestType);
-
+  searchItems(String text, String searchOption) async {
+    var shops = await DbBase().databaseRequest(
+        baseUrl + "/" + searchOption + "/search/" + text,
+        DbBase().getRequestType);
+    print(jsonDecode(shops));
     return jsonDecode(shops);
   }
 

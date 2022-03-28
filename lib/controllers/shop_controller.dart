@@ -30,7 +30,6 @@ class ShopController extends GetxController {
       daddressController = TextEditingController(),
       emailController = TextEditingController();
 
-  TextEditingController searchShopController = TextEditingController();
 
   saveShop() async {
     try {
@@ -48,7 +47,6 @@ class ShopController extends GetxController {
             chosenImage, ShopApi.getPathForShop(response["data"]["_id"]));
         await ShopApi.updateShop(
             {"image": downloadUrl}, response["data"]["_id"]);
-
       } else {
         error.value = response["message"];
       }
@@ -57,6 +55,8 @@ class ShopController extends GetxController {
       printOut("Error saving product $e $s");
     }
   }
+
+  search() {}
 
   updateShop(String id) async {
     try {
@@ -85,30 +85,6 @@ class ShopController extends GetxController {
       }
       return response;
     } catch (e) {}
-  }
-
-  searchShops() async {
-    if (searchShopController.text.trim().isNotEmpty) {
-      try {
-        isSearchingShop.value = true;
-
-        var shops =
-            await ShopApi().searchShop(searchShopController.text.trim());
-
-        if (shops != null) {
-          searchedShops.value = shops;
-        } else {
-          searchedShops.value = [];
-        }
-        searchedShops.refresh();
-        isSearchingShop.value = false;
-
-        update();
-      } catch (e) {
-        printOut(e);
-        isSearchingShop.value = false;
-      }
-    }
   }
 
   getShops() async {

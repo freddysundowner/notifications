@@ -7,7 +7,7 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/utils/button.dart';
@@ -654,10 +654,13 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                                     "assets/icons/profile_placeholder.png"))
                                                         : CircleAvatar(
                                                             radius: 35,
-                                                            onBackgroundImageError: (Object, StackTrace) => const Icon(Icons.error),
+                                                            onBackgroundImageError:
+                                                                (Object,
+                                                                        StackTrace) =>
+                                                                    const Icon(Icons
+                                                                        .error),
                                                             backgroundColor:
-                                                                Colors
-                                                                    .black38,
+                                                                Colors.black38,
                                                             foregroundImage: _homeController
                                                                     .roomHosts
                                                                     .contains(
@@ -665,8 +668,8 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                                                 ? const AssetImage(
                                                                     "assets/icons/picked.png")
                                                                 : null,
-
-                                                            backgroundImage: NetworkImage(
+                                                            backgroundImage:
+                                                                NetworkImage(
                                                                     imageUrl +
                                                                         user.profilePhoto!),
                                                           ),

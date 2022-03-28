@@ -28,11 +28,10 @@ class ShopShortDetailCard extends StatelessWidget {
                 padding: EdgeInsets.all(10),
                 child: product!.images!.length > 0
                     ? CachedNetworkImage(
-                  errorWidget: (context, String, dynamic)=> Image.asset(
-                    imageplaceholder,
-                    fit: BoxFit.contain,
-                  ),
-
+                        errorWidget: (context, String, dynamic) => Image.asset(
+                          imageplaceholder,
+                          fit: BoxFit.contain,
+                        ),
                         imageUrl: product!.images![0],
                         fit: BoxFit.contain,
                       )
@@ -59,7 +58,6 @@ class ShopShortDetailCard extends StatelessWidget {
                   ),
                   maxLines: 2,
                 ),
-                SizedBox(height: 10.h),
                 Text(
                   product!.description.toString(),
                   softWrap: true,
@@ -71,7 +69,6 @@ class ShopShortDetailCard extends StatelessWidget {
                   ),
                   maxLines: 2,
                 ),
-                SizedBox(height: 10.h),
                 Text(
                   "$currencySymbol${product!.price}    ",
                   style: TextStyle(
@@ -80,26 +77,6 @@ class ShopShortDetailCard extends StatelessWidget {
                     fontSize: 12.sp,
                   ),
                 ),
-                // Text.rich(
-                //   TextSpan(
-                //       text: "$currencySymbol${product!.price}    ",
-                //       style: TextStyle(
-                //         color: secondaryColor,
-                //         fontWeight: FontWeight.w700,
-                //         fontSize: 12.sp,
-                //       ),
-                //       children: [
-                //         TextSpan(
-                //           text: "$currencySymbol${product!.price}",
-                //           style: TextStyle(
-                //             color: kTextColor,
-                //             decoration: TextDecoration.lineThrough,
-                //             fontWeight: FontWeight.normal,
-                //             fontSize: 11.sp,
-                //           ),
-                //         ),
-                //       ]),
-                // ),
               ],
             ),
           ),

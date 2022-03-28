@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
@@ -57,12 +58,13 @@ class NewChatPage extends StatelessWidget {
                                   _homeController.searchChatUsersController,
                               autofocus: true,autocorrect: false,
                               enableSuggestions: false,
+                              keyboardType: TextInputType.visiblePassword,
                               onChanged: (text) =>
                                   _homeController.searchUsers(),
                               decoration: InputDecoration(
                                 hintText: "Search",
                                 hintStyle: TextStyle(
-                                    color: Colors.grey, fontSize: 16.sp),
+                                    color: Colors.grey, fontSize: 16.sp, decoration: TextDecoration.none),
                                 border: InputBorder.none,
                                 disabledBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,

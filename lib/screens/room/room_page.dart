@@ -73,31 +73,35 @@ class RoomPage extends StatelessWidget {
               ),
               Row(
                 children: [
-                  _homeController.currentRoom.value.speakerIds != null &&
-                          (_homeController.currentRoom.value.speakerIds!
-                                  .indexWhere((e) => e.id == currentUser.id) ==
-                              -1)
-                      ? IconButton(
-                          onPressed: () async {
-                            if ((_homeController.currentRoom.value.hostIds!
+                  Obx(() {
+                    return _homeController.currentRoom.value.speakerIds !=
+                                null &&
+                            (_homeController.currentRoom.value.speakerIds!
                                     .indexWhere(
                                         (e) => e.id == currentUser.id) ==
-                                0)) {
-                              showRaisedHandsBottomSheet(context);
-                            } else {
-                              await _homeController
-                                  .addUserToRaisedHands(currentUser);
-                            }
-                          },
-                          icon: const Icon(
-                            Ionicons.hand_right,
-                            color: Colors.black54,
-                            size: 30,
-                          ),
-                        )
-                      : Container(
-                          height: 0.06.sh,
-                        ),
+                                -1)
+                        ? IconButton(
+                            onPressed: () async {
+                              if ((_homeController.currentRoom.value.hostIds!
+                                      .indexWhere(
+                                          (e) => e.id == currentUser.id) ==
+                                  0)) {
+                                showRaisedHandsBottomSheet(context);
+                              } else {
+                                await _homeController
+                                    .addUserToRaisedHands(currentUser);
+                              }
+                            },
+                            icon: const Icon(
+                              Ionicons.hand_right,
+                              color: Colors.black54,
+                              size: 30,
+                            ),
+                          )
+                        : Container(
+                            height: 0.06.sh,
+                          );
+                  }),
                   SizedBox(
                     width: 0.01.sw,
                   ),

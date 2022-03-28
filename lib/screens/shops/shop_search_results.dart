@@ -47,7 +47,7 @@ class ShopSearchResults extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.sm),
+                            padding: EdgeInsets.symmetric(horizontal: 20.sm),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
@@ -103,7 +103,8 @@ class ShopSearchResults extends StatelessWidget {
                             )),
                           ),
                         if (_globalController
-                            .searchShopController.text.isNotEmpty)
+                                .searchShopController.text.isNotEmpty &&
+                            _globalController.isSearching.isFalse)
                           _searchTabs(),
                       ],
                     );
@@ -116,7 +117,8 @@ class ShopSearchResults extends StatelessWidget {
                       return Container(
                           margin: EdgeInsets.only(top: 20),
                           child: Text("No results"));
-                    if (_globalController.searchresults.value.length > 0)
+                    if (_globalController.searchresults.value.length > 0 &&
+                        _globalController.isSearching.isFalse)
                       return Column(
                         children: List.generate(
                             _globalController.searchresults.value.length,

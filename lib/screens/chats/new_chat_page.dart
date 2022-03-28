@@ -55,7 +55,8 @@ class NewChatPage extends StatelessWidget {
                             child: TextField(
                               controller:
                                   _homeController.searchChatUsersController,
-                              autofocus: true,
+                              autofocus: true,autocorrect: false,
+                              enableSuggestions: false,
                               onChanged: (text) =>
                                   _homeController.searchUsers(),
                               decoration: InputDecoration(
@@ -66,10 +67,12 @@ class NewChatPage extends StatelessWidget {
                                 disabledBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                focusedErrorBorder: InputBorder.none,
                                 contentPadding: EdgeInsets.zero,
                               ),
                               style: TextStyle(
-                                  color: Colors.black, fontSize: 16.sp),
+                                  color: Colors.black, fontSize: 16.sp, decoration: TextDecoration.none),
                             ),
                           ),
                         )

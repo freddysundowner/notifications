@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/helper.dart';
@@ -112,7 +112,8 @@ class AuthController extends GetxController {
         prefs.setString("access_token", accesstoken);
 
         var userOneSignalId = await OneSignal.shared.getDeviceState();
-        await UserAPI().updateUser({"notificationToken": userOneSignalId!.userId},
+        await UserAPI().updateUser(
+            {"notificationToken": userOneSignalId!.userId},
             FirebaseAuth.instance.currentUser!.uid);
 
         return Get.offAll(() => HomePage());

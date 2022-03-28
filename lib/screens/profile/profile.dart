@@ -6,7 +6,7 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
@@ -323,58 +323,54 @@ class Profile extends StatelessWidget {
                             SizedBox(
                               height: 0.02.sh,
                             ),
-                            GetX<ProductController>(
-                                initState: (_) async {
-                                  Get.find<ProductController>().products = [];
-                                    Get.find<ProductController>().products =
-                                        await ProductController
-                                            .getProductsByShop(
-                                                profile.shopId!.id!);},
-                                builder: (_) {
-                                  printOut(_.products.length);
-                                  if (_.products.isEmpty) {
-                                    return SizedBox(
-                                        height: 0.3.sh,
-                                        child: Text(
-                                          "No Products yet",
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 16.sp),
-                                        ));
-                                  }
-                                  if (_.products.isNotEmpty) {
-                                    return SizedBox(
-                                        height: 0.3.sh,
-                                        width: double.infinity,
-                                        child: ListView.separated(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.horizontal,
-                                          separatorBuilder: (context, index) =>
-                                              SizedBox(
-                                            height: 0.1.sh,
-                                          ),
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemCount: _.products.length,
-                                          itemBuilder: (context, index) {
-                                            return ProductCard(
-                                              product: _.products[index],
-                                              press: () {
-                                                Get.to(FullProduct(
-                                                  product: _.products[index],
-                                                ));
-                                              },
-                                            );
-                                          },
-                                        ));
-                                    // return Column(
-                                    //   children: _.products.map((e) => Text(e.name)).toList(),
-                                    // );
-                                  }
-                                  return Text("No Products yet",
+                            GetX<ProductController>(initState: (_) async {
+                              Get.find<ProductController>().products = [];
+                              Get.find<ProductController>().products =
+                                  await ProductController.getProductsByShop(
+                                      profile.shopId!.id!);
+                            }, builder: (_) {
+                              printOut(_.products.length);
+                              if (_.products.isEmpty) {
+                                return SizedBox(
+                                    height: 0.3.sh,
+                                    child: Text(
+                                      "No Products yet",
                                       style: TextStyle(
-                                          color: Colors.grey, fontSize: 16.sp));
-                                }),
+                                          color: Colors.grey, fontSize: 16.sp),
+                                    ));
+                              }
+                              if (_.products.isNotEmpty) {
+                                return SizedBox(
+                                    height: 0.3.sh,
+                                    width: double.infinity,
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      separatorBuilder: (context, index) =>
+                                          SizedBox(
+                                        height: 0.1.sh,
+                                      ),
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount: _.products.length,
+                                      itemBuilder: (context, index) {
+                                        return ProductCard(
+                                          product: _.products[index],
+                                          press: () {
+                                            Get.to(FullProduct(
+                                              product: _.products[index],
+                                            ));
+                                          },
+                                        );
+                                      },
+                                    ));
+                                // return Column(
+                                //   children: _.products.map((e) => Text(e.name)).toList(),
+                                // );
+                              }
+                              return Text("No Products yet",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 16.sp));
+                            }),
                             SizedBox(
                               height: 0.03.sh,
                             ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
@@ -37,7 +38,6 @@ class HomePage extends StatelessWidget {
       profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
   HomePage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
           leading: InkWell(
             onTap: () {
               Get.to(() => ShopSearchResults());
-              _shopController.getShops();
+              // _shopController.getShops();
             },
             child: const Icon(
               Ionicons.search,
@@ -180,46 +180,17 @@ class HomePage extends StatelessWidget {
             );
           }),
         ),
-        body: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.sm),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: TextField(
-                  autofocus: false,
-                  controller: _shopController.searchShopController,
-                  textInputAction: TextInputAction.search,
-                  decoration: InputDecoration(
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    hintText: "Search Shops",
-                    prefixIcon: const Icon(Icons.search),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20.sm, vertical: 9.sm),
-                  ),
-                  onChanged: (c) => _shopController.searchShops(),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Obx(() {
-                if (_homeController.isLoading.isFalse ||
-                    _homeController.isCurrentRoomLoading.isFalse) {
-                  return buildIndividualRoomCard();
-                } else {
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: Colors.black87,
-                  ));
-                }
-              }),
-            )
-          ],
-        ));
+        body: Obx(() {
+          if (_homeController.isLoading.isFalse ||
+              _homeController.isCurrentRoomLoading.isFalse) {
+            return buildIndividualRoomCard();
+          } else {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: Colors.black87,
+            ));
+          }
+        }));
   }
 
   buildIndividualRoomCard() {

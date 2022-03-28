@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 
@@ -101,7 +101,8 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                               Text(
                                 "UPGRADE PREMIUM GISTER",
                                 style: TextStyle(
-                                    fontSize: 15.sp, color: const Color(0XFF00FFB0)),
+                                    fontSize: 15.sp,
+                                    color: const Color(0XFF00FFB0)),
                               ),
                               InkWell(
                                 onTap: () => Get.back(),
@@ -161,15 +162,15 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                             color: Colors.black12,
                             spreadRadius: 0.5,
                             blurRadius: 0.8,
-                            offset:
-                            Offset(0, 5), // changes position of shadow
+                            offset: Offset(0, 5), // changes position of shadow
                           ),
-                        ]
-                    ),
+                        ]),
                     child: Center(
-                      child: Text("$PREMIUM_UPGRADE_COINS_AMOUNT GIST/Month \n \n UPGRADE NOW",
+                      child: Text(
+                        "$PREMIUM_UPGRADE_COINS_AMOUNT GIST/Month \n \n UPGRADE NOW",
                         style: TextStyle(
-                            color: const Color(0XFF0A0D2C), fontFamily: "LucidaGrande",
+                            color: const Color(0XFF0A0D2C),
+                            fontFamily: "LucidaGrande",
                             fontSize: 16.sp),
                       ),
                     ),
@@ -209,29 +210,31 @@ upgradeAccount(BuildContext context) async {
     context: context,
     builder: (BuildContext context) => CupertinoActionSheet(
         title: Obx(() {
-            return Text('Wallet Balance (${_userController.currentProfile.value.wallet})', style: TextStyle(color: Colors.grey, fontSize: 14.sp),);
-          }
-        ),
+          return Text(
+            'Wallet Balance (${_userController.currentProfile.value.wallet})',
+            style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+          );
+        }),
         actions: [
           CupertinoActionSheetAction(
-            child: Text('Amount to be deduted $gccurrency $PREMIUM_UPGRADE_COINS_AMOUNT',
+            child: Text(
+                'Amount to be deduted $gccurrency $PREMIUM_UPGRADE_COINS_AMOUNT',
                 style: TextStyle(fontSize: 16.sp)),
-            onPressed: () async {
-
-            },
+            onPressed: () async {},
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child:
-          Text('Confirm Payment', style: TextStyle(fontSize: 16.sp, color: Colors.red)),
+          child: Text('Confirm Payment',
+              style: TextStyle(fontSize: 16.sp, color: Colors.red)),
           onPressed: () {
-
             printOut("Upgrading account ${userModel.wallet!}");
 
-            if (userModel.wallet! <
-                PREMIUM_UPGRADE_COINS_AMOUNT) {
+            if (userModel.wallet! < PREMIUM_UPGRADE_COINS_AMOUNT) {
               Get.back();
-              Get.snackbar("", "You do not have enough GC to upgrade your account to premium",);
+              Get.snackbar(
+                "",
+                "You do not have enough GC to upgrade your account to premium",
+              );
             } else {
               Get.back();
 

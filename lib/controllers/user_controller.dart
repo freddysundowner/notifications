@@ -1,6 +1,5 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/utils.dart';
@@ -8,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
 class UserController extends GetxController {
-
   var currentProfile = UserModel().obs;
   var profileLoading = false.obs;
   var ordersLoading = false.obs;
@@ -17,7 +15,6 @@ class UserController extends GetxController {
   var gettingFollowers = false.obs;
 
   getUserProfile(String userId) async {
-
     try {
       profileLoading.value = true;
       var user = await UserAPI().getUserProfile(userId);
@@ -29,7 +26,7 @@ class UserController extends GetxController {
       }
 
       profileLoading.value = false;
-    } catch(e, s) {
+    } catch (e, s) {
       profileLoading.value = false;
       printOut("Error getting user $userId profile $e $s");
     }
@@ -38,7 +35,8 @@ class UserController extends GetxController {
   getUserOrders() async {
     try {
       ordersLoading.value = true;
-      var orders = await UserAPI().getUserOrders(FirebaseAuth.instance.currentUser!.uid);
+      var orders =
+          await UserAPI().getUserOrders(FirebaseAuth.instance.currentUser!.uid);
 
       if (orders == null) {
         userOrders.value = [];
@@ -47,14 +45,13 @@ class UserController extends GetxController {
       }
 
       ordersLoading.value = false;
-    } catch(e, s) {
+    } catch (e, s) {
       ordersLoading.value = false;
       printOut("Error getting user orders $e $s");
     }
   }
 
   getUserFollowers(String uid) async {
-
     try {
       gettingFollowers.value = true;
 
@@ -64,12 +61,11 @@ class UserController extends GetxController {
 
       if (users == null) {
         userFollowersFollowing.value = [];
-      }  else {
+      } else {
         userFollowersFollowing.value = users;
       }
 
       gettingFollowers.value = false;
-
     } catch (e, s) {
       gettingFollowers.value = false;
       printOut("Error getting user followers $e $s");
@@ -77,7 +73,6 @@ class UserController extends GetxController {
   }
 
   getUserFollowing(String uid) async {
-
     try {
       gettingFollowers.value = true;
 
@@ -87,12 +82,11 @@ class UserController extends GetxController {
 
       if (users == null) {
         userFollowersFollowing.value = [];
-      }  else {
+      } else {
         userFollowersFollowing.value = users;
       }
 
       gettingFollowers.value = false;
-
     } catch (e, s) {
       gettingFollowers.value = false;
       printOut("Error getting user following $e $s");
@@ -103,14 +97,19 @@ class UserController extends GetxController {
     try {
       await UserAPI().upgradeAUser();
       currentProfile.value.memberShip = 1;
-      currentProfile.value.wallet = currentProfile.value.wallet! - PREMIUM_UPGRADE_COINS_AMOUNT;
+      currentProfile.value.wallet =
+          currentProfile.value.wallet! - PREMIUM_UPGRADE_COINS_AMOUNT;
       currentProfile.refresh();
-      Get.snackbar("", "You have successfully upgraded your account o premium membership, Enjoy Gisting",);
-
-    }catch(e, s) {
+      Get.snackbar(
+        "",
+        "You have successfully upgraded your account o premium membership, Enjoy Gisting",
+      );
+    } catch (e, s) {
       printOut("Error upgrading account $e $s");
-      Get.snackbar("", "An error occured while upgrading your account. Try again later",);
+      Get.snackbar(
+        "",
+        "An error occured while upgrading your account. Try again later",
+      );
     }
   }
-
 }

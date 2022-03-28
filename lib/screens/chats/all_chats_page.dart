@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/chats/chat_room_page.dart';
 import 'package:fluttergistshop/screens/chats/new_chat_page.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -43,7 +43,9 @@ class AllChatsPage extends StatelessWidget {
                                     allChatsModel.id;
                                 _chatController.currentChatUsers.value =
                                     allChatsModel.users;
-                                _chatController.allUserChats.elementAt(index).unread = 0;
+                                _chatController.allUserChats
+                                    .elementAt(index)
+                                    .unread = 0;
                                 _chatController.allUserChats.refresh();
 
                                 Get.to(
@@ -150,18 +152,22 @@ class AllChatsPage extends StatelessWidget {
                                               allChatsModel.unread > 0
                                                   ? Container(
                                                       padding:
-                                                          const EdgeInsets.only(left:
-                                                              10, right: 10, bottom: 4, top: 4),
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10,
+                                                              bottom: 4,
+                                                              top: 4),
                                                       decoration: BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius
-                                                                  .circular(100),
+                                                                  .circular(
+                                                                      100),
                                                           color: Theme.of(
                                                                   context)
                                                               .primaryColor),
                                                       child: Center(
                                                           child: Text(
-                                                            allChatsModel.unread
+                                                        allChatsModel.unread
                                                             .toString(),
                                                         style: TextStyle(
                                                             color: Colors.white,

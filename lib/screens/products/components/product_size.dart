@@ -13,46 +13,41 @@ class ProductSize extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 20.0,
-      ),
-      child: Row(
-        children: [
-          for (var i = 0; i < productSizes.length; i++)
-            GestureDetector(
-              onTap: () {
-                onSelected("${productSizes[i]}");
-                checkOutController.selectetedvariation.value = i;
-              },
-              child: Obx(() => Container(
-                   // width: 0.1.sw,
-                    height: 0.06.sh,
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
+    return Row(
+      children: [
+        for (var i = 0; i < productSizes.length; i++)
+          GestureDetector(
+            onTap: () {
+              onSelected("${productSizes[i]}");
+              checkOutController.selectetedvariation.value = i;
+            },
+            child: Obx(() => Container(
+                  // width: 0.1.sw,
+                  height: 0.04.sh,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: checkOutController.selectetedvariation.value == i
+                        ? primarycolor
+                        : const Color(0xFFDCDCDC),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                  ),
+                  child: Text(
+                    "${productSizes[i]}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
                       color: checkOutController.selectetedvariation.value == i
-                          ? primarycolor
-                          : const Color(0xFFDCDCDC),
-                      borderRadius: BorderRadius.circular(8.0),
+                          ? Colors.white
+                          : Colors.black,
+                      fontSize: 16.0.sp,
                     ),
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 4.0,
-                    ),
-                    child: Text(
-                      "${productSizes[i]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: checkOutController.selectetedvariation.value == i
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 16.0.sp,
-                      ),
-                    ),
-                  )),
-            )
-        ],
-      ),
+                  ),
+                )),
+          )
+      ],
     );
   }
 }

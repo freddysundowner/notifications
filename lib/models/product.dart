@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:fluttergistshop/models/shop.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 
 Product productFromJson(String str) => Product.fromJson(json.decode(str));

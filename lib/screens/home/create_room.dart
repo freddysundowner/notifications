@@ -7,7 +7,7 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/utils/button.dart';

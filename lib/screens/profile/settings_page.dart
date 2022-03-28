@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
-import 'package:fluttergistshop/models/user.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen.dart';
 import 'package:fluttergistshop/screens/profile/orders_sceen.dart';
 import 'package:fluttergistshop/services/user_api.dart';

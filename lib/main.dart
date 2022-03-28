@@ -13,11 +13,11 @@ import '/theme.dart';
 import '/utils/utils.dart';
 import 'bindings.dart';
 import 'controllers/auth_controller.dart';
-import 'models/user.dart';
+import 'models/user_model.dart';
 
 AndroidNotificationChannel channel = channel;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +26,7 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-Future<void> oneSignal() async{
-
+Future<void> oneSignal() async {
   initOneSignal();
   oneSignalObservers();
 }
@@ -45,8 +44,9 @@ initOneSignal() {
   });
 }
 
-oneSignalObservers(){
-  OneSignal.shared.setNotificationWillShowInForegroundHandler((OSNotificationReceivedEvent event) {
+oneSignalObservers() {
+  OneSignal.shared.setNotificationWillShowInForegroundHandler(
+      (OSNotificationReceivedEvent event) {
     // Will be called whenever a notification is received in foreground
     // Display Notification, pass null param for not displaying the notification
 
@@ -54,10 +54,12 @@ oneSignalObservers(){
     event.complete(event.notification);
   });
 
-  OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+  OneSignal.shared
+      .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
     // Will be called whenever a notification is opened/button pressed.
 
-    printOut('One signal Notification clicked ${result.notification.additionalData}');
+    printOut(
+        'One signal Notification clicked ${result.notification.additionalData}');
     redirectToRooms(result.notification.additionalData!);
     // handleNotificationOneSignal(result.notification);
   });
@@ -67,36 +69,30 @@ oneSignalObservers(){
     // (ie. user taps Allow on the permission prompt in iOS)
   });
 
-  OneSignal.shared.setSubscriptionObserver((OSSubscriptionStateChanges changes) {
+  OneSignal.shared
+      .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
     // Will be called whenever the subscription changes
     // (ie. user gets registered with OneSignal and gets a user ID)
   });
-
-
 }
 
 Future<void> handleNotificationOneSignal(OSNotification osNotification) async {
-
-    flutterLocalNotificationsPlugin.show(
-        osNotification.hashCode,
-        osNotification.title,
-        osNotification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            icon: '@mipmap/ic_launcher',
-          ),
+  flutterLocalNotificationsPlugin.show(
+      osNotification.hashCode,
+      osNotification.title,
+      osNotification.body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channel.id,
+          channel.name,
+          channelDescription: channel.description,
+          // TODO add a proper drawable resource to android, for now using
+          //      one that already exists in example app.
+          icon: '@mipmap/ic_launcher',
         ),
-        payload:" ${osNotification.additionalData!['screen']}  "
-            "${osNotification.additionalData!['id']} ${osNotification.additionalData!['paidroom'] ?? ""}"
-    );
-
-
-
+      ),
+      payload: " ${osNotification.additionalData!['screen']}  "
+          "${osNotification.additionalData!['id']} ${osNotification.additionalData!['paidroom'] ?? ""}");
 }
 
 goToPageFromNotification(var payload) async {
@@ -121,26 +117,23 @@ goToPageFromNotification(var payload) async {
   var msg = {"screen": screen, "id": id};
   await redirectToRooms(msg);
 }
+
 bool showloading = false;
 
 Future redirectToRooms(Map<String, dynamic> mess) async {
-
   printOut('One signal Notification clicked redirecting');
 
   String screen = mess["screen"];
   String id = mess["id"];
 
   if (screen == 'ChatPage') {
-  //  InboxItem item = await Database.getInboxItem(id);
+    //  InboxItem item = await Database.getInboxItem(id);
     Get.to(() => AllChatsPage());
   } else if (screen == "ProfilePage") {
     //var user = await UserAPI().getUserProfile(id);
 
-    Get.to(() => Profile(
-    ));
-  } else if (screen == "RoomScreen") {
-
-  }
+    Get.to(() => Profile());
+  } else if (screen == "RoomScreen") {}
 }
 
 Future onSelectNotification(String payload) async {

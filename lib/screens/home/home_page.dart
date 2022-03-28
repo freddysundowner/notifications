@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
-import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
@@ -102,9 +101,10 @@ class HomePage extends StatelessWidget {
                     child: const CircularProgressIndicator(
                       color: Colors.black,
                     )),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.error,
-                  size: 20,
+                errorWidget: (context, url, error) => Image.asset(
+                  "assets/icons/profile_placeholder.png",
+                  width: 0.08.sw,
+                  height: 0.05.sh,
                 ),
               ),
             ),
@@ -264,19 +264,20 @@ class HomePage extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: roomModel.hostIds?[index]
                                                     .profilePhoto ==
-                                                null
+                                                ""
                                             ? const CircleAvatar(
+                                                radius: 22,
                                                 backgroundImage: AssetImage(
                                                     "assets/icons/profile_placeholder.png"))
                                             : CircleAvatar(
-                                                onBackgroundImageError:
-                                                    (Object, Stacktrace) =>
-                                                        const Icon(Icons.error),
+                                                radius: 22,
+                                                onBackgroundImageError: (object,
+                                                        stacktrace) =>
+                                                    const AssetImage(
+                                                        "assets/icons/profile_placeholder.png"),
                                                 backgroundImage: NetworkImage(
-                                                    imageUrl +
-                                                        roomModel
-                                                            .hostIds![index]
-                                                            .profilePhoto!),
+                                                    roomModel.hostIds![index]
+                                                        .profilePhoto!),
                                               ));
                                   }),
                             ),
@@ -310,7 +311,9 @@ class HomePage extends StatelessWidget {
                                   ? ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       itemCount:
-                                          roomModel.productImages!.length,
+                                          roomModel.productImages!.isNotEmpty
+                                              ? roomModel.productImages!.length
+                                              : 1,
                                       itemBuilder: (context, index) {
                                         return Container(
                                           padding: const EdgeInsets.all(5),
@@ -319,18 +322,33 @@ class HomePage extends StatelessWidget {
                                                   BorderRadius.circular(5),
                                               color: Colors.white),
                                           child: Center(
-                                              child: CachedNetworkImage(
-                                            imageUrl:
-                                                roomModel.productImages![index],
-                                            height: 0.06.sh,
-                                            width: 0.12.sw,
-                                            fit: BoxFit.fill,
-                                            placeholder: (context, url) =>
-                                                const CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(Icons.error),
-                                          )),
+                                            child: roomModel
+                                                    .productImages!.isNotEmpty
+                                                ? CachedNetworkImage(
+                                                    imageUrl: roomModel
+                                                        .productImages![index],
+                                                    height: 0.06.sh,
+                                                    width: 0.12.sw,
+                                                    fit: BoxFit.fill,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        const CircularProgressIndicator(),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image.asset(
+                                                      "assets/icons/no_image.png",
+                                                      height: 0.06.sh,
+                                                      width: 0.12.sw,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  )
+                                                : Image.asset(
+                                                    "assets/icons/no_image.png",
+                                                    height: 0.06.sh,
+                                                    width: 0.12.sw,
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                          ),
                                         );
                                       })
                                   : Container(),
@@ -355,6 +373,11 @@ class HomePage extends StatelessWidget {
 
   InkWell buildCurrentRoom(BuildContext context) {
     RoomModel room = _homeController.currentRoom.value;
+
+    while (room.hostIds!.length > 5) {
+      room.hostIds!.removeAt(5);
+    }
+
     return InkWell(
       onTap: () async {
         await _homeController.joinRoom(room.id!);
@@ -370,19 +393,22 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Stack(
-                children: [
-                  room.hostIds!.elementAt(0).profilePhoto == null
+                  children: room.hostIds!.map((e) {
+                var index = room.hostIds!.indexOf(e);
+                return Padding(
+                  padding: EdgeInsets.only(left: (30.0 * index)),
+                  child: e.profilePhoto == ""
                       ? const CircleAvatar(
                           radius: 25,
                           backgroundImage: AssetImage(
                               "assets/icons/profile_placeholder.png"))
                       : CircleAvatar(
                           radius: 25,
-                          backgroundImage: NetworkImage(imageUrl +
-                              room.hostIds!.elementAt(0).profilePhoto!),
+                          backgroundImage:
+                              NetworkImage(imageUrl + e.profilePhoto!),
                         ),
-                ],
-              ),
+                );
+              }).toList()),
               Row(
                 children: [
                   InkWell(
@@ -398,30 +424,32 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     width: 0.01.sw,
                   ),
-                  (_homeController.currentRoom.value.speakerIds!
-                              .indexWhere((e) => e.id == currentUser.id) ==
-                          -1)
-                      ? IconButton(
-                          onPressed: () async {
-                            if ((_homeController.currentRoom.value.hostIds!
-                                    .indexWhere(
-                                        (e) => e.id == currentUser.id) ==
-                                0)) {
-                              showRaisedHandsBottomSheet(context);
-                            } else {
-                              await _homeController
-                                  .addUserToRaisedHands(currentUser);
-                            }
-                          },
-                          icon: const Icon(
-                            Ionicons.hand_right,
-                            color: Colors.black54,
-                            size: 30,
-                          ),
-                        )
-                      : Container(
-                          height: 0.06.sh,
-                        ),
+                  Obx(() {
+                    return (_homeController.currentRoom.value.speakerIds!
+                                .indexWhere((e) => e.id == currentUser.id) ==
+                            -1)
+                        ? IconButton(
+                            onPressed: () async {
+                              if ((_homeController.currentRoom.value.hostIds!
+                                      .indexWhere(
+                                          (e) => e.id == currentUser.id) ==
+                                  0)) {
+                                showRaisedHandsBottomSheet(context);
+                              } else {
+                                await _homeController
+                                    .addUserToRaisedHands(currentUser);
+                              }
+                            },
+                            icon: const Icon(
+                              Ionicons.hand_right,
+                              color: Colors.black54,
+                              size: 30,
+                            ),
+                          )
+                        : Container(
+                            height: 0.06.sh,
+                          );
+                  }),
                   SizedBox(
                     width: 0.01.sw,
                   ),

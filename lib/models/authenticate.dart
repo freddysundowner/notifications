@@ -1,5 +1,6 @@
-import 'package:meta/meta.dart';
 import 'dart:convert';
+
+import 'package:meta/meta.dart';
 
 Authenticate loginFromJson(String str) =>
     Authenticate.fromJson(json.decode(str));
@@ -13,6 +14,7 @@ class Authenticate {
     @required this.userName,
     @required this.firstName,
     @required this.lastName,
+    @required this.bio,
   });
 
   String email;
@@ -20,6 +22,7 @@ class Authenticate {
   String? userName;
   String? lastName;
   String? firstName;
+  String? bio;
 
   factory Authenticate.fromJson(Map<String, dynamic> json) => Authenticate(
         email: json["email"],
@@ -27,6 +30,7 @@ class Authenticate {
         firstName: json["firstName"],
         lastName: json["lastName"],
         userName: json["username"],
+        bio: json["bio"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +39,6 @@ class Authenticate {
         "userName": userName ?? "",
         "firstName": firstName ?? "",
         "lastName": lastName ?? "",
+        "bio": bio ?? ""
       };
 }

@@ -28,7 +28,7 @@ class DbBase {
 
       var request = http.Request(type, Uri.parse(link));
 
-      printOut("${request.method} ${request.url}");
+      printOut("request ${request.method} ${request.url}");
 
       if (body != null) {
         request.body = json.encode(body);

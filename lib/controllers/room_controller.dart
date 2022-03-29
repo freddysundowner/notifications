@@ -13,7 +13,6 @@ import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
-import 'package:fluttergistshop/services/socket_io.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/utils.dart';
@@ -22,8 +21,6 @@ import 'package:get/state_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'auth_controller.dart';
-
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class RoomController extends GetxController {
   RtcEngineContext context = RtcEngineContext(agoraAppID);
@@ -62,20 +59,17 @@ class RoomController extends GetxController {
   final TextEditingController searchChatUsersController =
       TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
-  late SocketIO socket = new SocketIO();
-
   @override
   void onReady() {
     // TODO: implement onReady
     super.onReady();
 
-    socket.init(onSocketConnected: (data) => {print("connected to io")});
   }
-
   @override
   void onInit() {
     getRooms();
     super.onInit();
+    print("room controller");
   }
 
   getRooms() async {
@@ -134,7 +128,6 @@ class RoomController extends GetxController {
 
           await fetchRoom(roomId);
 
-          leaveAgora();
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
@@ -384,6 +377,8 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
+
+
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -423,6 +418,13 @@ class RoomController extends GetxController {
     }
 
     currentRoom.value = RoomModel();
+
+
+    try{
+      leaveAgora();
+    }catch(e) {
+      printOut("Error leaving agora");
+    }
   }
 
   Future<void> joinRoom(String roomId) async {
@@ -445,6 +447,8 @@ class RoomController extends GetxController {
         Get.to(RoomPage(
           roomId: roomId,
         ));
+
+        socketIO.socketIO.emit("message", {"user": "aaa"});
       } else {
         roomsList.removeWhere((element) => element.id == roomId);
         Get.snackbar(
@@ -456,9 +460,9 @@ class RoomController extends GetxController {
   }
 
   @override
-  void dispose() {
+  void onClose() {
     leaveAgora();
-    super.dispose();
+    super.onClose();
   }
 
   Future<void> leaveAgora() async {

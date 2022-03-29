@@ -22,7 +22,6 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../services/connection_state.dart';
 
 class AuthController extends GetxController {
@@ -53,19 +52,7 @@ class AuthController extends GetxController {
   }
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
-  late SocketIO socket = new SocketIO();
   // late IO.Socket socket;
-  @override
-  void onReady() {
-    // TODO: implement onReady
-    super.onReady();
-
-    socket.init(
-        (IO.Socket socket) => {print("onSocketConnected ${socket.json}")},
-        (data) => {print("new user joined $data")});
-
-    socket.socketIO.emit("joined", {"userdata": "data"});
-  }
 
   @override
   void onInit() {

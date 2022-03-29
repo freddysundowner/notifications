@@ -4,7 +4,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 class SocketIO {
   late IO.Socket socketIO;
 
-  IO.Socket init(onSocketConnected, onAddToSpeakerResponse) {
+  IO.Socket init({onSocketConnected, onAddToSpeakerResponse,onDisconnected}) {
     socketIO = IO.io(api_url, <String, dynamic>{
       'transports': ['websocket'],
       'upgrade': false
@@ -26,7 +26,7 @@ class SocketIO {
 
     socketIO.on("disconnect", (data) {
       print("Socket Disconnected Unexpectedly..");
-      // onSocketDisconnected(socketIO);
+      onDisconnected(data);
     });
 
     return socketIO;

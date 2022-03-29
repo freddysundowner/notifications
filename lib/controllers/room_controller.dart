@@ -13,6 +13,7 @@ import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
+import 'package:fluttergistshop/services/socket_io.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/utils.dart';
@@ -21,6 +22,8 @@ import 'package:get/state_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'auth_controller.dart';
+
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class RoomController extends GetxController {
   RtcEngineContext context = RtcEngineContext(agoraAppID);
@@ -59,12 +62,20 @@ class RoomController extends GetxController {
   final TextEditingController searchChatUsersController =
       TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
+  late SocketIO socket = new SocketIO();
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+
+    socket.init(onSocketConnected: (data) => {print("connected to io")});
+  }
 
   @override
   void onInit() {
     getRooms();
     super.onInit();
-    print("room controller");
   }
 
   getRooms() async {

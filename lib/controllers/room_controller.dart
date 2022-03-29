@@ -8,6 +8,7 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
+import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
@@ -18,7 +19,6 @@ import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
 import 'auth_controller.dart';
 
@@ -75,11 +75,10 @@ class RoomController extends GetxController {
   Future<void> createRoom() async {
     try {
       isCreatingRoom.value = true;
-      roomHosts.add(Get.find<AuthController>().usermodel.value!);
 
       Get.defaultDialog(
           title: "We are creating your room",
-          content: CircularProgressIndicator(),
+          content: const CircularProgressIndicator(),
           barrierDismissible: false);
 
       var hosts = [];
@@ -128,16 +127,16 @@ class RoomController extends GetxController {
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
-          Get.back();
+          Get.offAll(HomePage());
           Get.to(RoomPage(roomId: roomId));
         } else {
-          Get.back();
+          Get.offAll(HomePage());
           Get.snackbar(
               "", "There was an error creating your room. Try again later");
           await RoomAPI().deleteARoom(roomId);
         }
       } else {
-        Get.back();
+        Get.offAll(HomePage());
         Get.snackbar("", "Error creating your room");
       }
 
@@ -339,7 +338,7 @@ class RoomController extends GetxController {
     }, currentRoom.value.id!);
     //Remove user from audience
     await RoomAPI().removeUserFromSpeakerInRoom({
-      "speakerIds": [user.id]
+      "users": [user.id]
     }, currentRoom.value.id!);
   }
 
@@ -385,9 +384,31 @@ class RoomController extends GetxController {
             0) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
     } else {
-      await RoomAPI().removeAUserFromRoom({
-        "users": [user.id]
-      }, currentRoom.value.id!);
+      if (currentRoom.value.userIds!
+              .indexWhere((element) => element.id == user.id) >
+          -1) {
+        await RoomAPI().removeAUserFromRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      } else if (currentRoom.value.speakerIds!
+              .indexWhere((element) => element.id == user.id) >
+          -1) {
+        await RoomAPI().removeUserFromSpeakerInRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      } else if (currentRoom.value.raisedHands!
+              .indexWhere((element) => element.id == user.id) >
+          -1) {
+        await RoomAPI().removeUserFromRaisedHandsInRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      } else if (currentRoom.value.hostIds!
+              .indexWhere((element) => element.id == user.id) >
+          -1) {
+        await RoomAPI().removeUserFromHostInRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      }
     }
 
     currentRoom.value = RoomModel();

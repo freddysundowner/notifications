@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
-import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -23,7 +23,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return DraggableScrollableSheet(
-            initialChildSize: 0.6,
+            initialChildSize: 0.7,
             expand: false,
             builder: (BuildContext context, ScrollController scrollController) {
               return Obx(() {
@@ -52,13 +52,15 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                           IconButton(
                               onPressed: () async {
                                 Get.back();
-                                await NotificationApi().sendNotification(
-                                    _homeController.toInviteUsers,
-                                    "Room invite",
-                                    "You've been invited to join room ${_homeController.currentRoom.value.title} by "
-                                        "${FirebaseAuth.instance.currentUser!.displayName}",
-                                    "RoomScreen",
-                                    _homeController.currentRoom.value.id!);
+                               if (_homeController.toInviteUsers.isNotEmpty) {
+                                 await NotificationApi().sendNotification(
+                                     _homeController.toInviteUsers,
+                                     "Room invite",
+                                     "You've been invited to join room ${_homeController.currentRoom.value.title} by "
+                                         "${FirebaseAuth.instance.currentUser!.displayName}",
+                                     "RoomScreen",
+                                     _homeController.currentRoom.value.id!);
+                               }
                               },
                               icon: const Icon(Icons.done))
                         ],
@@ -68,7 +70,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                       ),
                       _homeController.allUsersLoading.isFalse
                           ? SizedBox(
-                              height: 0.5.sh,
+                              height: 0.55.sh,
                               child: GetBuilder<RoomController>(builder: (_dx) {
                                 return GridView.builder(
                                     shrinkWrap: true,
@@ -76,11 +78,11 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                     gridDelegate:
                                         const SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 4,
-                                      childAspectRatio: 0.7,
+                                      childAspectRatio: 0.6,
                                     ),
                                     itemCount: _dx.allUsers.length,
                                     itemBuilder: (context, index) {
-                                      OwnerId user = OwnerId.fromJson(
+                                      UserModel user = UserModel.fromJson(
                                           _dx.allUsers.elementAt(index));
                                       return InkWell(
                                         onTap: () {
@@ -97,7 +99,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                           children: [
                                             Obx(() {
                                               return Center(
-                                                child: user.profilePhoto == null
+                                                child: user.profilePhoto == ""
                                                     ? CircleAvatar(
                                                         radius: 35,
                                                         backgroundColor:
@@ -131,7 +133,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                               height: 0.01.sh,
                                             ),
                                             Text(
-                                              user.userName!,
+                                              "${user.userName}",
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 14.sp),

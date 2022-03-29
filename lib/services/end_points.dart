@@ -26,6 +26,7 @@ const addUserToRoom = rooms + "/user/add/";
 const removeUserFromRoom = rooms + "/user/remove/";
 const removeSpeaker = rooms + "/speaker/remove/";
 const removeUserFromAudience = rooms + "/audience/remove/";
+const removeHost= rooms + "/host/remove/";
 const removeUserFromRaisedHands = rooms + "/raisedhans/remove/";
 
 const updateshop = shop + "shop/";

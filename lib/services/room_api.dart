@@ -90,6 +90,16 @@ class RoomAPI {
     }
   }
 
+  removeUserFromHostInRoom(Map<String, dynamic> body, String id) async {
+    try {
+      await DbBase().databaseRequest(
+          removeHost + id, DbBase().patchRequestType,
+          body: body);
+    } catch (e) {
+      printOut("Error removeUserFromHost room $e");
+    }
+  }
+
   removeUserFromRaisedHandsInRoom(Map<String, dynamic> body, String id) async {
     try {
       await DbBase().databaseRequest(

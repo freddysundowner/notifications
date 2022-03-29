@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
-import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
@@ -13,7 +12,6 @@ import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.d
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
-import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -26,7 +24,6 @@ class HomePage extends StatelessWidget {
 
   final RoomController _homeController = Get.put(RoomController());
   final UserController _userController = Get.put(UserController());
-  final ShopController _shopController = Get.find<ShopController>();
 
   OwnerId currentUser = OwnerId(
       id: Get.find<AuthController>().usermodel.value!.id,
@@ -376,7 +373,8 @@ class HomePage extends StatelessWidget {
     var hosts = [];
     RoomModel room = _homeController.currentRoom.value;
 
-    hosts = room.hostIds!.length > 5 ? room.hostIds!.sublist(0, 5) : room.hostIds!;
+    hosts =
+        room.hostIds!.length > 5 ? room.hostIds!.sublist(0, 5) : room.hostIds!;
 
     return InkWell(
       onTap: () async {

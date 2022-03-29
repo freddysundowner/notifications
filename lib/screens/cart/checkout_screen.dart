@@ -407,7 +407,7 @@ class CheckOut extends StatelessWidget {
       );
       return;
     }
-    print(authController.currentuser!.wallet);
+    printOut(authController.currentuser!.wallet);
     final confirmation = await showConfirmationDialog(
       context,
       "Are you sure you want to place the order?",
@@ -460,7 +460,7 @@ class CheckOut extends StatelessWidget {
       builder: (context) {
         return AsyncProgressDialog(
           orderFuture,
-          message: Text("Placing the Order"),
+          message: const Text("Placing the Order"),
         );
       },
     );

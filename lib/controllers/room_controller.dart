@@ -19,6 +19,7 @@ import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import 'auth_controller.dart';
 
@@ -64,6 +65,7 @@ class RoomController extends GetxController {
   void onInit() {
     getRooms();
     super.onInit();
+    print("room controller");
   }
 
   getRooms() async {
@@ -373,8 +375,6 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-
-
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -445,12 +445,11 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveAgora() async {
-
     // if (engine != null) {
 
-      await engine.leaveChannel();
-      await engine.muteLocalAudioStream(true);
-      await engine.destroy();
+    await engine.leaveChannel();
+    await engine.muteLocalAudioStream(true);
+    await engine.destroy();
     // }
   }
 

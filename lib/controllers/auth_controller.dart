@@ -12,6 +12,7 @@ import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/helper.dart';
+import 'package:fluttergistshop/services/socket_io.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
@@ -21,6 +22,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../services/connection_state.dart';
 
 class AuthController extends GetxController {
@@ -51,13 +53,21 @@ class AuthController extends GetxController {
   }
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
+  late SocketIO socket = new SocketIO();
   @override
   void onInit() {
     super.onInit();
+    socket.init(
+        (IO.Socket socket) => {print("onSocketConnected ${socket.json}")},
+        (data) => {print("on response here $data")});
+
+    socket.socketIO.emit("add-to-speaker", {"someone added to speaker"});
+    socket.socketIO.on("add-to-speaker", (data) => print(data));
+
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      if (source.keys.toList()[0] == ConnectivityResult.mobile &&
-          source.keys.toList()[0] == ConnectivityResult.mobile) {
+      if (source.keys.toList()[0] == ConnectivityResult.mobile ||
+          source.keys.toList()[0] == ConnectivityResult.wifi) {
         connectionstate.value = true;
         Get.closeAllSnackbars();
       } else {
@@ -181,7 +191,6 @@ class AuthController extends GetxController {
     return FutureBuilder(
       future: UserAPI.getUserById(),
       builder: (BuildContext context, snapshot) {
-
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             backgroundColor: primarycolor,

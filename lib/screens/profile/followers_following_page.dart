@@ -54,7 +54,7 @@ class FollowersFollowingPage extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    user.profilePhoto == null
+                                    user.profilePhoto == ""
                                         ? const CircleAvatar(
                                             radius: 20,
                                             backgroundImage: AssetImage(

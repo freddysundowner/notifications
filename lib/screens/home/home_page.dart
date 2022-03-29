@@ -377,10 +377,6 @@ class HomePage extends StatelessWidget {
   InkWell buildCurrentRoom(BuildContext context) {
     RoomModel room = _homeController.currentRoom.value;
 
-    while (room.hostIds!.length > 5) {
-      room.hostIds!.removeAt(5);
-    }
-
     return InkWell(
       onTap: () async {
         await _homeController.joinRoom(room.id!);
@@ -396,7 +392,7 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Stack(
-                  children: room.hostIds!.map((e) {
+                  children: room.hostIds!.sublist(0, 5).map((e) {
                 var index = room.hostIds!.indexOf(e);
                 return Padding(
                   padding: EdgeInsets.only(left: (30.0 * index)),

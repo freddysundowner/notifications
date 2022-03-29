@@ -5,6 +5,7 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -55,7 +56,7 @@ class RoomPage extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () async {
-                  Get.back();
+                  Get.offAll(HomePage());
                   await _homeController.leaveRoom(currentUser);
                 },
                 child: Container(
@@ -337,6 +338,7 @@ class RoomUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    printOut("hosts Length ${_homeController.currentRoom.value.hostIds!.length}");
     return Column(
       children: [
         Align(
@@ -430,7 +432,7 @@ class RoomUser extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                         child: Center(
                             child: Text(
-                          user.elementAt(index).userName!.length > 10
+                user.elementAt(index).userName == null ? " " : user.elementAt(index).userName!.length > 10
                               ? user
                                       .elementAt(index)
                                       .userName!

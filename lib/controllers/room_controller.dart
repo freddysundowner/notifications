@@ -74,7 +74,7 @@ class RoomController extends GetxController {
   Future<void> createRoom() async {
     try {
       isCreatingRoom.value = true;
-      roomHosts.add(Get.find<AuthController>().usermodel.value!);
+
 
       Get.defaultDialog(
           title: "We are creating your room",
@@ -128,7 +128,7 @@ class RoomController extends GetxController {
           uploadImageToFireStorage(roomId);
 
           Get.offAll(HomePage());
-          Get.to(()=> RoomPage(roomId: roomId));
+          Get.to(RoomPage(roomId: roomId));
         } else {
           Get.offAll(HomePage());
           Get.snackbar(
@@ -386,9 +386,23 @@ class RoomController extends GetxController {
             0) {
       await RoomAPI().deleteARoom(currentRoom.value.id!);
     } else {
-      await RoomAPI().removeAUserFromRoom({
-        "users": [user.id]
-      }, currentRoom.value.id!);
+      if (currentRoom.value.userIds!.indexWhere((element) => element.id == user.id) > -1) {
+        await RoomAPI().removeAUserFromRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      } else if (currentRoom.value.speakerIds!.indexWhere((element) => element.id == user.id) > -1) {
+        await RoomAPI().removeUserFromSpeakerInRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      } else if (currentRoom.value.raisedHands!.indexWhere((element) => element.id == user.id) > -1) {
+        await RoomAPI().removeUserFromRaisedHandsInRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      } else if (currentRoom.value.hostIds!.indexWhere((element) => element.id == user.id) > -1) {
+        await RoomAPI().removeUserFromHostInRoom({
+          "users": [user.id]
+        }, currentRoom.value.id!);
+      }
     }
 
     currentRoom.value = RoomModel();

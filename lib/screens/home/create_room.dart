@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/models/product.dart';
@@ -373,6 +374,7 @@ Future<dynamic> showProductBottomSheet(BuildContext context) async {
 Future<dynamic> showChooseImagesBottomSheet(
     BuildContext context, Product product) {
   _homeController.roomHosts.value = [];
+  _homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
   generateProductImages(product);
 
   return showModalBottomSheet(

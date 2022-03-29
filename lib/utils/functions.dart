@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 printOut(data) {
   if (kDebugMode) {
-    print(data);
+    // print(data);
   }
 }
 
@@ -22,9 +22,8 @@ String convertTime(String time) {
   } else if (diff.inDays == 2) {
     timeDifference = "${convertedTime.hour}:${convertedTime.minute} yesterday";
   } else if (diff.inDays > 2) {
-    timeDifference =
-        "${convertedTime.hour}:${convertedTime.minute} "
-            "${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
+    timeDifference = "${convertedTime.hour}:${convertedTime.minute} "
+        "${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
   }
 
   return timeDifference;

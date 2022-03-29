@@ -62,12 +62,11 @@ class DbBase {
 
         printOut(response.toString());
       }
-
     } on SocketException catch (e) {
       printOut(" error accessing internet " + e.message);
 
       Get.snackbar('', "Check your internet connection");
-    } catch(e) {
+    } catch (e) {
       printOut(" error accessing internet catch $e");
     }
   }

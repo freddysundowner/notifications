@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
+import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/socket_io.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -18,6 +20,7 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../services/connection_state.dart';
 
@@ -49,15 +52,7 @@ class AuthController extends GetxController {
   }
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
-  late SocketIO socket = new SocketIO();
-
   // late IO.Socket socket;
-  @override
-  void onReady() {
-    // TODO: implement onReady
-    super.onReady();
-
-  }
 
   @override
   void onInit() {

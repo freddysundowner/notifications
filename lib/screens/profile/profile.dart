@@ -108,7 +108,7 @@ class Profile extends StatelessWidget {
                                     Get.to(() => ChageProfileImage());
                                   }
                                 },
-                                child: CachedNetworkImage(
+                                child: profile.profilePhoto != null ? CachedNetworkImage(
                                   imageUrl: profile.profilePhoto!,
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
@@ -125,17 +125,21 @@ class Profile extends StatelessWidget {
                                   errorWidget: (context, url, error) =>
                                       Image.asset(
                                           "assets/icons/profile_placeholder.png", width: 0.25.sw, height: 0.14.sh),
+                                ) : CircleAvatar(
+                                  radius: 50,
+                                  child: Image.asset(
+                                      "assets/icons/profile_placeholder.png", width: 0.25.sw, height: 0.14.sh),
                                 )),
                             InkWell(
                               onTap: () => updateName(context),
                               child: Text(
-                                profile.firstName! + " " + profile.lastName!,
+                                "${profile.firstName} ${profile.lastName}",
                                 style: TextStyle(
                                     fontSize: 18.sp, color: Colors.black),
                               ),
                             ),
                             Text(
-                              "@${profile.userName!}",
+                              "@${profile.userName}",
                               style: TextStyle(
                                   fontSize: 14.sp, color: Colors.black),
                             ),

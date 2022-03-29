@@ -8,6 +8,7 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
+import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
@@ -77,7 +78,7 @@ class RoomController extends GetxController {
 
       Get.defaultDialog(
           title: "We are creating your room",
-          content: CircularProgressIndicator(),
+          content: const CircularProgressIndicator(),
           barrierDismissible: false);
 
       var hosts = [];
@@ -126,16 +127,16 @@ class RoomController extends GetxController {
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
-          Get.back();
-          Get.to(RoomPage(roomId: roomId));
+          Get.offAll(HomePage());
+          Get.to(()=> RoomPage(roomId: roomId));
         } else {
-          Get.back();
+          Get.offAll(HomePage());
           Get.snackbar(
               "", "There was an error creating your room. Try again later");
           await RoomAPI().deleteARoom(roomId);
         }
       } else {
-        Get.back();
+        Get.offAll(HomePage());
         Get.snackbar("", "Error creating your room");
       }
 

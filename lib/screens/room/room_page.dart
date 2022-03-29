@@ -119,13 +119,7 @@ class RoomPage extends StatelessWidget {
                     width: 0.01.sw,
                   ),
                   Obx(() {
-                    printOut("a speaker ${_homeController.currentRoom.value.speakerIds!
-                        .indexWhere(
-                            (e) => e.id == currentUser.id) !=
-                        -1} ${(_homeController.currentRoom.value.hostIds!
-                        .indexWhere(
-                            (e) => e.id == currentUser.id) !=
-                        -1)}");
+
                     return _homeController.currentRoom.value.id != null
                         ? SizedBox(
                             height: _homeController.isCurrentRoomLoading.isFalse

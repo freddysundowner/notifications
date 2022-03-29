@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +14,7 @@ import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.d
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
+import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -39,6 +41,7 @@ class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    DbBase().tryConnection();
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(

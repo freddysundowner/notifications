@@ -10,6 +10,7 @@ import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -180,6 +181,7 @@ class AuthController extends GetxController {
     return FutureBuilder(
       future: UserAPI.getUserById(),
       builder: (BuildContext context, snapshot) {
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             backgroundColor: primarycolor,

@@ -1,10 +1,11 @@
+import 'package:fluttergistshop/services/configs.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketIO {
   late IO.Socket socketIO;
 
   IO.Socket init(onSocketConnected, onAddToSpeakerResponse) {
-    socketIO = IO.io("http://192.168.0.105:3000", <String, dynamic>{
+    socketIO = IO.io(api_url, <String, dynamic>{
       'transports': ['websocket'],
       'upgrade': false
     });
@@ -14,7 +15,7 @@ class SocketIO {
       print("Connection Successfully Established...");
       onSocketConnected(socketIO);
     });
-    socketIO.on("add-to-speaker-response", (data) {
+    socketIO.on("user-joined", (data) {
       print("there is response");
       onAddToSpeakerResponse(data);
     });

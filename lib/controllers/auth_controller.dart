@@ -54,15 +54,40 @@ class AuthController extends GetxController {
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
   late SocketIO socket = new SocketIO();
+  // late IO.Socket socket;
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+
+    socket.init(
+        (IO.Socket socket) => {print("onSocketConnected ${socket.json}")},
+        (data) => {print("new user joined $data")});
+
+    socket.socketIO.emit("joined", {"userdata": "data"});
+  }
+
   @override
   void onInit() {
     super.onInit();
-    socket.init(
-        (IO.Socket socket) => {print("onSocketConnected ${socket.json}")},
-        (data) => {print("on response here $data")});
+    // socket.socketIO.on("joined-response", (data) {
+    //   print(data);
+    // });
 
-    socket.socketIO.emit("add-to-speaker", {"someone added to speaker"});
-    socket.socketIO.on("add-to-speaker", (data) => print(data));
+    // socket = IO.io("http://52.43.151.113", <String, dynamic>{
+    //   "transports": ["websocket"],
+    //   "autoConnect": false,
+    // });
+    // socket.connect();
+    // socket.onConnect((data) {
+    //   print("Connected");
+    //   socket.on("message", (msg) {
+    //     print(msg);
+    //   });
+    // });
+    //
+    // socket.emit(
+    //     "message", {"message": "test", "sourceId": "me", "targetId": "tt"});
 
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {

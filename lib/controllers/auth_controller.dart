@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
+import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
@@ -16,6 +18,9 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+import '../services/connection_state.dart';
 
 class AuthController extends GetxController {
   Rxn<UserModel> usermodel = Rxn<UserModel>();
@@ -28,9 +33,15 @@ class AuthController extends GetxController {
   final TextEditingController confirmPasswordFieldController =
       TextEditingController();
   final TextEditingController bioFieldController = TextEditingController();
+  var connectionstate = true.obs;
+
+  // ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  // final Connectivity _connectivity = Connectivity();
+  // late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   var error = "".obs;
   var isLoading = true.obs;
+  StreamSubscription? _connectionChangeStream;
 
   Rx<File> _chosenImage = Rx(File(""));
   File get chosenImage => _chosenImage.value;
@@ -38,9 +49,35 @@ class AuthController extends GetxController {
     _chosenImage.value = img;
   }
 
+  final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
   @override
   void onInit() {
     super.onInit();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      if (source.keys.toList()[0] == ConnectivityResult.mobile &&
+          source.keys.toList()[0] == ConnectivityResult.mobile) {
+        connectionstate.value = true;
+        Get.closeAllSnackbars();
+      } else {
+        connectionstate.value = false;
+        Get.snackbar(
+          "",
+          "",
+          snackPosition: SnackPosition.TOP,
+          borderRadius: 0,
+          titleText: Text(
+            "Check your internet connection",
+            style: TextStyle(
+                fontSize: 16, color: Colors.white, fontFamily: "InterBold"),
+          ),
+          margin: EdgeInsets.all(0),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(hours: 6000),
+        );
+      }
+    });
   }
 
   Future register() async {
@@ -155,23 +192,18 @@ class AuthController extends GetxController {
           usermodel.value = snapshot.data as UserModel?;
           return HomePage();
         }
-        try {
-          InternetAddress.lookup('example.com').then((result) {
-            if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-              return Login();
-            }
-          });
-        } on SocketException catch (_) {
-          GetSnackBar(
-            message: "Check your internet connectioon",
-          );
+
+        if (FirebaseAuth.instance.currentUser == null) {
+          return Login();
         }
-        return const Scaffold(
-          backgroundColor: primarycolor,
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        if (connectionstate.value == false) {
+          return Scaffold(
+              backgroundColor: primarycolor,
+              body: Center(
+                child: CircularProgressIndicator(),
+              ));
+        }
+        return Container();
       },
     );
   }

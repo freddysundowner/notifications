@@ -23,7 +23,7 @@ dependencies:
   shared_preferences: ^2.0.13
   agora_rtc_engine: ^4.0.5
   permission_handler: ^9.2.0
-
+  connectivity_plus: ^2.2.1
   firebase_storage:
   future_progress_dialog: ^0.1.1
   swipedetector: ^1.2.0

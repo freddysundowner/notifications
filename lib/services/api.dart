@@ -13,7 +13,7 @@ class Api {
   static var client = http.Client();
   static callApi(
       {required String method, body, required String endpoint}) async {
-    _tryConnection();
+    // _tryConnection();
 
     var url = Uri.parse(endpoint);
     if (method == get) {
@@ -52,12 +52,14 @@ class Api {
       if (token != null) {
         headers = {
           'Content-Type': 'application/json',
-          'Authorization': "Bearer " + token};
+          'Authorization': "Bearer " + token
+        };
       }
       Helper.debug("headers ${headers}");
       Helper.debug("url ${url}");
       Helper.debug("body ${body}");
-      final response = await client.post(url, body: jsonEncode(body), headers: headers);
+      final response =
+          await client.post(url, body: jsonEncode(body), headers: headers);
       Helper.debug("result ${response.body}");
       return jsonDecode(response.body);
     } catch (e, s) {
@@ -80,7 +82,8 @@ class Api {
     Helper.debug("headers ${headers}");
     Helper.debug("url ${url}");
     Helper.debug("body ${body}");
-    final response = await client.put(url, body: jsonEncode(body), headers: headers);
+    final response =
+        await client.put(url, body: jsonEncode(body), headers: headers);
     Helper.debug("result ${response.body}");
     return jsonDecode(response.body);
     // } catch (e) {

@@ -14,7 +14,7 @@ class DbBase {
 
   databaseRequest(String link, String type,
       {Map<String, dynamic>? body}) async {
-    _tryConnection();
+    // _tryConnection();
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");

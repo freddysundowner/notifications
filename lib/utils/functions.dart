@@ -20,7 +20,7 @@ String convertTime(String time) {
   } else if (diff.inDays < 1) {
     timeDifference = "${diff.inHours} hours ago";
   } else if (diff.inDays > 1) {
-    timeDifference = "${convertedTime.day} days ago";
+    timeDifference = "${diff.inDays} days ago";
   }
 
   return timeDifference;

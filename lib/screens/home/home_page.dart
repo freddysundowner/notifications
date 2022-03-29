@@ -375,7 +375,10 @@ class HomePage extends StatelessWidget {
   }
 
   InkWell buildCurrentRoom(BuildContext context) {
+    var hosts = [];
     RoomModel room = _homeController.currentRoom.value;
+
+    hosts = room.hostIds!.length > 5 ? room.hostIds!.sublist(0, 5) : room.hostIds!;
 
     return InkWell(
       onTap: () async {
@@ -392,7 +395,7 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Stack(
-                  children: room.hostIds!.sublist(0, 5).map((e) {
+                  children: hosts.map((e) {
                 var index = room.hostIds!.indexOf(e);
                 return Padding(
                   padding: EdgeInsets.only(left: (30.0 * index)),

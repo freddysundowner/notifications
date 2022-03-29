@@ -539,7 +539,6 @@ class RoomController extends GetxController {
   }
 
   void initAgora(String token, String roomId) async {
-
     try {
       printOut("Joining agora room");
 
@@ -576,13 +575,12 @@ class RoomController extends GetxController {
   void agoraListeners() {
     // Define event handling logic
     engine.setEventHandler(RtcEngineEventHandler(error: (error) async {
-
       printOut("Error in agora ${error.name}");
       if (error.name == "InvalidToken" || error.name == "TokenExpired") {
         Get.back();
-        roomsList.removeWhere((element) => element["_id"] == currentRoom.value.id);
-        Get.snackbar(
-            '', "Room has ended");
+        roomsList
+            .removeWhere((element) => element["_id"] == currentRoom.value.id);
+        Get.snackbar('', "Room has ended");
 
         await RoomAPI().deleteARoom(currentRoom.value.id!);
         currentRoom.value = RoomModel();

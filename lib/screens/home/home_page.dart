@@ -477,7 +477,7 @@ class HomePage extends StatelessWidget {
                       //If user is not a speaker or a host, disable their audio
                       if ((_homeController.currentRoom.value.hostIds!
                                   .indexWhere((e) => e.id == currentUser.id) ==
-                              0 )&&
+                              0) &&
                           (_homeController.currentRoom.value.speakerIds!
                                   .indexWhere((e) => e.id == currentUser.id) ==
                               0)) {
@@ -496,7 +496,7 @@ class HomePage extends StatelessWidget {
                             child: (_homeController.currentRoom.value.hostIds!
                                             .indexWhere((e) =>
                                                 e.id == currentUser.id) ==
-                                        0 )||
+                                        0) ||
                                     (_homeController
                                             .currentRoom.value.speakerIds!
                                             .indexWhere((e) =>
@@ -507,11 +507,13 @@ class HomePage extends StatelessWidget {
                                       //If user is muted, unmute and enbale their audio vice versa
                                       if (_homeController.audioMuted.isFalse) {
                                         _homeController.audioMuted.value = true;
-                                        _homeController.engine.muteLocalAudioStream(true);
+                                        _homeController.engine
+                                            .muteLocalAudioStream(true);
                                       } else {
                                         _homeController.audioMuted.value =
                                             false;
-                                        _homeController.engine.muteLocalAudioStream(false);
+                                        _homeController.engine
+                                            .muteLocalAudioStream(false);
                                       }
                                     },
                                     icon: Icon(

@@ -202,4 +202,5 @@ class UserAPI {
   static removeDisplayPictureForCurrentUser() {}
 
   static addFavorite(String s) {}
+
 }

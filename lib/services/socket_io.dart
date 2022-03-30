@@ -1,12 +1,14 @@
+
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class SocketIO {
-  late IO.Socket socketIO;
+class CustomSocketIO {
+
 
   final RoomController _roomController = Get.put(RoomController());
+ late IO.Socket socketIO;
 
   IO.Socket init(
       {onSocketConnected,
@@ -19,7 +21,8 @@ class SocketIO {
 
     socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
       'transports': ['websocket'],
-      'upgrade': false
+      'upgrade': false,
+      'forceNew':true,
     });
 
     socketIO.connect();
@@ -28,15 +31,7 @@ class SocketIO {
       onSocketConnected(socketIO);
     });
 
-    socketIO.on("message", (data) {
-      printOut("there is response $data");
-      onUserJoinedResponse(data);
-    });
 
-    socketIO.on("user_left_${_roomController.currentRoom.value.id}", (data) {
-      printOut("there is response");
-      onUserLeftResponse(data);
-    });
 
     socketIO.on("user_to_speaker_${_roomController.currentRoom.value.id}", (data) {
       printOut("there is response");
@@ -59,7 +54,23 @@ class SocketIO {
 
     socketIO.on("disconnect", (data) {
       print("Socket Disconnected Unexpectedly..");
-      onDisconnected(data);
+
+      try {
+      // socketIO.clearListeners();
+       socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
+         'transports': ['websocket'],
+         'upgrade': false,
+         'forceNew':true,
+       });
+       socketIO.connect();
+       socketIO.on("connect", (data) {
+         printOut("Connection Successfully Established...");
+         onSocketConnected(socketIO);
+       });
+
+      } catch(e, s) {
+        printOut("Error on disconnecting socket $e $s");
+      }
     });
 
     return socketIO;

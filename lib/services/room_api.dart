@@ -33,25 +33,25 @@ class RoomAPI {
 
       printOut("created room $room");
       return jsonDecode(room);
-    } catch (e) {
-      printOut("Error creating room $e");
+    } catch (e, s) {
+      printOut("Error creating room $e $s");
     }
   }
 
   generateAgoraToken(String channel, String uid) async {
     try {
-
-      var genToken = await DbBase().databaseRequest(tokenPath + "?channel=$channel&uid=$uid'", DbBase().getRequestType);
+      var genToken = await DbBase().databaseRequest(
+          tokenPath + "?channel=$channel&uid=$uid'", DbBase().getRequestType);
       if (genToken != null) {
         return jsonDecode(genToken)["token"];
       } else {
+        printOut('Failed to load token');
         throw Exception('Failed to load token');
       }
-    } catch (e) {
-      printOut("Error creating room $e");
+    } catch (e, s) {
+      printOut("Error generating agora token room $e $s");
     }
   }
-
 
   updateRoomById(Map<String, dynamic> body, String id) async {
     final RoomController _homeController = Get.find<RoomController>();
@@ -61,7 +61,8 @@ class RoomAPI {
       }
 
       printOut("Room to be updated title ${body["title"]}");
-      var updated = await DbBase().databaseRequest(updateRoom + id, DbBase().patchRequestType,
+      var updated = await DbBase().databaseRequest(
+          updateRoom + id, DbBase().patchRequestType,
           body: body);
 
       printOut("updatedRoom $updated");
@@ -92,8 +93,7 @@ class RoomAPI {
 
   removeUserFromHostInRoom(Map<String, dynamic> body, String id) async {
     try {
-      await DbBase().databaseRequest(
-          removeHost + id, DbBase().patchRequestType,
+      await DbBase().databaseRequest(removeHost + id, DbBase().patchRequestType,
           body: body);
     } catch (e) {
       printOut("Error removeUserFromHost room $e");

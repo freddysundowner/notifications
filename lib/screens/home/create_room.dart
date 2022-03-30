@@ -35,7 +35,7 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return DraggableScrollableSheet(
-            initialChildSize: 0.5,
+            initialChildSize: 0.6,
             expand: false,
             builder: (BuildContext context, ScrollController scrollController) {
               return Padding(

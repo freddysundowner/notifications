@@ -59,17 +59,17 @@ class RoomController extends GetxController {
   final TextEditingController searchChatUsersController =
       TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
-
   @override
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-  }
 
+  }
   @override
   void onInit() {
     getRooms();
     super.onInit();
+    print("room controller");
   }
 
   getRooms() async {
@@ -128,7 +128,6 @@ class RoomController extends GetxController {
 
           await fetchRoom(roomId);
 
-          leaveAgora();
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
@@ -378,6 +377,8 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
+
+
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -417,6 +418,13 @@ class RoomController extends GetxController {
     }
 
     currentRoom.value = RoomModel();
+
+
+    try{
+      leaveAgora();
+    }catch(e) {
+      printOut("Error leaving agora");
+    }
   }
 
   Future<void> joinRoom(String roomId) async {
@@ -432,11 +440,15 @@ class RoomController extends GetxController {
           userName: Get.find<AuthController>().usermodel.value!.userName,
           profilePhoto:
               Get.find<AuthController>().usermodel.value!.profilePhoto);
+
       await addUserToRoom(currentUser);
+
       if (currentRoom.value.token != null) {
         Get.to(RoomPage(
           roomId: roomId,
         ));
+
+        socketIO.socketIO.emit("message", {"user": "aaa"});
       } else {
         roomsList.removeWhere((element) => element.id == roomId);
         Get.snackbar(
@@ -448,15 +460,18 @@ class RoomController extends GetxController {
   }
 
   @override
-  void dispose() {
+  void onClose() {
     leaveAgora();
-    super.dispose();
+    super.onClose();
   }
 
   Future<void> leaveAgora() async {
+    // if (engine != null) {
+
     await engine.leaveChannel();
     await engine.muteLocalAudioStream(true);
     await engine.destroy();
+    // }
   }
 
   Future<void> fetchAllUsers() async {

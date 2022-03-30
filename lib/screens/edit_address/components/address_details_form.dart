@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -13,6 +14,7 @@ import '../../../widgets/async_progress_dialog.dart';
 
 class AddressDetailsForm extends StatelessWidget {
   final Address? addressToEdit;
+  CheckOutController checkOutController = Get.find<CheckOutController>();
   AddressDetailsForm({
     Key? key,
     this.addressToEdit,
@@ -242,21 +244,34 @@ class AddressDetailsForm extends StatelessWidget {
           builder: (context) {
             return AsyncProgressDialog(
               response,
-              message: Text("updating address"),
+              message: const Text("updating address"),
               onError: (e) {
                 snackbarMessage = e.toString();
               },
             );
           },
         );
-        if (response["success"] == true) {
+        var waitedResponse = await response;
+        if (waitedResponse["success"] == true) {
           snackbarMessage = "Address updated successfully";
+
+          //Update the address being viewed on checkout screen
+          checkOutController.address.value!.name = waitedResponse["data"]["name"];
+          checkOutController.address.value!.addrress1 = waitedResponse["data"]["addrress1"];
+          checkOutController.address.value!.addrress2 = waitedResponse["data"]["addrress2"];
+          checkOutController.address.value!.city = waitedResponse["data"]["city"];
+          checkOutController.address.value!.state = waitedResponse["data"]["state"];
+          checkOutController.address.value!.phone = waitedResponse["data"]["phone"];
+          checkOutController.address.refresh();
+
         } else {
           throw "Couldn't update address due to unknown reason";
         }
       } on FirebaseException catch (e) {
+        printOut("Error editing address. Firebase exception $e ");
         snackbarMessage = "Something went wrong";
-      } catch (e) {
+      } catch (e, s) {
+        printOut("Error editing address $e $s");
         snackbarMessage = "Something went wrong";
       } finally {
         Get.back();

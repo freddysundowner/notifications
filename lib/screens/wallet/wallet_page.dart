@@ -71,7 +71,7 @@ class WalletPage extends StatelessWidget {
               Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Recent Transactions",
+                    "Transactions",
                     style: TextStyle(color: Colors.red, fontSize: 14.sp),
                   )),
               SizedBox(
@@ -104,35 +104,26 @@ class WalletPage extends StatelessWidget {
                                         style: TextStyle(
                                             color:
                                                 Theme.of(context).primaryColor,
-                                            fontSize: 16.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 0.02.sh,
+                                            fontSize: 11.sp),
                                       ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            transaction.reason.trim().length >
-                                                    20
-                                                ? transaction.reason
-                                                        .trim()
-                                                        .capitalizeFirst!
-                                                        .substring(0, 20) +
-                                                    "..."
-                                                : transaction.reason
-                                                    .trim()
-                                                    .capitalizeFirst!,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16.sp), maxLines: 2,
+                                          Expanded(
+                                            child: Text(
+                                              transaction.reason,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.sp),
+                                              maxLines: 2,
+                                            ),
                                           ),
                                           Text(
                                             "$gccurrency ${transaction.amount}",
                                             style: TextStyle(
                                                 color: Colors.red,
-                                                fontSize: 16.sp),
+                                                fontSize: 14.sp),
                                           ),
                                         ],
                                       ),

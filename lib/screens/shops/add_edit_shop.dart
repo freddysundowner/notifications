@@ -138,8 +138,6 @@ class NewShop extends StatelessWidget {
                   response = shopController.saveShop();
                 }
                 try {
-                  print("add shop response ${response}");
-
                   await showDialog(
                     context: context,
                     builder: (context) {
@@ -159,11 +157,10 @@ class NewShop extends StatelessWidget {
                       content: Text(snackbarMessage),
                     ),
                   );
-                  if (shopController.error.value == "") {
-                    authController.usermodel.value =
-                        await UserAPI.getUserById();
-                    Get.back();
-                  }
+                  print(
+                      "shopController.error.value ${shopController.error.value}");
+                  authController.usermodel.value = await UserAPI.getUserById();
+                  Get.back();
                 }
               }
             },
@@ -190,14 +187,7 @@ class NewShop extends StatelessWidget {
                     height: 15.0,
                   ),
                   Container(
-                    decoration:
-                        BoxDecoration(shape: BoxShape.circle, boxShadow: [
-                      BoxShadow(
-                        color: Colors.red,
-                        blurRadius: 5.0,
-                        spreadRadius: 2.0,
-                      )
-                    ]),
+                    decoration: BoxDecoration(shape: BoxShape.circle),
                     alignment: Alignment.center,
                     child: GestureDetector(
                       child: buildDisplayPictureAvatar(context),

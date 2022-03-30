@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/models/shop.dart';
+import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -75,10 +76,11 @@ class ShopController extends GetxController {
               email: emailController.text)
           .toJson();
       var response = await ShopApi.updateShop(productdata, id);
-      print("response $response");
       error.value = "";
       if (response["success"]) {
         error.value = "updated successfully";
+        ShopId.fromJson(response["data"]);
+
         _shop.value = Shop.fromJson(response["data"]);
         currentShop.value = Shop.fromJson(response["data"]);
       } else {

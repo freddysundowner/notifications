@@ -26,7 +26,7 @@ class FullProduct extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.find<ProductController>().getProductById(product.id!);
     if (productController.currentProduct.value == null) {
-      productController.currentProduct.value = product as Null;
+      productController.currentProduct.value = product;
     }
 
     return Scaffold(

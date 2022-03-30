@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,8 +31,8 @@ class ChageProfileImage extends StatelessWidget {
               child: Obx(() => Column(
                     children: [
                       Text(
-                        "Change Avatar",
-                        style: headingStyle,
+                        "Change Profile Image",
+                        style: TextStyle(fontSize: 17),
                       ),
                       SizedBox(height: 40.h),
                       GestureDetector(
@@ -51,8 +52,6 @@ class ChageProfileImage extends StatelessWidget {
                           ],
                         ),
                       SizedBox(height: 20.h),
-                      buildRemovePictureButton(context),
-                      SizedBox(height: 80.h),
                     ],
                   )),
             ),
@@ -113,6 +112,14 @@ class ChageProfileImage extends StatelessWidget {
       final String? url = authController.currentuser!.profilePhoto;
       if (url != null) backImage = NetworkImage(url);
     }
+    return backImage == null
+        ? Image.asset("assets/icons/profile_placeholder.png",
+            width: 0.35.sw, height: 0.16.sh)
+        : CircleAvatar(
+            radius: 100,
+            backgroundColor: Colors.grey,
+            backgroundImage: backImage,
+          );
     return CircleAvatar(
       radius: 100,
       backgroundColor: Colors.grey,
@@ -121,15 +128,18 @@ class ChageProfileImage extends StatelessWidget {
   }
 
   void getImageFromUser(BuildContext context) async {
-    String path;
-    String snackbarMessage = "Image picked";
     try {
+      String path;
+      String snackbarMessage = "Image picked";
       path = await choseImageFromLocalFiles(context,
           aspectration: CropAspectRatio(ratioX: 3, ratioY: 2));
       if (path == null) {
         throw LocalImagePickingUnknownReasonFailureException();
       }
-    } finally {
+      if (path == null) {
+        return;
+      }
+      authController.setChosenImage = File(path);
       if (snackbarMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -137,11 +147,8 @@ class ChageProfileImage extends StatelessWidget {
           ),
         );
       }
-    }
-    if (path == null) {
-      return;
-    }
-    authController.setChosenImage = File(path);
+    } catch (e) {
+    } finally {}
     // bodyState.setChosenImage = File(path);
   }
 
@@ -203,27 +210,6 @@ class ChageProfileImage extends StatelessWidget {
         ),
       );
     }
-  }
-
-  Widget buildRemovePictureButton(BuildContext context) {
-    return DefaultButton(
-      text: "Remove Picture",
-      press: () async {
-        final Future uploadFuture = removeImageFromFirestore(context);
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return AsyncProgressDialog(
-              uploadFuture,
-              message: Text("Deleting Display Picture"),
-            );
-          },
-        );
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Display Picture removed")));
-        Navigator.pop(context);
-      },
-    );
   }
 
   Future<void> removeImageFromFirestore(BuildContext context) async {

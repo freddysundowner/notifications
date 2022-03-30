@@ -60,7 +60,7 @@ class CheckOut extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ManageAddressesScreen(),
+                              builder: (context) => ManageAddressesScreen(true),
                             ),
                           );
                         },

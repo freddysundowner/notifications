@@ -48,7 +48,7 @@ class DbBase {
 
       return response.stream.bytesToString();
     } catch (e, s) {
-      printOut("Error on api $e $s");
+      printOut("Error on api $link $e $s");
     }
   }
 

@@ -118,7 +118,7 @@ class HomePage extends StatelessWidget {
           child: Obx(() {
             return SizedBox(
               height: _homeController.currentRoom.value.id != null
-                  ? 0.19.sh
+                  ? 0.18.sh
                   : 0.11.sh,
               child: Column(
                 children: [

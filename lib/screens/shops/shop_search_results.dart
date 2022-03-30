@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
@@ -13,7 +11,6 @@ import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
-import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +37,7 @@ class ShopSearchResults extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(right: 10),
+                margin: const EdgeInsets.only(right: 10),
                 child: Row(
                   children: [
                     Expanded(
@@ -82,7 +79,7 @@ class ShopSearchResults extends StatelessWidget {
                         _globalController.searchShopController.text = "";
                         Get.back();
                       },
-                      child: Text(
+                      child: const Text(
                         "Cancel",
                         style: TextStyle(color: Colors.blue),
                       ),
@@ -112,18 +109,19 @@ class ShopSearchResults extends StatelessWidget {
               }),
               Expanded(
                 child: Obx(() {
-                  if (_globalController.searchresults.value.length == 0 &&
-                      _globalController.searchShopController.text.isNotEmpty)
+                  if (_globalController.searchresults.value.isEmpty &&
+                      _globalController.searchShopController.text.isNotEmpty) {
                     return Container(
-                        margin: EdgeInsets.only(top: 20),
-                        child: Text("No results"));
-                  if (_globalController.searchresults.value.length > 0 &&
-                      _globalController.isSearching.isFalse)
+                        margin: const EdgeInsets.only(top: 20),
+                        child: const Text("No results"));
+                  }
+                  if (_globalController.searchresults.isNotEmpty &&
+                      _globalController.isSearching.isFalse) {
                     return ListView.builder(
                       controller: _globalController.scrollcontroller,
                       itemBuilder: (_, i) => Column(
                         children:
-                            _globalController.searchresults.value.map((e) {
+                            _globalController.searchresults.map((e) {
                           if (_globalController.currentsearchtab.value == 0) {
                             return _singleItemShop(Shop.fromJson(e));
                           }
@@ -139,8 +137,9 @@ class ShopSearchResults extends StatelessWidget {
                           return Container();
                         }).toList(),
                       ),
-                      itemCount: _globalController.searchresults.value.length,
+                      itemCount: _globalController.searchresults.length,
                     );
+                  }
                   return Container();
                 }),
               )
@@ -277,10 +276,14 @@ class ShopSearchResults extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(e.userIds![0].profilePhoto!),
-            ),
+            e.userIds!.isNotEmpty
+                ? CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(e.userIds![0].profilePhoto!))
+                : const CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage("assets/icons/profile_placeholder.png"),
+                  ),
             SizedBox(
               width: 0.04.sw,
             ),

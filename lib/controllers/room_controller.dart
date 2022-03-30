@@ -56,7 +56,7 @@ class RoomController extends GetxController {
 
   var roomPickedImages = [].obs;
 
-  final TextEditingController searchChatUsersController =
+  final TextEditingController searchUsersController =
       TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
   @override
@@ -506,16 +506,18 @@ class RoomController extends GetxController {
         printOut(e);
         allUsersLoading.value = false;
       }
+    } else{
+      searchedUsers.value = allUsers;
     }
   }
 
   searchUsers() async {
-    if (searchChatUsersController.text.trim().isNotEmpty) {
+    if (searchUsersController.text.trim().isNotEmpty) {
       try {
         allUsersLoading.value = true;
 
         var users =
-            await UserAPI().searchUser(searchChatUsersController.text.trim());
+            await UserAPI().searchUser(searchUsersController.text.trim());
 
         var list = [];
 

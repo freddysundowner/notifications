@@ -323,7 +323,8 @@ class Profile extends StatelessWidget {
                                             () => MyProducts(
                                                 title:
                                                     "${profile.firstName} Products",
-                                                edit: false),
+                                                edit: profile.id ==
+                                                    FirebaseAuth.instance.currentUser!.uid),
                                           ),
                                           child: Text("View all",
                                               style: TextStyle(

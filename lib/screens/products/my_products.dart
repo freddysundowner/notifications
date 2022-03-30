@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
@@ -115,7 +114,7 @@ class MyProducts extends StatelessWidget {
             return false;
           }
         } else {
-          if (product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ) {
+
             if (direction == DismissDirection.startToEnd) {
               final confirmation = await showConfirmationDialog(
                   context, "Continue to buying this product?");
@@ -137,7 +136,7 @@ class MyProducts extends StatelessWidget {
               }
               return false;
             }
-          }
+
         }
         return false;
       },
@@ -151,7 +150,7 @@ class MyProducts extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
-        color: product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? Colors.green : Colors.transparent,
+        color: Colors.green,
         borderRadius: BorderRadius.circular(15),
       ),
       child: edit
@@ -174,7 +173,7 @@ class MyProducts extends StatelessWidget {
                 ),
               ],
             )
-          : product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? Row(
+          : Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: const [
@@ -192,7 +191,7 @@ class MyProducts extends StatelessWidget {
                   ),
                 ),
               ],
-            ) : Container(),
+            ),
     );
   }
 
@@ -200,7 +199,7 @@ class MyProducts extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
-        color: edit ? Colors.red : product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? primarycolor : Colors.transparent,
+        color: edit ? Colors.red : primarycolor,
         borderRadius: BorderRadius.circular(15),
       ),
       child: edit
@@ -223,7 +222,7 @@ class MyProducts extends StatelessWidget {
                 ),
               ],
             )
-          : product.ownerId!.id != FirebaseAuth.instance.currentUser!.uid ? Row(
+          : Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: const [
@@ -241,7 +240,7 @@ class MyProducts extends StatelessWidget {
                   color: Colors.white,
                 ),
               ],
-            ) : Container(),
+            )
     );
   }
 }

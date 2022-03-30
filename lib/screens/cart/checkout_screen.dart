@@ -428,11 +428,14 @@ class CheckOut extends StatelessWidget {
             checkOutController.product.value!.ownerId!.id.toString());
     // Checkout checkout = new Checkout(order: order);
     // checkOutController.checkout.value = checkOutController.checkout.value.
-    final orderFuture = OrderApi.checkOut(order);
+    final orderFuture =
+        OrderApi.checkOut(order, checkOutController.product.value!.id!);
     orderFuture.then((orderedProductsUid) async {
+      print(orderedProductsUid);
       Get.back();
-      if (orderedProductsUid != null) {
-        String snackbarMessage = "Products ordered Successfully";
+      if (orderedProductsUid != null &&
+          Get.find<CheckOutController>().msg.value.isEmpty) {
+        String snackbarMessage = Get.find<CheckOutController>().msg.value;
         try {
           await NotificationApi().sendNotification(
               [checkOutController.product.value!.ownerId!.id],
@@ -442,18 +445,21 @@ class CheckOut extends StatelessWidget {
               FirebaseAuth.instance.currentUser!.uid);
           authController.currentuser!.wallet =
               authController.currentuser!.wallet! -
-                  (checkOutController.ordertotal.value + checkOutController.shipping.value + checkOutController.tax.value);
+                  (checkOutController.ordertotal.value +
+                      checkOutController.shipping.value +
+                      checkOutController.tax.value);
         } catch (e) {
           snackbarMessage = e.toString();
         } finally {
-          Helper.showSnackBack(context, snackbarMessage);
+          Helper.showSnackBack(context, "Order successful");
           Get.back();
         }
       } else {
         throw "Something went wrong while clearing cart";
       }
     }).catchError((e) {
-      Helper.showSnackBack(context, "Something went wrong", color: Colors.red);
+      Helper.showSnackBack(context, Get.find<CheckOutController>().msg.value,
+          color: Colors.red);
     });
     await showDialog(
       context: context,

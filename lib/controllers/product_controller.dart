@@ -28,6 +28,7 @@ class CustomImage {
 }
 
 class ProductController extends GetxController {
+  Rxn<Product> currentProduct = Rxn();
   Rxn<Product> productObservable = Rxn();
   static Rxn<List<Product>> _products = Rxn([]);
 
@@ -110,6 +111,12 @@ class ProductController extends GetxController {
     } catch (e) {
       print("Error ${e.toString()}");
     }
+  }
+
+  getProductById(String productId) async {
+    var response = await ProductPI().getProductById(productId);
+    print(response);
+    currentProduct.value = Product.fromJson(response);
   }
 
   static Future<List<Product>> getProductsByShop(String id) async {

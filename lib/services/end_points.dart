@@ -5,6 +5,7 @@ const tokenPath = rooms + "/agora/rooom/generatetoken";
 const user = baseUrl + "/users";
 const shop = baseUrl + "/shop/";
 const product = baseUrl + "/products/";
+const singleproduct = product + "/product/";
 const authenticatation = baseUrl + "/authenticate";
 const register = baseUrl + "/registerv1";
 const address = baseUrl + "/address/";
@@ -14,6 +15,7 @@ const transactions = baseUrl + "/transactions";
 const orders = baseUrl + "/orders";
 const notifications = baseUrl + "/notifications";
 
+const singleproductqtycheck = singleproduct + "product/qtycheck/";
 const allRooms = rooms + "/";
 const roomById = rooms + "/rooms/";
 const roomByUser = rooms + "/get/all/"; //Add user Id
@@ -25,7 +27,7 @@ const addUserToRoom = rooms + "/user/add/";
 const removeUserFromRoom = rooms + "/user/remove/";
 const removeSpeaker = rooms + "/speaker/remove/";
 const removeUserFromAudience = rooms + "/audience/remove/";
-const removeHost= rooms + "/host/remove/";
+const removeHost = rooms + "/host/remove/";
 const removeUserFromRaisedHands = rooms + "/raisedhans/remove/";
 
 const updateshop = shop + "shop/";
@@ -44,7 +46,6 @@ const upgradeUser = user + "/upgrade/";
 const allUsers = user + "/";
 const searchUsersByFirstName = user + "/search/";
 
-
 const userProducts = product + "/get/all/";
 
 const userActivities = activities + "/to/";
@@ -52,4 +53,3 @@ const userActivities = activities + "/to/";
 const userTransactions = transactions + "/";
 
 const userOrders = orders + "/";
-

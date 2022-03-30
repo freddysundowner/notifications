@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:fluttergistshop/utils/functions.dart';
 
 import 'client.dart';
@@ -21,9 +23,9 @@ class NotificationApi {
           notifications, DbBase().postRequestType,
           body: body);
 
-      printOut("response ${response["success"]}");
-    } catch (e) {
-      printOut("Error sending notifications $e");
+      printOut("response ${jsonDecode(response)["Success"]}");
+    } catch (e, s) {
+      printOut("Error sending notifications $e $s");
     }
   }
 }

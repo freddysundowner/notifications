@@ -55,7 +55,7 @@ class NewChatPage extends StatelessWidget {
                           child: Center(
                             child: TextField(
                               controller:
-                                  _homeController.searchChatUsersController,
+                                  _homeController.searchUsersController,
                               autofocus: true,autocorrect: false,
                               enableSuggestions: false,
                               keyboardType: TextInputType.visiblePassword,

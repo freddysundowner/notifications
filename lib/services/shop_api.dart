@@ -48,6 +48,13 @@ class ShopApi {
     return jsonDecode(shops);
   }
 
+  getShopById(String? shopId) async {
+    var shops = await DbBase()
+        .databaseRequest(updateshop + shopId!, DbBase().getRequestType);
+    print("getShopById ${updateshop + shopId}");
+    return jsonDecode(shops);
+  }
+
   static String getPathForShop(String shopid) {
     return "shop/$shopid";
   }

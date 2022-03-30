@@ -103,13 +103,29 @@ class ShopController extends GetxController {
         allShops.refresh();
         isSearchingShop.value = false;
 
-        printOut("All shops length ${allShops.length}");
-
         update();
       } catch (e) {
         printOut(e);
         isSearchingShop.value = false;
       }
     } else {}
+  }
+
+  getShopById(String? shopid) async {
+    print("get shop $shopid");
+    try {
+      isSearchingShop.value = true;
+
+      var shop = await ShopApi().getShopById(shopid);
+
+      if (shop != null) {
+        currentShop.value = Shop.fromJson(shop);
+        print(currentShop.value.name);
+      }
+      isSearchingShop.value = false;
+    } catch (e) {
+      printOut(e);
+      isSearchingShop.value = false;
+    }
   }
 }

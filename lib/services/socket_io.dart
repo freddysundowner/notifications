@@ -4,8 +4,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 class SocketIO {
   late IO.Socket socketIO;
 
-  IO.Socket init({onSocketConnected, onAddToSpeakerResponse,onDisconnected}) {
-    socketIO = IO.io(api_url, <String, dynamic>{
+  IO.Socket init({onSocketConnected, onAddToSpeakerResponse, onDisconnected}) {
+    socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
       'transports': ['websocket'],
       'upgrade': false
     });

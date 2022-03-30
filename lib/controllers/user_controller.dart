@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -16,6 +17,7 @@ class UserController extends GetxController {
   var gettingFollowers = false.obs;
 
   getUserProfile(String userId) async {
+    Get.find<ProductController>().products.clear();
     try {
       profileLoading.value = true;
       var user = await UserAPI().getUserProfile(userId);

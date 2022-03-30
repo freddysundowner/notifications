@@ -4,7 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
-import 'package:fluttergistshop/services/user_api.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,7 +12,6 @@ import '/theme.dart';
 import '/utils/utils.dart';
 import 'bindings.dart';
 import 'controllers/auth_controller.dart';
-import 'models/user_model.dart';
 
 AndroidNotificationChannel channel = channel;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -23,6 +21,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   oneSignal();
+
   runApp(MyApp());
 }
 

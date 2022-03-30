@@ -231,14 +231,14 @@ class ShopView extends StatelessWidget {
       direction: DismissDirection.horizontal,
       background: buildDismissibleSecondaryBackground(),
       secondaryBackground: buildDismissiblePrimaryBackground(),
-      dismissThresholds: {
+      dismissThresholds: const {
         DismissDirection.endToStart: 0.65,
         DismissDirection.startToEnd: 0.65,
       },
       child: ShopShortDetailCard(
         product: product,
         onPressed: () {
-          print("v");
+          printOut("v");
           Get.to(() => FullProduct(product: product));
         },
       ),
@@ -298,7 +298,7 @@ class ShopView extends StatelessWidget {
 
   Widget buildDismissiblePrimaryBackground() {
     return Container(
-      padding: EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(right: 20),
       decoration: BoxDecoration(
         color: Colors.green,
         borderRadius: BorderRadius.circular(15),
@@ -306,7 +306,7 @@ class ShopView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
+        children: const [
           Icon(
             Icons.edit,
             color: Colors.white,
@@ -327,7 +327,7 @@ class ShopView extends StatelessWidget {
 
   Widget buildDismissibleSecondaryBackground() {
     return Container(
-      padding: EdgeInsets.only(left: 20),
+      padding: const EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
         color: Colors.red,
         borderRadius: BorderRadius.circular(15),
@@ -335,7 +335,7 @@ class ShopView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [
+        children: const [
           Text(
             "Delete",
             style: TextStyle(

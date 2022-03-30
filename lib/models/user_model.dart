@@ -9,8 +9,8 @@ UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
 String userToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
-  List<String>? followers;
-  List<String>? following;
+  List<String> followers = [];
+  List<String> following = [];
   int? wallet;
   String? currentRoom;
   String? facebook;
@@ -36,8 +36,8 @@ class UserModel {
   UserModel({
     @required this.followersCount,
     @required this.followingCount,
-    @required this.followers,
-    @required this.following,
+    this.followers = const [],
+    this.following = const [],
     @required this.wallet,
     @required this.currentRoom,
     @required this.facebook,

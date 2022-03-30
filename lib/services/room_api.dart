@@ -38,16 +38,27 @@ class RoomAPI {
     }
   }
 
+
   generateAgoraToken(String channel, String uid) async {
     try {
-      var genToken = await DbBase().databaseRequest(
-          tokenPath + "?channel=$channel&uid=$uid'", DbBase().getRequestType);
-      if (genToken != null) {
-        return jsonDecode(genToken)["token"];
+
+      var data = {
+        "channel": channel,
+        "uid": uid
+      };
+
+      var token = await DbBase().databaseRequest(
+          tokenPath,
+          DbBase().postRequestType,
+          body: data);
+
+      if (token != null) {
+        return jsonDecode(token)["token"];
       } else {
         printOut('Failed to load token');
         throw Exception('Failed to load token');
       }
+
     } catch (e, s) {
       printOut("Error generating agora token room $e $s");
     }

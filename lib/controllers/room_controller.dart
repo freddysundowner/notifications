@@ -239,6 +239,10 @@ class RoomController extends GetxController {
         printOut("currentRoom token ${room.token}");
         if (room.token != null) {
           currentRoom.value = room;
+        }else {
+          Get.snackbar(
+            '', "There was an error adding you to the room, Try again later",).show();
+          await RoomAPI().deleteARoom(roomId);
         }
       } else {
         Get.snackbar('', "Room has ended");
@@ -281,6 +285,10 @@ class RoomController extends GetxController {
           "token": currentRoom.value.token
         }, currentRoom.value.id!);
       }
+    } else{
+      roomsList.removeWhere((element) => element.id == currentRoom.value.id);
+      Get.snackbar(
+          '', "There was an error adding you to the room, Try again later");
     }
   }
 
@@ -445,9 +453,9 @@ class RoomController extends GetxController {
           roomId: roomId,
         ));
       } else {
+
         roomsList.removeWhere((element) => element.id == roomId);
-        Get.snackbar(
-            '', "There was an error adding you to the room, Try again later");
+
       }
     } else {
       await fetchRooms();
@@ -609,11 +617,10 @@ class RoomController extends GetxController {
         Get.back();
         roomsList
             .removeWhere((element) => element["_id"] == currentRoom.value.id);
-        Get.snackbar('', "Room has ended");
+       // Get.snackbar('', "Room has ended");
 
         await RoomAPI().deleteARoom(currentRoom.value.id!);
         currentRoom.value = RoomModel();
-
         leaveAgora();
       }
     }, joinChannelSuccess: (String channel, int uid, int elapsed) {

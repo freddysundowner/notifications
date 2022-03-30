@@ -68,14 +68,14 @@ class CheckOut extends StatelessWidget {
                               checkOutController.address.value == null
                                   ? "Select Address"
                                   : "Change Address",
-                              style: TextStyle(color: primarycolor),
+                              style: const TextStyle(color: primarycolor),
                             )),
                       ),
                       SizedBox(height: 20.h),
                       Obx(() => checkOutController.address.value != null
                           ? buildAddressItemCard(
                               checkOutController.address.value!, context)
-                          : Text("")),
+                          : const Text("")),
                     ],
                   ),
                 ),

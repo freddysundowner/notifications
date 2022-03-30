@@ -206,7 +206,13 @@ class HomePage extends StatelessWidget {
 
                   return InkWell(
                     onTap: () async {
-                      await _homeController.joinRoom(roomModel.id!);
+                      if (roomModel.id != null) {
+                        await _homeController.joinRoom(roomModel.id!);
+                      }  else {
+                        Get.snackbar(
+                            '', "Room ended");
+                      }
+
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

@@ -63,22 +63,6 @@ class IndividualOrderScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 0.1.sh,
-                  ),
-                  Container(
-                    width: 0.9.sw,
-                    height: 0.05.sh,
-                    color: Colors.red,
-                    child: Center(
-                        child: Text(
-                      "Leave feedback".toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.bold),
-                    )),
-                  )
                 ],
               ),
             ),

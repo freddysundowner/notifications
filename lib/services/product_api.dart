@@ -33,16 +33,27 @@ class ProductPI {
     return jsonDecode(products);
   }
 
+  getProductById(String productId) async {
+    var productres = await DbBase()
+        .databaseRequest(updateproduct + productId, DbBase().getRequestType);
+    return jsonDecode(productres);
+  }
+
+  singleProductQtyCheck(String productId) async {
+    var productres = await DbBase().databaseRequest(
+        singleproductqtycheck + productId, DbBase().getRequestType);
+    return jsonDecode(productres);
+  }
+
   static String getPathForProductImage(String id, int index) {
     String path = "products/images/$id";
     return path + "_$index";
   }
 
   static saveProduct(Map<String, dynamic> productdata) async {
-
     var response = await DbBase().databaseRequest(
-        config.products +
-            Get.find<AuthController>().currentuser!.shopId!.id!, DbBase().postRequestType,
+        config.products + Get.find<AuthController>().currentuser!.shopId!.id!,
+        DbBase().postRequestType,
         body: productdata);
     return jsonDecode(response);
   }

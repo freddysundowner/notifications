@@ -14,5 +14,6 @@ class CheckOutController extends GetxController {
   RxString selectetedvariationvalue = "".obs;
   RxInt ordertotal = 0.obs;
   RxInt shipping = 0.obs;
+  var msg = "".obs;
   RxInt tax = 0.obs;
 }

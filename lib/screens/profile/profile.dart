@@ -152,18 +152,18 @@ class Profile extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () async {
-                                      if (profile.followers!.contains(
+                                      if (profile.followers.contains(
                                           FirebaseAuth
                                               .instance.currentUser!.uid)) {
                                         _userController
-                                            .currentProfile.value.followers!
+                                            .currentProfile.value.followers
                                             .remove(FirebaseAuth
-                                                .instance.currentUser!.uid);
+                                            .instance.currentUser!.uid);
                                         _userController.currentProfile.value
                                             .followersCount = _userController
-                                                .currentProfile
-                                                .value
-                                                .followersCount! -
+                                            .currentProfile
+                                            .value
+                                            .followersCount! -
                                             1;
                                         _userController.currentProfile
                                             .refresh();
@@ -174,14 +174,14 @@ class Profile extends StatelessWidget {
                                             profile.id!);
                                       } else {
                                         _userController
-                                            .currentProfile.value.followers!
+                                            .currentProfile.value.followers
                                             .add(FirebaseAuth
-                                                .instance.currentUser!.uid);
+                                            .instance.currentUser!.uid);
                                         _userController.currentProfile.value
                                             .followersCount = _userController
-                                                .currentProfile
-                                                .value
-                                                .followersCount! +
+                                            .currentProfile
+                                            .value
+                                            .followersCount! +
                                             1;
 
                                         _userController.currentProfile
@@ -197,7 +197,7 @@ class Profile extends StatelessWidget {
                                       width: 0.2.sw,
                                       height: 0.04.sh,
                                       decoration: BoxDecoration(
-                                        color: profile.followers!.contains(
+                                        color: profile.followers.contains(
                                                 FirebaseAuth
                                                     .instance.currentUser!.uid)
                                             ? Colors.grey
@@ -206,7 +206,7 @@ class Profile extends StatelessWidget {
                                       ),
                                       child: Center(
                                         child: Text(
-                                          profile.followers!.contains(
+                                          profile.followers.contains(
                                                   FirebaseAuth.instance
                                                       .currentUser!.uid)
                                               ? "UnFollow"

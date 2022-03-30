@@ -29,7 +29,11 @@ class SocketIO {
 
     socketIO.on("message", (data) {
       printOut("there is response $data");
-      onUserJoinedResponse(data);
+      try {
+        onUserJoinedResponse(data);
+      } catch (e){
+        printOut("Error on socket io use joined $e");
+      }
     });
 
     socketIO.on("user_left_${_roomController.currentRoom.value.id}", (data) {

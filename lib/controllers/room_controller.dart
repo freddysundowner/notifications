@@ -63,8 +63,8 @@ class RoomController extends GetxController {
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-
   }
+
   @override
   void onInit() {
     getRooms();
@@ -377,8 +377,6 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-
-
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -419,10 +417,9 @@ class RoomController extends GetxController {
 
     currentRoom.value = RoomModel();
 
-
-    try{
+    try {
       leaveAgora();
-    }catch(e) {
+    } catch (e) {
       printOut("Error leaving agora");
     }
   }
@@ -447,8 +444,6 @@ class RoomController extends GetxController {
         Get.to(RoomPage(
           roomId: roomId,
         ));
-
-        socketIO.socketIO.emit("message", {"user": "aaa"});
       } else {
         roomsList.removeWhere((element) => element.id == roomId);
         Get.snackbar(

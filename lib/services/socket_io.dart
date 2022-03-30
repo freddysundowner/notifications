@@ -14,7 +14,8 @@ class SocketIO {
       onUserJoinedResponse,
       onUserLeftResponse,
       onMoveToAudienceResponse,
-      onAddToRaisedHandsResponse}) {
+      onAddToRaisedHandsResponse,
+        onDisconnected}) {
 
     socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
       'transports': ['websocket'],
@@ -29,11 +30,7 @@ class SocketIO {
 
     socketIO.on("message", (data) {
       printOut("there is response $data");
-      try {
-        onUserJoinedResponse(data);
-      } catch (e){
-        printOut("Error on socket io use joined $e");
-      }
+      onUserJoinedResponse(data);
     });
 
     socketIO.on("user_left_${_roomController.currentRoom.value.id}", (data) {
@@ -61,8 +58,8 @@ class SocketIO {
     });
 
     socketIO.on("disconnect", (data) {
-      printOut("Socket Disconnected Unexpectedly..");
-      // onSocketDisconnected(socketIO);
+      print("Socket Disconnected Unexpectedly..");
+      onDisconnected(data);
     });
 
     return socketIO;

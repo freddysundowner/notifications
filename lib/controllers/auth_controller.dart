@@ -9,6 +9,8 @@ import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/services/client.dart';
+import 'package:fluttergistshop/services/configs.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/socket_io.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -18,10 +20,12 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../services/connection_state.dart';
 
-SocketIO socketIO =  new SocketIO();
 class AuthController extends GetxController {
   Rxn<UserModel> usermodel = Rxn<UserModel>();
   UserModel? get currentuser => usermodel.value;
@@ -35,13 +39,8 @@ class AuthController extends GetxController {
   final TextEditingController bioFieldController = TextEditingController();
   var connectionstate = true.obs;
 
-  // ConnectivityResult _connectionStatus = ConnectivityResult.none;
-  // final Connectivity _connectivity = Connectivity();
-  // late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-
   var error = "".obs;
   var isLoading = true.obs;
-  StreamSubscription? _connectionChangeStream;
 
   Rx<File> _chosenImage = Rx(File(""));
   File get chosenImage => _chosenImage.value;
@@ -50,27 +49,14 @@ class AuthController extends GetxController {
   }
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
-  // late IO.Socket socket;
-
+  SocketIO _socketIO = new SocketIO();
   @override
   void onInit() {
     super.onInit();
-    socketIO.init(onSocketConnected: (data)=>print("socket io connected"));
 
-    // socket = IO.io("http://52.43.151.113", <String, dynamic>{
-    //   "transports": ["websocket"],
-    //   "autoConnect": false,
-    // });
-    // socket.connect();
-    // socket.onConnect((data) {
-    //   print("Connected");
-    //   socket.on("message", (msg) {
-    //     print(msg);
-    //   });
-    // });
-    //
-    // socket.emit(
-    //     "message", {"message": "test", "sourceId": "me", "targetId": "tt"});
+    _socketIO.init(onSocketConnected: (data) => print("onSocketConnected"));
+
+    _socketIO.socketIO.emit("message", "data");
 
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {

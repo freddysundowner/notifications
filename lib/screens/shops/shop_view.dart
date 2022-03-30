@@ -35,26 +35,26 @@ class ShopView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         actions: [
-          // Obx(() {
-          //   return Container(
-          //     child: shopController.currentShop.value.id ==
-          //             authController.currentuser!.shopId!.id
-          //         ? InkWell(
-          //             onTap: () async {
-          //               await openOrCloseShop();
-          //             },
-          //             // child: Image.asset(
-          //             //   shopController.currentShop.value.open == true
-          //             //       ? closeShopIcon
-          //             //       : openShopIcon,
-          //             //   color: Colors.black,
-          //             //   height: 0.01.sh,
-          //             //   width: 0.1.sw,
-          //             // ),
-          //           )
-          //         : Container(),
-          //   );
-          // }),
+          Obx(() {
+            return Container(
+              child: shopController.currentShop.value.id ==
+                      authController.currentuser!.shopId!.id
+                  ? InkWell(
+                      onTap: () async {
+                        await openOrCloseShop();
+                      },
+                      child: Image.asset(
+                        shopController.currentShop.value.open == true
+                            ? closeShopIcon
+                            : openShopIcon,
+                        color: Colors.black,
+                        height: 0.01.sh,
+                        width: 0.1.sw,
+                      ),
+                    )
+                  : Container(),
+            );
+          }),
           SizedBox(
             width: 0.03.sw,
           )
@@ -67,57 +67,60 @@ class ShopView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: shopController.currentShop.value.image != ""
-                              ? DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: CachedNetworkImageProvider(imageUrl +
-                                      shopController.currentShop.value.image!))
-                              : const DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage(
-                                      "assets/icons/no_image.png")))),
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          shopController.currentShop.value.name!,
-                          style:
-                              TextStyle(fontSize: 13.sp, color: Colors.black),
-                        ),
-                        Text(
-                          shopController.currentShop.value.email!,
-                          style: TextStyle(fontSize: 14.sp),
-                        ),
-                      ],
+              Obx(() {
+                return Row(
+                  children: [
+                    Container(
+                        width: 100.0,
+                        height: 100.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: shopController.currentShop.value.image != ""
+                                ? DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: CachedNetworkImageProvider(imageUrl +
+                                        shopController
+                                            .currentShop.value.image!))
+                                : const DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage(
+                                        "assets/icons/no_image.png")))),
+                    SizedBox(
+                      width: 20.w,
                     ),
-                  ),
-                  if (authController.currentuser!.shopId != null &&
-                      shopController.currentShop.value.id ==
-                          authController.currentuser!.shopId?.id)
-                    InkWell(
-                      onTap: () {
-                        Get.to(() => NewShop());
-                      },
-                      child: Icon(
-                        Icons.edit,
-                        color: primarycolor,
-                        size: 30.sm,
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            shopController.currentShop.value.name!,
+                            style:
+                                TextStyle(fontSize: 13.sp, color: Colors.black),
+                          ),
+                          Text(
+                            shopController.currentShop.value.email!,
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
+                        ],
                       ),
                     ),
-                ],
-              ),
+                    if (authController.currentuser!.shopId != null &&
+                        shopController.currentShop.value.id ==
+                            authController.currentuser!.shopId?.id)
+                      InkWell(
+                        onTap: () {
+                          Get.to(() => NewShop());
+                        },
+                        child: Icon(
+                          Icons.edit,
+                          color: primarycolor,
+                          size: 30.sm,
+                        ),
+                      ),
+                  ],
+                );
+              }),
               SizedBox(
                 height: 10.h,
               ),

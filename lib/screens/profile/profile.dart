@@ -307,7 +307,7 @@ class Profile extends StatelessWidget {
                               height: 0.02.sh,
                             ),
                             Obx(() {
-                              if (productController.products.length > 0) {
+                              if (productController.products.isNotEmpty) {
                                 return Column(
                                   children: [
                                     Row(

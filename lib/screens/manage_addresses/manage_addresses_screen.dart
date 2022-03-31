@@ -134,34 +134,31 @@ class ManageAddressesScreen extends StatelessWidget {
       },
     );
 
-    // if (confirmDeletion) {
-    //   bool status = false;
-    //   String snackbarMessage;
-    //   try {
-    //     status =
-    //         await UserDatabaseHelper().deleteAddressForCurrentUser(addressId);
-    //     if (status == true) {
-    //       snackbarMessage = "Address deleted successfully";
-    //     } else {
-    //       throw "Coulnd't delete address due to unknown reason";
-    //     }
-    //   } on FirebaseException catch (e) {
-    //     Logger().w("Firebase Exception: $e");
-    //     snackbarMessage = "Something went wrong";
-    //   } catch (e) {
-    //     Logger().w("Unknown Exception: $e");
-    //     snackbarMessage = e.toString();
-    //   } finally {
-    //     Logger().i(snackbarMessage);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //         content: Text(snackbarMessage),
-    //       ),
-    //     );
-    //   }
-    //   await refreshPage();
-    //   return status;
-    // }
+    if (confirmDeletion) {
+      bool status = false;
+      String snackbarMessage = "";
+      try {
+        status = await UserAPI.deleteAddressForCurrentUser(addressId);
+        if (status == true) {
+          snackbarMessage = "Address deleted successfully";
+        } else {
+          throw "Coulnd't delete address due to unknown reason";
+        }
+      } on FirebaseException catch (e) {
+        snackbarMessage = "Something went wrong";
+      } catch (e) {
+        print(e.toString());
+        snackbarMessage = e.toString();
+      } finally {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+      }
+      await refreshPage();
+      return status;
+    }
     return false;
   }
 

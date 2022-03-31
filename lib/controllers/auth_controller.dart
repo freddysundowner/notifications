@@ -4,13 +4,19 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/controllers/activity_controller.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
+import 'package:fluttergistshop/controllers/checkout_controller.dart';
+import 'package:fluttergistshop/controllers/favorite_controller.dart';
+import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
+import 'package:fluttergistshop/controllers/wallet_controller.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
-import 'package:fluttergistshop/services/client.dart';
-import 'package:fluttergistshop/services/configs.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/socket_io.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -20,8 +26,6 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
 import '../services/connection_state.dart';
 
@@ -178,6 +182,16 @@ class AuthController extends GetxController {
 
     dispose();
     ChatController().dispose();
+    RoomController().dispose();
+    CheckOutController().dispose();
+    RoomController().dispose();
+    ActivityController().dispose();
+    FavoriteController().dispose();
+    ProductController().dispose();
+    ShopController().dispose();
+    UserController().dispose();
+    WalletController().dispose();
+
   }
 
   handleAuth() {

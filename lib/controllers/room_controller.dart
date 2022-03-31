@@ -137,7 +137,8 @@ class RoomController extends GetxController {
           Get.offAll(HomePage());
           Get.snackbar(
               "", "There was an error creating your room. Try again later");
-          await RoomAPI().deleteARoom(roomId);
+
+          endRoom(roomId);
         }
       } else {
         Get.offAll(HomePage());
@@ -242,7 +243,7 @@ class RoomController extends GetxController {
         }else {
           Get.snackbar(
             '', "There was an error adding you to the room, Try again later",).show();
-          await RoomAPI().deleteARoom(roomId);
+          endRoom(roomId);
         }
       } else {
         Get.snackbar('', "Room has ended");
@@ -277,7 +278,7 @@ class RoomController extends GetxController {
         currentRoom.value.userIds!.add(user);
 
         currentRoom.refresh();
-
+        emitRoom(currentUser: user, action: "join");
         //Add user to room
         await RoomAPI().updateRoomById({
           "title": currentRoom.value.title ?? " ",
@@ -302,6 +303,7 @@ class RoomController extends GetxController {
 
       currentRoom.refresh();
 
+      emitRoom(currentUser: user, action: "add_speaker");
       //Add user to speakers
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
@@ -328,6 +330,8 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
 
+    emitRoom(currentUser: user, action: "added_raised_hands");
+
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
       "title": currentRoom.value.title ?? " ",
@@ -342,6 +346,7 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
 
+    emitRoom(currentUser: user, action: "remove_speaker");
     //Add user to speakers
     await RoomAPI().updateRoomById({
       "title": currentRoom.value.title ?? " ",
@@ -364,6 +369,7 @@ class RoomController extends GetxController {
 
       currentRoom.refresh();
 
+      emitRoom(currentUser: user, action: "add_speaker");
       //Add user to speakers
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
@@ -382,6 +388,7 @@ class RoomController extends GetxController {
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
   }
 
   Future<void> leaveRoom(OwnerId user) async {
@@ -394,7 +401,7 @@ class RoomController extends GetxController {
         currentRoom.value.hostIds!
                 .indexWhere((element) => element.id == user.id) ==
             0) {
-      await RoomAPI().deleteARoom(currentRoom.value.id!);
+      endRoom(currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
               .indexWhere((element) => element.id == user.id) >
@@ -433,8 +440,10 @@ class RoomController extends GetxController {
     }
   }
 
-  endRoom() {
-    emitRoom(action: "leave");
+  endRoom(String roomId) async {
+    emitRoom(action: "room_ended");
+    await RoomAPI().deleteARoom(roomId);
+    currentRoom.value = RoomModel();
   }
 
   Future<void> joinRoom(String roomId) async {
@@ -457,7 +466,7 @@ class RoomController extends GetxController {
         Get.to(RoomPage(
           roomId: roomId,
         ));
-        emitRoom(currentUser: currentUser, action: "join");
+
       } else {
 
         roomsList.removeWhere((element) => element.id == roomId);
@@ -636,8 +645,8 @@ class RoomController extends GetxController {
             .removeWhere((element) => element["_id"] == currentRoom.value.id);
        // Get.snackbar('', "Room has ended");
 
-        await RoomAPI().deleteARoom(currentRoom.value.id!);
-        currentRoom.value = RoomModel();
+        endRoom(currentRoom.value.id!);
+
         leaveAgora();
       }
     }, joinChannelSuccess: (String channel, int uid, int elapsed) {

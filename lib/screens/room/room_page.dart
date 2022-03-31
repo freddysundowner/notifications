@@ -37,29 +37,84 @@ class RoomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    printOut("Room id in room build $roomId");
+    //Listener for room activities
     customSocketIO.socketIO.on(roomId, (data) {
-      printOut("there is response $data");
+
       var decodedData = jsonDecode(data);
-      printOut("there is response, action  ${decodedData["action"]}");
       var user = OwnerId.fromJson(decodedData["userData"]);
 
+      printOut("there is response, action  ${decodedData["action"]}");
+
       if (decodedData["action"] == "join") {
+        //if user is not already in room, add them
         if (_homeController.currentRoom.value.userIds!
-            .indexWhere((element) => element.id == user.id) <
+                .indexWhere((element) => element.id == user.id) <
             0) {
           _homeController.currentRoom.value.userIds!.add(user);
           _homeController.currentRoom.refresh();
         }
-      }
-      if (decodedData["action"] == "leave") {
+      } else if (decodedData["action"] == "leave") {
         printOut("leaving");
-        _homeController.currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
+
+        //Remove user who has left room
+        _homeController.currentRoom.value.userIds!
+            .removeWhere((element) => element.id == user.id);
+        _homeController.currentRoom.refresh();
+      } else if (decodedData["action"] == "room_ended") {
+        printOut("room_ended");
+
+        //Remove user from room that has ended, and show them a message.
+        Get.snackbar('', 'Room ended', duration: const Duration(seconds: 2));
+
+        Future.delayed(const Duration(seconds: 3), () {
+          _homeController.currentRoom.value = RoomModel();
+          Get.offAll(HomePage());
+        });
+      } else if (decodedData["action"] == "add_speaker") {
+        printOut("add_speaker");
+
+        //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
+        if (user.id == currentUser.id) {
+          Get.snackbar('', 'You have been added to speaker',
+              duration: const Duration(seconds: 2));
+        }
+
+        _homeController.currentRoom.value.speakerIds!.add(user);
+        _homeController.currentRoom.value.userIds!
+            .removeWhere((element) => element.id == user.id);
+        _homeController.currentRoom.value.raisedHands!
+            .removeWhere((element) => element.id == user.id);
+
+        _homeController.currentRoom.refresh();
+      } else if (decodedData["action"] == "remove_speaker") {
+        //Remove user from speaker and tell them and add them to audience
+        printOut("remove_speaker");
+
+        if (user.id == currentUser.id) {
+          Get.snackbar('', 'You have been removed from being a speaker',
+              duration: const Duration(seconds: 2));
+        }
+
+        _homeController.currentRoom.value.userIds!.add(user);
+        _homeController.currentRoom.value.speakerIds!
+            .removeWhere((element) => element.id == user.id);
+
+        _homeController.currentRoom.refresh();
+      } else if (decodedData["action"] == "added_raised_hands") {
+        printOut("add_speaker");
+
+        //Show snackBar to the hosts of the room
+        if (_homeController.currentRoom.value.hostIds!
+                .indexWhere((element) => element.id == currentUser.id) !=
+            -1) {
+          Get.snackbar(
+              '', '${user.firstName} has raised their hand. Let them speak?',
+              duration: const Duration(seconds: 2));
+        }
+        //Add user to raised hands
+        _homeController.currentRoom.value.raisedHands!.add(user);
         _homeController.currentRoom.refresh();
       }
-
-
-      // onUserJoinedResponse(data);
     });
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,

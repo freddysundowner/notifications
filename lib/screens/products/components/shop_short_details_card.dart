@@ -30,10 +30,10 @@ class ShopShortDetailCard extends StatelessWidget {
                     ? CachedNetworkImage(
                         errorWidget: (context, String, dynamic) => Image.asset(
                           imageplaceholder,
-                          fit: BoxFit.contain,
+                          fit: BoxFit.cover,
                         ),
                         imageUrl: product!.images![0],
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
                       )
                     : Image.asset(
                         imageplaceholder,
@@ -42,22 +42,22 @@ class ShopShortDetailCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 20.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product!.name!,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: kTextColor,
-                  ),
+          SizedBox(width: 10.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                product!.name!,
+                softWrap: false,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: kTextColor,
                 ),
+              ),
+              if (product!.description!.isNotEmpty)
                 Text(
                   product!.description.toString(),
                   softWrap: true,
@@ -69,16 +69,15 @@ class ShopShortDetailCard extends StatelessWidget {
                   ),
                   maxLines: 2,
                 ),
-                Text(
-                  "$currencySymbol${product!.price}    ",
-                  style: TextStyle(
-                    color: secondaryColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12.sp,
-                  ),
+              Text(
+                "$currencySymbol${product!.price}    ",
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

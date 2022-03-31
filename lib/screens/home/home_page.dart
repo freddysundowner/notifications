@@ -36,6 +36,7 @@ class HomePage extends StatelessWidget {
       profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
   HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,11 +69,14 @@ class HomePage extends StatelessWidget {
             ),
             InkWell(
               onTap: () => Get.to(() => Favorites()),
-              child: Image(
-                image: AssetImage(
-                  "assets/images/tab_saved.png",
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: Image(
+                  image: AssetImage(
+                    "assets/images/tab_saved.png",
+                  ),
+                  width: 15.w,
                 ),
-                width: 15.w,
               ),
             ),
             SizedBox(

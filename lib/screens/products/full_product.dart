@@ -19,8 +19,31 @@ class FullProduct extends StatelessWidget {
   ProductController productController = Get.find<ProductController>();
   FullProduct({Key? key, required this.product}) : super(key: key);
 
-  _addToSaved() async {
-    Get.find<FavoriteController>().saveFavorite(product.id!);
+  _addToSaved(BuildContext context) async {
+    var response;
+    var adding = false;
+    if (Get.find<FavoriteController>()
+            .products
+            .value
+            .indexWhere((element) => element.id == product.id) !=
+        -1) {
+      adding = false;
+      response = Get.find<FavoriteController>().deleteFavorite(product.id!);
+    } else {
+      adding = true;
+      response = Get.find<FavoriteController>().saveFavorite(product.id!);
+    }
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AsyncProgressDialog(
+          response,
+          message:
+              Text(adding == false ? "removing favorite" : "adding favorite"),
+          onError: (e) {},
+        );
+      },
+    );
   }
 
   final _snackBarMessage = "Product added to the cart";
@@ -102,7 +125,7 @@ class FullProduct extends StatelessWidget {
                             children: [
                               GestureDetector(
                                 onTap: () async {
-                                  await _addToSaved();
+                                  await _addToSaved(context);
                                   GetSnackBar(
                                     message: _snackBarMessage,
                                   );

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
   var currentsearchtab = 0.obs;
-
+  var tabPosition = 0.obs;
   TextEditingController searchShopController = TextEditingController();
   var isSearching = false.obs;
 

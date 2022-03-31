@@ -177,7 +177,8 @@ class UserAPI {
   static deleteAddressForCurrentUser(String addressId) async {
     var response = await DbBase().databaseRequest(
         config.address + addressId, DbBase().deleteRequestType);
-    return response;
+    print("deleteAddressForCurrentUser $response");
+    return jsonDecode(response)["success"];
   }
 
   String getPathForCurrentUserDisplayPicture() {

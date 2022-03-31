@@ -1,14 +1,11 @@
-
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CustomSocketIO {
-
-
   final RoomController _roomController = Get.put(RoomController());
- late IO.Socket socketIO;
+  late IO.Socket socketIO;
 
   IO.Socket init(
       {onSocketConnected,
@@ -17,36 +14,8 @@ class CustomSocketIO {
       onUserLeftResponse,
       onMoveToAudienceResponse,
       onAddToRaisedHandsResponse,
-        onDisconnected}) {
-
-    socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
-      'transports': ['websocket'],
-      'upgrade': false,
-      'forceNew':true,
-    });
-
-    socketIO.connect();
-    socketIO.on("connect", (data) {
-      printOut("Connection Successfully Established...");
-      onSocketConnected(socketIO);
-    });
-
-
-
-    socketIO.on("user_to_speaker_${_roomController.currentRoom.value.id}", (data) {
-      printOut("there is response");
-      onAddToSpeakerResponse(data);
-    });
-
-    socketIO.on("user_to_audience_${_roomController.currentRoom.value.id}", (data) {
-      printOut("there is response");
-      onMoveToAudienceResponse(data);
-    });
-
-    socketIO.on("user_to_raised_hands_${_roomController.currentRoom.value.id}", (data) {
-      printOut("there is response");
-      onAddToRaisedHandsResponse(data);
-    });
+      onDisconnected}) {
+    _connectSocket(onSocketConnected);
 
     socketIO.on("reconnect", (data) {
       printOut("Socket Connected Again.. Reconnection");
@@ -56,23 +25,25 @@ class CustomSocketIO {
       print("Socket Disconnected Unexpectedly..");
 
       try {
-      // socketIO.clearListeners();
-       socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
-         'transports': ['websocket'],
-         'upgrade': false,
-         'forceNew':true,
-       });
-       socketIO.connect();
-       socketIO.on("connect", (data) {
-         printOut("Connection Successfully Established...");
-         onSocketConnected(socketIO);
-       });
-
-      } catch(e, s) {
+        _connectSocket(onSocketConnected);
+      } catch (e, s) {
         printOut("Error on disconnecting socket $e $s");
       }
     });
 
     return socketIO;
+  }
+
+  void _connectSocket(onSocketConnected) {
+    socketIO = IO.io("http://52.43.151.113:5000", <String, dynamic>{
+      'transports': ['websocket'],
+      'upgrade': false,
+      'forceNew': true,
+    });
+    socketIO.connect();
+    socketIO.on("connect", (data) {
+      printOut("Connection Successfully Established...");
+      onSocketConnected(socketIO);
+    });
   }
 }

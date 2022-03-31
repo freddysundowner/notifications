@@ -49,14 +49,14 @@ class ShopShortDetailCard extends StatelessWidget {
               children: [
                 Text(
                   product!.name!,
-                  softWrap: true,
+                  softWrap: false,
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: kTextColor,
                   ),
-                  maxLines: 2,
                 ),
                 Text(
                   product!.description.toString(),

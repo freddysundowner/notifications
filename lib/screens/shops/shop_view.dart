@@ -60,136 +60,138 @@ class ShopView extends StatelessWidget {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Obx(() {
-                return Row(
-                  children: [
-                    Container(
-                        width: 100.0,
-                        height: 100.0,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: shopController.currentShop.value.image != ""
-                                ? DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: CachedNetworkImageProvider(imageUrl +
-                                        shopController
-                                            .currentShop.value.image!))
-                                : const DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(
-                                        "assets/icons/no_image.png")))),
-                    SizedBox(
-                      width: 20.w,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            shopController.currentShop.value.name!,
-                            style:
-                                TextStyle(fontSize: 13.sp, color: Colors.black),
-                          ),
-                          Text(
-                            shopController.currentShop.value.email!,
-                            style: TextStyle(fontSize: 14.sp),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (authController.currentuser!.shopId != null &&
-                        shopController.currentShop.value.id ==
-                            authController.currentuser!.shopId?.id)
-                      InkWell(
-                        onTap: () {
-                          Get.to(() => NewShop());
-                        },
-                        child: Icon(
-                          Icons.edit,
-                          color: primarycolor,
-                          size: 30.sm,
-                        ),
-                      ),
-                  ],
-                );
-              }),
-              SizedBox(
-                height: 10.h,
-              ),
-              Text(
-                shopController.currentShop.value.description!,
-                style: TextStyle(fontSize: 14.sp, color: Colors.black),
-              ),
-              SizedBox(
-                height: 5.h,
-              ),
-              const Divider(
-                color: primarycolor,
-              ),
-              Text("Products", style: headingStyle),
-              Stack(
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Obx(() {
+              return Row(
                 children: [
-                  GetX<ProductController>(initState: (_) async {
-                    Get.find<ProductController>().products =
-                        await ProductController.getProductsByShop(
-                            shopController.currentShop.value.id!);
-                  }, builder: (_) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: _.products.isNotEmpty
-                          ? ListView.builder(
-                              itemCount: _.products.length,
-                              itemBuilder: (context, index) {
-                                return authController.currentuser!.shopId !=
-                                            null &&
-                                        authController.currentuser!.shopId !=
-                                            null &&
-                                        shopController.currentShop.value.id ==
-                                            authController
-                                                .currentuser!.shopId!.id
-                                    ? buildProductDismissible(
-                                        _.products[index], context)
-                                    : ShopShortDetailCard(
-                                        product: _.products[index],
-                                        onPressed: () {
-                                          printOut("v");
-                                          Get.to(() => FullProduct(
-                                              product: _.products[index]));
-                                        },
-                                      );
-                              })
-                          : const Text("No Products yet"),
-                    );
-                    // return Column(
-                    //   children: _.products.map((e) => Text(e.name)).toList(),
-                    // );
-                  }),
+                  Container(
+                      width: 100.0,
+                      height: 100.0,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: shopController.currentShop.value.image != ""
+                              ? DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: CachedNetworkImageProvider(imageUrl +
+                                      shopController.currentShop.value.image!))
+                              : const DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage(
+                                      "assets/icons/no_image.png")))),
+                  SizedBox(
+                    width: 20.w,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          shopController.currentShop.value.name!,
+                          style:
+                              TextStyle(fontSize: 13.sp, color: Colors.black),
+                        ),
+                        Text(
+                          shopController.currentShop.value.email!,
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                      ],
+                    ),
+                  ),
                   if (authController.currentuser!.shopId != null &&
-                      shopController.currentShop.value.id !=
+                      shopController.currentShop.value.id ==
                           authController.currentuser!.shopId?.id)
-                    Obx(() {
-                      return shopController.currentShop.value.open == false
-                          ? Center(
-                              child: Image.asset(
-                              shopClosedIcon,
-                              color: Colors.red,
-                              height: 0.3.sh,
-                              width: 0.6.sw,
-                            ))
-                          : Container();
-                    })
+                    InkWell(
+                      onTap: () {
+                        Get.to(() => NewShop());
+                      },
+                      child: Icon(
+                        Icons.edit,
+                        color: primarycolor,
+                        size: 30.sm,
+                      ),
+                    ),
                 ],
-              )
-            ],
-          ),
+              );
+            }),
+            SizedBox(
+              height: 10.h,
+            ),
+            Text(
+              shopController.currentShop.value.description!,
+              style: TextStyle(fontSize: 14.sp, color: Colors.black),
+            ),
+            SizedBox(
+              height: 5.h,
+            ),
+            const Divider(
+              color: primarycolor,
+            ),
+            Text("Products", style: headingStyle),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Stack(
+                  children: [
+                    GetX<ProductController>(initState: (_) async {
+                      Get.find<ProductController>().products =
+                          await ProductController.getProductsByShop(
+                              shopController.currentShop.value.id!);
+                    }, builder: (_) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: _.products.isNotEmpty
+                            ? ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: _.products.length,
+                                itemBuilder: (context, index) {
+                                  return authController.currentuser!.shopId !=
+                                              null &&
+                                          authController.currentuser!.shopId !=
+                                              null &&
+                                          shopController.currentShop.value.id ==
+                                              authController
+                                                  .currentuser!.shopId!.id
+                                      ? buildProductDismissible(
+                                          _.products[index], context)
+                                      : ShopShortDetailCard(
+                                          product: _.products[index],
+                                          onPressed: () {
+                                            printOut("v");
+                                            Get.to(() => FullProduct(
+                                                product: _.products[index]));
+                                          },
+                                        );
+                                })
+                            : const Text("No Products yet"),
+                      );
+                      // return Column(
+                      //   children: _.products.map((e) => Text(e.name)).toList(),
+                      // );
+                    }),
+                    if (authController.currentuser!.shopId != null &&
+                        shopController.currentShop.value.id !=
+                            authController.currentuser!.shopId?.id)
+                      Obx(() {
+                        return shopController.currentShop.value.open == false
+                            ? Center(
+                                child: Image.asset(
+                                shopClosedIcon,
+                                color: Colors.red,
+                                height: 0.3.sh,
+                                width: 0.6.sw,
+                              ))
+                            : Container();
+                      })
+                  ],
+                ),
+              ),
+            )
+          ],
         ),
       ),
       floatingActionButton: authController.currentuser!.shopId != null &&
@@ -238,7 +240,6 @@ class ShopView extends StatelessWidget {
       child: ShopShortDetailCard(
         product: product,
         onPressed: () {
-          printOut("v");
           Get.to(() => FullProduct(product: product));
         },
       ),

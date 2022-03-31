@@ -174,6 +174,12 @@ class UserAPI {
     return response;
   }
 
+  static deleteAddressForCurrentUser(String addressId) async {
+    var response = await DbBase().databaseRequest(
+        config.address + addressId, DbBase().deleteRequestType);
+    return response;
+  }
+
   String getPathForCurrentUserDisplayPicture() {
     final String currentUserUid = FirebaseAuth.instance.currentUser!.uid;
     return "user/display_picture/$currentUserUid";
@@ -202,5 +208,4 @@ class UserAPI {
   static removeDisplayPictureForCurrentUser() {}
 
   static addFavorite(String s) {}
-
 }

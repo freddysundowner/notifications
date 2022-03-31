@@ -39,7 +39,6 @@ class RoomPage extends StatelessWidget {
   Widget build(BuildContext context) {
     //Listener for room activities
     customSocketIO.socketIO.on(roomId, (data) {
-
       var decodedData = jsonDecode(data);
       var user = OwnerId.fromJson(decodedData["userData"]);
 
@@ -73,33 +72,43 @@ class RoomPage extends StatelessWidget {
       } else if (decodedData["action"] == "add_speaker") {
         printOut("add_speaker");
 
-        //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
-        if (user.id == currentUser.id) {
-          Get.snackbar('', 'You have been added to speaker',
-              duration: const Duration(seconds: 2));
+        if (_homeController.currentRoom.value.speakerIds!
+                .indexWhere((element) => element.id == user.id) ==
+            -1) {
+          _homeController.currentRoom.value.speakerIds!.add(user);
+
+          //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
+          if (user.id == currentUser.id) {
+            Get.snackbar('', 'You have been added to speaker',
+                duration: const Duration(seconds: 2));
+          }
+
+          _homeController.currentRoom.value.userIds!
+              .removeWhere((element) => element.id == user.id);
+          _homeController.currentRoom.value.raisedHands!
+              .removeWhere((element) => element.id == user.id);
+
+          _homeController.currentRoom.refresh();
         }
-
-        _homeController.currentRoom.value.speakerIds!.add(user);
-        _homeController.currentRoom.value.userIds!
-            .removeWhere((element) => element.id == user.id);
-        _homeController.currentRoom.value.raisedHands!
-            .removeWhere((element) => element.id == user.id);
-
-        _homeController.currentRoom.refresh();
       } else if (decodedData["action"] == "remove_speaker") {
-        //Remove user from speaker and tell them and add them to audience
-        printOut("remove_speaker");
+        if (_homeController.currentRoom.value.userIds!
+                .indexWhere((element) => element.id == user.id) ==
+            -1) {
+          _homeController.currentRoom.value.userIds!.add(user);
 
-        if (user.id == currentUser.id) {
-          Get.snackbar('', 'You have been removed from being a speaker',
-              duration: const Duration(seconds: 2));
+          //Remove user from speaker and tell them and add them to audience
+          printOut("remove_speaker");
+
+          if (user.id == currentUser.id) {
+            Get.snackbar('', 'You have been removed from being a speaker',
+                duration: const Duration(seconds: 2));
+          }
+
+          _homeController.currentRoom.value.speakerIds!
+              .removeWhere((element) => element.id == user.id);
+
+          _homeController.currentRoom.refresh();
         }
-
-        _homeController.currentRoom.value.userIds!.add(user);
-        _homeController.currentRoom.value.speakerIds!
-            .removeWhere((element) => element.id == user.id);
-
-        _homeController.currentRoom.refresh();
       } else if (decodedData["action"] == "added_raised_hands") {
         printOut("add_speaker");
 

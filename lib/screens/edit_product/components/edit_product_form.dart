@@ -152,6 +152,7 @@ class EditProductForm extends StatelessWidget {
                 snackbarMessage = productController.error.value;
 
                 var waitedResponse = await response;
+                print("after updating.. ${waitedResponse["data"]}");
                 Product productresponse =
                     Product.fromJson(waitedResponse["data"]);
                 productresponse.ownerId =
@@ -182,14 +183,6 @@ class EditProductForm extends StatelessWidget {
                     snackbarMessage = product != null
                         ? "Product updated successfully"
                         : "Product uploaded successfully";
-                    if (product == null) {
-                      await ProductController.getProductsByShop(
-                          Get.find<AuthController>()
-                              .usermodel
-                              .value!
-                              .shopId!
-                              .id!);
-                    }
                     productController.selectedImages.value = [];
                   } else {
                     throw "Couldn't upload product properly, please retry";
@@ -199,6 +192,15 @@ class EditProductForm extends StatelessWidget {
                 } catch (e) {
                   snackbarMessage = e.toString();
                 } finally {
+                  if (Get.find<AuthController>().usermodel.value!.shopId! !=
+                      null) {
+                    await ProductController.getProductsByShop(
+                        Get.find<AuthController>()
+                            .usermodel
+                            .value!
+                            .shopId!
+                            .id!);
+                  }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(snackbarMessage),

@@ -87,6 +87,7 @@ class WalletPage extends StatelessWidget {
                     child: _walletController.transactionsLoading.isFalse
                         ? _walletController.userTransaction.isNotEmpty
                             ? ListView.builder(
+
                                 itemCount:
                                     _walletController.userTransaction.length,
                                 itemBuilder: (context, index) {

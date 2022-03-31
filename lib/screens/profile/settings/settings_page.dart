@@ -160,7 +160,7 @@ class SettingsPage extends StatelessWidget {
                     const Divider(),
                     InkWell(
                       onTap: () {
-                        Get.to(ManageAddressesScreen());
+                        Get.to(ManageAddressesScreen(false));
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -266,7 +266,7 @@ class SettingsPage extends StatelessWidget {
                         textConfirm: "LogOut");
                   },
                   child: Text(
-                    "LogOut",
+                    "Log out",
                     style: TextStyle(color: Colors.black, fontSize: 16.sp),
                   ),
                 ),

@@ -13,6 +13,9 @@ import '../../widgets/default_button.dart';
 import 'components/address_box.dart';
 
 class ManageAddressesScreen extends StatelessWidget {
+  bool checkout = false;
+  ManageAddressesScreen(this.checkout, {Key? key}) : super(key: key);
+
   CheckOutController checkOutController = Get.find<CheckOutController>();
 
   @override
@@ -205,8 +208,12 @@ class ManageAddressesScreen extends StatelessWidget {
         child: AddressShortDetailsCard(
           address: address,
           onTap: () {
-            checkOutController.address.value = address;
-            Get.back();
+            if (checkout) {
+              checkOutController.address.value = address;
+              Get.back();
+            } else {
+              editButtonCallback(context, address);
+            }
           },
         ),
         confirmDismiss: (direction) async {

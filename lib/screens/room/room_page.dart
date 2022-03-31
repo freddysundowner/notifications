@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,6 +37,30 @@ class RoomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    printOut("Room id in room build $roomId");
+    customSocketIO.socketIO.on(roomId, (data) {
+      printOut("there is response $data");
+      var decodedData = jsonDecode(data);
+      printOut("there is response, action  ${decodedData["action"]}");
+      var user = OwnerId.fromJson(decodedData["userData"]);
+
+      if (decodedData["action"] == "join") {
+        if (_homeController.currentRoom.value.userIds!
+            .indexWhere((element) => element.id == user.id) <
+            0) {
+          _homeController.currentRoom.value.userIds!.add(user);
+          _homeController.currentRoom.refresh();
+        }
+      }
+      if (decodedData["action"] == "leave") {
+        printOut("leaving");
+        _homeController.currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
+        _homeController.currentRoom.refresh();
+      }
+
+
+      // onUserJoinedResponse(data);
+    });
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -120,7 +146,6 @@ class RoomPage extends StatelessWidget {
                     width: 0.01.sw,
                   ),
                   Obx(() {
-
                     return _homeController.currentRoom.value.id != null
                         ? SizedBox(
                             height: _homeController.isCurrentRoomLoading.isFalse
@@ -128,11 +153,9 @@ class RoomPage extends StatelessWidget {
                                 : 0.001.sh,
                             child: Obx(() {
                               //If user is not a speaker or a host, disable their audio
-                              if (_homeController.currentRoom.value
-                                  .userIds!
-                                  .indexWhere((e) =>
-                              e.id ==
-                                  currentUser.id) ==
+                              if (_homeController.currentRoom.value.userIds!
+                                      .indexWhere(
+                                          (e) => e.id == currentUser.id) ==
                                   -1) {
                                 try {
                                   _homeController.engine.enableLocalAudio(true);
@@ -147,13 +170,11 @@ class RoomPage extends StatelessWidget {
                                 return Container(
 
                                     //If user is a speaker or host, show the mic icon, else don't show it
-                                    child:
-                                            (_homeController.currentRoom.value
-                                                    .userIds!
-                                                    .indexWhere((e) =>
-                                                        e.id ==
-                                                        currentUser.id) ==
-                                                -1)
+                                    child: (_homeController
+                                                .currentRoom.value.userIds!
+                                                .indexWhere((e) =>
+                                                    e.id == currentUser.id) ==
+                                            -1)
                                         ? IconButton(
                                             onPressed: () {
                                               //If user is muted, unmute and enbale their audio vice versa
@@ -167,7 +188,8 @@ class RoomPage extends StatelessWidget {
                                                 _homeController
                                                     .audioMuted.value = false;
                                                 _homeController.engine
-                                                    .muteLocalAudioStream(false);
+                                                    .muteLocalAudioStream(
+                                                        false);
                                               }
                                             },
                                             icon: Icon(
@@ -338,7 +360,8 @@ class RoomUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    printOut("hosts Length ${_homeController.currentRoom.value.hostIds!.length}");
+    printOut(
+        "hosts Length ${_homeController.currentRoom.value.hostIds!.length}");
     return Column(
       children: [
         Align(
@@ -432,13 +455,15 @@ class RoomUser extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                         child: Center(
                             child: Text(
-                user.elementAt(index).userName == null ? " " : user.elementAt(index).userName!.length > 10
-                              ? user
-                                      .elementAt(index)
-                                      .userName!
-                                      .substring(0, 9) +
-                                  "..."
-                              : user.elementAt(index).userName!,
+                          user.elementAt(index).userName == null
+                              ? " "
+                              : user.elementAt(index).userName!.length > 10
+                                  ? user
+                                          .elementAt(index)
+                                          .userName!
+                                          .substring(0, 9) +
+                                      "..."
+                                  : user.elementAt(index).userName!,
                           style:
                               TextStyle(color: Colors.black, fontSize: 12.sp),
                         )),

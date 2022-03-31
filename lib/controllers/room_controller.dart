@@ -423,6 +423,7 @@ class RoomController extends GetxController {
       }
     }
 
+    emitRoom(currentUser: user, action: "leave");
     currentRoom.value = RoomModel();
 
     try {
@@ -430,6 +431,10 @@ class RoomController extends GetxController {
     } catch (e) {
       printOut("Error leaving agora");
     }
+  }
+
+  endRoom() {
+    emitRoom(action: "leave");
   }
 
   Future<void> joinRoom(String roomId) async {
@@ -452,6 +457,7 @@ class RoomController extends GetxController {
         Get.to(RoomPage(
           roomId: roomId,
         ));
+        emitRoom(currentUser: currentUser, action: "join");
       } else {
 
         roomsList.removeWhere((element) => element.id == roomId);
@@ -461,6 +467,15 @@ class RoomController extends GetxController {
       await fetchRooms();
     }
   }
+
+  void emitRoom({OwnerId? currentUser, required String action}) {
+
+    customSocketIO.socketIO.emit("room_changes", {
+       "action": action,
+       "userData": currentUser == null ? {} : currentUser.toJson(),
+      "roomId" : currentRoom.value.id});
+  }
+
 
   @override
   void onClose() {

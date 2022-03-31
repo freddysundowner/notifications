@@ -108,28 +108,36 @@ class Profile extends StatelessWidget {
                                     Get.to(() => ChageProfileImage());
                                   }
                                 },
-                                child: profile.profilePhoto != null ? CachedNetworkImage(
-                                  imageUrl: profile.profilePhoto!,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                        width: 0.25.sw, height: 0.14.sh,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                          "assets/icons/profile_placeholder.png", width: 0.25.sw, height: 0.14.sh),
-                                ) : CircleAvatar(
-                                  radius: 50,
-                                  child: Image.asset(
-                                      "assets/icons/profile_placeholder.png", width: 0.25.sw, height: 0.14.sh),
-                                )),
+                                child: profile.profilePhoto != null
+                                    ? CachedNetworkImage(
+                                        imageUrl: profile.profilePhoto!,
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          width: 0.25.sw,
+                                          height: 0.14.sh,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) =>
+                                            const CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                                "assets/icons/profile_placeholder.png",
+                                                width: 0.25.sw,
+                                                height: 0.14.sh),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 50,
+                                        child: Image.asset(
+                                            "assets/icons/profile_placeholder.png",
+                                            width: 0.25.sw,
+                                            height: 0.14.sh),
+                                      )),
                             InkWell(
                               onTap: () => updateName(context),
                               child: Text(
@@ -158,12 +166,12 @@ class Profile extends StatelessWidget {
                                         _userController
                                             .currentProfile.value.followers
                                             .remove(FirebaseAuth
-                                            .instance.currentUser!.uid);
+                                                .instance.currentUser!.uid);
                                         _userController.currentProfile.value
                                             .followersCount = _userController
-                                            .currentProfile
-                                            .value
-                                            .followersCount! -
+                                                .currentProfile
+                                                .value
+                                                .followersCount! -
                                             1;
                                         _userController.currentProfile
                                             .refresh();
@@ -176,12 +184,12 @@ class Profile extends StatelessWidget {
                                         _userController
                                             .currentProfile.value.followers
                                             .add(FirebaseAuth
-                                            .instance.currentUser!.uid);
+                                                .instance.currentUser!.uid);
                                         _userController.currentProfile.value
                                             .followersCount = _userController
-                                            .currentProfile
-                                            .value
-                                            .followersCount! +
+                                                .currentProfile
+                                                .value
+                                                .followersCount! +
                                             1;
 
                                         _userController.currentProfile
@@ -294,17 +302,13 @@ class Profile extends StatelessWidget {
                               height: 0.03.sh,
                             ),
                             InkWell(
-                              onTap: () => updateBio(context),
+                              onTap: () {
+                                updateBio(context);
+                              },
                               child: Text(
-                                profile.bio!,
+                                profile.bio!.isEmpty ? "Add Bio" : profile.bio!,
                                 style: TextStyle(fontSize: 15.sp),
                               ),
-                            ),
-                            SizedBox(
-                              height: 0.03.sh,
-                            ),
-                            SizedBox(
-                              height: 0.02.sh,
                             ),
                             Obx(() {
                               if (productController.products.isNotEmpty) {
@@ -324,7 +328,8 @@ class Profile extends StatelessWidget {
                                                 title:
                                                     "${profile.firstName} Products",
                                                 edit: profile.id ==
-                                                    FirebaseAuth.instance.currentUser!.uid),
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid),
                                           ),
                                           child: Text("View all",
                                               style: TextStyle(
@@ -669,6 +674,10 @@ class Profile extends StatelessWidget {
                                       return 'Please enter some text';
                                     }
                                   },
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  minLines: 3,
+                                  textInputAction: TextInputAction.newline,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
@@ -682,7 +691,6 @@ class Profile extends StatelessWidget {
                                       fontSize: 14.sp,
                                     ),
                                   ),
-                                  keyboardType: TextInputType.text,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black,

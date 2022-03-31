@@ -22,10 +22,10 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:socket_io_client/socket_io_client.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../services/connection_state.dart';
 
+late CustomSocketIO customSocketIO = CustomSocketIO();
 class AuthController extends GetxController {
   Rxn<UserModel> usermodel = Rxn<UserModel>();
   UserModel? get currentuser => usermodel.value;
@@ -49,14 +49,13 @@ class AuthController extends GetxController {
   }
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
-  SocketIO _socketIO = new SocketIO();
+
   @override
   void onInit() {
     super.onInit();
 
-    _socketIO.init(onSocketConnected: (data) => print("onSocketConnected"));
+    customSocketIO.init(onSocketConnected: (data) => print("onSocketConnected"));
 
-    _socketIO.socketIO.emit("message", "data");
 
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
@@ -71,15 +70,15 @@ class AuthController extends GetxController {
           "",
           snackPosition: SnackPosition.TOP,
           borderRadius: 0,
-          titleText: Text(
+          titleText: const Text(
             "Check your internet connection",
             style: TextStyle(
                 fontSize: 16, color: Colors.white, fontFamily: "InterBold"),
           ),
-          margin: EdgeInsets.all(0),
+          margin: const EdgeInsets.all(0),
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: Duration(hours: 6000),
+          duration: const Duration(hours: 6000),
         );
       }
     });

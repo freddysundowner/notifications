@@ -66,6 +66,18 @@ class HomePage extends StatelessWidget {
               width: 0.05.sw,
             ),
             InkWell(
+              onTap: () {},
+              child: Image(
+                image: AssetImage(
+                  "assets/images/tab_saved.png",
+                ),
+                width: 15.w,
+              ),
+            ),
+            SizedBox(
+              width: 0.05.sw,
+            ),
+            InkWell(
               onTap: () {
                 Get.to(ActivitiesPage());
               },

@@ -392,6 +392,7 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
+    emitRoom(currentUser: user, action: "leave");
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.remove(user);
     currentRoom.value.raisedHands!.remove(user);
@@ -430,7 +431,7 @@ class RoomController extends GetxController {
       }
     }
 
-    emitRoom(currentUser: user, action: "leave");
+
     currentRoom.value = RoomModel();
 
     try {
@@ -441,9 +442,10 @@ class RoomController extends GetxController {
   }
 
   endRoom(String roomId) async {
+    currentRoom.value = RoomModel();
     emitRoom(action: "room_ended");
     await RoomAPI().deleteARoom(roomId);
-    currentRoom.value = RoomModel();
+
   }
 
   Future<void> joinRoom(String roomId) async {
@@ -463,9 +465,31 @@ class RoomController extends GetxController {
       await addUserToRoom(currentUser);
 
       if (currentRoom.value.token != null) {
+
+        //If user is not a speaker or a host, disable their audio
+        if (currentRoom.value.userIds!
+            .indexWhere(
+                (e) => e.id == currentUser.id) ==
+            -1) {
+          try {
+            engine.enableAudio();
+            engine.enableLocalAudio(true);
+
+            engine
+                .muteLocalAudioStream(audioMuted.value);
+            currentRoom.refresh();
+
+          } catch (e, s) {
+            printOut("Error disabling audio $e $s");
+          }
+
+        } else {
+          engine.enableLocalAudio(false);
+        }
         Get.to(RoomPage(
           roomId: roomId,
         ));
+
 
       } else {
 
@@ -651,6 +675,7 @@ class RoomController extends GetxController {
       }
     }, joinChannelSuccess: (String channel, int uid, int elapsed) {
       printOut('joinChannelSuccess $channel $uid');
+
       userJoinedRoom.value = true;
     }, userJoined: (int uid, int elapsed) {
       printOut('userJoined $uid');

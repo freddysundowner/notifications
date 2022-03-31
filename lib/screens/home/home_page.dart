@@ -134,11 +134,27 @@ class HomePage extends StatelessWidget {
                           null &&
                       Get.find<AuthController>().usermodel.value!.shopId!.open!
                   ? 0.18.sh
-                  : 0.11.sh,
+                  : _homeController.currentRoom.value.id != null &&
+                          (Get.find<AuthController>().usermodel.value!.shopId ==
+                                  null ||
+                              !Get.find<AuthController>()
+                                  .usermodel
+                                  .value!
+                                  .shopId!
+                                  .open!)
+                      ? 0.11.sh : _homeController.currentRoom.value.id == null &&
+                 ( Get.find<AuthController>().usermodel.value!.shopId ==
+                      null ||
+                  !Get.find<AuthController>().usermodel.value!.shopId!.open! )? 0.01.sh
+                      : 0.11.sh,
               child: Column(
                 children: [
-                  Get.find<AuthController>().usermodel.value!.shopId !=
-                      null && Get.find<AuthController>().usermodel.value!.shopId!.open!
+                  Get.find<AuthController>().usermodel.value!.shopId != null &&
+                          Get.find<AuthController>()
+                              .usermodel
+                              .value!
+                              .shopId!
+                              .open!
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [

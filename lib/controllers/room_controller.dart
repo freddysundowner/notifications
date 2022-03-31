@@ -392,16 +392,11 @@ class RoomController extends GetxController {
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-    emitRoom(currentUser: user, action: "leave");
-    currentRoom.value.speakerIds!.remove(user);
-    currentRoom.value.userIds!.remove(user);
-    currentRoom.value.raisedHands!.remove(user);
 
-    currentRoom.refresh();
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!
-                .indexWhere((element) => element.id == user.id) ==
-            0) {
+                .indexWhere((element) => element.id == user.id) !=
+            -1) {
       endRoom(currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
@@ -433,6 +428,7 @@ class RoomController extends GetxController {
 
 
     currentRoom.value = RoomModel();
+    emitRoom(currentUser: user, action: "leave");
 
     try {
       leaveAgora();
@@ -442,10 +438,13 @@ class RoomController extends GetxController {
   }
 
   endRoom(String roomId) async {
-    currentRoom.value = RoomModel();
-    emitRoom(action: "room_ended");
-    await RoomAPI().deleteARoom(roomId);
-
+    try {
+      emitRoom(action: "room_ended");
+      currentRoom.value = RoomModel();
+      await RoomAPI().deleteARoom(roomId);
+    } catch (e, s) {
+      printOut("Error ending room $e $s");
+    }
   }
 
   Future<void> joinRoom(String roomId) async {

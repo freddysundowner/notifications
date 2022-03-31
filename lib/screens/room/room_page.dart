@@ -284,7 +284,6 @@ class RoomPage extends StatelessWidget {
         printOut("leaving");
 
         //Remove user who has left room
-
         try{
           _homeController.currentRoom.value.userIds!
               .removeWhere((element) => element.id == user.id);

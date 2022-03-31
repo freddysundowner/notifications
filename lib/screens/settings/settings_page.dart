@@ -5,10 +5,11 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen.dart';
-import 'package:fluttergistshop/screens/profile/settings/orders_sceen.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
+
+import 'orders_sceen.dart';
 
 class SettingsPage extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();

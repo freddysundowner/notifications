@@ -18,7 +18,9 @@ String convertTime(String time) {
     timeDifference = "${diff.inMinutes} minutes ago";
   } else if (diff.inHours <= 24) {
     timeDifference = "${diff.inHours} hours ago";
-  } else if (diff.inHours > 24) {
+  } else if (diff.inHours <= 47) {
+    timeDifference = "${diff.inDays} day ago";
+  } else if (diff.inHours > 48) {
     timeDifference = "${diff.inDays} days ago";
   }
 

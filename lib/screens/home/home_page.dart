@@ -134,52 +134,74 @@ class HomePage extends StatelessWidget {
           ),
           child: Obx(() {
             return SizedBox(
-              height: _homeController.currentRoom.value.id != null
+              height: _homeController.currentRoom.value.id != null &&
+                      Get.find<AuthController>().usermodel.value!.shopId !=
+                          null &&
+                      Get.find<AuthController>().usermodel.value!.shopId!.open!
                   ? 0.18.sh
-                  : 0.11.sh,
+                  : _homeController.currentRoom.value.id != null &&
+                          (Get.find<AuthController>().usermodel.value!.shopId ==
+                                  null ||
+                              !Get.find<AuthController>()
+                                  .usermodel
+                                  .value!
+                                  .shopId!
+                                  .open!)
+                      ? 0.11.sh : _homeController.currentRoom.value.id == null &&
+                 ( Get.find<AuthController>().usermodel.value!.shopId ==
+                      null ||
+                  !Get.find<AuthController>().usermodel.value!.shopId!.open! )? 0.01.sh
+                      : 0.11.sh,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          _homeController.newRoomTitle.value = " ";
-                          _homeController.newRoomType.value = " ";
+                  Get.find<AuthController>().usermodel.value!.shopId != null &&
+                          Get.find<AuthController>()
+                              .usermodel
+                              .value!
+                              .shopId!
+                              .open!
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                _homeController.newRoomTitle.value = " ";
+                                _homeController.newRoomType.value = " ";
 
-                          showRoomTypeBottomSheet(context);
-                        },
-                        child: Container(
-                          width: 0.6.sw,
-                          height: 0.07.sh,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Theme.of(context).primaryColor),
-                          child: Center(
-                            child: Text(
-                              "Create a room",
-                              style: TextStyle(
-                                  fontSize: 18.sp, color: Colors.white),
+                                showRoomTypeBottomSheet(context);
+                              },
+                              child: Container(
+                                width: 0.6.sw,
+                                height: 0.07.sh,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Theme.of(context).primaryColor),
+                                child: Center(
+                                  child: Text(
+                                    "Create a room",
+                                    style: TextStyle(
+                                        fontSize: 18.sp, color: Colors.white),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 0.1.sw,
-                      ),
-                      InkWell(
-                        onTap: () => Get.to(AllChatsPage()),
-                        child: const Icon(
-                          Ionicons.chatbox_outline,
-                          color: Colors.grey,
-                          size: 35,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 0.02.sw,
-                      ),
-                    ],
-                  ),
+                            SizedBox(
+                              width: 0.1.sw,
+                            ),
+                            InkWell(
+                              onTap: () => Get.to(AllChatsPage()),
+                              child: const Icon(
+                                Ionicons.chatbox_outline,
+                                color: Colors.grey,
+                                size: 35,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 0.02.sw,
+                            ),
+                          ],
+                        )
+                      : Container(),
                   SizedBox(
                     height: 0.008.sh,
                   ),

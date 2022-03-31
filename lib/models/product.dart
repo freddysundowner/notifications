@@ -48,7 +48,7 @@ class Product {
         variations: json["variations"] == null
             ? []
             : List<String>.from(json["variations"].map((x) => x)),
-        shopId: Shop.fromJson(json["shopId"] ?? {}),
+        shopId: json["shopId"].toString().length < 30  ? Shop(id: json["shopId"]): Shop.fromJson(json["shopId"] ?? {}),
         ownerId: UserModel.fromJson(json["ownerId"] ?? {}),
         description: json["description"],
         available: json["available"],

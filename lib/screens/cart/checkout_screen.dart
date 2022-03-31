@@ -400,10 +400,14 @@ class CheckOut extends StatelessWidget {
   }
 
   Future<void> checkoutButtonCallback(BuildContext context) async {
-    if (authController.currentuser!.wallet! <= 0) {
-      await showConfirmationDialog(
-        context,
-        "You don't have enough $currencyName to complete this order",
+    if (authController.currentuser!.wallet! <=
+        checkOutController.ordertotal.value +
+            checkOutController.tax.value +
+            checkOutController.shipping.value) {
+
+      Get.defaultDialog(
+        content:
+        const Text("You don't have enough $currencyName to complete this order"),
       );
       return;
     }
@@ -431,11 +435,10 @@ class CheckOut extends StatelessWidget {
     final orderFuture =
         OrderApi.checkOut(order, checkOutController.product.value!.id!);
     orderFuture.then((orderedProductsUid) async {
-      print(orderedProductsUid);
+      printOut(orderedProductsUid);
       Get.back();
-      if (orderedProductsUid != null &&
+      if (orderedProductsUid["success"] == true &&
           Get.find<CheckOutController>().msg.value.isEmpty) {
-        String snackbarMessage = Get.find<CheckOutController>().msg.value;
         try {
           await NotificationApi().sendNotification(
               [checkOutController.product.value!.ownerId!.id],
@@ -443,21 +446,23 @@ class CheckOut extends StatelessWidget {
               "Your product ${checkOutController.product.value!.name} just got ordered",
               "OrderScreen",
               FirebaseAuth.instance.currentUser!.uid);
+
           authController.currentuser!.wallet =
               authController.currentuser!.wallet! -
                   (checkOutController.ordertotal.value +
                       checkOutController.shipping.value +
                       checkOutController.tax.value);
         } catch (e) {
-          snackbarMessage = e.toString();
         } finally {
           Helper.showSnackBack(context, "Order successful");
           Get.back();
         }
       } else {
-        throw "Something went wrong while clearing cart";
+        Helper.showSnackBack(context, orderedProductsUid["message"],
+            color: Colors.red);
       }
     }).catchError((e) {
+      printOut("Error while checking out $e");
       Helper.showSnackBack(context, Get.find<CheckOutController>().msg.value,
           color: Colors.red);
     });

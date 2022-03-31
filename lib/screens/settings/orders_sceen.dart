@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/orders_model.dart';
-import 'package:fluttergistshop/screens/profile/settings/individual_order.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
+
+import 'individual_order.dart';
 
 class OrdersScreen extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();

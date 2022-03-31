@@ -11,8 +11,8 @@ import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
 import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
-import 'package:fluttergistshop/screens/profile/settings/settings_page.dart';
 import 'package:fluttergistshop/screens/profile/upgrade_account.dart';
+import 'package:fluttergistshop/screens/settings/settings_page.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -306,12 +306,12 @@ class Profile extends StatelessWidget {
                                 updateBio(context);
                               },
                               child: Text(
-                                profile.bio!.isEmpty ? "Add Bio" : profile.bio!,
+                                profile.bio == null ? "Add Bio" : profile.bio!,
                                 style: TextStyle(fontSize: 15.sp),
                               ),
                             ),
                             Obx(() {
-                              if (productController.products.length > 0) {
+                              if (productController.products.isNotEmpty) {
                                 return Column(
                                   children: [
                                     Row(

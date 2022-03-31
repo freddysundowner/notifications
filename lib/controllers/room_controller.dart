@@ -137,7 +137,8 @@ class RoomController extends GetxController {
           Get.offAll(HomePage());
           Get.snackbar(
               "", "There was an error creating your room. Try again later");
-          await RoomAPI().deleteARoom(roomId);
+
+          endRoom(roomId);
         }
       } else {
         Get.offAll(HomePage());
@@ -242,7 +243,7 @@ class RoomController extends GetxController {
         }else {
           Get.snackbar(
             '', "There was an error adding you to the room, Try again later",).show();
-          await RoomAPI().deleteARoom(roomId);
+          endRoom(roomId);
         }
       } else {
         Get.snackbar('', "Room has ended");
@@ -277,7 +278,7 @@ class RoomController extends GetxController {
         currentRoom.value.userIds!.add(user);
 
         currentRoom.refresh();
-
+        emitRoom(currentUser: user, action: "join");
         //Add user to room
         await RoomAPI().updateRoomById({
           "title": currentRoom.value.title ?? " ",
@@ -302,6 +303,7 @@ class RoomController extends GetxController {
 
       currentRoom.refresh();
 
+      emitRoom(currentUser: user, action: "add_speaker");
       //Add user to speakers
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
@@ -328,6 +330,8 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
 
+    emitRoom(currentUser: user, action: "added_raised_hands");
+
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
       "title": currentRoom.value.title ?? " ",
@@ -342,6 +346,7 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
 
+    emitRoom(currentUser: user, action: "remove_speaker");
     //Add user to speakers
     await RoomAPI().updateRoomById({
       "title": currentRoom.value.title ?? " ",
@@ -364,6 +369,7 @@ class RoomController extends GetxController {
 
       currentRoom.refresh();
 
+      emitRoom(currentUser: user, action: "add_speaker");
       //Add user to speakers
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
@@ -382,19 +388,16 @@ class RoomController extends GetxController {
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
+
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-    currentRoom.value.speakerIds!.remove(user);
-    currentRoom.value.userIds!.remove(user);
-    currentRoom.value.raisedHands!.remove(user);
 
-    currentRoom.refresh();
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!
-                .indexWhere((element) => element.id == user.id) ==
-            0) {
-      await RoomAPI().deleteARoom(currentRoom.value.id!);
+                .indexWhere((element) => element.id == user.id) !=
+            -1) {
+      endRoom(currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
               .indexWhere((element) => element.id == user.id) >
@@ -423,8 +426,11 @@ class RoomController extends GetxController {
       }
     }
 
-    emitRoom(currentUser: user, action: "leave");
+    var roomId = currentRoom.value.id;
+
     currentRoom.value = RoomModel();
+    emitRoom(currentUser: user, action: "leave", roomId: roomId!);
+
 
     try {
       leaveAgora();
@@ -433,8 +439,16 @@ class RoomController extends GetxController {
     }
   }
 
-  endRoom() {
-    emitRoom(action: "leave");
+  endRoom(String roomId) async {
+    try {
+
+      currentRoom.value = RoomModel();
+      emitRoom(action: "room_ended", roomId: roomId);
+      await RoomAPI().deleteARoom(roomId);
+      leaveAgora();
+    } catch (e, s) {
+      printOut("Error ending room $e $s");
+    }
   }
 
   Future<void> joinRoom(String roomId) async {
@@ -454,10 +468,32 @@ class RoomController extends GetxController {
       await addUserToRoom(currentUser);
 
       if (currentRoom.value.token != null) {
+
+        //If user is not a speaker or a host, disable their audio
+        if (currentRoom.value.userIds!
+            .indexWhere(
+                (e) => e.id == currentUser.id) ==
+            -1) {
+          try {
+            engine.enableAudio();
+            engine.enableLocalAudio(true);
+
+            engine
+                .muteLocalAudioStream(audioMuted.value);
+            currentRoom.refresh();
+
+          } catch (e, s) {
+            printOut("Error disabling audio $e $s");
+          }
+
+        } else {
+          engine.enableLocalAudio(false);
+        }
         Get.to(RoomPage(
           roomId: roomId,
         ));
-        emitRoom(currentUser: currentUser, action: "join");
+
+
       } else {
 
         roomsList.removeWhere((element) => element.id == roomId);
@@ -468,12 +504,12 @@ class RoomController extends GetxController {
     }
   }
 
-  void emitRoom({OwnerId? currentUser, required String action}) {
+  void emitRoom({OwnerId? currentUser, required String action, String roomId = ""}) {
 
     customSocketIO.socketIO.emit("room_changes", {
        "action": action,
        "userData": currentUser == null ? {} : currentUser.toJson(),
-      "roomId" : currentRoom.value.id});
+      "roomId" : currentRoom.value.id ?? roomId});
   }
 
 
@@ -616,7 +652,7 @@ class RoomController extends GetxController {
       await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
       await engine.enableAudioVolumeIndication(500, 3, true);
       await engine.enableAudio();
-      await engine.muteLocalAudioStream(true);
+      await engine.muteLocalAudioStream(audioMuted.value);
       await engine.setDefaultAudioRoutetoSpeakerphone(true);
 
       await engine.setClientRole(ClientRole.Broadcaster);
@@ -636,12 +672,13 @@ class RoomController extends GetxController {
             .removeWhere((element) => element["_id"] == currentRoom.value.id);
        // Get.snackbar('', "Room has ended");
 
-        await RoomAPI().deleteARoom(currentRoom.value.id!);
-        currentRoom.value = RoomModel();
+        endRoom(currentRoom.value.id!);
+
         leaveAgora();
       }
     }, joinChannelSuccess: (String channel, int uid, int elapsed) {
       printOut('joinChannelSuccess $channel $uid');
+
       userJoinedRoom.value = true;
     }, userJoined: (int uid, int elapsed) {
       printOut('userJoined $uid');

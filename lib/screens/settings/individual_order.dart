@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/orders_model.dart';
 import 'package:fluttergistshop/utils/constants.dart';
+import 'package:fluttergistshop/utils/functions.dart';
 
 class IndividualOrderScreen extends StatelessWidget {
   OrdersModel ordersModel;
@@ -57,8 +58,7 @@ class IndividualOrderScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       Text(
-                        DateTime.fromMillisecondsSinceEpoch(ordersModel.date!)
-                            .toString(),
+                        convertTime(ordersModel.date.toString()),
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                     ],

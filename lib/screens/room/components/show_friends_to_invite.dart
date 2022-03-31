@@ -166,7 +166,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                                   children: [
                                                     Obx(() => Center(
                                                       child: user.profilePhoto ==
-                                                              ""
+                                                              "" || user.profilePhoto!.length > 300
                                                           ? CircleAvatar(
                                                               radius: 35,
                                                               backgroundColor:
@@ -184,6 +184,8 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                                                       "assets/icons/profile_placeholder.png"))
                                                           : CircleAvatar(
                                                               radius: 35,
+                                                              onBackgroundImageError: (object, stackTrace) => const AssetImage(
+                                                                  "assets/icons/profile_placeholder.png"),
                                                               backgroundColor:
                                                                   Colors
                                                                       .transparent,

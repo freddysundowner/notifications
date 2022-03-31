@@ -1,6 +1,7 @@
 const baseUrl = "http://52.43.151.113";
 const imageUrl = "";
 const rooms = baseUrl + "/rooms";
+const favorite = baseUrl + "/favorite/";
 const tokenPath = rooms + "/agora/rooom/generatetoken";
 const user = baseUrl + "/users";
 const shop = baseUrl + "/shop/";

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
+import 'package:fluttergistshop/controllers/favorite_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
@@ -18,7 +19,9 @@ class FullProduct extends StatelessWidget {
   ProductController productController = Get.find<ProductController>();
   FullProduct({Key? key, required this.product}) : super(key: key);
 
-  _addToSaved() {}
+  _addToSaved() async {
+    Get.find<FavoriteController>().saveFavorite(product.id!);
+  }
 
   final _snackBarMessage = "Product added to the cart";
 
@@ -108,7 +111,14 @@ class FullProduct extends StatelessWidget {
                                   width: 0.15.sw,
                                   height: 0.08.sh,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFDCDCDC),
+                                    color: Get.find<FavoriteController>()
+                                                .products
+                                                .value
+                                                .indexWhere((element) =>
+                                                    element.id == product.id) !=
+                                            -1
+                                        ? Colors.red
+                                        : Color(0xFFDCDCDC),
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   alignment: Alignment.center,

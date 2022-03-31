@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttergistshop/controllers/favorite_controller.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/api.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:get/get.dart';
 
 import 'client.dart';
 import 'end_points.dart';
@@ -209,4 +211,33 @@ class UserAPI {
   static removeDisplayPictureForCurrentUser() {}
 
   static addFavorite(String s) {}
+
+  static getMyFavorites() async {
+    var response = await DbBase().databaseRequest(
+      favorite + FirebaseAuth.instance.currentUser!.uid,
+      DbBase().getRequestType,
+    );
+    print("getMyFavorites ${jsonDecode(response)}");
+    return jsonDecode(response);
+  }
+
+  static saveFovite(String productId) async {
+    var response = await DbBase().databaseRequest(
+        favorite + FirebaseAuth.instance.currentUser!.uid,
+        DbBase().postRequestType,
+        body: {
+          "productId": [productId]
+        });
+    return jsonDecode(response);
+  }
+
+  static deleteFromFavorite(String productId) async {
+    var response = await DbBase().databaseRequest(
+        favorite + Get.find<FavoriteController>().favoritekey.value,
+        DbBase().deleteRequestType,
+        body: {
+          "productId": [productId]
+        });
+    return jsonDecode(response);
+  }
 }

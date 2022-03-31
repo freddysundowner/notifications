@@ -55,7 +55,6 @@ class Product {
       );
 
   Map<String, dynamic> toJson() => {
-        // "images": List<String>.from(images.map((x) => x)),
         "name": name,
         "price": price,
         "quantity": quantity,

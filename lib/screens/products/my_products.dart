@@ -148,7 +148,7 @@ class MyProducts extends StatelessWidget {
           } else if (direction == DismissDirection.endToStart) {
             final confirmation =
                 await showConfirmationDialog(context, "Add to favorite");
-            await UserAPI.addFavorite(product.id!);
+            await UserAPI.saveFovite(product.id!);
             if (confirmation) {
               Helper.showSnackBack(context, "Added to favorite");
             }

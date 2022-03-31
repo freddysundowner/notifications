@@ -6,7 +6,7 @@ import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/activity_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
-import 'package:fluttergistshop/screens/profile/settings/orders_sceen.dart';
+import 'package:fluttergistshop/screens/settings/orders_sceen.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:get/get.dart';
 

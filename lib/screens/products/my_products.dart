@@ -52,6 +52,8 @@ class MyProducts extends StatelessWidget {
                     ),
                   SizedBox(height: 0.02.sh),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: Get.find<ProductController>()
                         .products
                         .map((e) => buildProductDismissible(e, context))

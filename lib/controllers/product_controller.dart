@@ -31,6 +31,7 @@ class ProductController extends GetxController {
   Rxn<Product> currentProduct = Rxn();
   Rxn<Product> productObservable = Rxn();
   static Rxn<List<Product>> _products = Rxn([]);
+  static var loading = false.obs;
 
   RxInt selectedPage = 0.obs;
   var error = "".obs;
@@ -120,9 +121,11 @@ class ProductController extends GetxController {
   }
 
   static Future<List<Product>> getProductsByShop(String id) async {
+    loading.value = true;
     List<dynamic> response = await ShopApi.getProductsByShop(id);
     _products.value = response.map((e) => Product.fromJson(e)).toList();
 
+    loading.value = false;
     return response.map((e) => Product.fromJson(e)).toList();
   }
 }

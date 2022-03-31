@@ -142,6 +142,11 @@ class ShopView extends StatelessWidget {
                           await ProductController.getProductsByShop(
                               shopController.currentShop.value.id!);
                     }, builder: (_) {
+                      if (ProductController.loading.value == true) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                       return SizedBox(
                         height: MediaQuery.of(context).size.height,
                         child: _.products.isNotEmpty

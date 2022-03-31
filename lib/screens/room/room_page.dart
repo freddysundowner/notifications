@@ -129,6 +129,7 @@ class RoomPage extends StatelessWidget {
                         ? SizedBox(
                             height: 0.1.sh,
                             child: Obx(() {
+
                               //If user is not a speaker or a host, disable their audio
 
                               if (_homeController.currentRoom.value.userIds!
@@ -142,10 +143,13 @@ class RoomPage extends StatelessWidget {
                                   _homeController.engine
                                       .muteLocalAudioStream(_homeController.audioMuted.value);
 
+
+
                                 } catch (e) {
                                   printOut("Error disabling audio $e");
                                 }
-                              } else {
+                              }
+                              else {
                                 _homeController.engine.enableLocalAudio(false);
                               }
 
@@ -304,6 +308,7 @@ class RoomPage extends StatelessWidget {
 
         Future.delayed(const Duration(seconds: 3), () {
           _homeController.currentRoom.value = RoomModel();
+          _homeController.leaveAgora();
           Get.offAll(HomePage());
         });
 

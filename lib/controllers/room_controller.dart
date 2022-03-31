@@ -426,9 +426,11 @@ class RoomController extends GetxController {
       }
     }
 
+    var roomId = currentRoom.value.id;
 
     currentRoom.value = RoomModel();
-    emitRoom(currentUser: user, action: "leave");
+    emitRoom(currentUser: user, action: "leave", roomId: roomId!);
+
 
     try {
       leaveAgora();
@@ -439,9 +441,11 @@ class RoomController extends GetxController {
 
   endRoom(String roomId) async {
     try {
-      emitRoom(action: "room_ended");
+
       currentRoom.value = RoomModel();
+      emitRoom(action: "room_ended", roomId: roomId);
       await RoomAPI().deleteARoom(roomId);
+      leaveAgora();
     } catch (e, s) {
       printOut("Error ending room $e $s");
     }
@@ -500,12 +504,12 @@ class RoomController extends GetxController {
     }
   }
 
-  void emitRoom({OwnerId? currentUser, required String action}) {
+  void emitRoom({OwnerId? currentUser, required String action, String roomId = ""}) {
 
     customSocketIO.socketIO.emit("room_changes", {
        "action": action,
        "userData": currentUser == null ? {} : currentUser.toJson(),
-      "roomId" : currentRoom.value.id});
+      "roomId" : currentRoom.value.id ?? roomId});
   }
 
 
@@ -648,7 +652,7 @@ class RoomController extends GetxController {
       await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
       await engine.enableAudioVolumeIndication(500, 3, true);
       await engine.enableAudio();
-      await engine.muteLocalAudioStream(true);
+      await engine.muteLocalAudioStream(audioMuted.value);
       await engine.setDefaultAudioRoutetoSpeakerphone(true);
 
       await engine.setClientRole(ClientRole.Broadcaster);

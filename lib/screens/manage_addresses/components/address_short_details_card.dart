@@ -16,17 +16,17 @@ class AddressShortDetailsCard extends StatelessWidget {
       onTap: () => onTap(),
       child: SizedBox(
         width: double.infinity,
-        height: 120.h,
+        height: 0.22.sh,
         child: Row(
           children: [
             Expanded(
               flex: 3,
               child: Container(
                 height: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 decoration: BoxDecoration(
                   color: kTextColor.withOpacity(0.24),
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     bottomLeft: Radius.circular(15),
                   ),

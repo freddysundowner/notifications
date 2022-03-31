@@ -15,6 +15,8 @@ class UserController extends GetxController {
   var userOrders = [].obs;
   var userFollowersFollowing = [].obs;
   var gettingFollowers = false.obs;
+  var gettingAddress = false.obs;
+  var myAddresses = [].obs;
 
   getUserProfile(String userId) async {
     Get.find<ProductController>().products.clear();
@@ -55,6 +57,24 @@ class UserController extends GetxController {
       ordersLoading.value = false;
     } catch (e, s) {
       ordersLoading.value = false;
+      printOut("Error getting user orders $e $s");
+    }
+  }
+
+  gettingMyAddrresses() async {
+    try {
+      gettingAddress.value = true;
+      var address = await UserAPI.getAddressesFromUserId();
+
+      if (address == null) {
+        myAddresses.value = [];
+      } else {
+        myAddresses.value = address;
+      }
+
+      gettingAddress.value = false;
+    } catch (e, s) {
+      gettingAddress.value = false;
       printOut("Error getting user orders $e $s");
     }
   }

@@ -252,18 +252,24 @@ class AddressDetailsForm extends StatelessWidget {
           },
         );
         var waitedResponse = await response;
+        // print("response ${checkOutController.address.value!.name}");
         if (waitedResponse["success"] == true) {
           snackbarMessage = "Address updated successfully";
 
           //Update the address being viewed on checkout screen
-          checkOutController.address.value!.name = waitedResponse["data"]["name"];
-          checkOutController.address.value!.addrress1 = waitedResponse["data"]["addrress1"];
-          checkOutController.address.value!.addrress2 = waitedResponse["data"]["addrress2"];
-          checkOutController.address.value!.city = waitedResponse["data"]["city"];
-          checkOutController.address.value!.state = waitedResponse["data"]["state"];
-          checkOutController.address.value!.phone = waitedResponse["data"]["phone"];
-          checkOutController.address.refresh();
-
+          // checkOutController.address.value!.name =
+          //     waitedResponse["data"]["name"];
+          // checkOutController.address.value!.addrress1 =
+          //     waitedResponse["data"]["addrress1"];
+          // checkOutController.address.value!.addrress2 =
+          //     waitedResponse["data"]["addrress2"];
+          // checkOutController.address.value!.city =
+          //     waitedResponse["data"]["city"];
+          // checkOutController.address.value!.state =
+          //     waitedResponse["data"]["state"];
+          // checkOutController.address.value!.phone =
+          //     waitedResponse["data"]["phone"];
+          // checkOutController.address.refresh();
         } else {
           throw "Couldn't update address due to unknown reason";
         }

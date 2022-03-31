@@ -195,7 +195,7 @@ class EditProductForm extends StatelessWidget {
                     throw "Couldn't upload product properly, please retry";
                   }
                 } on FirebaseException catch (e) {
-                  snackbarMessage = "Something went wrong";
+                  snackbarMessage = "Something went wrong $e";
                 } catch (e) {
                   snackbarMessage = e.toString();
                 } finally {

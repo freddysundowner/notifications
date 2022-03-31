@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/screens/edit_address/edit_address_screen.dart';
 import 'package:fluttergistshop/screens/manage_addresses/components/address_short_details_card.dart';
@@ -17,9 +18,11 @@ class ManageAddressesScreen extends StatelessWidget {
   ManageAddressesScreen(this.checkout, {Key? key}) : super(key: key);
 
   CheckOutController checkOutController = Get.find<CheckOutController>();
+  UserController userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
+    userController.gettingMyAddrresses();
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -56,33 +59,31 @@ class ManageAddressesScreen extends StatelessWidget {
                     SizedBox(height: 10.h),
                     SizedBox(
                       height: MediaQuery.of(context).size.height,
-                      child: FutureBuilder<List<Address>>(
-                        future: UserAPI.getAddressesFromUserId(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<Address>? addresses = snapshot.data;
-                            if (addresses!.length == 0) {
-                              return Center(
-                                child: NothingToShowContainer(
-                                  iconPath: "assets/icons/add_location.svg",
-                                  secondaryMessage: "Add your first Address",
-                                ),
-                              );
-                            }
+                      child: Obx(
+                        () {
+                          if (userController.myAddresses.value.length == 0) {
+                            return Center(
+                              child: NothingToShowContainer(
+                                iconPath: "assets/icons/add_location.svg",
+                                secondaryMessage: "Add your first Address",
+                              ),
+                            );
+                          }
+                          if (userController.myAddresses.value.length > 0) {
                             return ListView.builder(
                                 physics: BouncingScrollPhysics(),
-                                itemCount: addresses.length,
+                                itemCount:
+                                    userController.myAddresses.value.length,
                                 itemBuilder: (context, index) {
                                   return buildAddressItemCard(
-                                      addresses[index], context);
+                                      userController.myAddresses.value[index],
+                                      context);
                                 });
-                          } else if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                          }
+                          if (userController.gettingAddress.isTrue) {
                             return Center(
                               child: CircularProgressIndicator(),
                             );
-                          } else if (snapshot.hasError) {
-                            final error = snapshot.error;
                           }
                           return Center(
                             child: NothingToShowContainer(
@@ -104,8 +105,8 @@ class ManageAddressesScreen extends StatelessWidget {
     );
   }
 
-  Future<void> refreshPage() {
-    return Future<void>.value();
+  Future<void> refreshPage() async {
+    await userController.gettingMyAddrresses();
   }
 
   Future<bool> deleteButtonCallback(

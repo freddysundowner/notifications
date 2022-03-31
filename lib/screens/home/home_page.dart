@@ -7,6 +7,7 @@ import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
+import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
@@ -66,7 +67,7 @@ class HomePage extends StatelessWidget {
               width: 0.05.sw,
             ),
             InkWell(
-              onTap: () {},
+              onTap: () => Get.to(() => Favorites()),
               child: Image(
                 image: AssetImage(
                   "assets/images/tab_saved.png",

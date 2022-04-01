@@ -163,42 +163,9 @@ class Profile extends StatelessWidget {
                                       if (profile.followers.contains(
                                           FirebaseAuth
                                               .instance.currentUser!.uid)) {
-                                        _userController
-                                            .currentProfile.value.followers
-                                            .remove(FirebaseAuth
-                                                .instance.currentUser!.uid);
-                                        _userController.currentProfile.value
-                                            .followersCount = _userController
-                                                .currentProfile
-                                                .value
-                                                .followersCount! -
-                                            1;
-                                        _userController.currentProfile
-                                            .refresh();
-
-                                        await UserAPI().unFollowAUser(
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid,
-                                            profile.id!);
+                                        await unFollowUser(profile);
                                       } else {
-                                        _userController
-                                            .currentProfile.value.followers
-                                            .add(FirebaseAuth
-                                                .instance.currentUser!.uid);
-                                        _userController.currentProfile.value
-                                            .followersCount = _userController
-                                                .currentProfile
-                                                .value
-                                                .followersCount! +
-                                            1;
-
-                                        _userController.currentProfile
-                                            .refresh();
-
-                                        await UserAPI().followAUser(
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid,
-                                            profile.id!);
+                                        await followUser(profile);
                                       }
                                     },
                                     child: Container(
@@ -429,6 +396,42 @@ class Profile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+    Future<void> followUser(UserModel profile) async {
+    _userController.currentProfile.value.followers
+        .add(FirebaseAuth.instance.currentUser!.uid);
+    _userController.currentProfile.value.followersCount =
+        _userController.currentProfile.value.followersCount! + 1;
+
+    if (_userController.currentProfile.value.id ==
+        authController.currentuser!.id) {
+      _userController.currentProfile.value.followingCount =
+          _userController.currentProfile.value.followingCount! + 1;
+    }
+    _userController.currentProfile.refresh();
+
+    await UserAPI()
+        .followAUser(FirebaseAuth.instance.currentUser!.uid, profile.id!);
+  }
+
+  Future<void> unFollowUser(UserModel profile) async {
+    _userController.currentProfile.value.followers
+        .remove(FirebaseAuth.instance.currentUser!.uid);
+
+    _userController.currentProfile.value.followersCount =
+        _userController.currentProfile.value.followersCount! - 1;
+
+    if (_userController.currentProfile.value.id ==
+        authController.currentuser!.id) {
+      _userController.currentProfile.value.followingCount =
+          _userController.currentProfile.value.followingCount! - 1;
+    }
+
+    _userController.currentProfile.refresh();
+
+    await UserAPI()
+        .unFollowAUser(FirebaseAuth.instance.currentUser!.uid, profile.id!);
   }
 
   updateName(BuildContext context) {

@@ -7,7 +7,6 @@ import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/services/helper.dart';
-import 'package:fluttergistshop/services/user_api.dart';
 import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
@@ -37,11 +36,21 @@ class Favorites extends StatelessWidget {
               child: Column(
                 children: [
                   Obx(
-                    () => Column(
-                      children: productController.products.value
-                          .map((e) => buildProductDismissible(e, context))
-                          .toList(),
-                    ),
+                    () => productController.products.isNotEmpty
+                        ? Column(
+                            children: productController.products
+                                .map((e) => buildProductDismissible(e, context))
+                                .toList(),
+                          )
+                        : SizedBox(
+                      height: 0.5.sh,
+                          child: Center(
+                              child: Text(
+                              "You have no favourites yet",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 16.sp),
+                            )),
+                        ),
                   ),
                   SizedBox(height: 0.02.sh),
                 ],

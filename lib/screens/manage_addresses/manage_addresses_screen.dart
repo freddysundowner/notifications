@@ -10,6 +10,7 @@ import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/widgets/nothingtoshow_container.dart';
 import 'package:get/get.dart';
+
 import '../../widgets/default_button.dart';
 import 'components/address_box.dart';
 
@@ -208,6 +209,7 @@ class ManageAddressesScreen extends StatelessWidget {
           onTap: () {
             if (checkout) {
               checkOutController.address.value = address;
+              Get.closeAllSnackbars();
               Get.back();
             } else {
               editButtonCallback(context, address);

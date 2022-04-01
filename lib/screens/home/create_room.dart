@@ -219,6 +219,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                   ),
                   InkWell(
                     onTap: () {
+                      Get.closeAllSnackbars();
                       Get.back();
                     },
                     child: Text(

@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 
+import 'shop.dart';
+
 RoomModel roomModelFromJson(String str) => RoomModel.fromJson(json.decode(str));
 
 String roomModelToJson(RoomModel data) => json.encode(data.toJson());
@@ -39,9 +41,9 @@ class RoomModel {
   bool? status;
   List<dynamic>? productImages = [];
   String? id;
-  OwnerId? ownerId;
+  UserModel? ownerId;
   String? title = "";
-  ShopId? shopId;
+  Shop? shopId;
   int? productPrice;
   int? v;
   String? roomType;
@@ -76,9 +78,9 @@ class RoomModel {
           : List<dynamic>.from(json["productImages"].map((x) => x)),
       id: json["_id"] ?? "",
       ownerId:
-          json["ownerId"] == null ? null : OwnerId.fromJson(json["ownerId"]),
+          json["ownerId"] == null ? null : UserModel.fromJson(json["ownerId"]),
       title: json["title"] ?? "",
-      shopId: json["shopId"] == null ? null : ShopId.fromJson(json["shopId"]),
+      shopId: json["ownerId"] == null ? null : UserModel.fromJson(json["ownerId"]).shopId,
       productPrice: json["productPrice"],
       v: json["__v"],
       token: json["token"],

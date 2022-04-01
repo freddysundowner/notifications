@@ -26,7 +26,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return DraggableScrollableSheet(
-            initialChildSize: 0.8,
+            initialChildSize: 0.81,
             expand: false,
             builder: (BuildContext context, ScrollController scrollController) {
               _homeController.fetchAllUsers();

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -13,6 +14,7 @@ import 'profile.dart';
 class FollowersFollowingPage extends StatelessWidget {
   String type;
   final UserController _userController = Get.find<UserController>();
+  AuthController authController = Get.find<AuthController>();
 
   FollowersFollowingPage(this.type, {Key? key}) : super(key: key);
 
@@ -39,8 +41,8 @@ class FollowersFollowingPage extends StatelessWidget {
                             .elementAt(index));
 
                         printOut(user.followers);
-                        printOut("Do i follow this person? ${user.followers!.contains(FirebaseAuth
-                            .instance.currentUser!.uid)}");
+                        printOut(
+                            "Do i follow this person? ${user.followers!.contains(FirebaseAuth.instance.currentUser!.uid)}");
 
                         return InkWell(
                           onTap: () {
@@ -62,8 +64,8 @@ class FollowersFollowingPage extends StatelessWidget {
                                           )
                                         : CircleAvatar(
                                             radius: 20,
-                                            backgroundImage:
-                                                NetworkImage(user.profilePhoto!),
+                                            backgroundImage: NetworkImage(
+                                                user.profilePhoto!),
                                           ),
                                     SizedBox(
                                       width: 0.03.sw,
@@ -94,55 +96,41 @@ class FollowersFollowingPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                               if(user.id != FirebaseAuth
-                                   .instance.currentUser!.uid) InkWell(
-                                  onTap: () async {
-
-                                    if (user.followers!.contains(FirebaseAuth
-                                        .instance.currentUser!.uid)) {
-                                      _userController
-                                          .userFollowersFollowing
-                                          .elementAt(index)["followers"].remove(FirebaseAuth
-                                          .instance.currentUser!.uid);
-                                      _userController.userFollowersFollowing.refresh();
-                                      await UserAPI().unFollowAUser(FirebaseAuth
-                                          .instance.currentUser!.uid, user.id!);
-
-                                    }  else {
-                                      _userController
-                                          .userFollowersFollowing
-                                          .elementAt(index)["followers"].add(FirebaseAuth
-                                          .instance.currentUser!.uid);
-                                      _userController.userFollowersFollowing.refresh();
-                                      await UserAPI().followAUser(FirebaseAuth
-                                          .instance.currentUser!.uid, user.id!);
-
-                                    }
-
-                                  },
-                                  child: Container(
-                                    width: 0.25.sw,
-                                    height: 0.05.sh,
-                                    decoration: BoxDecoration(
-                                      color: user.followers!.contains(FirebaseAuth
-                                          .instance.currentUser!.uid)
-                                          ? Colors.grey
-                                          : Colors.green,
-
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        user.followers!.contains(FirebaseAuth
-                                            .instance.currentUser!.uid)
-                                            ? "UnFollow"
-                                            : "Follow",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 14.sp),
+                                if (user.id !=
+                                    FirebaseAuth.instance.currentUser!.uid)
+                                  InkWell(
+                                    onTap: () async {
+                                      if (user.followers!.contains(FirebaseAuth
+                                          .instance.currentUser!.uid)) {
+                                        await unFollowUser(index, user);
+                                      } else {
+                                        await followUser(index, user);
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 0.25.sw,
+                                      height: 0.05.sh,
+                                      decoration: BoxDecoration(
+                                        color: user.followers!.contains(
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid)
+                                            ? Colors.grey
+                                            : Colors.green,
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          user.followers!.contains(FirebaseAuth
+                                                  .instance.currentUser!.uid)
+                                              ? "UnFollow"
+                                              : "Follow",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14.sp),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
+                                  )
                               ],
                             ),
                           ),
@@ -152,7 +140,9 @@ class FollowersFollowingPage extends StatelessWidget {
                       height: 0.5.sh,
                       child: Center(
                         child: Text(
-                          type == "Following" ? "You are not following anyone" : "You have no followers yet",
+                          type == "Following"
+                              ? "You are not following anyone"
+                              : "You have no followers yet",
                           style: TextStyle(color: Colors.grey, fontSize: 14.sp),
                         ),
                       ),
@@ -167,5 +157,59 @@ class FollowersFollowingPage extends StatelessWidget {
         }),
       ),
     );
+  }
+
+  Future<void> followUser(int index, OwnerId user) async {
+       _userController.userFollowersFollowing
+        .elementAt(index)["followers"]
+        .add(FirebaseAuth
+            .instance.currentUser!.uid);
+    _userController.userFollowersFollowing
+        .refresh();
+
+    if (FirebaseAuth
+        .instance.currentUser!.uid ==
+        _userController.currentProfile.value.id) {
+
+      _userController.currentProfile.value
+          .followingCount = _userController
+              .currentProfile
+              .value
+              .followingCount! +
+          1;
+      _userController.currentProfile
+          .refresh();
+    }
+    await UserAPI().followAUser(
+        FirebaseAuth
+            .instance.currentUser!.uid,
+        user.id!);
+  }
+
+  Future<void> unFollowUser(int index, OwnerId user) async {
+     _userController.userFollowersFollowing
+        .elementAt(index)["followers"]
+        .remove(FirebaseAuth
+            .instance.currentUser!.uid);
+
+    if (FirebaseAuth
+        .instance.currentUser!.uid ==
+        _userController.currentProfile.value.id) {
+
+      _userController.currentProfile.value
+          .followingCount = _userController
+              .currentProfile
+              .value
+              .followingCount! -
+          1;
+      _userController.currentProfile
+          .refresh();
+    }
+    _userController.userFollowersFollowing
+        .refresh();
+    await UserAPI().unFollowAUser(
+        FirebaseAuth
+            .instance.currentUser!.uid,
+        user.id!);
   }
 }

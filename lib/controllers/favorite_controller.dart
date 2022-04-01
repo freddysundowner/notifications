@@ -1,5 +1,7 @@
+
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/services/user_api.dart';
+import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 
 class FavoriteController extends GetxController {
@@ -16,20 +18,18 @@ class FavoriteController extends GetxController {
 
   getFavoriteProducts() async {
     try {
-      // loading.value = true;
-      // var response = await UserAPI.getMyFavorites();
-      // print("response getFavoriteProducts ${response}");
-      // if (response != null) {
-      //   favoritekey.value = response["_id"];
-      //   products.value = response["productId"].map((e) {
-      //     e["ownerId"] = null;
-      //     return Product.fromJson(e);
-      //   }).toList();
-      //   loading.value = false;
-      //   print(" getFavoriteProducts ${products.value.length}");
-      // }
-    } catch (e) {
-      print("getFavoriteProducts Error ${e.toString()}");
+      loading.value = true;
+      var response = await UserAPI.getMyFavorites();
+      print("response getFavoriteProducts ${response["_id"]}");
+      favoritekey.value = response["_id"];
+      products.value = response["productId"].map((e) {
+      //  e["ownerId"] = null;
+        return Product.fromJson(e);
+      }).toList();
+      loading.value = false;
+      print(" getFavoriteProducts ${products.value.length}");
+    } catch (e, s) {
+      print("getFavoriteProducts Error ${e.toString()} $s");
     }
   }
 
@@ -37,12 +37,14 @@ class FavoriteController extends GetxController {
     try {
       var response = await UserAPI.saveFovite(productId);
       products.value = response["productId"].map((e) {
-        e["ownerId"] = null;
+
+        printOut(" resp $e");
         return Product.fromJson(e);
       }).toList();
+      favoritekey.value = response["_id"];
       print(" getFavoriteProducts ${products.value.length}");
-    } catch (e) {
-      print("getFavoriteProducts Error ${e.toString()}");
+    } catch (e, s) {
+      print("getFavoriteProducts Error ${e.toString()} $s");
     }
   }
 
@@ -54,8 +56,8 @@ class FavoriteController extends GetxController {
         return Product.fromJson(e);
       }).toList();
       print(" getFavoriteProducts ${products.value.length}");
-    } catch (e) {
-      print("getFavoriteProducts Error ${e.toString()}");
+    } catch (e, s) {
+      print("getFavoriteProducts Error ${e.toString()} $s");
     }
   }
 }

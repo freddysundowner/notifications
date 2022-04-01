@@ -450,7 +450,6 @@ class CheckOut extends StatelessWidget {
                   (checkOutController.ordertotal.value +
                       checkOutController.shipping.value +
                       checkOutController.tax.value);
-        } catch (e) {
         } finally {
           Helper.showSnackBack(context, "Order successful");
           Get.back();
@@ -459,8 +458,8 @@ class CheckOut extends StatelessWidget {
         Helper.showSnackBack(context, orderedProductsUid["message"],
             color: Colors.red);
       }
-    }).catchError((e) {
-      printOut("Error while checking out $e");
+    }).catchError((e, s) {
+      printOut("Error while checking out $e $s");
       Helper.showSnackBack(context, Get.find<CheckOutController>().msg.value,
           color: Colors.red);
     });

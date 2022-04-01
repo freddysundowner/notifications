@@ -68,6 +68,7 @@ class RoomController extends GetxController {
   @override
   void onInit() {
     getRooms();
+
     super.onInit();
     print("room controller");
   }

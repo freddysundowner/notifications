@@ -54,3 +54,5 @@ const userActivities = activities + "/to/";
 const userTransactions = transactions + "/";
 
 const userOrders = orders + "/";
+const shopOrders = orders + "/all/shop/";
+

@@ -71,6 +71,13 @@ class UserAPI {
     return jsonDecode(orders);
   }
 
+  getShopOrders(String id) async {
+    var orders = await DbBase()
+        .databaseRequest(shopOrders + id, DbBase().getRequestType);
+
+    return jsonDecode(orders);
+  }
+
   updateUser(Map<String, dynamic> body, String id) async {
     try {
       printOut("updating user $body");

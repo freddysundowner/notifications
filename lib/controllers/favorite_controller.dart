@@ -16,16 +16,18 @@ class FavoriteController extends GetxController {
 
   getFavoriteProducts() async {
     try {
-      loading.value = true;
-      var response = await UserAPI.getMyFavorites();
-      print("response getFavoriteProducts ${response["_id"]}");
-      favoritekey.value = response["_id"];
-      products.value = response["productId"].map((e) {
-        e["ownerId"] = null;
-        return Product.fromJson(e);
-      }).toList();
-      loading.value = false;
-      print(" getFavoriteProducts ${products.value.length}");
+      // loading.value = true;
+      // var response = await UserAPI.getMyFavorites();
+      // print("response getFavoriteProducts ${response}");
+      // if (response != null) {
+      //   favoritekey.value = response["_id"];
+      //   products.value = response["productId"].map((e) {
+      //     e["ownerId"] = null;
+      //     return Product.fromJson(e);
+      //   }).toList();
+      //   loading.value = false;
+      //   print(" getFavoriteProducts ${products.value.length}");
+      // }
     } catch (e) {
       print("getFavoriteProducts Error ${e.toString()}");
     }

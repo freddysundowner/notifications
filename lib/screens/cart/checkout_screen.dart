@@ -404,14 +404,12 @@ class CheckOut extends StatelessWidget {
         checkOutController.ordertotal.value +
             checkOutController.tax.value +
             checkOutController.shipping.value) {
-
       Get.defaultDialog(
-        content:
-        const Text("You don't have enough $currencyName to complete this order"),
+        content: const Text(
+            "You don't have enough $currencyName to complete this order"),
       );
       return;
     }
-    printOut(authController.currentuser!.wallet);
     final confirmation = await showConfirmationDialog(
       context,
       "Are you sure you want to place the order?",

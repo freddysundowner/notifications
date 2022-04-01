@@ -192,7 +192,7 @@ class AuthController extends GetxController {
     ShopController().dispose();
     UserController().dispose();
     WalletController().dispose();
-
+    Get.find<AuthController>().dispose();
   }
 
   handleAuth() {

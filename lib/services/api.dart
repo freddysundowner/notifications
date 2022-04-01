@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/services/configs.dart';
 import 'package:http/http.dart' as http;
@@ -32,8 +33,11 @@ class Api {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
       Map<String, String> headers = {};
+
       if (token != null) {
         headers = {'Authorization': "Bearer " + token};
+      } else {
+        AuthController().signOut();
       }
       Helper.debug("headers ${headers}");
       Helper.debug("url ${url}");

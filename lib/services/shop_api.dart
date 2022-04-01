@@ -9,9 +9,13 @@ import 'end_points.dart';
 
 class ShopApi {
   static saveShop(Map<String, dynamic> shopdata) async {
-    var response = await Api.callApi(
-        method: config.post,
-        endpoint: config.shop + FirebaseAuth.instance.currentUser!.uid,
+    // var response = await Api.callApi(
+    //     method: config.post,
+    //     endpoint: config.shop + FirebaseAuth.instance.currentUser!.uid,
+    //     body: shopdata);
+    var response = await await DbBase().databaseRequest(
+        config.shop + FirebaseAuth.instance.currentUser!.uid,
+        DbBase().postRequestType,
         body: shopdata);
     print(response);
     return jsonDecode(response);

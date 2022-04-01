@@ -1,4 +1,3 @@
-
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/utils.dart';
@@ -23,7 +22,7 @@ class FavoriteController extends GetxController {
       print("response getFavoriteProducts ${response["_id"]}");
       favoritekey.value = response["_id"];
       products.value = response["productId"].map((e) {
-      //  e["ownerId"] = null;
+        //  e["ownerId"] = null;
         return Product.fromJson(e);
       }).toList();
       loading.value = false;
@@ -37,7 +36,6 @@ class FavoriteController extends GetxController {
     try {
       var response = await UserAPI.saveFovite(productId);
       products.value = response["productId"].map((e) {
-
         printOut(" resp $e");
         return Product.fromJson(e);
       }).toList();

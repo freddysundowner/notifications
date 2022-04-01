@@ -21,19 +21,19 @@ class ShopShortDetailCard extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 88.w,
+            width: 0.22.sw,
             child: AspectRatio(
               aspectRatio: 0.88,
               child: Padding(
-                padding: EdgeInsets.all(10),
-                child: product!.images!.length > 0
+                padding: const EdgeInsets.all(10),
+                child: product!.images!.isNotEmpty
                     ? CachedNetworkImage(
                         errorWidget: (context, String, dynamic) => Image.asset(
                           imageplaceholder,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                         imageUrl: product!.images![0],
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       )
                     : Image.asset(
                         imageplaceholder,
@@ -42,7 +42,7 @@ class ShopShortDetailCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 10.w),
+          SizedBox(width: 0.01.sw),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,18 +52,20 @@ class ShopShortDetailCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                   color: kTextColor,
                 ),
               ),
               if (product!.description!.isNotEmpty)
                 Text(
-                  product!.description.toString(),
+                  product!.description!.length > 30
+                      ? product!.description!.substring(0, 30) + "..."
+                      : product!.description.toString(),
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.bold,
                     color: kTextColor,
                   ),

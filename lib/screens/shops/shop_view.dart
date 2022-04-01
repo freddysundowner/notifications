@@ -9,7 +9,6 @@ import 'package:fluttergistshop/screens/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
-import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
 import 'package:get/get.dart';
@@ -68,20 +67,33 @@ class ShopView extends StatelessWidget {
             Obx(() {
               return Row(
                 children: [
-                  Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: shopController.currentShop.value.image != ""
-                              ? DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: CachedNetworkImageProvider(imageUrl +
-                                      shopController.currentShop.value.image!))
-                              : const DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage(
-                                      "assets/icons/no_image.png")))),
+                  shopController.currentShop.value.image != null
+                      ? CachedNetworkImage(
+                          imageUrl: shopController.currentShop.value.image!,
+                          imageBuilder: (context, imageProvider) =>
+                              Container(
+                            width: 0.25.sw,
+                            height: 0.14.sh,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          errorWidget: (context, url, error) => Image.asset(
+                              "assets/icons/no_image.png",
+                              width: 0.25.sw,
+                              height: 0.14.sh),
+                        )
+                      : CircleAvatar(
+                          radius: 50,
+                          child: Image.asset(
+                              "assets/icons/no_image.png",
+                              width: 0.25.sw,
+                              height: 0.14.sh),
+                        ),
                   SizedBox(
                     width: 20.w,
                   ),

@@ -38,19 +38,12 @@ class RoomAPI {
     }
   }
 
-
   generateAgoraToken(String channel, String uid) async {
     try {
+      var data = {"channel": channel, "uid": uid};
 
-      var data = {
-        "channel": channel,
-        "uid": uid
-      };
-
-      var token = await DbBase().databaseRequest(
-          tokenPath,
-          DbBase().postRequestType,
-          body: data);
+      var token = await DbBase()
+          .databaseRequest(tokenPath, DbBase().postRequestType, body: data);
 
       if (token != null) {
         return jsonDecode(token)["token"];
@@ -58,7 +51,6 @@ class RoomAPI {
         printOut('Failed to load token');
         throw Exception('Failed to load token');
       }
-
     } catch (e, s) {
       printOut("Error generating agora token room $e $s");
     }
@@ -79,6 +71,18 @@ class RoomAPI {
       printOut("updatedRoom $updated");
     } catch (e) {
       printOut("Error updating room $e");
+    }
+  }
+
+  addUserrToRoom(Map<String, dynamic> body, String id) async {
+    try {
+      var updated = await DbBase().databaseRequest(
+          addUserToRoom + id, DbBase().patchRequestType,
+          body: body);
+
+      printOut("addUserrToRoom $updated");
+    } catch (e) {
+      printOut("Error addUserrToRoom room $e");
     }
   }
 

@@ -292,7 +292,11 @@ class CheckOut extends StatelessWidget {
           text: "Proceed to Payment >>",
           press: () {
             if (checkOutController.address.value == null) {
-              const GetSnackBar(message: "Pick address first").show();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Pick address first"),
+                ),
+              );
             } else {
               _settingModalBottomSheet(context);
             }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
@@ -39,6 +40,13 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      print('SystemChannels---> $msg');
+      RoomController().leaveRommWhenKilled();
+    });
+
+    print(
+        "Get.find<AuthController>().currentuser!.currentRoom ${Get.find<AuthController>().currentuser!.currentRoom!}");
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -147,11 +155,20 @@ class HomePage extends StatelessWidget {
                                   .value!
                                   .shopId!
                                   .open!)
-                      ? 0.11.sh : _homeController.currentRoom.value.id == null &&
-                 ( Get.find<AuthController>().usermodel.value!.shopId ==
-                      null ||
-                  !Get.find<AuthController>().usermodel.value!.shopId!.open! )? 0.01.sh
-                      : 0.11.sh,
+                      ? 0.11.sh
+                      : _homeController.currentRoom.value.id == null &&
+                              (Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .shopId ==
+                                      null ||
+                                  !Get.find<AuthController>()
+                                      .usermodel
+                                      .value!
+                                      .shopId!
+                                      .open!)
+                          ? 0.01.sh
+                          : 0.11.sh,
               child: Column(
                 children: [
                   Get.find<AuthController>().usermodel.value!.shopId != null &&

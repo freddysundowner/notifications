@@ -89,6 +89,7 @@ class ProductController extends GetxController {
         "ownerId": FirebaseAuth.instance.currentUser!.uid,
         "variations": variantFieldController.text
       };
+      print(productdata);
 
       return ProductPI.saveProduct(productdata);
     } catch (e) {

@@ -22,7 +22,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'auth_controller.dart';
 
-class RoomController extends GetxController {
+class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   RtcEngineContext context = RtcEngineContext(agoraAppID);
   late RtcEngine engine;
 
@@ -56,9 +56,61 @@ class RoomController extends GetxController {
 
   var roomPickedImages = [].obs;
 
-  final TextEditingController searchUsersController =
-      TextEditingController();
+  final TextEditingController searchUsersController = TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
+
+  // Mandatory
+  @override
+  void onDetached() {
+    print('HomeController - onDetached called');
+  }
+
+  // Mandatory
+  @override
+  void onInactive() {
+    print('HomeController - onInative called');
+  }
+
+  // Mandatory
+  @override
+  void onPaused() {
+    print('HomeController - onPaused called');
+  }
+
+  // Mandatory
+  @override
+  void onResumed() {
+    print('HomeController - onResumed called');
+  }
+
+  // Optional
+  @override
+  Future<bool> didPushRoute(String route) {
+    print('HomeController - the route $route will be open');
+    return super.didPushRoute(route);
+  }
+
+  // Optional
+  @override
+  Future<bool> didPopRoute() {
+    print('HomeController - the current route will be closed');
+    return super.didPopRoute();
+  }
+
+  // Optional
+  @override
+  void didChangeMetrics() {
+    print('HomeController - the window size did change');
+    super.didChangeMetrics();
+  }
+
+  // Optional
+  @override
+  void didChangePlatformBrightness() {
+    print('HomeController - platform change ThemeMode');
+    super.didChangePlatformBrightness();
+  }
+
   @override
   void onReady() {
     // TODO: implement onReady
@@ -67,9 +119,31 @@ class RoomController extends GetxController {
 
   @override
   void onInit() {
+    _initAgora();
     getRooms();
     super.onInit();
     print("room controller");
+  }
+
+  _initAgora() async {
+    // Get microphone permission
+    await [Permission.microphone].request();
+
+    // Create RTC client instance
+    engine = await RtcEngine.createWithContext(context);
+
+    // Define event handling logic
+    agoraListeners();
+
+    // Join channel
+
+    await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
+    await engine.enableAudioVolumeIndication(500, 3, true);
+    await engine.enableAudio();
+    await engine.muteLocalAudioStream(audioMuted.value);
+    await engine.setDefaultAudioRoutetoSpeakerphone(true);
+
+    await engine.setClientRole(ClientRole.Broadcaster);
   }
 
   getRooms() async {
@@ -110,6 +184,7 @@ class RoomController extends GetxController {
         "productPrice": roomPickedProduct.value.price,
         "productImages": roomPickedProduct.value.images,
       };
+      leaveRommWhenKilled();
 
       var rooms = await RoomAPI().createARoom(roomData);
 
@@ -240,9 +315,11 @@ class RoomController extends GetxController {
         printOut("currentRoom token ${room.token}");
         if (room.token != null) {
           currentRoom.value = room;
-        }else {
+        } else {
           Get.snackbar(
-            '', "There was an error adding you to the room, Try again later",).show();
+            '',
+            "There was an error adding you to the room, Try again later",
+          ).show();
           endRoom(roomId);
         }
       } else {
@@ -278,18 +355,28 @@ class RoomController extends GetxController {
         currentRoom.value.userIds!.add(user);
 
         currentRoom.refresh();
-        emitRoom(currentUser: user, action: "join");
+        leaveRommWhenKilled();
+        emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
-        await RoomAPI().updateRoomById({
-          "title": currentRoom.value.title ?? " ",
-          "userIds": [user.id],
-          "token": currentRoom.value.token
+        await RoomAPI().addUserrToRoom({
+          "users": [user.id]
         }, currentRoom.value.id!);
       }
-    } else{
+    } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);
       Get.snackbar(
           '', "There was an error adding you to the room, Try again later");
+    }
+  }
+
+  void leaveRommWhenKilled() {
+    print("leaveRommWhenKilled");
+    if (Get.find<AuthController>().currentuser!.currentRoom! != "") {
+      emitRoom(
+          action: "leave",
+          roomId: Get.find<AuthController>().currentuser!.currentRoom!,
+          currentUser: Get.find<AuthController>().currentuser!.toJson());
+      Get.find<AuthController>().currentuser!.currentRoom = "";
     }
   }
 
@@ -303,7 +390,7 @@ class RoomController extends GetxController {
 
       currentRoom.refresh();
 
-      emitRoom(currentUser: user, action: "add_speaker");
+      emitRoom(currentUser: user.toJson(), action: "add_speaker");
       //Add user to speakers
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
@@ -330,7 +417,7 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
 
-    emitRoom(currentUser: user, action: "added_raised_hands");
+    emitRoom(currentUser: user.toJson(), action: "added_raised_hands");
 
     //Add user to raisedHands
     await RoomAPI().updateRoomById({
@@ -346,7 +433,7 @@ class RoomController extends GetxController {
 
     currentRoom.refresh();
 
-    emitRoom(currentUser: user, action: "remove_speaker");
+    emitRoom(currentUser: user.toJson(), action: "remove_speaker");
     //Add user to speakers
     await RoomAPI().updateRoomById({
       "title": currentRoom.value.title ?? " ",
@@ -369,7 +456,7 @@ class RoomController extends GetxController {
 
       currentRoom.refresh();
 
-      emitRoom(currentUser: user, action: "add_speaker");
+      emitRoom(currentUser: user.toJson(), action: "add_speaker");
       //Add user to speakers
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
@@ -388,11 +475,9 @@ class RoomController extends GetxController {
       "users": [user.id],
       "token": currentRoom.value.token
     }, currentRoom.value.id!);
-
   }
 
   Future<void> leaveRoom(OwnerId user) async {
-
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!
                 .indexWhere((element) => element.id == user.id) !=
@@ -429,8 +514,7 @@ class RoomController extends GetxController {
     var roomId = currentRoom.value.id;
 
     currentRoom.value = RoomModel();
-    emitRoom(currentUser: user, action: "leave", roomId: roomId!);
-
+    emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId!);
 
     try {
       leaveAgora();
@@ -441,7 +525,6 @@ class RoomController extends GetxController {
 
   endRoom(String roomId) async {
     try {
-
       currentRoom.value = RoomModel();
       emitRoom(action: "room_ended", roomId: roomId);
       await RoomAPI().deleteARoom(roomId);
@@ -468,53 +551,46 @@ class RoomController extends GetxController {
       await addUserToRoom(currentUser);
 
       if (currentRoom.value.token != null) {
-
         //If user is not a speaker or a host, disable their audio
         if (currentRoom.value.userIds!
-            .indexWhere(
-                (e) => e.id == currentUser.id) ==
+                .indexWhere((e) => e.id == currentUser.id) ==
             -1) {
           try {
             engine.enableAudio();
             engine.enableLocalAudio(true);
 
-            engine
-                .muteLocalAudioStream(audioMuted.value);
+            engine.muteLocalAudioStream(audioMuted.value);
             currentRoom.refresh();
-
           } catch (e, s) {
             printOut("Error disabling audio $e $s");
           }
-
         } else {
           engine.enableLocalAudio(false);
         }
         Get.to(RoomPage(
           roomId: roomId,
         ));
-
-
       } else {
-
         roomsList.removeWhere((element) => element.id == roomId);
-
       }
     } else {
       await fetchRooms();
     }
   }
 
-  void emitRoom({OwnerId? currentUser, required String action, String roomId = ""}) {
-
+  void emitRoom(
+      {Map? currentUser, required String action, String roomId = ""}) {
     customSocketIO.socketIO.emit("room_changes", {
-       "action": action,
-       "userData": currentUser == null ? {} : currentUser.toJson(),
-      "roomId" : currentRoom.value.id ?? roomId});
+      "action": action,
+      "userData": currentUser == null ? {} : currentUser,
+      "roomId": currentRoom.value.id ?? roomId
+    });
   }
-
 
   @override
   void onClose() {
+    print("onClose");
+    leaveRommWhenKilled();
     leaveAgora();
     super.onClose();
   }
@@ -524,7 +600,7 @@ class RoomController extends GetxController {
 
     await engine.leaveChannel();
     await engine.muteLocalAudioStream(true);
-    await engine.destroy();
+    // await engine.destroy();
     // }
   }
 
@@ -557,7 +633,7 @@ class RoomController extends GetxController {
         printOut(e);
         allUsersLoading.value = false;
       }
-    } else{
+    } else {
       searchedUsers.value = allUsers;
     }
   }
@@ -632,30 +708,7 @@ class RoomController extends GetxController {
     try {
       printOut("Joining agora room");
 
-      try {
-        await leaveAgora();
-      } catch (e, s) {
-        printOut("Error leaving agora $e $s");
-      }
-
-      // Get microphone permission
-      await [Permission.microphone].request();
-
-      // Create RTC client instance
-      engine = await RtcEngine.createWithContext(context);
-
-      // Define event handling logic
-      agoraListeners();
-
-      // Join channel
-
-      await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
-      await engine.enableAudioVolumeIndication(500, 3, true);
-      await engine.enableAudio();
-      await engine.muteLocalAudioStream(audioMuted.value);
-      await engine.setDefaultAudioRoutetoSpeakerphone(true);
-
-      await engine.setClientRole(ClientRole.Broadcaster);
+      await leaveAgora();
       await engine.joinChannel(token, roomId, null, 0);
     } catch (e, s) {
       printOut('error joining room $e $s');
@@ -670,7 +723,7 @@ class RoomController extends GetxController {
         Get.back();
         roomsList
             .removeWhere((element) => element["_id"] == currentRoom.value.id);
-       // Get.snackbar('', "Room has ended");
+        // Get.snackbar('', "Room has ended");
 
         endRoom(currentRoom.value.id!);
 

@@ -27,8 +27,6 @@ class UserModel {
   String? phonenumber;
   int? followersCount;
   int? followingCount;
-  DateTime? createdAt;
-  DateTime? updatedAt;
   String? profilePhoto;
   Shop? shopId;
   int? memberShip;
@@ -52,21 +50,22 @@ class UserModel {
     @required this.email,
     @required this.password,
     @required this.phonenumber,
-    @required this.createdAt,
     @required this.shopId,
-    @required this.updatedAt,
     @required this.profilePhoto,
     @required this.memberShip,
     @required this.upgradedDate,
   });
 
-
-  UserModel.fromPlayer(this.id, this.firstName, this.lastName, this.bio, this.userName,
-      this.phonenumber, this.profilePhoto);
+  UserModel.fromPlayer(this.id, this.firstName, this.lastName, this.bio,
+      this.userName, this.phonenumber, this.profilePhoto);
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        followers: json["followers"] == null ? [] : List<String>.from(json["followers"].map((x) => x)),
-        following: json["followers"] == null ? [] : List<String>.from(json["following"].map((x) => x)),
+        followers: json["followers"] == null
+            ? []
+            : List<String>.from(json["followers"].map((x) => x)),
+        following: json["followers"] == null
+            ? []
+            : List<String>.from(json["following"].map((x) => x)),
         wallet: json["wallet"],
         currentRoom: json["currentRoom"] ?? "",
         facebook: json["facebook"],
@@ -87,15 +86,15 @@ class UserModel {
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],
         upgradedDate: json["upgradedDate"],
-    followersCount: json["followersCount"],
-    followingCount: json["followingCount"],
+        followersCount: json["followersCount"],
+        followingCount: json["followingCount"],
       );
 
   Map<String, dynamic> toJson() => {
         // "followers": List<dynamic>.from(followers!.map((x) => x)),
         // "following": List<dynamic>.from(following!.map((x) => x)),
-    "followingCount": followingCount,
-    "followersCount": followersCount,
+        "followingCount": followingCount,
+        "followersCount": followersCount,
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,
@@ -111,8 +110,7 @@ class UserModel {
         "email": email,
         "password": password,
         "phonenumber": phonenumber,
-        "createdAt": createdAt!.toIso8601String(),
-        "updatedAt": updatedAt!.toIso8601String(),
+
         "profilePhoto": profilePhoto,
         "memberShip": memberShip,
         "upgradedDate": upgradedDate,

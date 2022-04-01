@@ -43,10 +43,12 @@ class ShopController extends GetxController {
       var response = await ShopApi.saveShop(productdata);
       error.value = "";
       if (response["success"]) {
-        final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
-            chosenImage, ShopApi.getPathForShop(response["data"]["_id"]));
-        await ShopApi.updateShop(
-            {"image": downloadUrl}, response["data"]["_id"]);
+        if (chosenImage.path.isNotEmpty) {
+          final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
+              chosenImage, ShopApi.getPathForShop(response["data"]["_id"]));
+          await ShopApi.updateShop(
+              {"image": downloadUrl}, response["data"]["_id"]);
+        }
       } else {
         error.value = response["message"];
       }

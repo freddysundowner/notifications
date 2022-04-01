@@ -51,13 +51,15 @@ class MyProducts extends StatelessWidget {
                       style: TextStyle(fontSize: 12.sp),
                     ),
                   SizedBox(height: 0.02.sh),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: Get.find<ProductController>()
-                        .products
-                        .map((e) => buildProductDismissible(e, context))
-                        .toList(),
+                  Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: Get.find<ProductController>()
+                          .products
+                          .map((e) => buildProductDismissible(e, context))
+                          .toList(),
+                    ),
                   ),
                   SizedBox(height: 0.02.sh),
                 ],

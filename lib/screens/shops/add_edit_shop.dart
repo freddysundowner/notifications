@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -99,6 +100,8 @@ class NewShop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "authController.currentuser!.shopId ${authController.currentuser!.shopId}");
     if (authController.currentuser!.shopId != null) {
       shopController
           .getShopById(authController.currentuser!.shopId?.id.toString());
@@ -117,6 +120,16 @@ class NewShop extends StatelessWidget {
 
       shopController.descriptionController.text =
           shopController.currentShop.value.description!;
+    } else {
+      shopController.nameController.text = "";
+
+      shopController.emailController.text = "";
+
+      shopController.mobileController.text = "";
+
+      shopController.daddressController.text = "";
+
+      shopController.descriptionController.text = "";
     }
     return Scaffold(
       key: _scaffoldKey,
@@ -157,10 +170,13 @@ class NewShop extends StatelessWidget {
                       content: Text(snackbarMessage),
                     ),
                   );
-                  print(
-                      "shopController.error.value ${shopController.error.value}");
-                  authController.usermodel.value = await UserAPI.getUserById();
-                  Get.back();
+                  if (shopController.error.value.isEmpty) {
+                    print(
+                        "shopController.error.value ${shopController.error.value}");
+                    authController.usermodel.value = await UserController()
+                        .getUserProfile(authController.usermodel.value!.id!);
+                    Get.back();
+                  }
                 }
               }
             },

@@ -1,4 +1,5 @@
 const baseUrl = "http://52.43.151.113";
+
 const imageUrl = "";
 const rooms = baseUrl + "/rooms";
 const favorite = baseUrl + "/favorite/";

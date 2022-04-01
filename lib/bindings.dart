@@ -2,8 +2,8 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/controllers/favorite_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
+import 'package:fluttergistshop/controllers/life.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
-import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:get/get.dart';
@@ -18,5 +18,6 @@ class AuthBinding extends Bindings {
     Get.put<AuthController>(AuthController(), permanent: true);
     Get.put<UserController>(UserController(), permanent: true);
     Get.put<FavoriteController>(FavoriteController(), permanent: true);
+    Get.put<LifeCycleController>(LifeCycleController(), permanent: true);
   }
 }

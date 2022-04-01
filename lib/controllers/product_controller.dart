@@ -89,6 +89,7 @@ class ProductController extends GetxController {
         "ownerId": FirebaseAuth.instance.currentUser!.uid,
         "variations": variantFieldController.text
       };
+      print(productdata);
 
       return ProductPI.saveProduct(productdata);
     } catch (e) {
@@ -121,6 +122,7 @@ class ProductController extends GetxController {
   }
 
   static Future<List<Product>> getProductsByShop(String id) async {
+    print("getProductsByShop");
     loading.value = true;
     List<dynamic> response = await ShopApi.getProductsByShop(id);
     _products.value = response.map((e) => Product.fromJson(e)).toList();

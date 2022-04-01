@@ -152,6 +152,7 @@ class UserAPI {
   }
 
   static Future<UserModel> getUserById() async {
+    print("getUserById ${FirebaseAuth.instance.currentUser!.uid}");
     var response = await Api.callApi(
         method: config.get,
         endpoint: config.users + FirebaseAuth.instance.currentUser!.uid);

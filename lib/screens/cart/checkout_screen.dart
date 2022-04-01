@@ -292,7 +292,11 @@ class CheckOut extends StatelessWidget {
           text: "Proceed to Payment >>",
           press: () {
             if (checkOutController.address.value == null) {
-              const GetSnackBar(message: "Pick address first").show();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Pick address first"),
+                ),
+              );
             } else {
               _settingModalBottomSheet(context);
             }
@@ -404,14 +408,12 @@ class CheckOut extends StatelessWidget {
         checkOutController.ordertotal.value +
             checkOutController.tax.value +
             checkOutController.shipping.value) {
-
       Get.defaultDialog(
-        content:
-        const Text("You don't have enough $currencyName to complete this order"),
+        content: const Text(
+            "You don't have enough $currencyName to complete this order"),
       );
       return;
     }
-    printOut(authController.currentuser!.wallet);
     final confirmation = await showConfirmationDialog(
       context,
       "Are you sure you want to place the order?",

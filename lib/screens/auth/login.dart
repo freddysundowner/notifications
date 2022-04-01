@@ -67,23 +67,24 @@ class Login extends StatelessWidget {
       ),
     );
   }
+
   Future<void> _tryConnection() async {
     try {
       final response = await InternetAddress.lookup('google.com');
 
-      printOut(" responseyuu "  + response.toString());
+      printOut(" responseyuu " + response.toString());
       if (response.isEmpty) {
         Get.snackbar('', "Check your rrrrryyyy connection").show();
-
       }
     } on SocketException catch (e) {
       printOut(e.message);
 
       Get.snackbar('', "Check your rrrrr connection").show();
-    } catch(e, s) {
+    } catch (e, s) {
       printOut("error accenssing internet $e $s");
     }
   }
+
   Row buildForgotPasswordWidget(BuildContext context) {
     return Row(
       children: [
@@ -163,7 +164,9 @@ class Login extends StatelessWidget {
             );
           },
         );
-        snackbarMessage = authController.error.value.isEmpty ? snackbarMessage :authController.error.value;
+        snackbarMessage = authController.error.value.isEmpty
+            ? snackbarMessage
+            : authController.error.value;
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

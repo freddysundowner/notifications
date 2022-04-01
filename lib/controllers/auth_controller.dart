@@ -30,6 +30,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/connection_state.dart';
 
 late CustomSocketIO customSocketIO = CustomSocketIO();
+
 class AuthController extends GetxController {
   Rxn<UserModel> usermodel = Rxn<UserModel>();
   UserModel? get currentuser => usermodel.value;
@@ -58,8 +59,8 @@ class AuthController extends GetxController {
   void onInit() {
     super.onInit();
 
-    customSocketIO.init(onSocketConnected: (data) => print("onSocketConnected"));
-
+    customSocketIO.init(
+        onSocketConnected: (data) => print("onSocketConnected"));
 
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
@@ -191,7 +192,7 @@ class AuthController extends GetxController {
     ShopController().dispose();
     UserController().dispose();
     WalletController().dispose();
-
+    Get.find<AuthController>().dispose();
   }
 
   handleAuth() {

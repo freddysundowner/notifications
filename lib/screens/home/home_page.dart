@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       print('SystemChannels---> $msg');
-      RoomController().leaveRommWhenKilled();
+      RoomController().leaveRoomWhenKilled();
     });
 
     print(
@@ -265,7 +265,7 @@ class HomePage extends StatelessWidget {
                       if (roomModel.id != null) {
                         await _homeController.joinRoom(roomModel.id!);
                       } else {
-                        Get.snackbar('', "Room ended");
+                        Get.snackbar('', "Room is no longer available");
                       }
                     },
                     child: Padding(

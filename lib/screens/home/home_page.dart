@@ -78,9 +78,9 @@ class HomePage extends StatelessWidget {
             InkWell(
               onTap: () => Get.to(() => Favorites()),
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Image(
-                  image: AssetImage(
+                  image: const AssetImage(
                     "assets/images/tab_saved.png",
                   ),
                   width: 15.w,

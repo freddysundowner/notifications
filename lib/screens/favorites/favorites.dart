@@ -24,7 +24,8 @@ class Favorites extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My favorites"),
+        title: const Text("My favorites", style: TextStyle(color: Colors.black),),
+        centerTitle: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -59,7 +60,6 @@ class Favorites extends StatelessWidget {
           ),
         ),
       ),
-      //body: Body(),
     );
   }
 

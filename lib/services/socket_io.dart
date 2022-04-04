@@ -1,10 +1,7 @@
-import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/utils/functions.dart';
-import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class CustomSocketIO {
-  final RoomController _roomController = Get.put(RoomController());
   late IO.Socket socketIO;
 
   IO.Socket init(

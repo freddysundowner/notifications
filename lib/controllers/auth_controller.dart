@@ -44,7 +44,7 @@ class AuthController extends GetxController {
   final TextEditingController confirmPasswordFieldController =
       TextEditingController();
   final TextEditingController bioFieldController = TextEditingController();
-  final RoomController _homeController = Get.find<RoomController>();
+  final RoomController _homeController = Get.put(RoomController());
 
   var connectionstate = true.obs;
 

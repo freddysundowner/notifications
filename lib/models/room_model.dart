@@ -14,26 +14,30 @@ RoomModel roomModelFromJson(String str) => RoomModel.fromJson(json.decode(str));
 String roomModelToJson(RoomModel data) => json.encode(data.toJson());
 
 class RoomModel {
-  RoomModel(
-      {this.productIds,
-      this.hostIds,
-      this.userIds,
-      this.raisedHands,
-      this.speakerIds,
-      this.invitedIds,
-      this.status,
-      this.productImages,
-      this.id,
-      this.ownerId,
-      this.title,
-      this.shopId,
-      this.productPrice,
-      this.v,
-      this.token,
-      this.roomType});
+  RoomModel({
+    this.productIds,
+    this.hostIds,
+    this.userIds,
+    this.raisedHands,
+    this.speakerIds,
+    this.invitedIds,
+    this.status,
+    this.productImages,
+    this.id,
+    this.ownerId,
+    this.title,
+    this.shopId,
+    this.productPrice,
+    this.v,
+    this.token,
+    this.roomType,
+    this.invitedhostIds,
+    this.activeTime,
+  });
 
   List<Product>? productIds;
   List<OwnerId>? hostIds = [];
+  List<String>? invitedhostIds = [];
   List<OwnerId>? userIds = [];
   List<OwnerId>? raisedHands = [];
   List<OwnerId>? speakerIds = [];
@@ -41,6 +45,7 @@ class RoomModel {
   bool? status;
   List<dynamic>? productImages = [];
   String? id;
+  int? activeTime;
   UserModel? ownerId;
   String? title = "";
   Shop? shopId;
@@ -50,43 +55,51 @@ class RoomModel {
   dynamic? token;
 
   factory RoomModel.fromJson(Map<String, dynamic> json) => RoomModel(
-      productIds: json["productIds"] == null
-          ? []
-          : List<Product>.from(
-              json["productIds"].map((x) => Product.fromJson(x))),
-      hostIds: json["hostIds"] == null
-          ? []
-          : List<OwnerId>.from(json["hostIds"].map((x) => OwnerId.fromJson(x))),
-      userIds: json["userIds"] == null
-          ? []
-          : List<OwnerId>.from(json["userIds"].map((x) => OwnerId.fromJson(x))),
-      raisedHands: json["raisedHands"] == null
-          ? []
-          : List<OwnerId>.from(
-              json["raisedHands"].map((x) => OwnerId.fromJson(x))),
-      speakerIds: json["speakerIds"] == null
-          ? []
-          : List<OwnerId>.from(
-              json["speakerIds"].map((x) => OwnerId.fromJson(x))),
-      invitedIds: json["invitedIds"] == null
-          ? []
-          : List<OwnerId>.from(
-              json["invitedIds"].map((x) => OwnerId.fromJson(x))),
-      status: json["status"],
-      productImages: json["productImages"] == null
-          ? []
-          : List<dynamic>.from(json["productImages"].map((x) => x)),
-      id: json["_id"] ?? "",
-      ownerId:
-          json["ownerId"] == null ? null : UserModel.fromJson(json["ownerId"]),
-      title: json["title"] ?? "",
-      shopId: json["ownerId"] == null
-          ? null
-          : UserModel.fromJson(json["ownerId"]).shopId,
-      productPrice: json["productPrice"],
-      v: json["__v"],
-      token: json["token"],
-      roomType: json["roomType"]);
+        productIds: json["productIds"] == null
+            ? []
+            : List<Product>.from(
+                json["productIds"].map((x) => Product.fromJson(x))),
+        hostIds: json["hostIds"] == null
+            ? []
+            : List<OwnerId>.from(
+                json["hostIds"].map((x) => OwnerId.fromJson(x))),
+        userIds: json["userIds"] == null
+            ? []
+            : List<OwnerId>.from(
+                json["userIds"].map((x) => OwnerId.fromJson(x))),
+        raisedHands: json["raisedHands"] == null
+            ? []
+            : List<OwnerId>.from(
+                json["raisedHands"].map((x) => OwnerId.fromJson(x))),
+        speakerIds: json["speakerIds"] == null
+            ? []
+            : List<OwnerId>.from(
+                json["speakerIds"].map((x) => OwnerId.fromJson(x))),
+        invitedIds: json["invitedIds"] == null
+            ? []
+            : List<OwnerId>.from(
+                json["invitedIds"].map((x) => OwnerId.fromJson(x))),
+        status: json["status"],
+        productImages: json["productImages"] == null
+            ? []
+            : List<dynamic>.from(json["productImages"].map((x) => x)),
+        id: json["_id"] ?? "",
+        ownerId: json["ownerId"] == null
+            ? null
+            : UserModel.fromJson(json["ownerId"]),
+        title: json["title"] ?? "",
+        shopId: json["ownerId"] == null
+            ? null
+            : UserModel.fromJson(json["ownerId"]).shopId,
+        invitedhostIds: json["invitedhostIds"] == null
+            ? []
+            : List<String>.from(json["invitedhostIds"].map((x) => x)),
+        productPrice: json["productPrice"],
+        v: json["__v"],
+        token: json["token"],
+        activeTime: json["activeTime"] ?? DateTime.now().microsecondsSinceEpoch,
+        roomType: json["roomType"],
+      );
 
   Map<String, dynamic> toJson() => {
         "productIds": productIds == []

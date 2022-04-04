@@ -186,6 +186,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "productPrice": roomPickedProduct.value.price,
         "productImages": roomPickedProduct.value.images,
       };
+
       leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
 
       var rooms = await RoomAPI().createARoom(roomData);
@@ -354,15 +355,25 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           (currentRoom.value.userIds!
                   .indexWhere((element) => element.id == user.id) ==
               -1)) {
-        currentRoom.value.userIds!.add(user);
-
         currentRoom.refresh();
-        leaveRommWhenKilled();
+        leaveRoomWhenKilled();
         emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
-        await RoomAPI().addUserrToRoom({
-          "users": [user.id]
-        }, currentRoom.value.id!);
+
+        if (currentRoom.value.invitedhostIds!
+                .indexWhere((element) => element == user.id) !=
+            -1) {
+          currentRoom.value.hostIds!.add(user);
+          await RoomAPI().updateRoomById({
+            "token": currentRoom.value.token,
+            "hostIds": [user.id]
+          }, currentRoom.value.id!);
+        } else {
+          currentRoom.value.userIds!.add(user);
+          await RoomAPI().addUserrToRoom({
+            "users": [user.id]
+          }, currentRoom.value.id!);
+        }
       }
     } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);
@@ -371,7 +382,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }
   }
 
-  void leaveRommWhenKilled() {
+  void leaveRoomWhenKilled() {
     print("leaveRommWhenKilled");
     if (Get.find<AuthController>().currentuser!.currentRoom! != "") {
       emitRoom(
@@ -383,7 +394,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> addUserToSpeaker(OwnerId user) async {
-    currentRoom.value.userIds!.remove(user);
+    currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
+    currentRoom.value.raisedHands!
+        .removeWhere((element) => element.id == user.id);
 
     if ((currentRoom.value.speakerIds!
             .indexWhere((element) => element.id == user.id) ==
@@ -449,7 +462,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> removeUserFromRaisedHands(OwnerId user) async {
-    currentRoom.value.raisedHands!.remove(user);
+    currentRoom.value.raisedHands!
+        .removeWhere((element) => element.id == user.id);
+    currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
 
     if ((currentRoom.value.speakerIds!
             .indexWhere((element) => element.id == user.id) ==
@@ -516,10 +531,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
     var roomId = currentRoom.value.id;
 
-    currentRoom.value = RoomModel();
     if (roomId != null) {
       emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId);
     }
+    currentRoom.value = RoomModel();
 
     try {
       leaveAgora();
@@ -599,7 +614,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   @override
   void onClose() {
     print("onClose");
-    leaveRommWhenKilled();
+    leaveRoomWhenKilled();
     leaveAgora();
     super.onClose();
   }
@@ -719,6 +734,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       await leaveAgora();
       await engine.joinChannel(token, roomId, null, 0);
+      await engine.enableAudioVolumeIndication(500, 3, true);
     } catch (e, s) {
       printOut('error joining room $e $s');
     }
@@ -726,27 +742,62 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   void agoraListeners() {
     // Define event handling logic
-    engine.setEventHandler(RtcEngineEventHandler(error: (error) async {
-      printOut("Error in agora ${error.name}");
-      if (error.name == "InvalidToken" || error.name == "TokenExpired") {
-        Get.back();
-        roomsList
-            .removeWhere((element) => element["_id"] == currentRoom.value.id);
-        // Get.snackbar('', "Room has ended");
+    engine.setEventHandler(
+      RtcEngineEventHandler(error: (error) async {
+        printOut("Error in agora ${error.name}");
+        if (error.name == "InvalidToken" || error.name == "TokenExpired") {
+          Get.back();
+          roomsList
+              .removeWhere((element) => element["_id"] == currentRoom.value.id);
 
-        endRoom(currentRoom.value.id!);
+          endRoom(currentRoom.value.id!);
 
-        leaveAgora();
+          leaveAgora();
+        }
+      }, joinChannelSuccess: (String channel, int uid, int elapsed) {
+        printOut('joinChannelSuccess $channel $uid');
+
+        userJoinedRoom.value = true;
+      }, userJoined: (int uid, int elapsed) async {
+        printOut('userJoined $uid');
+      }, userOffline: (int uid, UserOfflineReason reason) {
+        printOut('userOffline $uid');
+      }, audioVolumeIndication:
+          (List<AudioVolumeInfo> speakers, int totalVolume) async {
+
+        if (totalVolume > 2) {
+          writeToDbRoomActive();
+        }
+      }),
+    );
+  }
+
+  //If the last time the activeTime field was updated was more or equal to 10 mins ago, then update it
+  writeToDbRoomActive() async {
+    var now = DateTime.now();
+
+    if (currentRoom.value.activeTime != null) {
+      var lastUpdated =
+          DateTime.fromMicrosecondsSinceEpoch(currentRoom.value.activeTime!);
+      var duration = now.difference(lastUpdated);
+
+      if (duration.inMinutes > activeRoomUpdatePeriod) {
+        updateActiveTime(now);
       }
-    }, joinChannelSuccess: (String channel, int uid, int elapsed) {
-      printOut('joinChannelSuccess $channel $uid');
+    } else {
+      updateActiveTime(now);
+    }
+  }
 
-      userJoinedRoom.value = true;
-    }, userJoined: (int uid, int elapsed) {
-      printOut('userJoined $uid');
-    }, userOffline: (int uid, UserOfflineReason reason) {
-      printOut('userOffline $uid');
-    }));
+  updateActiveTime(DateTime now) async {
+    currentRoom.value.activeTime = now.microsecondsSinceEpoch;
+    if (currentRoom.value.id != null &&
+        currentRoom.value.hostIds!.indexWhere((element) =>
+                element.id == FirebaseAuth.instance.currentUser!.uid) !=
+            -1) {
+      await RoomAPI().updateRoomById(
+          {'activeTime': now.microsecondsSinceEpoch, "title": currentRoom.value.title, "token": currentRoom.value.token}, currentRoom.value.id!);
+    }
   }
 
   getUserProfile(String userId) async {

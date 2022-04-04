@@ -106,6 +106,7 @@ class ProductController extends GetxController {
         "description": desciptionFieldController.text,
         "variations": variantFieldController.text
       };
+      print(productdata);
       var response = await DbBase().databaseRequest(
           config.updateproduct + productid, DbBase().patchRequestType,
           body: productdata);

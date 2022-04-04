@@ -194,9 +194,9 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                 disabledBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: "How would you describe your room?",
+                hintText: "enter room title",
               ),
-              style: TextStyle(color: Colors.black, fontSize: 16.sp),
+              style: TextStyle(color: Colors.black, fontSize: 12.sp),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),

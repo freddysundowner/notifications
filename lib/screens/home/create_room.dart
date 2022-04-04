@@ -157,15 +157,32 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                     SizedBox(
                       height: 0.04.sh,
                     ),
+
                     InkWell(
-                        onTap: () async {
-                          showProductBottomSheet(context);
-                          await _homeController.fetchUserProducts();
-                        },
-                        child: Button(
-                          text: "Proceed",
-                          width: 0.8.sw,
-                        ))
+                            onTap: () async {
+                              showProductBottomSheet(context);
+                              await _homeController.fetchUserProducts();
+                            },
+                            child:
+                            Container(
+                              width: 0.8.sw,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30), color: Theme.of(context).primaryColor),
+
+                              child: const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Center(
+                                  child: Text(
+                                    // _homeController
+                                    //     .newRoomType.value ==
+                                    //     "private" ? "Pick friends to chat with" :
+                                         "Proceed",
+                                    style: TextStyle(fontSize: 18, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ))
+
                   ],
                 ),
               );

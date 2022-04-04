@@ -24,7 +24,8 @@ class Favorites extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My favorites"),
+        title: const Text("My favorites", style: TextStyle(color: Colors.black),),
+        centerTitle: false,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -59,7 +60,6 @@ class Favorites extends StatelessWidget {
           ),
         ),
       ),
-      //body: Body(),
     );
   }
 
@@ -96,8 +96,9 @@ class Favorites extends StatelessWidget {
         } else if (direction == DismissDirection.endToStart) {
           final confirmation =
               await showConfirmationDialog(context, "delete from favorite");
-          await productController.deleteFavorite(product.id!);
+
           if (confirmation) {
+            await productController.deleteFavorite(product.id!);
             Helper.showSnackBack(context, "deleted from favorite",
                 color: Colors.red);
           }

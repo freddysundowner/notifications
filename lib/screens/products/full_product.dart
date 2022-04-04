@@ -154,7 +154,8 @@ class FullProduct extends StatelessWidget {
                                 ),
                               ),
                               productController
-                                      .currentProduct.value!.shopId!.open == true
+                                          .currentProduct.value!.shopId!.open ==
+                                      true
                                   ? Expanded(
                                       child: GestureDetector(
                                         onTap: productController.currentProduct

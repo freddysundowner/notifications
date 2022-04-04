@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
-import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -8,11 +7,14 @@ import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
+import 'auth_controller.dart';
+
 class UserController extends GetxController {
   var currentProfile = UserModel().obs;
   var profileLoading = false.obs;
   var ordersLoading = false.obs;
   var userOrders = [].obs;
+  var shopOrders = [].obs;
   var userFollowersFollowing = [].obs;
   var gettingFollowers = false.obs;
   var gettingAddress = false.obs;
@@ -52,6 +54,25 @@ class UserController extends GetxController {
         userOrders.value = [];
       } else {
         userOrders.value = orders;
+      }
+
+      ordersLoading.value = false;
+    } catch (e, s) {
+      ordersLoading.value = false;
+      printOut("Error getting user orders $e $s");
+    }
+  }
+
+  getShopOrders() async {
+    try {
+      ordersLoading.value = true;
+      var orders = await UserAPI().getShopOrders(
+          Get.find<AuthController>().usermodel.value!.shopId!.id!);
+
+      if (orders == null) {
+        shopOrders.value = [];
+      } else {
+        shopOrders.value = orders;
       }
 
       ordersLoading.value = false;

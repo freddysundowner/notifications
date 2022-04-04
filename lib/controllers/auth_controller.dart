@@ -14,6 +14,7 @@ import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/controllers/wallet_controller.dart';
 import 'package:fluttergistshop/models/authenticate.dart';
+import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
@@ -33,6 +34,7 @@ import '../services/connection_state.dart';
 late CustomSocketIO customSocketIO = CustomSocketIO();
 
 class AuthController extends GetxController {
+
   Rxn<UserModel> usermodel = Rxn<UserModel>();
   UserModel? get currentuser => usermodel.value;
   final TextEditingController emailFieldController = TextEditingController();
@@ -43,6 +45,8 @@ class AuthController extends GetxController {
   final TextEditingController confirmPasswordFieldController =
       TextEditingController();
   final TextEditingController bioFieldController = TextEditingController();
+  final RoomController _homeController = Get.put(RoomController());
+
   var connectionstate = true.obs;
 
   var error = "".obs;
@@ -176,6 +180,14 @@ class AuthController extends GetxController {
   }
 
   signOut() async {
+    //Remove user from current room
+    if (_homeController.currentRoom.value.id != null) {
+      await _homeController.leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
+    }
+
+    //Remove user notification token
+    await UserAPI().updateUser({"notificationToken": ""}, FirebaseAuth.instance.currentUser!.uid);
+    
     FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();

@@ -80,7 +80,9 @@ class RoomModel {
       ownerId:
           json["ownerId"] == null ? null : UserModel.fromJson(json["ownerId"]),
       title: json["title"] ?? "",
-      shopId: json["ownerId"] == null ? null : UserModel.fromJson(json["ownerId"]).shopId,
+      shopId: json["ownerId"] == null
+          ? null
+          : UserModel.fromJson(json["ownerId"]).shopId,
       productPrice: json["productPrice"],
       v: json["__v"],
       token: json["token"],
@@ -189,7 +191,9 @@ class OwnerId {
         userName: json["userName"],
         email: json["email"],
         password: json["password"],
-        shopId: json["shopId"],
+        shopId: json["shopId"].toString().length > 40
+            ? Shop.fromJson(json["shopId"]).id
+            : json["shopId"],
         phonenumber: json["phonenumber"],
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],

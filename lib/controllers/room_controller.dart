@@ -354,15 +354,24 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           (currentRoom.value.userIds!
                   .indexWhere((element) => element.id == user.id) ==
               -1)) {
-        currentRoom.value.userIds!.add(user);
+
 
         currentRoom.refresh();
         leaveRoomWhenKilled();
         emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
-        await RoomAPI().addUserrToRoom({
-          "users": [user.id]
-        }, currentRoom.value.id!);
+        
+        if (currentRoom.value.invitedhostIds!.indexWhere((element) => element == user.id) != -1) {
+          currentRoom.value.hostIds!.add(user);
+          await RoomAPI().updateRoomById({
+            "hostIds": [user.id]
+          }, currentRoom.value.id!);
+        } else {
+          currentRoom.value.userIds!.add(user);
+          await RoomAPI().addUserrToRoom({
+            "users": [user.id]
+          }, currentRoom.value.id!);
+        }
       }
     } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);

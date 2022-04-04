@@ -32,6 +32,7 @@ class DbBase {
 
       if (body != null) {
         request.body = json.encode(body);
+        printOut("body ${request.body}");
       }
 
       request.headers.addAll(headers);

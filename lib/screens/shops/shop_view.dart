@@ -60,7 +60,7 @@ class ShopView extends StatelessWidget {
         ],
       ),
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -146,7 +146,7 @@ class ShopView extends StatelessWidget {
             Text("Products", style: headingStyle),
             Expanded(
               child: SingleChildScrollView(
-                physics: ScrollPhysics(),
+                physics: const ScrollPhysics(),
                 child: Stack(
                   children: [
                     GetX<ProductController>(initState: (_) async {
@@ -163,7 +163,7 @@ class ShopView extends StatelessWidget {
                         height: MediaQuery.of(context).size.height,
                         child: _.products.isNotEmpty
                             ? ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: _.products.length,
                                 itemBuilder: (context, index) {
                                   return authController.currentuser!.shopId !=
@@ -178,7 +178,7 @@ class ShopView extends StatelessWidget {
                                       : ShopShortDetailCard(
                                           product: _.products[index],
                                           onPressed: () {
-                                            printOut("v");
+                                            printOut("v ${ _.products[index].shopId!.id}");
                                             Get.to(() => FullProduct(
                                                 product: _.products[index]));
                                           },
@@ -212,7 +212,6 @@ class ShopView extends StatelessWidget {
         ),
       ),
       floatingActionButton: authController.currentuser!.shopId != null &&
-              shopController.currentShop.value != null &&
               shopController.currentShop.value.id ==
                   authController.currentuser!.shopId!.id
           ? FloatingActionButton(
@@ -225,7 +224,7 @@ class ShopView extends StatelessWidget {
                 //   productController.product.id = null;
                 // }
 
-                print("EditProductScreen");
+                printOut("EditProductScreen" );
                 Get.to(() => EditProductScreen());
               },
               backgroundColor: Colors.pink,

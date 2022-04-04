@@ -21,6 +21,9 @@ final RoomController _homeController = Get.find<RoomController>();
 
 Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
   _homeController.roomPickedImages.value = [];
+  _homeController.roomHosts.value = [];
+  _homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
+
 
   return showModalBottomSheet(
     isScrollControlled: true,
@@ -157,32 +160,37 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                     SizedBox(
                       height: 0.04.sh,
                     ),
-
-                    InkWell(
-                            onTap: () async {
+                    Obx(() {
+                      return InkWell(
+                          onTap: () async {
+                            if (_homeController.newRoomType.value ==
+                                "private") {
+                              showAddCoHostBottomSheet(context, private: true);
+                              _homeController.fetchAllUsers();
+                            } else {
                               showProductBottomSheet(context);
                               await _homeController.fetchUserProducts();
-                            },
-                            child:
-                            Container(
-                              width: 0.8.sw,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30), color: Theme.of(context).primaryColor),
-
-                              child: const Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Center(
-                                  child: Text(
-                                    // _homeController
-                                    //     .newRoomType.value ==
-                                    //     "private" ? "Pick friends to chat with" :
-                                         "Proceed",
-                                    style: TextStyle(fontSize: 18, color: Colors.white),
-                                  ),
+                            }
+                          },
+                          child: Container(
+                            width: 0.8.sw,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Theme.of(context).primaryColor),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Center(
+                                child: Text(
+                                  _homeController.newRoomType.value == "private"
+                                      ? "Pick friends to chat with"
+                                      : "Proceed",
+                                  style: TextStyle(
+                                      fontSize: 18.sp, color: Colors.white),
                                 ),
                               ),
-                            ))
-
+                            ),
+                          ));
+                    })
                   ],
                 ),
               );
@@ -391,8 +399,6 @@ Future<dynamic> showProductBottomSheet(BuildContext context) async {
 
 Future<dynamic> showChooseImagesBottomSheet(
     BuildContext context, Product product) {
-  _homeController.roomHosts.value = [];
-  _homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
   generateProductImages(product);
 
   return showModalBottomSheet(
@@ -588,7 +594,8 @@ Future<dynamic> showChooseImagesBottomSheet(
   );
 }
 
-Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
+Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
+    {bool? private = false}) {
   return showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -654,6 +661,8 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                                             } else {
                                               _homeController.roomHosts
                                                   .add(user);
+
+                                              printOut("adding hosts ${_homeController.roomHosts.length}");
                                             }
                                           },
                                           child: Column(
@@ -722,8 +731,12 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context) {
                       height: 0.02.sh,
                     ),
                     InkWell(
-                        onTap: () {
+                        onTap: () async {
                           Get.back();
+                          if (private != null && private == true && _homeController.roomHosts.length > 1) {
+                            showProductBottomSheet(context);
+                            await _homeController.fetchUserProducts();
+                          }
                         },
                         child: Button(text: "Continue", width: 0.9.sw))
                   ],

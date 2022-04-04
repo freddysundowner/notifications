@@ -10,6 +10,7 @@ const String imageplaceholder = "assets/images/productavatar.jpeg";
 const String userimageplaceholder = "assets/images/userimageplaceholder.jpeg";
 const int PREMIUM_UPGRADE_COINS_AMOUNT = 200;
 const String gccurrency = "GC";
+const activeRoomUpdatePeriod = 10;
 
 // Form Error
 final RegExp emailValidatorRegExp =

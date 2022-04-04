@@ -129,35 +129,28 @@ class RoomPage extends StatelessWidget {
                         ? SizedBox(
                             height: 0.1.sh,
                             child: Obx(() {
-
                               //If user is not a speaker or a host, disable their audio
 
                               if (_homeController.currentRoom.value.userIds!
-                                  .indexWhere(
-                                      (e) => e.id == currentUser.id) ==
+                                      .indexWhere(
+                                          (e) => e.id == currentUser.id) ==
                                   -1) {
                                 try {
                                   _homeController.engine.enableAudio();
                                   _homeController.engine.enableLocalAudio(true);
 
-                                  _homeController.engine
-                                      .muteLocalAudioStream(_homeController.audioMuted.value);
-
-
-
+                                  _homeController.engine.muteLocalAudioStream(
+                                      _homeController.audioMuted.value);
                                 } catch (e) {
                                   printOut("Error disabling audio $e");
                                 }
-                              }
-                              else {
+                              } else {
                                 _homeController.engine.enableLocalAudio(false);
                               }
-
 
                               //If current room is loading, show a spinner
                               if (_homeController
                                   .isCurrentRoomLoading.isFalse) {
-
                                 return Container(
 
                                     //If user is a speaker or host, show the mic icon, else don't show it
@@ -288,7 +281,7 @@ class RoomPage extends StatelessWidget {
         printOut("leaving");
 
         //Remove user who has left room
-        try{
+        try {
           _homeController.currentRoom.value.userIds!
               .removeWhere((element) => element.id == user.id);
           _homeController.currentRoom.value.speakerIds!
@@ -299,19 +292,22 @@ class RoomPage extends StatelessWidget {
           printOut("Error removing user who has left from controller $e $s");
         }
         _homeController.currentRoom.refresh();
-
       } else if (decodedData["action"] == "room_ended") {
-        printOut("room_ended");
+        if (_homeController.currentRoom.value.hostIds!.length != 1 ||
+            _homeController.currentRoom.value.hostIds!
+                    .indexWhere((element) => element.id == user.id) ==
+                -1) {
+          printOut("room_ended");
 
-        //Remove user from room that has ended, and show them a message.
-        Get.snackbar('', 'Room ended', duration: const Duration(seconds: 2));
+          //Remove user from room that has ended, and show them a message.
+          Get.snackbar('', 'Room ended', duration: const Duration(seconds: 2));
 
-        Future.delayed(const Duration(seconds: 3), () {
-          _homeController.currentRoom.value = RoomModel();
-          _homeController.leaveAgora();
-          Get.offAll(HomePage());
-        });
-
+          Future.delayed(const Duration(seconds: 3), () {
+            _homeController.currentRoom.value = RoomModel();
+            _homeController.leaveAgora();
+            Get.offAll(HomePage());
+          });
+        }
       } else if (decodedData["action"] == "add_speaker") {
         printOut("add_speaker");
 

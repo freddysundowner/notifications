@@ -185,7 +185,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "productPrice": roomPickedProduct.value.price,
         "productImages": roomPickedProduct.value.images,
       };
-      leaveRommWhenKilled();
+        leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
 
       var rooms = await RoomAPI().createARoom(roomData);
 
@@ -484,6 +484,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
                 .indexWhere((element) => element.id == user.id) !=
             -1) {
       endRoom(currentRoom.value.id!);
+      currentRoom.value = RoomModel();
     } else {
       if (currentRoom.value.userIds!
               .indexWhere((element) => element.id == user.id) >
@@ -515,7 +516,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     var roomId = currentRoom.value.id;
 
     currentRoom.value = RoomModel();
-    emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId!);
+    if (roomId != null) {
+      emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId);
+
+    }
 
     try {
       leaveAgora();
@@ -536,18 +540,25 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
+    OwnerId currentUser = OwnerId(
+        id: Get.find<AuthController>().usermodel.value!.id,
+        bio: Get.find<AuthController>().usermodel.value!.bio,
+        email: Get.find<AuthController>().usermodel.value!.email,
+        firstName: Get.find<AuthController>().usermodel.value!.firstName,
+        lastName: Get.find<AuthController>().usermodel.value!.lastName,
+        userName: Get.find<AuthController>().usermodel.value!.userName,
+        profilePhoto:
+        Get.find<AuthController>().usermodel.value!.profilePhoto);
+
+    if (currentRoom.value.id != null && currentRoom.value.id != roomId) {
+      await leaveRoom(currentUser);
+      currentRoom.value == RoomModel();
+    }
+
     await fetchRoom(roomId);
 
     if (currentRoom.value.id != null) {
-      OwnerId currentUser = OwnerId(
-          id: Get.find<AuthController>().usermodel.value!.id,
-          bio: Get.find<AuthController>().usermodel.value!.bio,
-          email: Get.find<AuthController>().usermodel.value!.email,
-          firstName: Get.find<AuthController>().usermodel.value!.firstName,
-          lastName: Get.find<AuthController>().usermodel.value!.lastName,
-          userName: Get.find<AuthController>().usermodel.value!.userName,
-          profilePhoto:
-              Get.find<AuthController>().usermodel.value!.profilePhoto);
+
 
       await addUserToRoom(currentUser);
 

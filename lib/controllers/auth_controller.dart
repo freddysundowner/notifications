@@ -34,7 +34,6 @@ import '../services/connection_state.dart';
 late CustomSocketIO customSocketIO = CustomSocketIO();
 
 class AuthController extends GetxController {
-
   Rxn<UserModel> usermodel = Rxn<UserModel>();
   UserModel? get currentuser => usermodel.value;
   final TextEditingController emailFieldController = TextEditingController();
@@ -169,7 +168,7 @@ class AuthController extends GetxController {
             {"notificationToken": userOneSignalId!.userId},
             FirebaseAuth.instance.currentUser!.uid);
 
-        return Get.offAll(() => HomePage());
+        return Get.offAll(() => MainPage());
       } else {
         printOut("User null");
       }
@@ -182,12 +181,14 @@ class AuthController extends GetxController {
   signOut() async {
     //Remove user from current room
     if (_homeController.currentRoom.value.id != null) {
-      await _homeController.leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
+      await _homeController.leaveRoom(
+          OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
     }
 
     //Remove user notification token
-    await UserAPI().updateUser({"notificationToken": ""}, FirebaseAuth.instance.currentUser!.uid);
-    
+    await UserAPI().updateUser(
+        {"notificationToken": ""}, FirebaseAuth.instance.currentUser!.uid);
+
     FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
@@ -222,7 +223,7 @@ class AuthController extends GetxController {
         }
         if (snapshot.hasData == true) {
           usermodel.value = snapshot.data as UserModel?;
-          return HomePage();
+          return MainPage();
         }
 
         if (FirebaseAuth.instance.currentUser == null) {

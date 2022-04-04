@@ -9,6 +9,7 @@ import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
@@ -185,7 +186,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "productPrice": roomPickedProduct.value.price,
         "productImages": roomPickedProduct.value.images,
       };
-        leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
+      leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
 
       var rooms = await RoomAPI().createARoom(roomData);
 
@@ -207,17 +208,17 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
-          Get.offAll(HomePage());
+          Get.offAll(MainPage());
           Get.to(RoomPage(roomId: roomId));
         } else {
-          Get.offAll(HomePage());
+          Get.offAll(MainPage());
           Get.snackbar(
               "", "There was an error creating your room. Try again later");
 
           endRoom(roomId);
         }
       } else {
-        Get.offAll(HomePage());
+        Get.offAll(MainPage());
         Get.snackbar("", "Error creating your room");
       }
 
@@ -518,7 +519,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     currentRoom.value = RoomModel();
     if (roomId != null) {
       emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId);
-
     }
 
     try {
@@ -547,8 +547,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         firstName: Get.find<AuthController>().usermodel.value!.firstName,
         lastName: Get.find<AuthController>().usermodel.value!.lastName,
         userName: Get.find<AuthController>().usermodel.value!.userName,
-        profilePhoto:
-        Get.find<AuthController>().usermodel.value!.profilePhoto);
+        profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
     if (currentRoom.value.id != null && currentRoom.value.id != roomId) {
       await leaveRoom(currentUser);
@@ -558,8 +557,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     await fetchRoom(roomId);
 
     if (currentRoom.value.id != null) {
-
-
       await addUserToRoom(currentUser);
 
       if (currentRoom.value.token != null) {

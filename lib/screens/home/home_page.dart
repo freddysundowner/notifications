@@ -40,13 +40,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChannels.lifecycle.setMessageHandler((msg) async {
-      print('SystemChannels---> $msg');
-      RoomController().leaveRommWhenKilled();
-    });
-
-    print(
-        "Get.find<AuthController>().currentuser!.currentRoom ${Get.find<AuthController>().currentuser!.currentRoom!}");
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -141,99 +134,162 @@ class HomePage extends StatelessWidget {
             top: 10.0,
           ),
           child: Obx(() {
-            return SizedBox(
-              height: _homeController.currentRoom.value.id != null &&
-                      Get.find<AuthController>().usermodel.value!.shopId !=
-                          null &&
-                      Get.find<AuthController>().usermodel.value!.shopId!.open!
-                  ? 0.18.sh
-                  : _homeController.currentRoom.value.id != null &&
-                          (Get.find<AuthController>().usermodel.value!.shopId ==
-                                  null ||
-                              !Get.find<AuthController>()
-                                  .usermodel
-                                  .value!
-                                  .shopId!
-                                  .open!)
-                      ? 0.11.sh
-                      : _homeController.currentRoom.value.id == null &&
-                              (Get.find<AuthController>()
-                                          .usermodel
-                                          .value!
-                                          .shopId ==
-                                      null ||
-                                  !Get.find<AuthController>()
-                                      .usermodel
-                                      .value!
-                                      .shopId!
-                                      .open!)
-                          ? 0.01.sh
-                          : 0.11.sh,
-              child: Column(
-                children: [
-                  Get.find<AuthController>().usermodel.value!.shopId != null &&
-                          Get.find<AuthController>()
-                              .usermodel
-                              .value!
-                              .shopId!
-                              .open!
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                _homeController.newRoomTitle.value = " ";
-                                _homeController.newRoomType.value = " ";
-
-                                showRoomTypeBottomSheet(context);
-                              },
-                              child: Container(
-                                width: 0.6.sw,
-                                height: 0.07.sh,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Theme.of(context).primaryColor),
-                                child: Center(
-                                  child: Text(
-                                    "Create a room",
-                                    style: TextStyle(
-                                        fontSize: 18.sp, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.1.sw,
-                            ),
-                            InkWell(
-                              onTap: () => Get.to(AllChatsPage()),
-                              child: const Icon(
-                                Ionicons.chatbox_outline,
-                                color: Colors.grey,
-                                size: 35,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 0.02.sw,
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: 0.008.sh,
-                  ),
-                  Obx(() {
-                    if (_homeController.currentRoom.value.id != null) {
-                      return buildCurrentRoom(context);
-                    } else {
-                      return Container();
-                    }
-                  }),
-                ],
-              ),
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _homeController.currentRoom.value.id == null
+                    ? SizedBox(
+                        height: 0,
+                      )
+                    : SizedBox(
+                        height: _homeController.currentRoom.value.id != null &&
+                                Get.find<AuthController>()
+                                        .usermodel
+                                        .value!
+                                        .shopId !=
+                                    null &&
+                                Get.find<AuthController>()
+                                    .usermodel
+                                    .value!
+                                    .shopId!
+                                    .open!
+                            ? 0.10.sh
+                            : _homeController.currentRoom.value.id != null &&
+                                    (Get.find<AuthController>()
+                                                .usermodel
+                                                .value!
+                                                .shopId ==
+                                            null ||
+                                        !Get.find<AuthController>()
+                                            .usermodel
+                                            .value!
+                                            .shopId!
+                                            .open!)
+                                ? 0.11.sh
+                                : _homeController.currentRoom.value.id ==
+                                            null &&
+                                        (Get.find<AuthController>()
+                                                    .usermodel
+                                                    .value!
+                                                    .shopId ==
+                                                null ||
+                                            !Get.find<AuthController>()
+                                                .usermodel
+                                                .value!
+                                                .shopId!
+                                                .open!)
+                                    ? 0.01.sh
+                                    : 0.11.sh,
+                        child: Obx(() {
+                          if (_homeController.currentRoom.value.id != null) {
+                            return buildCurrentRoom(context);
+                          } else {
+                            return Container();
+                          }
+                        }),
+                      ),
+              ],
             );
           }),
         ),
+        // bottomNavigationBar: Padding(
+        //   padding: const EdgeInsets.only(
+        //     top: 10.0,
+        //   ),
+        //   child: Obx(() {
+        //     return SizedBox(
+        //       height: _homeController.currentRoom.value.id != null &&
+        //               Get.find<AuthController>().usermodel.value!.shopId !=
+        //                   null &&
+        //               Get.find<AuthController>().usermodel.value!.shopId!.open!
+        //           ? 0.18.sh
+        //           : _homeController.currentRoom.value.id != null &&
+        //                   (Get.find<AuthController>().usermodel.value!.shopId ==
+        //                           null ||
+        //                       !Get.find<AuthController>()
+        //                           .usermodel
+        //                           .value!
+        //                           .shopId!
+        //                           .open!)
+        //               ? 0.11.sh
+        //               : _homeController.currentRoom.value.id == null &&
+        //                       (Get.find<AuthController>()
+        //                                   .usermodel
+        //                                   .value!
+        //                                   .shopId ==
+        //                               null ||
+        //                           !Get.find<AuthController>()
+        //                               .usermodel
+        //                               .value!
+        //                               .shopId!
+        //                               .open!)
+        //                   ? 0.01.sh
+        //                   : 0.11.sh,
+        //       child: Column(
+        //         children: [
+        //           Get.find<AuthController>().usermodel.value!.shopId != null &&
+        //                   Get.find<AuthController>()
+        //                       .usermodel
+        //                       .value!
+        //                       .shopId!
+        //                       .open!
+        //               ? Row(
+        //                   mainAxisAlignment: MainAxisAlignment.end,
+        //                   children: [
+        //                     InkWell(
+        //                       onTap: () {
+        //                         _homeController.newRoomTitle.value = " ";
+        //                         _homeController.newRoomType.value = " ";
+        //
+        //                         showRoomTypeBottomSheet(context);
+        //                       },
+        //                       child: Container(
+        //                         width: 0.6.sw,
+        //                         height: 0.07.sh,
+        //                         decoration: BoxDecoration(
+        //                             borderRadius: BorderRadius.circular(20),
+        //                             color: Theme.of(context).primaryColor),
+        //                         child: Center(
+        //                           child: Text(
+        //                             "Create a room",
+        //                             style: TextStyle(
+        //                                 fontSize: 18.sp, color: Colors.white),
+        //                           ),
+        //                         ),
+        //                       ),
+        //                     ),
+        //                     SizedBox(
+        //                       width: 0.1.sw,
+        //                     ),
+        //                     InkWell(
+        //                       onTap: () => Get.to(AllChatsPage()),
+        //                       child: const Icon(
+        //                         Ionicons.chatbox_outline,
+        //                         color: Colors.grey,
+        //                         size: 35,
+        //                       ),
+        //                     ),
+        //                     SizedBox(
+        //                       width: 0.02.sw,
+        //                     ),
+        //                   ],
+        //                 )
+        //               : Container(),
+        //           SizedBox(
+        //             height: 0.008.sh,
+        //           ),
+        //           Obx(() {
+        //             if (_homeController.currentRoom.value.id != null) {
+        //               return buildCurrentRoom(context);
+        //             } else {
+        //               return Container();
+        //             }
+        //           }),
+        //         ],
+        //       ),
+        //     );
+        //   }),
+        // ),
         body: Obx(() {
           if (_homeController.isLoading.isFalse ||
               _homeController.isCurrentRoomLoading.isFalse) {

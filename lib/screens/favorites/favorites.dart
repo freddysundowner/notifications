@@ -96,8 +96,9 @@ class Favorites extends StatelessWidget {
         } else if (direction == DismissDirection.endToStart) {
           final confirmation =
               await showConfirmationDialog(context, "delete from favorite");
-          await productController.deleteFavorite(product.id!);
+
           if (confirmation) {
+            await productController.deleteFavorite(product.id!);
             Helper.showSnackBack(context, "deleted from favorite",
                 color: Colors.red);
           }

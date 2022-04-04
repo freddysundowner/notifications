@@ -271,7 +271,15 @@ class RoomPage extends StatelessWidget {
 
       if (decodedData["action"] == "join") {
         //if user is not already in room, add them
-        if (_homeController.currentRoom.value.userIds!
+        if (_homeController.currentRoom.value.invitedhostIds!
+                    .indexWhere((element) => element == user.id) >
+                -1 &&
+            _homeController.currentRoom.value.hostIds!
+                    .indexWhere((element) => element.id == user.id) ==
+                -1) {
+          _homeController.currentRoom.value.hostIds!.add(user);
+          _homeController.currentRoom.refresh();
+        } else if (_homeController.currentRoom.value.userIds!
                 .indexWhere((element) => element.id == user.id) <
             0) {
           _homeController.currentRoom.value.userIds!.add(user);

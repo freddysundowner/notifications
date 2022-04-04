@@ -185,6 +185,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "productPrice": roomPickedProduct.value.price,
         "productImages": roomPickedProduct.value.images,
       };
+
         leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
 
       var rooms = await RoomAPI().createARoom(roomData);
@@ -356,7 +357,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         currentRoom.value.userIds!.add(user);
 
         currentRoom.refresh();
-        leaveRommWhenKilled();
+        leaveRoomWhenKilled();
         emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
         await RoomAPI().addUserrToRoom({
@@ -370,7 +371,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }
   }
 
-  void leaveRommWhenKilled() {
+  void leaveRoomWhenKilled() {
     print("leaveRommWhenKilled");
     if (Get.find<AuthController>().currentuser!.currentRoom! != "") {
       emitRoom(
@@ -382,7 +383,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> addUserToSpeaker(OwnerId user) async {
-    currentRoom.value.userIds!.remove(user);
+    currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
+    currentRoom.value.raisedHands!.removeWhere((element) => element.id == user.id);
 
     if ((currentRoom.value.speakerIds!
             .indexWhere((element) => element.id == user.id) ==
@@ -448,7 +450,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> removeUserFromRaisedHands(OwnerId user) async {
-    currentRoom.value.raisedHands!.remove(user);
+    currentRoom.value.raisedHands!.removeWhere((element) => element.id == user.id);
+    currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
 
     if ((currentRoom.value.speakerIds!
             .indexWhere((element) => element.id == user.id) ==
@@ -515,11 +518,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
     var roomId = currentRoom.value.id;
 
-    currentRoom.value = RoomModel();
     if (roomId != null) {
       emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId);
-
     }
+    currentRoom.value = RoomModel();
+
 
     try {
       leaveAgora();
@@ -602,7 +605,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   @override
   void onClose() {
     print("onClose");
-    leaveRommWhenKilled();
+    leaveRoomWhenKilled();
     leaveAgora();
     super.onClose();
   }

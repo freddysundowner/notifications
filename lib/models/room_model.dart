@@ -30,10 +30,11 @@ class RoomModel {
       this.productPrice,
       this.v,
       this.token,
-      this.roomType});
+      this.roomType, this.invitedhostIds});
 
   List<Product>? productIds;
   List<OwnerId>? hostIds = [];
+  List<String>? invitedhostIds = [];
   List<OwnerId>? userIds = [];
   List<OwnerId>? raisedHands = [];
   List<OwnerId>? speakerIds = [];
@@ -83,6 +84,7 @@ class RoomModel {
       shopId: json["ownerId"] == null
           ? null
           : UserModel.fromJson(json["ownerId"]).shopId,
+  invitedhostIds: json["invitedhostIds"] == null ? [] : List<String>.from(json["invitedhostIds"].map((x) => x)),
       productPrice: json["productPrice"],
       v: json["__v"],
       token: json["token"],

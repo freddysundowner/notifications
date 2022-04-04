@@ -614,20 +614,91 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
             builder: (BuildContext productContext,
                 ScrollController scrollController) {
               return Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   children: [
-                    Container(
-                      color: Theme.of(productContext).primaryColor,
+                    // Container(
+                    //   color: Theme.of(productContext).primaryColor,
+                    //   height: 0.01.sh,
+                    //   width: 0.15.sw,
+                    // ),
+                    SizedBox(
                       height: 0.01.sh,
-                      width: 0.15.sw,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Add Co-hosts",
+                          style: TextStyle(color: Colors.black87, fontSize: 16.sp),
+                        ),
+                        IconButton(
+                            onPressed: () async {
+                              Get.back();
+                              if (private != null && private == true && _homeController.roomHosts.length > 1) {
+                                showProductBottomSheet(context);
+                                await _homeController.fetchUserProducts();
+                              }
+
+                            },
+                            icon: const Icon(Icons.done))
+                      ],
                     ),
                     SizedBox(
-                      height: 0.02.sh,
+                      height: 0.01.sh,
                     ),
-                    Text(
-                      "Add Co-hosts",
-                      style: TextStyle(color: Colors.black87, fontSize: 16.sp),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 15.0, right: 10.0),
+                        height: 0.07.sh,
+                        decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Ionicons.search,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(
+                              width: 0.03.sw,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: TextField(
+                                  controller:
+                                  _homeController.searchUsersController,
+                                  autofocus: false,
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  onChanged: (text) =>
+                                      _homeController.searchUsers(),
+                                  decoration: InputDecoration(
+                                    hintText: "Search",
+                                    hintStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16.sp,
+                                        decoration: TextDecoration.none),
+                                    border: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    focusedErrorBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.sp,
+                                      decoration: TextDecoration.none),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(
                       height: 0.01.sh,
@@ -636,7 +707,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                       return _homeController.allUsersLoading.isFalse
                           ? SizedBox(
                               height: 0.55.sh,
-                              child: _homeController.allUsers.isNotEmpty
+                              child: _homeController.searchedUsers.isNotEmpty
                                   ? GridView.builder(
                                       scrollDirection: Axis.vertical,
                                       shrinkWrap: true,
@@ -647,10 +718,10 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                         childAspectRatio: 0.9,
                                       ),
                                       itemCount:
-                                          _homeController.allUsers.length,
+                                          _homeController.searchedUsers.length,
                                       itemBuilder: (context, index) {
                                         UserModel user = UserModel.fromJson(
-                                            _homeController.allUsers
+                                            _homeController.searchedUsers
                                                 .elementAt(index));
                                         return InkWell(
                                           onTap: () {
@@ -673,7 +744,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                       const EdgeInsets.all(8.0),
                                                   child: Center(
                                                     child: user.profilePhoto ==
-                                                            ""
+                                                            "" || user.profilePhoto == null
                                                         ? CircleAvatar(
                                                             radius: 35,
                                                             backgroundColor:
@@ -715,7 +786,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                 );
                                               }),
                                               Text(
-                                                "${user.userName}",
+                                                user.userName.toString().length > 5 ? "${user.userName}".substring(0, 5) + "..." : "${user.userName}",
                                                 style: TextStyle(
                                                     color: Colors.black87,
                                                     fontSize: 16.sp),
@@ -730,15 +801,15 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                     SizedBox(
                       height: 0.02.sh,
                     ),
-                    InkWell(
-                        onTap: () async {
-                          Get.back();
-                          if (private != null && private == true && _homeController.roomHosts.length > 1) {
-                            showProductBottomSheet(context);
-                            await _homeController.fetchUserProducts();
-                          }
-                        },
-                        child: Button(text: "Continue", width: 0.9.sw))
+                    // InkWell(
+                    //     onTap: () async {
+                    //       Get.back();
+                    //       if (private != null && private == true && _homeController.roomHosts.length > 1) {
+                    //         showProductBottomSheet(context);
+                    //         await _homeController.fetchUserProducts();
+                    //       }
+                    //     },
+                    //     child: Button(text: "Continue", width: 0.9.sw))
                   ],
                 ),
               );

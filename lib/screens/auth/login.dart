@@ -167,6 +167,10 @@ class Login extends StatelessWidget {
         snackbarMessage = authController.error.value.isEmpty
             ? snackbarMessage
             : authController.error.value;
+      } catch (e, s) {
+
+        printOut("Error in sign in button callback $e $s");
+
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -174,6 +178,7 @@ class Login extends StatelessWidget {
           ),
         );
       }
-    } else {}
+    }
+     else {}
   }
 }

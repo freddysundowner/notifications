@@ -175,6 +175,10 @@ class AuthController extends GetxController {
   }
 
   signOut() async {
+
+    //Remove user notification token
+    await UserAPI().updateUser({"notificationToken": ""}, FirebaseAuth.instance.currentUser!.uid);
+    
     FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();

@@ -87,7 +87,6 @@ class WalletPage extends StatelessWidget {
                     child: _walletController.transactionsLoading.isFalse
                         ? _walletController.userTransaction.isNotEmpty
                             ? ListView.builder(
-
                                 itemCount:
                                     _walletController.userTransaction.length,
                                 itemBuilder: (context, index) {
@@ -105,35 +104,27 @@ class WalletPage extends StatelessWidget {
                                         style: TextStyle(
                                             color:
                                                 Theme.of(context).primaryColor,
-                                            fontSize: 16.sp),
-                                      ),
-                                      SizedBox(
-                                        height: 0.02.sh,
+                                            fontSize: 12.sp),
                                       ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            transaction.reason.trim().length >
-                                                    20
-                                                ? transaction.reason
-                                                        .trim()
-                                                        .capitalizeFirst!
-                                                        .substring(0, 20) +
-                                                    "..."
-                                                : transaction.reason
-                                                    .trim()
-                                                    .capitalizeFirst!,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16.sp), maxLines: 2,
+                                          Expanded(
+                                            child: Text(
+                                              transaction.reason,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13.sp),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                           Text(
                                             "$gccurrency ${transaction.amount}",
                                             style: TextStyle(
                                                 color: Colors.red,
-                                                fontSize: 16.sp),
+                                                fontSize: 13.sp),
                                           ),
                                         ],
                                       ),

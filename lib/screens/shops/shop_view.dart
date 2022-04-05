@@ -227,25 +227,28 @@ class ShopView extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: authController.currentuser!.shopId != null &&
-              shopController.currentShop.value.id ==
-                  authController.currentuser!.shopId!.id
-          ? FloatingActionButton(
-              child: const Icon(Icons.add),
-              elevation: 4,
-              hoverColor: Colors.green,
-              splashColor: Colors.green,
-              onPressed: () {
-                // if (productController.product != null) {
-                //   productController.product.id = null;
-                // }
+      floatingActionButton: Obx(() {
+        return authController.currentuser!.shopId != null &&
+                shopController.currentShop.value.id ==
+                    authController.currentuser!.shopId!.id &&
+                authController.usermodel.value!.shopId!.open == true
+            ? FloatingActionButton(
+                child: const Icon(Icons.add),
+                elevation: 4,
+                hoverColor: Colors.green,
+                splashColor: Colors.green,
+                onPressed: () {
+                  // if (productController.product != null) {
+                  //   productController.product.id = null;
+                  // }
 
-                printOut("EditProductScreen");
-                Get.to(() => EditProductScreen());
-              },
-              backgroundColor: Colors.pink,
-            )
-          : Container(),
+                  printOut("EditProductScreen");
+                  Get.to(() => EditProductScreen());
+                },
+                backgroundColor: Colors.pink,
+              )
+            : Container();
+      }),
     );
   }
 

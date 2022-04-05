@@ -4,7 +4,7 @@ import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 
 class FavoriteController extends GetxController {
-  var products = [].obs;
+  RxList<dynamic> products = RxList([]);
   var loading = false.obs;
   var favoritekey = "".obs;
 
@@ -15,20 +15,21 @@ class FavoriteController extends GetxController {
     getFavoriteProducts();
   }
 
-  getFavoriteProducts() async {
+  Future<List> getFavoriteProducts() async {
     try {
       loading.value = true;
       var response = await UserAPI.getMyFavorites();
       print("response getFavoriteProducts ${response["_id"]}");
       favoritekey.value = response["_id"];
-      products.value = response["productId"].map((e) {
-        //  e["ownerId"] = null;
+      List allproducts = response["productId"].map((e) {
         return Product.fromJson(e);
       }).toList();
+      allproducts.removeWhere((element) => element.available == false);
+      products.value = allproducts;
       loading.value = false;
-      print(" getFavoriteProducts ${products.value.length}");
+      return allproducts;
     } catch (e, s) {
-      print("getFavoriteProducts Error ${e.toString()} $s");
+      return [];
     }
   }
 

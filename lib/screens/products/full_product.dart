@@ -153,65 +153,62 @@ class FullProduct extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              productController
-                                          .currentProduct.value!.shopId!.open ==
-                                      true
-                                  ? Expanded(
-                                      child: GestureDetector(
-                                        onTap: productController.currentProduct
-                                                    .value!.quantity! <
-                                                1
-                                            ? null
-                                            : () {
-                                                checkOutController
-                                                    .product.value = product;
-                                                checkOutController.qty.value =
-                                                    1;
-                                                if (checkOutController
-                                                            .selectetedvariationvalue
-                                                            .value ==
-                                                        "" &&
-                                                    product.variations!
-                                                        .isNotEmpty) {
-                                                  checkOutController
-                                                          .selectetedvariationvalue
-                                                          .value =
-                                                      product.variations![0];
-                                                }
-                                                Get.to(() => CheckOut());
-                                              },
-                                        child: Container(
-                                          height: 0.08.sh,
-                                          margin: const EdgeInsets.only(
-                                            left: 16.0,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: productController
-                                                        .currentProduct
-                                                        .value!
-                                                        .quantity! <
-                                                    1
-                                                ? Colors.grey
-                                                : primarycolor,
-                                            borderRadius:
-                                                BorderRadius.circular(12.0),
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            productController.currentProduct
-                                                        .value!.quantity! <
-                                                    1
-                                                ? "Out of Stock"
-                                                : "Buy Now",
-                                            style: TextStyle(
-                                                fontSize: 18.0.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Container()
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: productController.currentProduct.value!
+                                                  .quantity! <
+                                              1 ||
+                                          productController.currentProduct
+                                                  .value!.shopId!.open ==
+                                              false
+                                      ? null
+                                      : () {
+                                          checkOutController.product.value =
+                                              product;
+                                          checkOutController.qty.value = 1;
+                                          if (checkOutController
+                                                      .selectetedvariationvalue
+                                                      .value ==
+                                                  "" &&
+                                              product.variations!.isNotEmpty) {
+                                            checkOutController
+                                                .selectetedvariationvalue
+                                                .value = product.variations![0];
+                                          }
+                                          Get.to(() => CheckOut());
+                                        },
+                                  child: Container(
+                                    height: 0.08.sh,
+                                    margin: const EdgeInsets.only(
+                                      left: 16.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: productController.currentProduct
+                                                  .value!.quantity! <
+                                              1
+                                          ? Colors.grey
+                                          : primarycolor,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      productController.currentProduct.value!
+                                                  .quantity! <
+                                              1
+                                          ? "Out of Stock"
+                                          : productController.currentProduct
+                                                      .value!.shopId!.open ==
+                                                  true
+                                              ? "Buy Now"
+                                              : "Not Available",
+                                      style: TextStyle(
+                                          fontSize: 18.0.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
                           )
                         : Container()

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
@@ -11,6 +12,8 @@ import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/home/create_room.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/settings/settings_page.dart';
+import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
+import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -82,12 +85,12 @@ class MainPage extends StatelessWidget {
         body: _pages[_global.tabPosition.value],
         bottomNavigationBar: Container(
           height: 80,
-          padding: EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.only(bottom: 20, right: 10, left: 10),
           decoration: BoxDecoration(
             color: Colors.white,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
                 onTap: () {
@@ -113,34 +116,76 @@ class MainPage extends StatelessWidget {
                           children: <Widget>[
                             ListTile(
                               leading: new Icon(Icons.live_tv),
-                              title: Obx(() {
-                                return Get.find<AuthController>()
-                                                .usermodel
-                                                .value!
-                                                .shopId !=
-                                            null &&
-                                        Get.find<AuthController>()
-                                            .usermodel
-                                            .value!
-                                            .shopId!
-                                            .open!
-                                    ? InkWell(
-                                        onTap: () {
-                                          _homeController.newRoomTitle.value =
-                                              " ";
-                                          _homeController.newRoomType.value =
-                                              " ";
-                                          showRoomTypeBottomSheet(context);
-                                        },
-                                        child: Text(
-                                          "Go Live",
-                                          style: TextStyle(
-                                              fontSize: 18.sp,
-                                              color: Colors.black),
-                                        ),
-                                      )
-                                    : Container();
-                              }),
+                              title: InkWell(
+                                onTap: () async {
+                                  if (Get.find<AuthController>()
+                                              .usermodel
+                                              .value!
+                                              .shopId !=
+                                          null &&
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .shopId!
+                                          .open!) {
+                                    _homeController.newRoomTitle.value = " ";
+                                    _homeController.newRoomType.value = " ";
+                                    showRoomTypeBottomSheet(context);
+                                  } else {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text("Confirmation"),
+                                          content: Text(
+                                              "${Get.find<AuthController>().usermodel.value!.shopId == null ? "You do not have a shop, do you want to create one?" : " Your shop is closed , Do you want to  open it?"} "),
+                                          actions: [
+                                            FlatButton(
+                                              child: Text("Yes"),
+                                              onPressed: () async {
+                                                Navigator.pop(context, false);
+                                                if (Get.find<AuthController>()
+                                                        .usermodel
+                                                        .value!
+                                                        .shopId ==
+                                                    null) {
+                                                  Get.to(() => NewShop());
+                                                }
+                                                if (Get.find<AuthController>()
+                                                        .usermodel
+                                                        .value!
+                                                        .shopId!
+                                                        .open! ==
+                                                    false) {
+                                                  Get.find<ShopController>()
+                                                          .currentShop
+                                                          .value =
+                                                      Get.find<AuthController>()
+                                                          .usermodel
+                                                          .value!
+                                                          .shopId!;
+                                                  Get.to(() => ShopView());
+                                                }
+                                              },
+                                            ),
+                                            FlatButton(
+                                              child: Text("No"),
+                                              onPressed: () {
+                                                Navigator.pop(context, false);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  "Go Live",
+                                  style: TextStyle(
+                                      fontSize: 18.sp, color: Colors.black),
+                                ),
+                              ),
                               onTap: () {
                                 Navigator.pop(context);
                               },
@@ -159,7 +204,7 @@ class MainPage extends StatelessWidget {
                                     fontSize: 18.sp, color: Colors.black),
                               ),
                               onTap: () {
-                                Navigator.pop(context);
+                                Get.to(() => ShopView());
                               },
                             ),
                           ],

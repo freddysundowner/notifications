@@ -214,7 +214,7 @@ class AuthController extends GetxController {
     return FutureBuilder(
       future: UserAPI.getUserById(),
       builder: (BuildContext context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState) {
           return const Scaffold(
             backgroundColor: primarycolor,
             body: Center(

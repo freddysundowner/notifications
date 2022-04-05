@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
@@ -11,6 +12,7 @@ import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
+import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
 
 import '../../utils/utils.dart';
@@ -40,7 +42,7 @@ class ShopView extends StatelessWidget {
                       authController.currentuser!.shopId!.id
                   ? InkWell(
                       onTap: () async {
-                        await openOrCloseShop();
+                        await openOrCloseShop(context);
                       },
                       child: Image.asset(
                         shopController.currentShop.value.open == true
@@ -70,8 +72,7 @@ class ShopView extends StatelessWidget {
                   shopController.currentShop.value.image != null
                       ? CachedNetworkImage(
                           imageUrl: shopController.currentShop.value.image!,
-                          imageBuilder: (context, imageProvider) =>
-                              Container(
+                          imageBuilder: (context, imageProvider) => Container(
                             width: 0.25.sw,
                             height: 0.14.sh,
                             decoration: BoxDecoration(
@@ -89,10 +90,8 @@ class ShopView extends StatelessWidget {
                         )
                       : CircleAvatar(
                           radius: 50,
-                          child: Image.asset(
-                              "assets/icons/no_image.png",
-                              width: 0.25.sw,
-                              height: 0.14.sh),
+                          child: Image.asset("assets/icons/no_image.png",
+                              width: 0.25.sw, height: 0.14.sh),
                         ),
                   SizedBox(
                     width: 20.w,
@@ -140,10 +139,12 @@ class ShopView extends StatelessWidget {
             SizedBox(
               height: 5.h,
             ),
-            const Divider(
-              color: primarycolor,
-            ),
-            Text("Products", style: headingStyle),
+            if (shopController.currentShop.value.open == true)
+              const Divider(
+                color: primarycolor,
+              ),
+            if (shopController.currentShop.value.open == true)
+              Text("Products", style: headingStyle),
             Expanded(
               child: SingleChildScrollView(
                 physics: const ScrollPhysics(),
@@ -159,33 +160,48 @@ class ShopView extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         );
                       }
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        child: _.products.isNotEmpty
-                            ? ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _.products.length,
-                                itemBuilder: (context, index) {
-                                  return authController.currentuser!.shopId !=
-                                              null &&
-                                          authController.currentuser!.shopId !=
-                                              null &&
-                                          shopController.currentShop.value.id ==
-                                              authController
-                                                  .currentuser!.shopId!.id
-                                      ? buildProductDismissible(
-                                          _.products[index], context)
-                                      : ShopShortDetailCard(
-                                          product: _.products[index],
-                                          onPressed: () {
-                                            printOut("v ${ _.products[index].shopId!.id}");
-                                            Get.to(() => FullProduct(
-                                                product: _.products[index]));
-                                          },
-                                        );
-                                })
-                            : const Text("No Products yet"),
-                      );
+                      if (shopController.currentShop.value.open == false) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          child: Center(
+                            child: Text(
+                              "Your shop is closed, please open it too view your products",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        );
+                      }
+                      return _.products.isNotEmpty
+                          ? SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: _.products.length,
+                                  itemBuilder: (context, index) {
+                                    return authController
+                                                    .currentuser!.shopId !=
+                                                null &&
+                                            authController
+                                                    .currentuser!.shopId !=
+                                                null &&
+                                            shopController
+                                                    .currentShop.value.id ==
+                                                authController
+                                                    .currentuser!.shopId!.id
+                                        ? buildProductDismissible(
+                                            _.products[index], context)
+                                        : ShopShortDetailCard(
+                                            product: _.products[index],
+                                            onPressed: () {
+                                              printOut(
+                                                  "v ${_.products[index].shopId!.id}");
+                                              Get.to(() => FullProduct(
+                                                  product: _.products[index]));
+                                            },
+                                          );
+                                  }),
+                            )
+                          : const Text("No Products yet");
                       // return Column(
                       //   children: _.products.map((e) => Text(e.name)).toList(),
                       // );
@@ -211,36 +227,91 @@ class ShopView extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: authController.currentuser!.shopId != null &&
-              shopController.currentShop.value.id ==
-                  authController.currentuser!.shopId!.id
-          ? FloatingActionButton(
-              child: const Icon(Icons.add),
-              elevation: 4,
-              hoverColor: Colors.green,
-              splashColor: Colors.green,
-              onPressed: () {
-                // if (productController.product != null) {
-                //   productController.product.id = null;
-                // }
+      floatingActionButton: Obx(() {
+        return authController.currentuser!.shopId != null &&
+                shopController.currentShop.value.id ==
+                    authController.currentuser!.shopId!.id &&
+                authController.usermodel.value!.shopId!.open == true
+            ? FloatingActionButton(
+                child: const Icon(Icons.add),
+                elevation: 4,
+                hoverColor: Colors.green,
+                splashColor: Colors.green,
+                onPressed: () {
+                  // if (productController.product != null) {
+                  //   productController.product.id = null;
+                  // }
 
-                printOut("EditProductScreen" );
-                Get.to(() => EditProductScreen());
-              },
-              backgroundColor: Colors.pink,
-            )
-          : Container(),
+                  printOut("EditProductScreen");
+                  Get.to(() => EditProductScreen());
+                },
+                backgroundColor: Colors.pink,
+              )
+            : Container();
+      }),
     );
   }
 
-  Future<void> openOrCloseShop() async {
-    authController.usermodel.value!.shopId!.open =
-        !authController.usermodel.value!.shopId!.open!;
-    authController.usermodel.refresh();
+  Future<void> openOrCloseShop(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Confirmation"),
+          content: Text(authController.usermodel.value!.shopId!.open == true
+              ? "Are you sure you want to close your shop? all your products will be disabled"
+              : "Are you sure you want to open your shop?"),
+          actions: [
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () async {
+                authController.usermodel.value!.shopId!.open =
+                    !authController.usermodel.value!.shopId!.open!;
+                authController.usermodel.refresh();
 
-    await ShopApi.updateShop(
-        {"open": authController.usermodel.value!.shopId!.open},
-        shopController.currentShop.value.id!);
+                var response = ShopApi.updateShop(
+                    {"open": authController.usermodel.value!.shopId!.open},
+                    shopController.currentShop.value.id!);
+                try {
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AsyncProgressDialog(
+                        response,
+                        message: Text(
+                            authController.usermodel.value!.shopId!.open ==
+                                    false
+                                ? "Closing shop"
+                                : "Opening the shop"),
+                        onError: (e) {},
+                      );
+                    },
+                  );
+                } finally {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          authController.usermodel.value!.shopId!.open == false
+                              ? "Shop crossed successfully"
+                              : "Shop opened successfully"),
+                    ),
+                  );
+                  Navigator.pop(context, false);
+                  await ProductController.getProductsByShop(
+                      shopController.currentShop.value.id!);
+                }
+              },
+            ),
+            FlatButton(
+              child: Text("No"),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget buildProductDismissible(Product product, BuildContext context) {
@@ -268,8 +339,8 @@ class ShopView extends StatelessWidget {
 
             bool productInfoDeleted = false;
 
-            var deleteProduct = await ProductPI.updateProduct(
-                {"available": false}, product.id!);
+            var deleteProduct =
+                await ProductPI.updateProduct({"deleted": true}, product.id!);
             productInfoDeleted = deleteProduct["success"];
             String snackbarMessage = "";
             try {

@@ -8,6 +8,7 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -61,7 +62,7 @@ class RoomPage extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () async {
-                  Get.offAll(HomePage());
+                  Get.offAll(MainPage());
                   await _homeController.leaveRoom(currentUser);
                 },
                 child: Container(
@@ -314,7 +315,7 @@ class RoomPage extends StatelessWidget {
           Future.delayed(const Duration(seconds: 3), () {
             _homeController.currentRoom.value = RoomModel();
             _homeController.leaveAgora();
-            Get.offAll(HomePage());
+            Get.offAll(MainPage());
           });
         }
       } else if (decodedData["action"] == "add_speaker") {

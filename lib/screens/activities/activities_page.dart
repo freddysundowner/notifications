@@ -43,9 +43,10 @@ class ActivitiesPage extends StatelessWidget {
                       return InkWell(
                         onTap: () {
                           if (activityModel.type == "ProfileScreen") {
-                            _userController.getUserProfile(activityModel.actionkey!);
+                            _userController
+                                .getUserProfile(activityModel.actionkey!);
                             Get.to(Profile());
-                          }  else if (activityModel.type == "RoomScreen") {
+                          } else if (activityModel.type == "RoomScreen") {
                             _homeController.currentRoom.value = RoomModel();
                             _homeController.joinRoom(activityModel.actionkey!);
                           } else if (activityModel.type == "OrderScreen") {
@@ -63,7 +64,7 @@ class ActivitiesPage extends StatelessWidget {
                                       backgroundImage: NetworkImage(
                                           imageUrl + activityModel.imageurl!),
                                     )
-                              : Container(),
+                                  : Container(),
                               SizedBox(
                                 width: 0.04.sw,
                               ),
@@ -80,12 +81,12 @@ class ActivitiesPage extends StatelessWidget {
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.w700,
-                                              fontSize: 16.sp),
+                                              fontSize: 13.sp),
                                         ),
                                         Text(activityModel.getTime()!,
                                             style: TextStyle(
                                                 color: Colors.grey,
-                                                fontSize: 14.sp))
+                                                fontSize: 11.sp))
                                       ],
                                     ),
                                     SizedBox(
@@ -94,7 +95,8 @@ class ActivitiesPage extends StatelessWidget {
                                     Text(
                                       activityModel.message!,
                                       style: TextStyle(
-                                          color: Colors.black54, fontSize: 14.sp),
+                                          color: Colors.black54,
+                                          fontSize: 12.sp),
                                     )
                                   ],
                                 ),
@@ -114,13 +116,13 @@ class ActivitiesPage extends StatelessWidget {
                     ),
                   )
             : SizedBox(
-          height: 0.8.sh,
-              child: const Center(
-                child: CircularProgressIndicator(
+                height: 0.8.sh,
+                child: const Center(
+                  child: CircularProgressIndicator(
                     color: Colors.black,
                   ),
-              ),
-            );
+                ),
+              );
       }),
     );
   }

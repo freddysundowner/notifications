@@ -208,17 +208,17 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
-          Get.offAll(HomePage());
+          Get.offAll(MainPage());
           Get.to(RoomPage(roomId: roomId));
         } else {
-          Get.offAll(HomePage());
+          Get.offAll(MainPage());
           Get.snackbar(
               "", "There was an error creating your room. Try again later");
 
           endRoom(roomId);
         }
       } else {
-        Get.offAll(HomePage());
+        Get.offAll(MainPage());
         Get.snackbar("", "Error creating your room");
       }
 
@@ -749,6 +749,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           Get.back();
           roomsList
               .removeWhere((element) => element["_id"] == currentRoom.value.id);
+
           endRoom(currentRoom.value.id!);
 
           leaveAgora();
@@ -763,6 +764,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut('userOffline $uid');
       }, audioVolumeIndication:
           (List<AudioVolumeInfo> speakers, int totalVolume) async {
+
         if (totalVolume > 2) {
           writeToDbRoomActive();
         }

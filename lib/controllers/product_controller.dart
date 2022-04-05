@@ -126,6 +126,7 @@ class ProductController extends GetxController {
     print("getProductsByShop");
     loading.value = true;
     List<dynamic> response = await ShopApi.getProductsByShop(id);
+    print("getProductsByShop ${response}");
     _products.value = response.map((e) => Product.fromJson(e)).toList();
 
     loading.value = false;

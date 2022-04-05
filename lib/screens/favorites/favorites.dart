@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/controllers/favorite_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
@@ -13,7 +14,7 @@ import '../../utils/utils.dart';
 
 class Favorites extends StatelessWidget {
   CheckOutController checkOutController = Get.find<CheckOutController>();
-  FavoriteController productController = Get.find<FavoriteController>();
+  FavoriteController favproductController = Get.find<FavoriteController>();
   Favorites({Key? key}) : super(key: key);
 
   Future<void> refreshPage() {
@@ -23,44 +24,53 @@ class Favorites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("My favorites", style: TextStyle(color: Colors.black),),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Obx(
-                    () => productController.products.isNotEmpty
-                        ? Column(
-                            children: productController.products
-                                .map((e) => buildProductDismissible(e, context))
-                                .toList(),
-                          )
-                        : SizedBox(
-                      height: 0.5.sh,
-                          child: Center(
-                              child: Text(
-                              "You have no favourites yet",
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 16.sp),
-                            )),
-                        ),
-                  ),
-                  SizedBox(height: 0.02.sh),
-                ],
+        appBar: AppBar(
+          title: const Text(
+            "My favorites",
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: false,
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
+              child: GetX<UserController>(
+                initState: (_) async {
+                  favproductController.products.value =
+                      await FavoriteController().getFavoriteProducts();
+                },
+                builder: (_) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        favproductController.products.length > 0
+                            ? Column(
+                                children: favproductController.products
+                                    .map((e) =>
+                                        buildProductDismissible(e, context))
+                                    .toList(),
+                              )
+                            : SizedBox(
+                                height: 0.5.sh,
+                                child: Center(
+                                    child: Text(
+                                  "You have no favourites yet",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 16.sp),
+                                )),
+                              ),
+                        SizedBox(height: 0.02.sh),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget buildProductDismissible(Product product, BuildContext context) {
@@ -98,7 +108,7 @@ class Favorites extends StatelessWidget {
               await showConfirmationDialog(context, "delete from favorite");
 
           if (confirmation) {
-            await productController.deleteFavorite(product.id!);
+            await favproductController.deleteFavorite(product.id!);
             Helper.showSnackBack(context, "deleted from favorite",
                 color: Colors.red);
           }

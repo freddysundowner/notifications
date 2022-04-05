@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
   var currentsearchtab = 0.obs;
-  var tabPosition = 1.obs;
+  var tabPosition = 0.obs;
   TextEditingController searchShopController = TextEditingController();
   var isSearching = false.obs;
 
@@ -22,12 +22,6 @@ class GlobalController extends GetxController {
         if (isTop) {
           print('At the top');
         } else {
-          print('At the bottom');
-          print('entered ${searchShopController.text}');
-          print(
-              'entered ${searchresults.value[searchresults.value.length - 1]["_id"]}');
-          // print('At the bottom vv ${searchresults.value.last["_id"]}');
-          // print('At the bottom ${searchShopController.text}');
           search(searchoption.value,
               last: searchresults.value[searchresults.value.length - 1]["_id"]);
         }

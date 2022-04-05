@@ -22,12 +22,6 @@ class GlobalController extends GetxController {
         if (isTop) {
           print('At the top');
         } else {
-          print('At the bottom');
-          print('entered ${searchShopController.text}');
-          print(
-              'entered ${searchresults.value[searchresults.value.length - 1]["_id"]}');
-          // print('At the bottom vv ${searchresults.value.last["_id"]}');
-          // print('At the bottom ${searchShopController.text}');
           search(searchoption.value,
               last: searchresults.value[searchresults.value.length - 1]["_id"]);
         }

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/life.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,10 @@ import '/theme.dart';
 import '/utils/utils.dart';
 import 'bindings.dart';
 import 'controllers/auth_controller.dart';
+import 'controllers/room_controller.dart';
+import 'controllers/user_controller.dart';
+import 'models/room_model.dart';
+import 'screens/settings/orders_sceen.dart';
 
 AndroidNotificationChannel channel = channel;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -61,7 +66,7 @@ oneSignalObservers() {
     printOut(
         'One signal Notification clicked ${result.notification.additionalData}');
     redirectToRooms(result.notification.additionalData!);
-    // handleNotificationOneSignal(result.notification);
+    handleNotificationOneSignal(result.notification);
   });
 
   OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
@@ -119,6 +124,8 @@ goToPageFromNotification(var payload) async {
 }
 
 bool showloading = false;
+final UserController _userController = Get.find<UserController>();
+final RoomController _homeController = Get.find<RoomController>();
 
 Future redirectToRooms(Map<String, dynamic> mess) async {
   printOut('One signal Notification clicked redirecting');
@@ -127,13 +134,17 @@ Future redirectToRooms(Map<String, dynamic> mess) async {
   String id = mess["id"];
 
   if (screen == 'ChatPage') {
-    //  InboxItem item = await Database.getInboxItem(id);
     Get.to(() => AllChatsPage());
-  } else if (screen == "ProfilePage") {
-    //var user = await UserAPI().getUserProfile(id);
-
-    Get.to(() => Profile());
-  } else if (screen == "RoomScreen") {}
+  } else if (screen == "ProfileScreen") {
+    _userController.getUserProfile(id);
+    Get.to(Profile());
+  } else if (screen == "RoomScreen") {
+    _homeController.currentRoom.value = RoomModel();
+    _homeController.joinRoom(id);
+  } else if (screen == "OrderScreen") {
+    _userController.getUserOrders();
+    Get.to(OrdersScreen());
+  }
 }
 
 Future onSelectNotification(String payload) async {

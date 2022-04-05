@@ -9,6 +9,7 @@ import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
@@ -123,7 +124,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     getRooms();
 
     super.onInit();
-    print("room controller");
+    printOut("room controller");
   }
 
   _initAgora() async {
@@ -356,7 +357,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
               -1)) {
         currentRoom.refresh();
         leaveRoomWhenKilled();
-        emitRoom(currentUser: user.toJson(), action: "join");
+       // emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
 
         if (currentRoom.value.invitedhostIds!
@@ -493,46 +494,44 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }, currentRoom.value.id!);
   }
 
-  Future<void> leaveRoom(OwnerId user) async {
+  Future<void> leaveRoom(OwnerId user, {String? idRoom}) async {
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!
                 .indexWhere((element) => element.id == user.id) !=
             -1) {
-      endRoom(currentRoom.value.id!);
       currentRoom.value = RoomModel();
+      endRoom(idRoom ?? currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
               .indexWhere((element) => element.id == user.id) >
           -1) {
         await RoomAPI().removeAUserFromRoom({
           "users": [user.id]
-        }, currentRoom.value.id!);
+        }, idRoom ?? currentRoom.value.id!);
       } else if (currentRoom.value.speakerIds!
               .indexWhere((element) => element.id == user.id) >
           -1) {
         await RoomAPI().removeUserFromSpeakerInRoom({
           "users": [user.id]
-        }, currentRoom.value.id!);
+        }, idRoom ?? currentRoom.value.id!);
       } else if (currentRoom.value.raisedHands!
               .indexWhere((element) => element.id == user.id) >
           -1) {
         await RoomAPI().removeUserFromRaisedHandsInRoom({
           "users": [user.id]
-        }, currentRoom.value.id!);
+        }, idRoom ?? currentRoom.value.id!);
       } else if (currentRoom.value.hostIds!
               .indexWhere((element) => element.id == user.id) >
           -1) {
         await RoomAPI().removeUserFromHostInRoom({
           "users": [user.id]
-        }, currentRoom.value.id!);
+        }, idRoom ?? currentRoom.value.id!);
       }
     }
 
-    var roomId = currentRoom.value.id;
+    var roomId = idRoom ?? currentRoom.value.id!;
 
-    if (roomId != null) {
-      emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId);
-    }
+    emitRoom(currentUser: user.toJson(), action: "leave", roomId: roomId);
     currentRoom.value = RoomModel();
 
     try {
@@ -545,6 +544,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   endRoom(String roomId) async {
     try {
       currentRoom.value = RoomModel();
+      currentRoom.refresh();
       emitRoom(action: "room_ended", roomId: roomId);
       await RoomAPI().deleteARoom(roomId);
       leaveAgora();
@@ -554,6 +554,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
+
     OwnerId currentUser = OwnerId(
         id: Get.find<AuthController>().usermodel.value!.id,
         bio: Get.find<AuthController>().usermodel.value!.bio,
@@ -564,7 +565,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
     if (currentRoom.value.id != null && currentRoom.value.id != roomId) {
-      await leaveRoom(currentUser);
+      var prevRoom = currentRoom.value.id;
+      currentRoom.value.id = null;
+      await leaveRoom(currentUser, idRoom: prevRoom);
+
       currentRoom.value = RoomModel();
       currentRoom.refresh();
     }

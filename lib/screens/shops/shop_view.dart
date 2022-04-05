@@ -133,7 +133,7 @@ class ShopView extends StatelessWidget {
               height: 10.h,
             ),
             Text(
-              shopController.currentShop.value.description!,
+              "${shopController.currentShop.value.description}",
               style: TextStyle(fontSize: 14.sp, color: Colors.black),
             ),
             SizedBox(

@@ -565,7 +565,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
     if (currentRoom.value.id != null && currentRoom.value.id != roomId) {
       await leaveRoom(currentUser);
-      currentRoom.value == RoomModel();
+      currentRoom.value = RoomModel();
+      currentRoom.refresh();
     }
 
     await fetchRoom(roomId);
@@ -748,7 +749,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           Get.back();
           roomsList
               .removeWhere((element) => element["_id"] == currentRoom.value.id);
-
           endRoom(currentRoom.value.id!);
 
           leaveAgora();

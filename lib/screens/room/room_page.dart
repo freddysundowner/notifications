@@ -145,6 +145,7 @@ class RoomPage extends StatelessWidget {
                                   printOut("Error disabling audio $e");
                                 }
                               } else {
+                                _homeController.engine.muteLocalAudioStream(true);
                                 _homeController.engine.enableLocalAudio(false);
                               }
 

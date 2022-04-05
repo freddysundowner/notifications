@@ -100,8 +100,8 @@ class MyProducts extends StatelessWidget {
 
               bool productInfoDeleted = false;
 
-              var deleteProduct = await ProductPI.updateProduct(
-                  {"available": false}, product.id!);
+              var deleteProduct =
+                  await ProductPI.updateProduct({"deleted": true}, product.id!);
               productInfoDeleted = deleteProduct["success"];
               String snackbarMessage = "";
               try {

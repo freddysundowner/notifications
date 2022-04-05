@@ -24,7 +24,8 @@ class FavoriteController extends GetxController {
       List allproducts = response["productId"].map((e) {
         return Product.fromJson(e);
       }).toList();
-      allproducts.removeWhere((element) => element.available == false);
+      allproducts.removeWhere(
+          (element) => element.available == false || element.deleted == true);
       products.value = allproducts;
       loading.value = false;
       return allproducts;

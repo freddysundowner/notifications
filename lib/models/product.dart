@@ -20,6 +20,7 @@ class Product {
   UserModel? ownerId;
   String? description;
   bool? available;
+  bool? deleted;
 
   Product({
     this.images = const [],
@@ -32,6 +33,7 @@ class Product {
     this.variations,
     this.ownerId,
     this.description,
+    this.deleted,
     this.available,
   });
 
@@ -43,6 +45,7 @@ class Product {
         images: List<String>.from(json["images"] ?? [].map((x) => x)),
         id: json["_id"],
         name: json["name"] ?? "",
+        deleted: json["deleted"] ?? false,
         price: json["price"],
         quantity: json["quantity"],
         variations: json["variations"] == null

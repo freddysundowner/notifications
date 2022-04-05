@@ -67,6 +67,7 @@ class ShopSearchResults extends StatelessWidget {
                                 _search(
                                     _globalController.currentsearchtab.value);
                               } else {
+                                print("is empty");
                                 _globalController.searchresults.value = [];
                               }
                             },
@@ -100,28 +101,24 @@ class ShopSearchResults extends StatelessWidget {
                           )),
                         ),
                       ),
-                    if (_globalController
-                            .searchShopController.text.isNotEmpty &&
-                        _globalController.isSearching.isFalse)
-                      _searchTabs(),
+                    _searchTabs(),
                   ],
                 );
               }),
               Expanded(
                 child: Obx(() {
-                  if (_globalController.searchresults.value.isEmpty &&
+                  if (_globalController.searchresults.value.length == 0 &&
                       _globalController.searchShopController.text.isNotEmpty) {
                     return Container(
                         margin: const EdgeInsets.only(top: 20),
                         child: const Text("No results"));
                   }
-                  if (_globalController.searchresults.isNotEmpty &&
+                  if (_globalController.searchresults.length > 0 &&
                       _globalController.isSearching.isFalse) {
                     return ListView.builder(
                       controller: _globalController.scrollcontroller,
                       itemBuilder: (_, i) => Column(
-                        children:
-                            _globalController.searchresults.map((e) {
+                        children: _globalController.searchresults.map((e) {
                           if (_globalController.currentsearchtab.value == 0) {
                             return _singleItemShop(Shop.fromJson(e));
                           }
@@ -282,7 +279,8 @@ class ShopSearchResults extends StatelessWidget {
                     backgroundImage: NetworkImage(e.userIds![0].profilePhoto!))
                 : const CircleAvatar(
                     radius: 25,
-                    backgroundImage: AssetImage("assets/icons/profile_placeholder.png"),
+                    backgroundImage:
+                        AssetImage("assets/icons/profile_placeholder.png"),
                   ),
             SizedBox(
               width: 0.04.sw,

@@ -763,7 +763,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut('userOffline $uid');
       }, audioVolumeIndication:
           (List<AudioVolumeInfo> speakers, int totalVolume) async {
-
         if (totalVolume > 2) {
           writeToDbRoomActive();
         }
@@ -794,8 +793,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         currentRoom.value.hostIds!.indexWhere((element) =>
                 element.id == FirebaseAuth.instance.currentUser!.uid) !=
             -1) {
-      await RoomAPI().updateRoomById(
-          {'activeTime': now.microsecondsSinceEpoch, "title": currentRoom.value.title, "token": currentRoom.value.token}, currentRoom.value.id!);
+      await RoomAPI().updateRoomById({
+        "activeTime": now.microsecondsSinceEpoch,
+        "title": currentRoom.value.title,
+        "token": currentRoom.value.token
+      }, currentRoom.value.id!);
     }
   }
 

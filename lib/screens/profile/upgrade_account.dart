@@ -234,6 +234,7 @@ upgradeAccount(BuildContext context) async {
               Get.snackbar(
                 "",
                 "You do not have enough GC to upgrade your account to premium",
+                backgroundColor: sc_snackBar,
               );
             } else {
               Get.back();

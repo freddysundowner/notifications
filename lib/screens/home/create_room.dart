@@ -219,7 +219,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                 disabledBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: "enter room title",
+                hintText: "Enter room title",
               ),
               style: TextStyle(color: Colors.black, fontSize: 12.sp),
             ),
@@ -236,7 +236,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                       "Cancel".toUpperCase(),
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 16.sp),
+                          fontSize: 12.sp),
                     ),
                   ),
                   SizedBox(
@@ -251,7 +251,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                       "Okay".toUpperCase(),
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 16.sp),
+                          fontSize: 12.sp),
                     ),
                   ),
                 ],

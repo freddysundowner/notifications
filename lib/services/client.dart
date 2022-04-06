@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,14 +60,14 @@ class DbBase {
 
       printOut(response.toString());
       if (response.isEmpty) {
-        Get.snackbar('', "Check your internet connection");
+        Get.snackbar('', "Check your internet connection", backgroundColor: sc_snackBar,);
 
         printOut(response.toString());
       }
     } on SocketException catch (e) {
       printOut(" error accessing internet " + e.message);
 
-      Get.snackbar('', "Check your internet connection");
+      Get.snackbar('', "Check your internet connection", backgroundColor: sc_snackBar,);
     } catch (e) {
       printOut(" error accessing internet catch $e");
     }

@@ -202,9 +202,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
         if (token != null) {
           printOut("room title ${roomData["title"]}");
-          await RoomAPI().updateRoomById(
-              {"title": roomData["title"], "token": token,
-                "activeTime" : DateTime.now().microsecondsSinceEpoch}, roomId);
+          await RoomAPI().updateRoomById({
+            "title": roomData["title"],
+            "token": token,
+            "activeTime": DateTime.now().microsecondsSinceEpoch
+          }, roomId);
 
           await fetchRoom(roomId);
 
@@ -216,13 +218,16 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         } else {
           Get.offAll(MainPage());
           Get.snackbar(
-              "", "There was an error creating your room. Try again later");
+            "",
+            "There was an error creating your room. Try again later",
+            backgroundColor: sc_snackBar,
+          );
 
           endRoom(roomId);
         }
       } else {
         Get.offAll(MainPage());
-        Get.snackbar("", "Error creating your room");
+        Get.snackbar("", "Error creating your room", backgroundColor: sc_snackBar,);
       }
 
       isCreatingRoom.value = false;
@@ -324,11 +329,12 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           Get.snackbar(
             '',
             "There was an error adding you to the room, Try again later",
+            backgroundColor: sc_snackBar,
           ).show();
           endRoom(roomId);
         }
       } else {
-        Get.snackbar('', "Room has ended");
+        Get.snackbar('', "Room has ended", backgroundColor: sc_snackBar,);
       }
       isCurrentRoomLoading.value = false;
 
@@ -380,7 +386,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);
       Get.snackbar(
-          '', "There was an error adding you to the room, Try again later");
+          '', "There was an error adding you to the room, Try again later", backgroundColor: sc_snackBar,);
     }
   }
 
@@ -430,7 +436,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   Future<void> addUserToRaisedHands(OwnerId user) async {
     currentRoom.value.raisedHands!.add(user);
 
-    Get.snackbar('', "You have raised your hand");
+    Get.snackbar('', "You have raised your hand", backgroundColor: sc_snackBar,);
 
     currentRoom.refresh();
 

@@ -316,7 +316,7 @@ class RoomPage extends StatelessWidget {
             printOut("room_ended");
 
             //Remove user from room that has ended, and show them a message.
-            Get.snackbar('', 'Room ended',
+            Get.snackbar('', 'Room ended', backgroundColor: sc_snackBar,
                 duration: const Duration(seconds: 2));
 
             Future.delayed(const Duration(seconds: 3), () {
@@ -335,7 +335,7 @@ class RoomPage extends StatelessWidget {
 
             //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
             if (user.id == currentUser.id) {
-              Get.snackbar('', 'You have been added to speaker',
+              Get.snackbar('', 'You have been added to speaker', backgroundColor: sc_snackBar,
                   duration: const Duration(seconds: 2));
             }
 
@@ -356,7 +356,7 @@ class RoomPage extends StatelessWidget {
             printOut("remove_speaker");
 
             if (user.id == currentUser.id) {
-              Get.snackbar('', 'You have been removed from being a speaker',
+              Get.snackbar('', 'You have been removed from being a speaker', backgroundColor: sc_snackBar,
                   duration: const Duration(seconds: 2));
             }
 
@@ -376,7 +376,7 @@ class RoomPage extends StatelessWidget {
                     .indexWhere((element) => element.id == currentUser.id) !=
                 -1) {
               Get.snackbar('',
-                  '${user.firstName} has raised their hand. Let them speak?',
+                  '${user.firstName} has raised their hand. Let them speak?', backgroundColor: sc_snackBar,
                   duration: const Duration(seconds: 2));
             }
             //Add user to raised hands

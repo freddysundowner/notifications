@@ -14,6 +14,7 @@ import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -318,7 +319,7 @@ class HomePage extends StatelessWidget {
                       if (roomModel.id != null) {
                         await _homeController.joinRoom(roomModel.id!);
                       } else {
-                        Get.snackbar('', "Room is no longer available");
+                        Get.snackbar('', "Room is no longer available", backgroundColor: sc_snackBar,);
                       }
                     },
                     child: Padding(

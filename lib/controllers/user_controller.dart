@@ -152,12 +152,13 @@ class UserController extends GetxController {
       Get.snackbar(
         "",
         "You have successfully upgraded your account o premium membership, Enjoy Gisting",
+        backgroundColor: sc_snackBar,
       );
     } catch (e, s) {
       printOut("Error upgrading account $e $s");
       Get.snackbar(
         "",
-        "An error occured while upgrading your account. Try again later",
+        "An error occured while upgrading your account. Try again later", backgroundColor: sc_snackBar,
       );
     }
   }

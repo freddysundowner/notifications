@@ -30,4 +30,5 @@ final sc_InputHintTextColor = Color(0xFF7D989E);
 final sc_InputBackgroundColor = Color(0xFFEBF7FA);
 final sc_grey = Color(0xFFf4f6ff); // new grey
 final sc_skyblue = Color(0xFF81C9F3);
+final sc_snackBar = Color(0x3BEFA9BF);
 final sc_onlyScreenTextTitle = Color(0xFF455A64);

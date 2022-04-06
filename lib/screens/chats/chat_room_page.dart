@@ -11,9 +11,9 @@ class ChatRoomPage extends StatelessWidget {
   UserModel user;
   final ChatController _chatController = Get.find<ChatController>();
   TextEditingController messageController = TextEditingController();
+  final ScrollController _sc = ScrollController();
 
   ChatRoomPage(this.user, {Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,15 @@ class ChatRoomPage extends StatelessWidget {
                           .getChatById(_chatController.currentChatId.value),
                       child: _chatController.currentChat.isNotEmpty
                           ? ListView.builder(
+                              controller: _sc,
                               padding: const EdgeInsets.all(8.0),
                               itemCount: _chatController.currentChat.length,
                               itemBuilder: (context, index) {
+                                WidgetsBinding.instance?.addPostFrameCallback(
+                                    (_) => {
+                                          _sc.jumpTo(
+                                              _sc.position.maxScrollExtent)
+                                        });
                                 printOut(_chatController.currentChat.length);
                                 ChatRoomModel chat = _chatController.currentChat
                                     .elementAt(index);
@@ -120,8 +126,10 @@ class ChatRoomPage extends StatelessWidget {
                           autofocus: false,
                           decoration: InputDecoration(
                             hintText: "Enter message here",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 16.sp, ),
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16.sp,
+                            ),
                             border: InputBorder.none,
                             disabledBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,

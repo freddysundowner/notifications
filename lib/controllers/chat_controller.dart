@@ -20,6 +20,8 @@ class ChatController extends GetxController {
   var currentChatUsers = [].obs;
   var currentChatId = "".obs;
   var sendingMessage = false.obs;
+  late Stream<QuerySnapshot> allChatStream;
+  late Stream<QuerySnapshot> chatStream;
 
   @override
   void onInit() {
@@ -29,38 +31,66 @@ class ChatController extends GetxController {
 
   Future<void> getUserChats() async {
     gettingChats.value = true;
-    var newChats = [];
+    allUserChats.value = [];
+    allUserChats.bindStream(allUserChatsStream());
+    allChatStream.drain();
+    gettingChats.value = false;
 
-    db
-        .collection("chats")
-        .where("userIds", arrayContains: userId)
-        .get()
-        .then((querySnapshot) {
-      gettingChats.value = false;
+    // db
+    //     .collection("chats")
+    //     .where("userIds", arrayContains: userId)
+    //     .get()
+    //     .then((querySnapshot) {
+    //   gettingChats.value = false;
+    //
+    //   printOut("Chats loaded ${querySnapshot.docs.length}");
+    //   allUserChats.value = [];
+    //   for (var i = 0; i < querySnapshot.docs.length; i++) {
+    //     var snapshot = querySnapshot.docs.elementAt(i);
+    //
+    //     AllChatsModel allChatsModel = AllChatsModel(
+    //         snapshot.id,
+    //         snapshot.get("lastMessage"),
+    //         snapshot.get("lastMessageTime"),
+    //         snapshot.get("lastSender"),
+    //         snapshot.get("userIds"),
+    //         snapshot.get("users"),
+    //         snapshot.get(userId) ?? 0);
+    //
+    //     newChats.add(allChatsModel);
+    //   }
+    //
+    //   newChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+    //
+    //   allUserChats.value = newChats;
+    // }).onError((error, stackTrace) {
+    //   gettingChats.value = false;
+    //   printOut("Error getting all chats $error $stackTrace");
+    // });
+  }
 
-      printOut("Chats loaded ${querySnapshot.docs.length}");
-      allUserChats.value = [];
-      for (var i = 0; i < querySnapshot.docs.length; i++) {
-        var snapshot = querySnapshot.docs.elementAt(i);
+  Stream<List> allUserChatsStream() {
+    allChatStream =
+    FirebaseFirestore.instance.collection("chats").where("userIds", arrayContains: userId).snapshots();
+
+    return allChatStream.map((event) {
+      var chatty = event.docs.map((e) {
+
+        Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
 
         AllChatsModel allChatsModel = AllChatsModel(
-            snapshot.id,
-            snapshot.get("lastMessage"),
-            snapshot.get("lastMessageTime"),
-            snapshot.get("lastSender"),
-            snapshot.get("userIds"),
-            snapshot.get("users"),
-            snapshot.get(userId) ?? 0);
+            data["id"],
+            data["lastMessage"],
+            data["lastMessageTime"],
+            data["lastSender"],
+            data["userIds"],
+            data["users"],
+            data[userId] ?? 0);
 
-        newChats.add(allChatsModel);
-      }
 
-      newChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
-
-      allUserChats.value = newChats;
-    }).onError((error, stackTrace) {
-      gettingChats.value = false;
-      printOut("Error getting all chats $error $stackTrace");
+        return allChatsModel;}).toList();
+      chatty.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      return chatty;
     });
   }
 
@@ -70,26 +100,34 @@ class ChatController extends GetxController {
 
     printOut("PAth $id");
 
-    db.collection("chats/$id/messages").get().then((snapshot) {
-      var chats = [];
+    currentChat.bindStream(singleChatStream(id));
 
-      for (var i = 0; i < snapshot.docs.length; i++) {
-        var documentSnapshot = snapshot.docs.elementAt(i);
-
-        ChatRoomModel chatRoomModel = ChatRoomModel(
-            documentSnapshot.get("date"),
-            documentSnapshot.id,
-            documentSnapshot.get("message"),
-            documentSnapshot.get("seen"),
-            documentSnapshot.get("sender"));
-
-        chats.add(chatRoomModel);
-      }
-      chats.sort((a, b) => a.date.compareTo(b.date));
-
-      currentChat.value = chats;
-    });
     currentChatLoading.value = false;
+  }
+
+  Stream<List> singleChatStream(String id) {
+    chatStream =
+        FirebaseFirestore.instance.collection("chats/$id/messages").snapshots();
+
+    var chat = chatStream.map((event) {
+      var chatty = event.docs.map((e) {
+        print("chat ${e.data().toString()}");
+        Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
+
+              ChatRoomModel chatRoomModel = ChatRoomModel(
+                  data['date'],
+                  data["id"],
+                  data['message'],
+                  data['seen'],
+                  data['sender']);
+
+        return chatRoomModel;}).toList();
+      chatty.sort((a, b) => a.date.compareTo(b.date));
+      return chatty;
+    });
+
+
+    return chat;
   }
 
   getPreviousChat(UserModel otherUser) {
@@ -152,7 +190,7 @@ class ChatController extends GetxController {
         .collection("chats/${currentChatId.value}/messages")
         .add(newChat.toMap())
         .then((value) async {
-      currentChat.add(newChat);
+      // currentChat.add(newChat);
       sendingMessage.value = false;
 
       db.collection("chats").doc(currentChatId.value).set({
@@ -161,11 +199,13 @@ class ChatController extends GetxController {
         "lastSender": Get.find<AuthController>().usermodel.value!.id,
         otherUser.id!: FieldValue.increment(1)
       }, SetOptions(merge: true));
-      await NotificationApi().sendNotification([
-        otherUser.id
-      ], "${Get.find<AuthController>().usermodel.value!.firstName}"
-          " ${Get.find<AuthController>().usermodel.value!.firstName}",
-          message, "ChatScreen", currentChatId.value);
+      await NotificationApi().sendNotification(
+          [otherUser.id],
+          "${Get.find<AuthController>().usermodel.value!.firstName}"
+              " ${Get.find<AuthController>().usermodel.value!.firstName}",
+          message,
+          "ChatScreen",
+          currentChatId.value);
       printOut("Chat message saved");
     });
   }

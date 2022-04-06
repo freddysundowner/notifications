@@ -357,7 +357,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
               -1)) {
         currentRoom.refresh();
         leaveRoomWhenKilled();
-       // emitRoom(currentUser: user.toJson(), action: "join");
+        emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
 
         if (currentRoom.value.invitedhostIds!
@@ -554,7 +554,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
-
     OwnerId currentUser = OwnerId(
         id: Get.find<AuthController>().usermodel.value!.id,
         bio: Get.find<AuthController>().usermodel.value!.bio,
@@ -608,6 +607,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   void emitRoom(
       {Map? currentUser, required String action, String roomId = ""}) {
+    print("action $action");
+    if (action == "leave") {
+      customSocketIO.socketIO.off(roomId);
+    }
     customSocketIO.socketIO.emit("room_changes", {
       "action": action,
       "userData": currentUser == null ? {} : currentUser,
@@ -768,7 +771,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut('userOffline $uid');
       }, audioVolumeIndication:
           (List<AudioVolumeInfo> speakers, int totalVolume) async {
-
         if (totalVolume > 2) {
           writeToDbRoomActive();
         }

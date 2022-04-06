@@ -8,7 +8,6 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
-import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
@@ -357,7 +356,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
               -1)) {
         currentRoom.refresh();
         leaveRoomWhenKilled();
-       // emitRoom(currentUser: user.toJson(), action: "join");
+        emitRoom(currentUser: user.toJson(), action: "join");
         //Add user to room
 
         if (currentRoom.value.invitedhostIds!

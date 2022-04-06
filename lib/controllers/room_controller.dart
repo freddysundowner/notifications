@@ -184,6 +184,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "status": true,
         "productPrice": roomPickedProduct.value.price,
         "productImages": roomPickedProduct.value.images,
+        "activeTime": DateTime.now().microsecondsSinceEpoch
       };
 
       leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
@@ -201,7 +202,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         if (token != null) {
           printOut("room title ${roomData["title"]}");
           await RoomAPI().updateRoomById(
-              {"title": roomData["title"], "token": token}, roomId);
+              {"title": roomData["title"], "token": token,
+                "activeTime" : DateTime.now().microsecondsSinceEpoch}, roomId);
 
           await fetchRoom(roomId);
 
@@ -553,7 +555,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
-
     OwnerId currentUser = OwnerId(
         id: Get.find<AuthController>().usermodel.value!.id,
         bio: Get.find<AuthController>().usermodel.value!.bio,
@@ -767,7 +768,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut('userOffline $uid');
       }, audioVolumeIndication:
           (List<AudioVolumeInfo> speakers, int totalVolume) async {
-
         if (totalVolume > 2) {
           writeToDbRoomActive();
         }

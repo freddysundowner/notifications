@@ -62,6 +62,10 @@ class RoomAPI {
       if (body["title"] == null) {
         body.addAll({"title": _homeController.currentRoom.value.title});
       }
+      if (body["activeTime"] == null) {
+        body.addAll({"activeTime" : _homeController.currentRoom.value.activeTime,});
+      }
+
 
       printOut("Room to be updated title ${body["title"]}");
       var updated = await DbBase().databaseRequest(

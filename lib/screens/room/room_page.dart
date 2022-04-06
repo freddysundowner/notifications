@@ -7,7 +7,6 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
-import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
@@ -146,7 +145,8 @@ class RoomPage extends StatelessWidget {
                                   printOut("Error disabling audio $e");
                                 }
                               } else {
-                                _homeController.engine.muteLocalAudioStream(true);
+                                _homeController.engine
+                                    .muteLocalAudioStream(true);
                                 _homeController.engine.enableLocalAudio(false);
                               }
 
@@ -267,111 +267,120 @@ class RoomPage extends StatelessWidget {
   void roomListener() {
     customSocketIO.socketIO.on(roomId, (data) {
       var decodedData = jsonDecode(data);
-      var user = OwnerId.fromJson(decodedData["userData"]);
+      printOut("there is response, roomId  ${decodedData["roomId"]}");
+      if (decodedData["roomId"] == roomId) {
+        var user = OwnerId.fromJson(decodedData["userData"]);
 
-      printOut("there is response, action  ${decodedData["action"]}");
+        printOut("there is response, action  ${decodedData["action"]}");
 
-      if (decodedData["action"] == "join") {
-        //if user is not already in room, add them
-        if (_homeController.currentRoom.value.invitedhostIds!
-                    .indexWhere((element) => element == user.id) >
-                -1 &&
-            _homeController.currentRoom.value.hostIds!
-                    .indexWhere((element) => element.id == user.id) ==
-                -1) {
-          _homeController.currentRoom.value.hostIds!.add(user);
-          _homeController.currentRoom.refresh();
-        } else if (_homeController.currentRoom.value.userIds!
-                .indexWhere((element) => element.id == user.id) <
-            0) {
-          _homeController.currentRoom.value.userIds!.add(user);
-          _homeController.currentRoom.refresh();
-        }
-      } else if (decodedData["action"] == "leave") {
-        printOut("leaving");
-
-        //Remove user who has left room
-        try {
-          _homeController.currentRoom.value.userIds!
-              .removeWhere((element) => element.id == user.id);
-          _homeController.currentRoom.value.speakerIds!
-              .removeWhere((element) => element.id == user.id);
-          _homeController.currentRoom.value.hostIds!
-              .removeWhere((element) => element.id == user.id);
-        } catch (e, s) {
-          printOut("Error removing user who has left from controller $e $s");
-        }
-        _homeController.currentRoom.refresh();
-      } else if (decodedData["action"] == "room_ended") {
-        if (_homeController.currentRoom.value.hostIds!.length != 1 ||
-            _homeController.currentRoom.value.hostIds!
-                    .indexWhere((element) => element.id == user.id) ==
-                -1) {
-          printOut("room_ended");
-
-          //Remove user from room that has ended, and show them a message.
-          Get.snackbar('', 'Room ended', duration: const Duration(seconds: 2));
-
-          Future.delayed(const Duration(seconds: 3), () {
-            _homeController.currentRoom.value = RoomModel();
-            _homeController.leaveAgora();
-            Get.offAll(MainPage());
-          });
-        }
-      } else if (decodedData["action"] == "add_speaker") {
-        printOut("add_speaker");
-
-        if (_homeController.currentRoom.value.speakerIds!
-                .indexWhere((element) => element.id == user.id) ==
-            -1) {
-          _homeController.currentRoom.value.speakerIds!.add(user);
-
-          //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
-          if (user.id == currentUser.id) {
-            Get.snackbar('', 'You have been added to speaker',
-                duration: const Duration(seconds: 2));
+        if (decodedData["action"] == "join") {
+          //if user is not already in room, add them
+          if (_homeController.currentRoom.value.invitedhostIds!
+                      .indexWhere((element) => element == user.id) >
+                  -1 &&
+              _homeController.currentRoom.value.hostIds!
+                      .indexWhere((element) => element.id == user.id) ==
+                  -1) {
+            _homeController.currentRoom.value.hostIds!.add(user);
+            _homeController.currentRoom.refresh();
+          } else if (_homeController.currentRoom.value.userIds!
+                  .indexWhere((element) => element.id == user.id) <
+              0) {
+            _homeController.currentRoom.value.userIds!.add(user);
+            _homeController.currentRoom.refresh();
           }
-
-          _homeController.currentRoom.value.userIds!
-              .removeWhere((element) => element.id == user.id);
-          _homeController.currentRoom.value.raisedHands!
-              .removeWhere((element) => element.id == user.id);
-
-          _homeController.currentRoom.refresh();
-        }
-      } else if (decodedData["action"] == "remove_speaker") {
-        if (_homeController.currentRoom.value.userIds!
-                .indexWhere((element) => element.id == user.id) ==
-            -1) {
-          _homeController.currentRoom.value.userIds!.add(user);
-
-          //Remove user from speaker and tell them and add them to audience
-          printOut("remove_speaker");
-
-          if (user.id == currentUser.id) {
-            Get.snackbar('', 'You have been removed from being a speaker',
-                duration: const Duration(seconds: 2));
+        } else if (decodedData["action"] == "leave") {
+          printOut("leaving");
+          //Remove user who has left room
+          try {
+            _homeController.currentRoom.value.userIds!
+                .removeWhere((element) => element.id == user.id);
+            _homeController.currentRoom.value.speakerIds!
+                .removeWhere((element) => element.id == user.id);
+            _homeController.currentRoom.value.hostIds!
+                .removeWhere((element) => element.id == user.id);
+            _homeController.currentRoom.value.raisedHands!
+                .removeWhere((element) => element.id == user.id);
+          } catch (e, s) {
+            printOut("Error removing user who has left from controller $e $s");
           }
-
-          _homeController.currentRoom.value.speakerIds!
-              .removeWhere((element) => element.id == user.id);
-
           _homeController.currentRoom.refresh();
-        }
-      } else if (decodedData["action"] == "added_raised_hands") {
-        printOut("add_speaker");
+        } else if (decodedData["action"] == "room_ended") {
+          if (_homeController.currentRoom.value.hostIds!.length != 1 ||
+              _homeController.currentRoom.value.hostIds!
+                      .indexWhere((element) => element.id == user.id) ==
+                  -1) {
+            printOut("room_ended");
 
-        //Show snackBar to the hosts of the room
-        if (_homeController.currentRoom.value.hostIds!
-                .indexWhere((element) => element.id == currentUser.id) !=
-            -1) {
-          Get.snackbar(
-              '', '${user.firstName} has raised their hand. Let them speak?',
-              duration: const Duration(seconds: 2));
+            //Remove user from room that has ended, and show them a message.
+            Get.snackbar('', 'Room ended',
+                duration: const Duration(seconds: 2));
+
+            Future.delayed(const Duration(seconds: 3), () {
+              _homeController.currentRoom.value = RoomModel();
+              _homeController.leaveAgora();
+              Get.offAll(MainPage());
+            });
+          }
+        } else if (decodedData["action"] == "add_speaker") {
+          printOut("add_speaker");
+
+          if (_homeController.currentRoom.value.speakerIds!
+                  .indexWhere((element) => element.id == user.id) ==
+              -1) {
+            _homeController.currentRoom.value.speakerIds!.add(user);
+
+            //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
+            if (user.id == currentUser.id) {
+              Get.snackbar('', 'You have been added to speaker',
+                  duration: const Duration(seconds: 2));
+            }
+
+            _homeController.currentRoom.value.userIds!
+                .removeWhere((element) => element.id == user.id);
+            _homeController.currentRoom.value.raisedHands!
+                .removeWhere((element) => element.id == user.id);
+
+            _homeController.currentRoom.refresh();
+          }
+        } else if (decodedData["action"] == "remove_speaker") {
+          if (_homeController.currentRoom.value.userIds!
+                  .indexWhere((element) => element.id == user.id) ==
+              -1) {
+            _homeController.currentRoom.value.userIds!.add(user);
+
+            //Remove user from speaker and tell them and add them to audience
+            printOut("remove_speaker");
+
+            if (user.id == currentUser.id) {
+              Get.snackbar('', 'You have been removed from being a speaker',
+                  duration: const Duration(seconds: 2));
+            }
+
+            _homeController.currentRoom.value.speakerIds!
+                .removeWhere((element) => element.id == user.id);
+
+            _homeController.currentRoom.refresh();
+          }
+        } else if (decodedData["action"] == "added_raised_hands") {
+          printOut("add_speaker");
+
+          if (_homeController.currentRoom.value.raisedHands!
+                  .indexWhere((element) => element.id == currentUser.id) ==
+              -1) {
+            //Show snackBar to the hosts of the room
+            if (_homeController.currentRoom.value.hostIds!
+                    .indexWhere((element) => element.id == currentUser.id) !=
+                -1) {
+              Get.snackbar('',
+                  '${user.firstName} has raised their hand. Let them speak?',
+                  duration: const Duration(seconds: 2));
+            }
+            //Add user to raised hands
+            _homeController.currentRoom.value.raisedHands!.add(user);
+            _homeController.currentRoom.refresh();
+          }
         }
-        //Add user to raised hands
-        _homeController.currentRoom.value.raisedHands!.add(user);
-        _homeController.currentRoom.refresh();
       }
     });
   }

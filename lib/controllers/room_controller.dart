@@ -608,13 +608,14 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   void emitRoom(
       {Map? currentUser, required String action, String roomId = ""}) {
-    print("action $action");
+    print("action $action ${currentRoom.value.id} prev $roomId");
     if (action == "leave") {
-      customSocketIO.socketIO.off(roomId);
+      customSocketIO.socketIO.off(currentRoom.value.id ?? roomId);
     }
+
     customSocketIO.socketIO.emit("room_changes", {
       "action": action,
-      "userData": currentUser == null ? {} : currentUser,
+      "userData": currentUser ?? {},
       "roomId": currentRoom.value.id ?? roomId
     });
   }

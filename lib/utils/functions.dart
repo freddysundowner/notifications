@@ -1,10 +1,11 @@
 
 
+import 'package:flutter/foundation.dart';
+
 printOut(data) {
-  print(data);
-  // if (kDebugMode) {
-  //   print(data);
-  // }
+  if (kDebugMode) {
+    print(data);
+  }
 }
 
 String convertTime(String time) {

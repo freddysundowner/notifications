@@ -25,6 +25,7 @@ import 'auth_controller.dart';
 class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   RtcEngineContext context = RtcEngineContext(agoraAppID);
   late RtcEngine engine;
+  var onChatPage = false.obs;
 
   var currentProfile = "".obs;
   var profileLoading = false.obs;

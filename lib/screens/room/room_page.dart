@@ -44,9 +44,12 @@ class RoomPage extends StatelessWidget {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          _homeController.currentRoom.value.title ?? " ",
-          style: const TextStyle(color: Colors.white),
+        title: Obx(() {
+            return Text(
+              _homeController.currentRoom.value.title ?? " ",
+              style: const TextStyle(color: Colors.white),
+            );
+          }
         ),
         centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -284,8 +287,8 @@ class RoomPage extends StatelessWidget {
             _homeController.currentRoom.value.hostIds!.add(user);
             _homeController.currentRoom.refresh();
           } else if (_homeController.currentRoom.value.userIds!
-                  .indexWhere((element) => element.id == user.id) <
-              0) {
+                  .indexWhere((element) => element.id == user.id) ==
+              -1) {
             _homeController.currentRoom.value.userIds!.add(user);
             _homeController.currentRoom.refresh();
           }

@@ -14,6 +14,7 @@ class ChatRoomPage extends StatelessWidget {
 
   ChatRoomPage(this.user, {Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     _chatController.readChats();
@@ -114,12 +115,13 @@ class ChatRoomPage extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 10.0, right: 10),
                       child: Center(
                         child: TextField(
+                          textCapitalization: TextCapitalization.sentences,
                           controller: messageController,
                           autofocus: false,
                           decoration: InputDecoration(
                             hintText: "Enter message here",
                             hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 16.sp),
+                                TextStyle(color: Colors.grey, fontSize: 16.sp, ),
                             border: InputBorder.none,
                             disabledBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,

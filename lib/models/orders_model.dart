@@ -43,21 +43,23 @@ class OrdersModel {
   String? productId;
   int? totalCost;
 
-  factory OrdersModel.fromJson(Map<String, dynamic> json) => OrdersModel(
-        status: json["status"] == null ? null : json["status"],
-        quantity: json["quantity"] == null ? null : json["quantity"],
-        date: json["date"] == null ? null : json["date"],
-        id: json["_id"] == null ? null : json["_id"],
-        customerId: UserModel.fromJson(json["customerId"] ?? {}),
-        shippingId: ShippingId.fromJson(json["shippingId"] ?? {}),
-        shopId: json["shopId"] == null ? null : json["shopId"],
-        subTotal: json["subTotal"] == null ? null : json["subTotal"],
-        tax: json["tax"] == null ? null : json["tax"],
-        shippingFee: json["shippingFee"] == null ? null : json["shippingFee"],
-        itemId: ItemId.fromJson(json["itemId"] ?? {}),
-        productId: json["productId"] == null ? null : json["productId"],
-        totalCost: json["totalCost"] == null ? null : json["totalCost"],
-      );
+  factory OrdersModel.fromJson(Map<String, dynamic> json) {
+    return OrdersModel(
+      status: json["status"] == null ? null : json["status"],
+      quantity: json["quantity"] == null ? null : json["quantity"],
+      date: json["date"] == null ? null : json["date"],
+      id: json["_id"] == null ? null : json["_id"],
+      customerId: UserModel.fromJson(json["customerId"] ?? {}),
+      shippingId: ShippingId.fromJson(json["shippingId"] ?? {}),
+      shopId: json["shopId"] == null ? null : json["shopId"],
+      subTotal: json["subTotal"] == null ? null : json["subTotal"],
+      tax: json["tax"] == null ? null : json["tax"],
+      shippingFee: json["shippingFee"] ?? null,
+      itemId: ItemId.fromJson(json["itemId"] ?? {}),
+      productId: json["productId"] ?? null,
+      totalCost: json["totalCost"] == null ? null : json["totalCost"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "status": status == null ? null : status,
@@ -90,7 +92,7 @@ class ItemId {
   String? orderId;
 
   factory ItemId.fromJson(Map<String, dynamic> json) => ItemId(
-        id: json["_id"] == null ? null : json["_id"],
+        id: json["_id"] ?? null,
         productId: json["productId"] == null
             ? null
             : Product.fromJson(json["productId"]),

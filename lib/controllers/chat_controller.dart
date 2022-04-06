@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/chat_room_model.dart';
-import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -162,7 +161,10 @@ class ChatController extends GetxController {
         "lastSender": Get.find<AuthController>().usermodel.value!.id,
         otherUser.id!: FieldValue.increment(1)
       }, SetOptions(merge: true));
-      await NotificationApi().sendNotification([otherUser.id], "New Message",
+      await NotificationApi().sendNotification([
+        otherUser.id
+      ], "${Get.find<AuthController>().usermodel.value!.firstName}"
+          " ${Get.find<AuthController>().usermodel.value!.firstName}",
           message, "ChatScreen", currentChatId.value);
       printOut("Chat message saved");
     });

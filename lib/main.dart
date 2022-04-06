@@ -139,7 +139,6 @@ Future redirectToRooms(Map<String, dynamic> mess) async {
     _userController.getUserProfile(id);
     Get.to(Profile());
   } else if (screen == "RoomScreen") {
-    _homeController.currentRoom.value = RoomModel();
     _homeController.joinRoom(id);
   } else if (screen == "OrderScreen") {
     _userController.getUserOrders();

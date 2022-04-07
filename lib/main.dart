@@ -14,7 +14,7 @@ import 'bindings.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/room_controller.dart';
 import 'controllers/user_controller.dart';
-import 'screens/settings/orders_sceen.dart';
+import 'screens/orders/orders_sceen.dart';
 
 AndroidNotificationChannel channel = channel;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

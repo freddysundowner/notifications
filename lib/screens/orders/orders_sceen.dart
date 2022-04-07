@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fluttergistshop/controllers/user_controller.dart';
-import 'package:fluttergistshop/screens/settings/shop_orders.dart';
-import 'package:fluttergistshop/screens/settings/user_orders.dart';
+import 'package:fluttergistshop/controllers/order_controller.dart';
+import 'package:fluttergistshop/screens/orders/shop_orders.dart';
+import 'package:fluttergistshop/screens/orders/user_orders.dart';
 import 'package:get/get.dart';
 
 class OrdersScreen extends StatelessWidget {
-  final UserController _userController = Get.find<UserController>();
+  final OrderController _orderController = Get.put(OrderController());
 
   OrdersScreen({Key? key}) : super(key: key);
 

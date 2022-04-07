@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/order_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/orders_model.dart';
 import 'package:fluttergistshop/utils/utils.dart';
@@ -9,27 +10,28 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 import 'individual_order.dart';
 
-class UserOrders extends StatelessWidget {
+class ShopOrders extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();
+  final OrderController _orderController = Get.find<OrderController>();
 
-
-  UserOrders({Key? key}) : super(key: key);
+  ShopOrders({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _userController.getUserOrders();
+    _userController.getShopOrders();
     return Obx(() {
       return _userController.ordersLoading.isFalse
-          ? _userController.userOrders.isNotEmpty
+          ? _userController.shopOrders.isNotEmpty
               ? ListView.builder(
-                  itemCount: _userController.userOrders.length,
+                  itemCount: _userController.shopOrders.length,
                   itemBuilder: (context, index) {
                     print(
-                        "_userController.userOrders ${_userController.userOrders}");
+                        "_userController.shopOrders ${_userController.shopOrders}");
                     OrdersModel ordersModel = OrdersModel.fromJson(
-                        _userController.userOrders.elementAt(index));
+                        _userController.shopOrders.elementAt(index));
                     return InkWell(
                       onTap: () {
+                        _orderController.currentOrder.value = ordersModel;
                         Get.to(IndividualOrderScreen(ordersModel));
                       },
                       child: Padding(

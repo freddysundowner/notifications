@@ -119,6 +119,14 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   @override
+  void onClose() {
+    print("onClose");
+    leaveRoomWhenKilled();
+    leaveAgora();
+    super.onClose();
+  }
+
+  @override
   void onInit() {
     _initAgora();
     getRooms();
@@ -227,7 +235,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         }
       } else {
         Get.offAll(MainPage());
-        Get.snackbar("", "Error creating your room", backgroundColor: sc_snackBar,);
+        Get.snackbar(
+          "",
+          "Error creating your room",
+          backgroundColor: sc_snackBar,
+        );
       }
 
       isCreatingRoom.value = false;
@@ -334,7 +346,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           endRoom(roomId);
         }
       } else {
-        Get.snackbar('', "Room has ended", backgroundColor: sc_snackBar,);
+        Get.snackbar(
+          '',
+          "Room has ended",
+          backgroundColor: sc_snackBar,
+        );
       }
       isCurrentRoomLoading.value = false;
 
@@ -386,7 +402,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);
       Get.snackbar(
-          '', "There was an error adding you to the room, Try again later", backgroundColor: sc_snackBar,);
+        '',
+        "There was an error adding you to the room, Try again later",
+        backgroundColor: sc_snackBar,
+      );
     }
   }
 
@@ -436,7 +455,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   Future<void> addUserToRaisedHands(OwnerId user) async {
     currentRoom.value.raisedHands!.add(user);
 
-    Get.snackbar('', "You have raised your hand", backgroundColor: sc_snackBar,);
+    Get.snackbar(
+      '',
+      "You have raised your hand",
+      backgroundColor: sc_snackBar,
+    );
 
     currentRoom.refresh();
 
@@ -503,12 +526,22 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> leaveRoom(OwnerId user, {String? idRoom}) async {
-    if (currentRoom.value.hostIds!.length == 1 &&
-        currentRoom.value.hostIds!
-                .indexWhere((element) => element.id == user.id) !=
-            -1) {
+    if (currentRoom.value.hostIds!
+            .indexWhere((element) => element.id == user.id) !=
+        -1) {
+      if (currentRoom.value.hostIds!.length == 1) {
+        endRoom(idRoom ?? currentRoom.value.id!);
+      } else {
+        await RoomAPI().removeUserFromHostInRoom({
+          "users": [user.id]
+        }, idRoom ?? currentRoom.value.id!);
+        emitRoom(
+            currentUser: user.toJson(),
+            action: "leave",
+            roomId: idRoom ?? currentRoom.value.id!);
+      }
+
       currentRoom.value = RoomModel();
-      endRoom(idRoom ?? currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
               .indexWhere((element) => element.id == user.id) !=
@@ -522,16 +555,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         await RoomAPI().removeUserFromSpeakerInRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
-      } else if (currentRoom.value.hostIds!
-              .indexWhere((element) => element.id == user.id) !=
-          -1) {
-        await RoomAPI().removeUserFromHostInRoom({
-          "users": [user.id]
-        }, idRoom ?? currentRoom.value.id!);
       }
-
       if (currentRoom.value.raisedHands!
-          .indexWhere((element) => element.id == user.id) !=
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeUserFromRaisedHandsInRoom({
           "users": [user.id]
@@ -627,14 +653,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       "userData": currentUser ?? {},
       "roomId": currentRoom.value.id ?? roomId
     });
-  }
-
-  @override
-  void onClose() {
-    print("onClose");
-    leaveRoomWhenKilled();
-    leaveAgora();
-    super.onClose();
   }
 
   Future<void> leaveAgora() async {

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/order_controller.dart';
 import 'package:fluttergistshop/models/orders_model.dart';
+import 'package:fluttergistshop/services/orders_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:get/get.dart';
 
 class IndividualOrderScreen extends StatelessWidget {
   OrdersModel ordersModel;
+  final OrderController _orderController = Get.find<OrderController>();
 
   IndividualOrderScreen(this.ordersModel, {Key? key}) : super(key: key);
 
@@ -33,10 +38,13 @@ class IndividualOrderScreen extends StatelessWidget {
                         "Status: ",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
-                      Text(
-                        ordersModel.status!,
-                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
-                      ),
+                      Obx(() {
+                        return Text(
+                          _orderController.currentOrder.value.status!.toString().capitalizeFirst!,
+                          style:
+                              TextStyle(color: Colors.black, fontSize: 16.sp),
+                        );
+                      }),
                     ],
                   ),
                   Row(
@@ -69,6 +77,37 @@ class IndividualOrderScreen extends StatelessWidget {
             SizedBox(
               height: 0.04.sh,
             ),
+            if (ordersModel.shopId ==
+                Get.find<AuthController>().usermodel.value!.shopId!.id)
+              InkWell(
+                onTap: () {
+                  showUpdateOrderStatusBottomSheet(context);
+                },
+                child: Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 0.8.sw,
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 5.0, bottom: 5),
+                          child: Center(
+                              child: Text(
+                            "Update status",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.sp),
+                          )),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 0.04.sh,
+                    ),
+                  ],
+                ),
+              ),
             const Divider(
               color: Colors.black12,
               thickness: 10,
@@ -349,5 +388,188 @@ class IndividualOrderScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<dynamic> showUpdateOrderStatusBottomSheet(BuildContext context) async {
+    return showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      backgroundColor: Colors.grey[200],
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
+      )),
+      builder: (context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.52,
+              expand: false,
+              builder: (BuildContext productContext,
+                  ScrollController scrollController) {
+                return Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Theme.of(productContext).primaryColor,
+                        height: 0.01.sh,
+                        width: 0.15.sw,
+                      ),
+                      SizedBox(
+                        height: 0.02.sh,
+                      ),
+                      Text(
+                        "Update order status",
+                        style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                      ),
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Pending",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16.sp),
+                              ),
+                              Obx(() {
+                                return Radio(
+                                  value: _orderController
+                                              .currentOrder.value.status ==
+                                          "pending"
+                                      ? false
+                                      : true,
+                                  onChanged: (e) {
+                                    if (e == true) {
+                                      updateOrderStatus("pending");
+                                    }
+                                  },
+                                  groupValue: false,
+                                );
+                              })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Processed",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16.sp),
+                              ),
+                              Obx(() {
+                                return Radio(
+                                  value: _orderController
+                                              .currentOrder.value.status ==
+                                          "processed"
+                                      ? false
+                                      : true,
+                                  onChanged: (e) {
+                                    if (e == true) {
+                                      updateOrderStatus("processed");
+                                    }
+                                  },
+                                  groupValue: false,
+                                );
+                              })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Shipped",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16.sp),
+                              ),
+                              Obx(() {
+                                return Radio(
+                                  value: _orderController
+                                              .currentOrder.value.status ==
+                                          "shipped"
+                                      ? false
+                                      : true,
+                                  onChanged: (e) {
+                                    if (e == true) {
+                                      updateOrderStatus("shipped");
+                                    }
+                                  },
+                                  groupValue: false,
+                                );
+                              })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Delivered",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16.sp),
+                              ),
+                              Obx(() {
+                                return Radio(
+                                  value: _orderController
+                                      .currentOrder.value.status ==
+                                      "delivered"
+                                      ? false
+                                      : true,
+                                  onChanged: (e) {
+                                    if (e == true) {
+                                      updateOrderStatus("delivered");
+                                    }
+                                  },
+                                  groupValue: false,
+                                );
+                              })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Cancelled",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16.sp),
+                              ),
+                              Obx(() {
+                                return Radio(
+                                  value: _orderController
+                                              .currentOrder.value.status ==
+                                          "cancelled"
+                                      ? false
+                                      : true,
+                                  onChanged: (e) {
+                                    if (e == true) {
+                                      updateOrderStatus("cancelled");
+                                    }
+                                  },
+                                  groupValue: false,
+                                );
+                              })
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        });
+      },
+    );
+  }
+
+  updateOrderStatus(String status) async {
+    Get.back();
+    _orderController.currentOrder.value.status = status;
+    _orderController.currentOrder.refresh();
+
+    await OrderApi().updateOrder({"status": status}, ordersModel.id!);
   }
 }

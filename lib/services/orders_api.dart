@@ -33,4 +33,15 @@ class OrderApi {
       return dd;
     }
   }
+
+  updateOrder(Map<String, dynamic> body, String id) async {
+    try {
+      var orderResponse = await DbBase().databaseRequest(
+          updateOrders + id, DbBase().patchRequestType,
+          body: body);
+      printOut("orderResponse $orderResponse");
+    } catch (e) {
+      printOut("Error updateOrder  $e");
+    }
+  }
 }

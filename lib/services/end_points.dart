@@ -56,3 +56,4 @@ const userTransactions = transactions + "/";
 
 const userOrders = orders + "/";
 const shopOrders = orders + "/all/shop/";
+const updateOrders = orders + "/orders/";

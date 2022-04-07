@@ -8,7 +8,6 @@ import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
-import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -149,6 +148,8 @@ class NewShop extends StatelessWidget {
                 if (authController.currentuser!.shopId == null ||
                     authController.currentuser!.shopId == "") {
                   response = shopController.saveShop();
+
+
                 }
                 try {
                   await showDialog(
@@ -170,6 +171,8 @@ class NewShop extends StatelessWidget {
                       content: Text(snackbarMessage),
                     ),
                   );
+
+                  printOut("shopController.error.value ${shopController.error.value}");
                   if (shopController.error.value.isEmpty) {
                     print(
                         "shopController.error.value ${shopController.error.value}");

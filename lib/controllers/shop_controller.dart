@@ -85,6 +85,7 @@ class ShopController extends GetxController {
 
         _shop.value = Shop.fromJson(response["data"]);
         currentShop.value = Shop.fromJson(response["data"]);
+        Get.find<AuthController>().currentuser!.shopId = Shop.fromJson(response["data"]);
       } else {
         error.value = response["message"];
       }

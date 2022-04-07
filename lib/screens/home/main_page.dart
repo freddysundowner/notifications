@@ -1,11 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
-import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/favorites/favorites.dart';
@@ -25,6 +23,7 @@ class MainPage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
+  ShopController shopController = Get.find<ShopController>();
 
   OwnerId currentUser = OwnerId(
       id: Get.find<AuthController>().usermodel.value!.id,
@@ -204,6 +203,8 @@ class MainPage extends StatelessWidget {
                                     fontSize: 18.sp, color: Colors.black),
                               ),
                               onTap: () {
+                                shopController.currentShop.value =
+                                authController.currentuser!.shopId!;
                                 Get.to(() => ShopView());
                               },
                             ),

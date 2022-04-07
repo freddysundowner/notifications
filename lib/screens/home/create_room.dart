@@ -16,6 +16,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 final RoomController _homeController = Get.find<RoomController>();
 
@@ -757,7 +758,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                                             user)
                                                                     ? const AssetImage(
                                                                         "assets/icons/picked.png")
-                                                                    : null,
+                                                                    : MemoryImage(kTransparentImage) as ImageProvider,
                                                             backgroundImage:
                                                                 const AssetImage(
                                                                     "assets/icons/profile_placeholder.png"))
@@ -776,7 +777,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                                         user)
                                                                 ? const AssetImage(
                                                                     "assets/icons/picked.png")
-                                                                : null,
+                                                                : MemoryImage(kTransparentImage) as ImageProvider,
                                                             backgroundImage:
                                                                 NetworkImage(
                                                                     imageUrl +

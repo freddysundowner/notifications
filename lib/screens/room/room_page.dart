@@ -45,12 +45,11 @@ class RoomPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Obx(() {
-            return Text(
-              _homeController.currentRoom.value.title ?? " ",
-              style: const TextStyle(color: Colors.white),
-            );
-          }
-        ),
+          return Text(
+            _homeController.currentRoom.value.title ?? " ",
+            style: const TextStyle(color: Colors.white),
+          );
+        }),
         centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
@@ -65,7 +64,8 @@ class RoomPage extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   Get.offAll(MainPage());
-                  await _homeController.leaveRoom(currentUser, idRoom: _homeController.currentRoom.value.id);
+                  await _homeController.leaveRoom(currentUser,
+                      idRoom: _homeController.currentRoom.value.id);
                 },
                 child: Container(
                   height: 0.07.sh,
@@ -279,10 +279,10 @@ class RoomPage extends StatelessWidget {
         if (decodedData["action"] == "join") {
           //if user is not already in room, add them
           if (_homeController.currentRoom.value.invitedhostIds!
-                      .indexWhere((element) => element == user.id) !=
-                  -1) {
+                  .indexWhere((element) => element == user.id) !=
+              -1) {
             if (_homeController.currentRoom.value.hostIds!
-                .indexWhere((element) => element.id == user.id) ==
+                    .indexWhere((element) => element.id == user.id) ==
                 -1) {
               _homeController.currentRoom.value.hostIds!.add(user);
               _homeController.currentRoom.refresh();
@@ -317,7 +317,8 @@ class RoomPage extends StatelessWidget {
             printOut("room_ended");
 
             //Remove user from room that has ended, and show them a message.
-            Get.snackbar('', 'Room ended', backgroundColor: sc_snackBar,
+            Get.snackbar('', 'Room ended',
+                backgroundColor: sc_snackBar,
                 duration: const Duration(seconds: 2));
 
             Future.delayed(const Duration(seconds: 3), () {
@@ -336,7 +337,8 @@ class RoomPage extends StatelessWidget {
 
             //Tell user that they have been added to speaker and update room by adding user to speaker, removing them from raised hands, and from audience
             if (user.id == currentUser.id) {
-              Get.snackbar('', 'You have been added to speaker', backgroundColor: sc_snackBar,
+              Get.snackbar('', 'You have been added to speaker',
+                  backgroundColor: sc_snackBar,
                   duration: const Duration(seconds: 2));
             }
 
@@ -357,7 +359,8 @@ class RoomPage extends StatelessWidget {
             printOut("remove_speaker");
 
             if (user.id == currentUser.id) {
-              Get.snackbar('', 'You have been removed from being a speaker', backgroundColor: sc_snackBar,
+              Get.snackbar('', 'You have been removed from being a speaker',
+                  backgroundColor: sc_snackBar,
                   duration: const Duration(seconds: 2));
             }
 
@@ -377,7 +380,8 @@ class RoomPage extends StatelessWidget {
                     .indexWhere((element) => element.id == currentUser.id) !=
                 -1) {
               Get.snackbar('',
-                  '${user.firstName} has raised their hand. Let them speak?', backgroundColor: sc_snackBar,
+                  '${user.firstName} has raised their hand. Let them speak?',
+                  backgroundColor: sc_snackBar,
                   duration: const Duration(seconds: 2));
             }
             //Add user to raised hands
@@ -681,16 +685,9 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              room.hostIds!
-                                      .indexWhere((e) => e.id == user.id) ==
-                                  -1 &&
+                              room.hostIds!.indexWhere((e) => e.id == user.id) == -1 &&
                               room.hostIds!.indexWhere((e) =>
-                                      e.id ==
-                                      Get.find<AuthController>()
-                                          .usermodel
-                                          .value!
-                                          .id) ==
-                                  0
+                                      e.id == Get.find<AuthController>().usermodel.value!.id) != -1
                           ? InkWell(
                               onTap: () async {
                                 Get.back();
@@ -711,8 +708,8 @@ class RoomUser extends StatelessWidget {
                                     !(_homeController
                                                 .currentRoom.value.speakerIds!
                                                 .indexWhere(
-                                                    (e) => e.id == user.id) ==
-                                            0)
+                                                    (e) => e.id == user.id) !=
+                                            -1)
                                         ? "Move to speakers".toUpperCase()
                                         : "Move to audience".toUpperCase(),
                                     style: TextStyle(

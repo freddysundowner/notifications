@@ -10,13 +10,6 @@ import 'client.dart';
 import 'end_points.dart';
 
 class ProductPI {
-  getAllRooms() async {
-    var rooms =
-        await DbBase().databaseRequest(allRooms, DbBase().getRequestType);
-
-    return jsonDecode(rooms);
-  }
-
   static updateProduct(
       Map<String, dynamic> productdata, String productid) async {
     var response = await Api.callApi(

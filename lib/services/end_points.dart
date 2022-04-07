@@ -18,7 +18,7 @@ const orders = baseUrl + "/orders";
 const notifications = baseUrl + "/notifications";
 
 const singleproductqtycheck = singleproduct + "product/qtycheck/";
-const allRooms = rooms + "/";
+const allRooms = rooms + "/get/all/";
 const roomById = rooms + "/rooms/";
 const roomByUser = rooms + "/get/all/"; //Add user Id
 const roomByShop = rooms + "/get/all/shops/"; //Add shop Id

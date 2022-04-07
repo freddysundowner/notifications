@@ -10,8 +10,9 @@ import 'end_points.dart';
 
 class RoomAPI {
   getAllRooms() async {
-    var rooms =
-        await DbBase().databaseRequest(allRooms, DbBase().getRequestType);
+    var rooms = await DbBase().databaseRequest(
+        allRooms + Get.find<AuthController>().usermodel.value!.id!,
+        DbBase().getRequestType);
 
     return jsonDecode(rooms);
   }
@@ -63,9 +64,10 @@ class RoomAPI {
         body.addAll({"title": _homeController.currentRoom.value.title});
       }
       if (body["activeTime"] == null) {
-        body.addAll({"activeTime" : _homeController.currentRoom.value.activeTime,});
+        body.addAll({
+          "activeTime": _homeController.currentRoom.value.activeTime,
+        });
       }
-
 
       printOut("Room to be updated title ${body["title"]}");
       var updated = await DbBase().databaseRequest(

@@ -128,7 +128,7 @@ class MainPage extends StatelessWidget {
                                           .shopId!
                                           .open!) {
                                     _homeController.newRoomTitle.value = " ";
-                                    _homeController.newRoomType.value = " ";
+                                    _homeController.newRoomType.value = "public";
                                     showRoomTypeBottomSheet(context);
                                   } else {
                                     await showDialog(

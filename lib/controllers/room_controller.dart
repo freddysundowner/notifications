@@ -175,7 +175,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         hosts.add(element.id);
       }
 
-      printOut("Room title ${roomTitleController.text}");
+      printOut("Room title ${newRoomType.value}");
 
       String roomTitle =
           roomTitleController.text.isEmpty ? " " : roomTitleController.text;

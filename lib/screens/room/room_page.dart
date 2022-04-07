@@ -65,7 +65,7 @@ class RoomPage extends StatelessWidget {
               InkWell(
                 onTap: () async {
                   Get.offAll(MainPage());
-                  await _homeController.leaveRoom(currentUser);
+                  await _homeController.leaveRoom(currentUser, idRoom: _homeController.currentRoom.value.id);
                 },
                 child: Container(
                   height: 0.07.sh,
@@ -93,8 +93,8 @@ class RoomPage extends StatelessWidget {
                             onPressed: () async {
                               if ((_homeController.currentRoom.value.hostIds!
                                       .indexWhere(
-                                          (e) => e.id == currentUser.id) ==
-                                  0)) {
+                                          (e) => e.id == currentUser.id) !=
+                                  -1)) {
                                 showRaisedHandsBottomSheet(context);
                               } else {
                                 await _homeController
@@ -279,13 +279,14 @@ class RoomPage extends StatelessWidget {
         if (decodedData["action"] == "join") {
           //if user is not already in room, add them
           if (_homeController.currentRoom.value.invitedhostIds!
-                      .indexWhere((element) => element == user.id) >
-                  -1 &&
-              _homeController.currentRoom.value.hostIds!
-                      .indexWhere((element) => element.id == user.id) ==
+                      .indexWhere((element) => element == user.id) !=
                   -1) {
-            _homeController.currentRoom.value.hostIds!.add(user);
-            _homeController.currentRoom.refresh();
+            if (_homeController.currentRoom.value.hostIds!
+                .indexWhere((element) => element.id == user.id) ==
+                -1) {
+              _homeController.currentRoom.value.hostIds!.add(user);
+              _homeController.currentRoom.refresh();
+            }
           } else if (_homeController.currentRoom.value.userIds!
                   .indexWhere((element) => element.id == user.id) ==
               -1) {

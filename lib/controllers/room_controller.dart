@@ -511,27 +511,29 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       endRoom(idRoom ?? currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
-              .indexWhere((element) => element.id == user.id) >
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeAUserFromRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
       } else if (currentRoom.value.speakerIds!
-              .indexWhere((element) => element.id == user.id) >
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeUserFromSpeakerInRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
-      } else if (currentRoom.value.raisedHands!
-              .indexWhere((element) => element.id == user.id) >
-          -1) {
-        await RoomAPI().removeUserFromRaisedHandsInRoom({
-          "users": [user.id]
-        }, idRoom ?? currentRoom.value.id!);
       } else if (currentRoom.value.hostIds!
-              .indexWhere((element) => element.id == user.id) >
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeUserFromHostInRoom({
+          "users": [user.id]
+        }, idRoom ?? currentRoom.value.id!);
+      }
+
+      if (currentRoom.value.raisedHands!
+          .indexWhere((element) => element.id == user.id) !=
+          -1) {
+        await RoomAPI().removeUserFromRaisedHandsInRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
       }

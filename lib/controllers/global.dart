@@ -8,6 +8,7 @@ class GlobalController extends GetxController {
   var tabPosition = 0.obs;
   TextEditingController searchShopController = TextEditingController();
   var isSearching = false.obs;
+  var canback = false.obs;
 
   var searchresults = [].obs;
   var searchoption = "".obs;

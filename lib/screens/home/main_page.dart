@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
@@ -77,6 +80,19 @@ class MainPage extends StatelessWidget {
         color: Colors.white,
         size: 20.0,
       ));
+  _onWillPop() {
+    if (_global.canback.value == true) {
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    } else {
+      _global.tabPosition.value = 0;
+    }
+
+    Timer(Duration(seconds: 2), () {
+      _global.canback.value = false;
+    });
+    _global.canback.value = true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(

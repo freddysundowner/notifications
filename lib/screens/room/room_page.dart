@@ -116,6 +116,7 @@ class RoomPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () async {
+                      print("showInviteFriendsBottomSheet");
                       showInviteFriendsBottomSheet(context);
                     },
                     icon: const Icon(
@@ -685,9 +686,16 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              room.hostIds!.indexWhere((e) => e.id == user.id) == -1 &&
+                              room.hostIds!
+                                      .indexWhere((e) => e.id == user.id) ==
+                                  -1 &&
                               room.hostIds!.indexWhere((e) =>
-                                      e.id == Get.find<AuthController>().usermodel.value!.id) != -1
+                                      e.id ==
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .id) !=
+                                  -1
                           ? InkWell(
                               onTap: () async {
                                 Get.back();

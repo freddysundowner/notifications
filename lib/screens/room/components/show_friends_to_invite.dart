@@ -13,6 +13,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
   _homeController.searchUsersController.text = "";
   _homeController.toInviteUsers.value = [];
 
+  print("DraggableScrollableSheet 2");
   return showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -23,13 +24,16 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
       topRight: Radius.circular(15),
     )),
     builder: (context) {
+      print("DraggableScrollableSheet 1");
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return DraggableScrollableSheet(
             initialChildSize: 0.81,
             expand: false,
             builder: (BuildContext context, ScrollController scrollController) {
-              _homeController.fetchAllUsers();
+              print("DraggableScrollableSheet");
+              _homeController.friendsToInviteCall();
+
               return Padding(
                 padding: const EdgeInsets.only(
                     left: 10.0, right: 10, top: 10, bottom: 2),
@@ -54,7 +58,6 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                         IconButton(
                             onPressed: () async {
                               Get.back();
-                              printOut("invited users ${_homeController.toInviteUsers.length}");
                               if (_homeController.toInviteUsers.isNotEmpty) {
                                 await NotificationApi().sendNotification(
                                     _homeController.toInviteUsers,
@@ -133,7 +136,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                   height: 0.6.sh,
                                   child: GetBuilder<RoomController>(
                                       builder: (_dx) {
-                                    return _dx.searchedUsers.isNotEmpty
+                                    return _dx.friendsToInvite.isNotEmpty
                                         ? GridView.builder(
                                             shrinkWrap: true,
                                             // physics: ScrollPhysics(),
@@ -142,11 +145,12 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                               crossAxisCount: 4,
                                               childAspectRatio: 0.6,
                                             ),
-                                            itemCount: _dx.searchedUsers.length,
+                                            itemCount:
+                                                _dx.friendsToInvite.length,
                                             itemBuilder: (context, index) {
                                               UserModel user =
                                                   UserModel.fromJson(_dx
-                                                      .searchedUsers
+                                                      .friendsToInvite
                                                       .elementAt(index));
                                               return InkWell(
                                                 onTap: () {
@@ -163,59 +167,65 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                                   }
                                                 },
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Obx(() => Center(
-                                                      child: user.profilePhoto ==
-                                                              "" || user.profilePhoto!.length > 300
-                                                          ? CircleAvatar(
-                                                              radius: 35,
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              foregroundImage: _homeController
-                                                                      .toInviteUsers
-                                                                      .contains(
-                                                                          user.id)
-                                                                  ? const AssetImage(
-                                                                      "assets/icons/picked.png")
-                                                                  : null,
-                                                              backgroundImage:
-                                                                  const AssetImage(
-                                                                      "assets/icons/profile_placeholder.png"))
-                                                          : CircleAvatar(
-                                                              radius: 35,
-                                                              onBackgroundImageError: (object, stackTrace) => const AssetImage(
-                                                                  "assets/icons/profile_placeholder.png"),
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              foregroundImage: _homeController
-                                                                      .toInviteUsers
-                                                                      .contains(
-                                                                          user.id)
-                                                                  ? const AssetImage(
-                                                                      "assets/icons/picked.png")
-                                                                  : null,
-                                                              backgroundImage:
-                                                                  NetworkImage(user
-                                                                      .profilePhoto!),
-                                                            ),
-                                                    )),
-                                                    SizedBox(
-                                                      height: 0.01.sh,
-                                                    ),
-                                                    Text(
-                                                      "${user.firstName} ${user.lastName}"
-                                                                  .length >
-                                                              10
-                                                          ? "${user.firstName} ${user.lastName}"
-                                                                  .substring(
-                                                                      0, 10) +
-                                                              "..."
-                                                          : "${user.firstName} ${user.lastName}",
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 14.sp),
+                                                          child: user.profilePhoto ==
+                                                                      "" ||
+                                                                  user.profilePhoto!
+                                                                          .length >
+                                                                      300
+                                                              ? CircleAvatar(
+                                                                  radius: 35,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  foregroundImage: _homeController
+                                                                          .toInviteUsers
+                                                                          .contains(user
+                                                                              .id)
+                                                                      ? const AssetImage(
+                                                                          "assets/icons/picked.png")
+                                                                      : null,
+                                                                  backgroundImage:
+                                                                      const AssetImage(
+                                                                          "assets/icons/profile_placeholder.png"))
+                                                              : CircleAvatar(
+                                                                  radius: 35,
+                                                                  onBackgroundImageError: (object,
+                                                                          stackTrace) =>
+                                                                      const AssetImage(
+                                                                          "assets/icons/profile_placeholder.png"),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  foregroundImage: _homeController
+                                                                          .toInviteUsers
+                                                                          .contains(user
+                                                                              .id)
+                                                                      ? const AssetImage(
+                                                                          "assets/icons/picked.png")
+                                                                      : null,
+                                                                  backgroundImage:
+                                                                      NetworkImage(
+                                                                          user.profilePhoto!),
+                                                                ),
+                                                        )),
+                                                    Center(
+                                                      child: Text(
+                                                        "${user.firstName} ${user.lastName}",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 12.sp),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 2,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
                                                     ),
                                                   ],
                                                 ),

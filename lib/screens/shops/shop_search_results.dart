@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
@@ -190,6 +191,8 @@ class ShopSearchResults extends StatelessWidget {
     return InkWell(
       onTap: () {
         _userController.getUserProfile(e.id!);
+        print(e.id!);
+        print(Get.find<AuthController>().currentuser?.id);
         Get.to(() => Profile());
       },
       child: Padding(

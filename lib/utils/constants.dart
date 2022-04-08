@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const String appName = "GistShop";
 const String agoraAppID = "eb2b573198f24c98a285c82094696299";
+const String agoraAppRecordKey =
+    "4714495b140b408baf6a22a8beb6df8d:f0703a9c08694f738c32bb8e8115e0d2";
 const String oneSignalAppID = "a69f5c54-a5c1-472e-9d88-74713fcc6f85";
 const String currencySymbol = "GC ";
 const String currencyName = "Gistcoins ";

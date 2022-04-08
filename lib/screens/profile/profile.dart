@@ -98,7 +98,7 @@ class Profile extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Obx(() {
-                UserModel profile = authController.usermodel.value!;
+                UserModel profile = _userController.currentProfile.value;
                 return _userController.profileLoading.isFalse
                     ? SingleChildScrollView(
                         child: Column(

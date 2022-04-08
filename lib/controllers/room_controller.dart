@@ -36,6 +36,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var allUsersLoading = false.obs;
   var allUsers = [].obs;
   var searchedUsers = [].obs;
+  var friendsToInvite = [].obs;
+  var searchedfriendsToInvite = [].obs;
   var isCurrentRoomLoading = false.obs;
   var roomsList = [].obs;
   var currentRoom = RoomModel().obs;
@@ -138,11 +140,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     _initAgora();
     getRooms();
 
-    var plainCredentials =
-        "4714495b140b408baf6a22a8beb6df8d:f0703a9c08694f738c32bb8e8115e0d2";
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
     var authorizationHeader =
-        "Basic " + stringToBase64.encode(plainCredentials);
+        "Basic " + stringToBase64.encode(agoraAppRecordKey);
     headers = {
       'Content-Type': 'application/json;charset=utf-8',
       'Authorization': authorizationHeader
@@ -683,6 +683,39 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     await engine.muteLocalAudioStream(true);
     // await engine.destroy();
     // }
+  }
+
+  Future<void> friendsToInviteCall() async {
+    print("friendsToInviteCall");
+    if (friendsToInvite.isEmpty) {
+      try {
+        allUsersLoading.value = true;
+
+        var users = await UserAPI.friendsToInvite();
+        var list = [];
+
+        if (users != null) {
+          for (var i = 0; i < users.length; i++) {
+            if (users.elementAt(i)["_id"] !=
+                FirebaseAuth.instance.currentUser!.uid) {
+              list.add(users.elementAt(i));
+            }
+          }
+          friendsToInvite.value = list;
+        } else {
+          friendsToInvite.value = [];
+        }
+        searchedfriendsToInvite.value = friendsToInvite;
+
+        friendsToInvite.refresh();
+        allUsersLoading.value = false;
+      } catch (e) {
+        printOut(e);
+        allUsersLoading.value = false;
+      }
+    } else {
+      searchedfriendsToInvite.value = friendsToInvite;
+    }
   }
 
   Future<void> fetchAllUsers() async {

@@ -253,4 +253,14 @@ class UserAPI {
         DbBase().getRequestType);
     return jsonDecode(response);
   }
+
+  static searchFriends(String searchText) async {
+    var response = await DbBase().databaseRequest(
+        followersfollowingsearch +
+            FirebaseAuth.instance.currentUser!.uid +
+            "/" +
+            searchText,
+        DbBase().getRequestType);
+    return jsonDecode(response);
+  }
 }

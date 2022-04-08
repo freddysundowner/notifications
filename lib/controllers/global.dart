@@ -31,16 +31,13 @@ class GlobalController extends GetxController {
   }
 
   Future<void> search(String searchOption, {last}) async {
-    print("searchShopController.text ${searchShopController.text}");
     if (searchShopController.text.trim().isNotEmpty) {
       try {
         isSearching.value = true;
         var results = await ShopApi().searchItems(
             searchShopController.text.trim(), searchOption,
             last: last);
-
         searchresults.assignAll(results);
-
         isSearching.value = false;
       } catch (e) {
         printOut(e.toString());

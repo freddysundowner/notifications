@@ -98,8 +98,7 @@ class RoomPage extends StatelessWidget {
                                   -1)) {
                                 showRaisedHandsBottomSheet(context);
                               } else {
-                                await _homeController
-                                    .addUserToRaisedHands(currentUser);
+                                await _homeController.raiseHand(context, currentUser);
                               }
                             },
                             icon: Stack(

@@ -552,8 +552,7 @@ class HomePage extends StatelessWidget {
                                   0)) {
                                 showRaisedHandsBottomSheet(context);
                               } else {
-                                await _homeController
-                                    .addUserToRaisedHands(currentUser);
+                                await _homeController.raiseHand(context, currentUser);
                               }
                             },
                             icon: Stack(

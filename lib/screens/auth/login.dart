@@ -74,12 +74,20 @@ class Login extends StatelessWidget {
 
       printOut(" responseyuu " + response.toString());
       if (response.isEmpty) {
-        Get.snackbar('', "Check your rrrrryyyy connection", backgroundColor: sc_snackBar,).show();
+        Get.snackbar(
+          '',
+          "Check your rrrrryyyy connection",
+          backgroundColor: sc_snackBar,
+        ).show();
       }
     } on SocketException catch (e) {
       printOut(e.message);
 
-      Get.snackbar('', "Check your rrrrr connection", backgroundColor: sc_snackBar,).show();
+      Get.snackbar(
+        '',
+        "Check your rrrrr connection",
+        backgroundColor: sc_snackBar,
+      ).show();
     } catch (e, s) {
       printOut("error accenssing internet $e $s");
     }
@@ -105,22 +113,37 @@ class Login extends StatelessWidget {
   }
 
   Widget buildPasswordFormField() {
-    return TextFormField(
-      controller: authController.passwordFieldController,
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: "Enter your password",
-        labelText: "Password",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.lock),
+    return Obx(
+      () => TextFormField(
+        controller: authController.passwordFieldController,
+        obscureText: !authController.passwordVisible.value,
+        decoration: InputDecoration(
+          hintText: "Enter your password",
+          labelText: "Password",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+              authController.passwordVisible.isTrue
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              // Update the state i.e. toogle the state of passwordVisible variable
+              authController.passwordVisible.value =
+                  !authController.passwordVisible.value;
+            },
+          ),
+        ),
+        validator: (value) {
+          if (authController.passwordFieldController.text.isEmpty) {
+            return kPassNullError;
+          }
+          return null;
+        },
+        autovalidateMode: AutovalidateMode.onUserInteraction,
       ),
-      validator: (value) {
-        if (authController.passwordFieldController.text.isEmpty) {
-          return kPassNullError;
-        }
-        return null;
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 
@@ -168,9 +191,7 @@ class Login extends StatelessWidget {
             ? snackbarMessage
             : authController.error.value;
       } catch (e, s) {
-
         printOut("Error in sign in button callback $e $s");
-
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -178,7 +199,6 @@ class Login extends StatelessWidget {
           ),
         );
       }
-    }
-     else {}
+    } else {}
   }
 }

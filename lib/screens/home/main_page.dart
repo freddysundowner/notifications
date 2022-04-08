@@ -207,25 +207,32 @@ class MainPage extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                             ),
-                            ListTile(
-                              leading:  const Icon(Icons.shopping_cart),
-                              title:  Text(
-                                Get.find<AuthController>()
-                                            .usermodel
-                                            .value!
-                                            .shopId !=
-                                        null
-                                    ? 'My Shop'
-                                    : "Create a Shop",
-                                style: TextStyle(
-                                    fontSize: 18.sp, color: Colors.black),
+                            if (authController.currentuser?.shopId?.id != null)
+                              ListTile(
+                                leading: new Icon(Icons.shopping_cart),
+                                title: new Text(
+                                  'My Shop',
+                                  style: TextStyle(
+                                      fontSize: 18.sp, color: Colors.black),
+                                ),
+                                onTap: () {
+                                  shopController.currentShop.value =
+                                      authController.currentuser!.shopId!;
+                                  Get.to(() => ShopView());
+                                },
                               ),
-                              onTap: () {
-                                shopController.currentShop.value =
-                                    authController.currentuser!.shopId!;
-                                Get.to(() => ShopView());
-                              },
-                            ),
+                            if (authController.currentuser?.shopId?.id == null)
+                              ListTile(
+                                leading: new Icon(Icons.shopping_cart),
+                                title: new Text(
+                                  "Create a Shop",
+                                  style: TextStyle(
+                                      fontSize: 18.sp, color: Colors.black),
+                                ),
+                                onTap: () {
+                                  Get.to(() => NewShop());
+                                },
+                              ),
                           ],
                         );
                       });

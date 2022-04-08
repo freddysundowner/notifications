@@ -8,6 +8,7 @@ import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -56,7 +57,7 @@ class NewShop extends StatelessWidget {
     ImageProvider? backImage;
     if (shopController.chosenImage.path != "") {
       backImage = MemoryImage(shopController.chosenImage.readAsBytesSync());
-    } else if (authController.currentuser!.shopId != null &&
+    } else if (authController.currentuser!.shopId?.id != null &&
         authController.currentuser!.shopId!.image != null &&
         authController.currentuser!.shopId!.image!.isNotEmpty) {
       final String? url = authController.currentuser!.shopId!.image;
@@ -146,8 +147,6 @@ class NewShop extends StatelessWidget {
                 if (authController.currentuser!.shopId == null ||
                     authController.currentuser!.shopId == "") {
                   response = shopController.saveShop();
-
-
                 }
                 try {
                   await showDialog(
@@ -155,7 +154,9 @@ class NewShop extends StatelessWidget {
                     builder: (context) {
                       return AsyncProgressDialog(
                         response,
-                        message: Text("Creating shop"),
+                        message: Text(authController.currentuser!.shopId != null
+                            ? "Updating..."
+                            : "Creating shop"),
                         onError: (e) {
                           snackbarMessage = e.toString();
                         },
@@ -164,19 +165,21 @@ class NewShop extends StatelessWidget {
                   );
                   snackbarMessage = shopController.error.value;
                 } finally {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(snackbarMessage),
-                    ),
-                  );
-
-                  printOut("shopController.error.value ${shopController.error.value}");
+                  printOut(
+                      "shopController.error.value ${shopController.error.value}");
                   if (shopController.error.value.isEmpty) {
                     print(
                         "shopController.error.value ${shopController.error.value}");
-                    authController.usermodel.value = await UserController()
-                        .getUserProfile(authController.usermodel.value!.id!);
+                    authController.usermodel.value =
+                        await UserAPI.getUserById();
+                    authController.usermodel.refresh();
                     Get.back();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(snackbarMessage),
+                      ),
+                    );
                   }
                 }
               }

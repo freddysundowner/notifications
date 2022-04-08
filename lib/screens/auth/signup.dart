@@ -145,28 +145,43 @@ class SignUpScreen extends StatelessWidget {
   }
 
   Widget buildConfirmPasswordFormField() {
-    return TextFormField(
-      controller: authController.confirmPasswordFieldController,
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: "Re-enter your password",
-        labelText: "Confirm Password",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.lock),
+    return Obx(
+      () => TextFormField(
+        controller: authController.confirmPasswordFieldController,
+        obscureText: !authController.passwordVisible.value,
+        decoration: InputDecoration(
+          hintText: "Re-enter your password",
+          labelText: "Confirm Password",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+              authController.passwordVisible.isTrue
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              // Update the state i.e. toogle the state of passwordVisible variable
+              authController.passwordVisible.value =
+                  !authController.passwordVisible.value;
+            },
+          ),
+        ),
+        validator: (value) {
+          if (authController.confirmPasswordFieldController.text.isEmpty) {
+            return kPassNullError;
+          } else if (authController.confirmPasswordFieldController.text !=
+              authController.passwordFieldController.text) {
+            return kMatchPassError;
+          } else if (authController.confirmPasswordFieldController.text.length <
+              8) {
+            return kShortPassError;
+          }
+          return null;
+        },
+        autovalidateMode: AutovalidateMode.onUserInteraction,
       ),
-      validator: (value) {
-        if (authController.confirmPasswordFieldController.text.isEmpty) {
-          return kPassNullError;
-        } else if (authController.confirmPasswordFieldController.text !=
-            authController.passwordFieldController.text) {
-          return kMatchPassError;
-        } else if (authController.confirmPasswordFieldController.text.length <
-            8) {
-          return kShortPassError;
-        }
-        return null;
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 
@@ -194,23 +209,36 @@ class SignUpScreen extends StatelessWidget {
   }
 
   Widget buildPasswordFormField() {
-    return TextFormField(
-      controller: authController.passwordFieldController,
-      obscureText: true,
-      decoration: InputDecoration(
-        hintText: "Enter your password",
-        labelText: "Password",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(Icons.lock),
-      ),
-      validator: (value) {
-        if (authController.passwordFieldController.text.isEmpty) {
-          return kPassNullError;
-        }
-        return null;
-      },
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-    );
+    return Obx(() => TextFormField(
+          controller: authController.passwordFieldController,
+          obscureText: !authController.passwordVisible.value,
+          decoration: InputDecoration(
+            hintText: "Enter your password",
+            labelText: "Password",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: IconButton(
+              icon: Icon(
+                // Based on passwordVisible state choose the icon
+                authController.passwordVisible.isTrue
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                // Update the state i.e. toogle the state of passwordVisible variable
+                authController.passwordVisible.value =
+                    !authController.passwordVisible.value;
+              },
+            ),
+          ),
+          validator: (value) {
+            if (authController.passwordFieldController.text.isEmpty) {
+              return kPassNullError;
+            }
+            return null;
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+        ));
   }
 
   Future<void> signUpButtonCallback(BuildContext context) async {

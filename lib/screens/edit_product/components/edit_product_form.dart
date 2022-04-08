@@ -125,95 +125,90 @@ class EditProductForm extends StatelessWidget {
         DefaultButton(
             text: btnTxt,
             press: () async {
-              if (_basicDetailsFormKey.currentState!.validate()) {
-                String snackbarMessage = "";
-                var response;
-                if (product != null) {
-                  response = productController
-                      .updateProduct(productController.product.id!);
-                } else {
-                  response = productController.saveProduct();
-                }
-                await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AsyncProgressDialog(
-                      response,
-                      message: Text(
-                          productController.productObservable.value != null
-                              ? "Updating product"
-                              : "Creating product"),
-                      onError: (e) {
-                        snackbarMessage = e.toString();
-                      },
-                    );
-                  },
-                );
-                snackbarMessage = productController.error.value;
-
-                var waitedResponse = await response;
-                print("after updating.. ${waitedResponse["data"]}");
-                Product productresponse =
-                    Product.fromJson(waitedResponse["data"]);
-                productresponse.ownerId =
-                    Get.find<AuthController>().usermodel.value;
-                productresponse.shopId =
-                    Get.find<AuthController>().usermodel.value!.shopId;
-
-                await uploadProductImages(productresponse.id!, context);
-
-                List<dynamic> downloadUrls = productController.selectedImages
-                    .map((e) => e.imgType == ImageType.network ? e.path : null)
-                    .toList();
-
-                bool productFinalizeUpdate = false;
-                try {
-                  final updateProductFuture = ProductPI.updateProductsImages(
-                      productresponse.id!, downloadUrls);
-                  productFinalizeUpdate = await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AsyncProgressDialog(
-                        updateProductFuture,
-                        message: const Text("Saving Product"),
-                      );
-                    },
-                  );
-                  if (productFinalizeUpdate == true) {
-                    snackbarMessage = product != null
-                        ? "Product updated successfully"
-                        : "Product uploaded successfully";
-                    productController.selectedImages.value = [];
-                  } else {
-                    throw "Couldn't upload product properly, please retry";
-                  }
-                } on FirebaseException catch (e) {
-                  snackbarMessage = "Something went wrong $e";
-                } catch (e) {
-                  snackbarMessage = e.toString();
-                } finally {
-                  if (Get.find<AuthController>().usermodel.value!.shopId! !=
-                      null) {
-                    await ProductController.getProductsByShop(
-                        Get.find<AuthController>()
-                            .usermodel
-                            .value!
-                            .shopId!
-                            .id!);
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(snackbarMessage),
-                    ),
-                  );
-                  Get.back();
-                }
-              }
+              await _saveProduct(context);
             }),
         SizedBox(height: 10.h),
       ],
     );
     return column;
+  }
+
+  Future<void> _saveProduct(BuildContext context) async {
+    if (_basicDetailsFormKey.currentState!.validate()) {
+      String snackbarMessage = "";
+      var response;
+      if (product != null) {
+        response =
+            productController.updateProduct(productController.product.id!);
+      } else {
+        response = productController.saveProduct();
+      }
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AsyncProgressDialog(
+            response,
+            message: Text(productController.productObservable.value != null
+                ? "Updating product"
+                : "Creating product"),
+            onError: (e) {
+              snackbarMessage = e.toString();
+            },
+          );
+        },
+      );
+      snackbarMessage = productController.error.value;
+
+      var waitedResponse = await response;
+      Product productresponse = Product.fromJson(waitedResponse["data"]);
+      productresponse.ownerId = Get.find<AuthController>().usermodel.value;
+      productresponse.shopId =
+          Get.find<AuthController>().usermodel.value!.shopId;
+
+      await uploadProductImages(productresponse.id!, context);
+
+      List<dynamic> downloadUrls = productController.selectedImages
+          .map((e) => e.imgType == ImageType.network ? e.path : null)
+          .toList();
+
+      bool productFinalizeUpdate = false;
+      try {
+        final updateProductFuture =
+            ProductPI.updateProductsImages(productresponse.id!, downloadUrls);
+        productFinalizeUpdate = await showDialog(
+          context: context,
+          builder: (context) {
+            return AsyncProgressDialog(
+              updateProductFuture,
+              message: const Text("Saving Product"),
+            );
+          },
+        );
+        if (productFinalizeUpdate == true) {
+          snackbarMessage = product != null
+              ? "Product updated successfully"
+              : "Product uploaded successfully";
+          productController.selectedImages.value = [];
+        } else {
+          throw "Couldn't upload product properly, please retry";
+        }
+      } on FirebaseException catch (e) {
+        snackbarMessage = "Something went wrong $e";
+      } catch (e) {
+        snackbarMessage = e.toString();
+      } finally {
+        if (Get.find<AuthController>().usermodel.value!.shopId! != null) {
+          await ProductController.getMyProductsByShop(
+              Get.find<AuthController>().usermodel.value!.shopId!.id!);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(snackbarMessage),
+          ),
+        );
+        Get.back();
+      }
+    }
   }
 
   Widget buildBasicDetailsTile(BuildContext context) {

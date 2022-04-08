@@ -101,7 +101,7 @@ class HomePage extends StatelessWidget {
                 Get.to(Profile());
               },
               child: CachedNetworkImage(
-                imageUrl: authController.currentuser!.profilePhoto!,
+                imageUrl: authController.usermodel.value!.profilePhoto!,
                 imageBuilder: (context, imageProvider) => Container(
                   width: 0.08.sw,
                   height: 0.05.sh,
@@ -319,7 +319,11 @@ class HomePage extends StatelessWidget {
                       if (roomModel.id != null) {
                         await _homeController.joinRoom(roomModel.id!);
                       } else {
-                        Get.snackbar('', "Room is no longer available", backgroundColor: sc_snackBar,);
+                        Get.snackbar(
+                          '',
+                          "Room is no longer available",
+                          backgroundColor: sc_snackBar,
+                        );
                       }
                     },
                     child: Padding(

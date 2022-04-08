@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/favorite_controller.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/models/user_model.dart';
@@ -30,6 +31,7 @@ class UserAPI {
     if (user == null) {
       return null;
     } else {
+      print("-----------fred---------- ${jsonDecode(user)}");
       return jsonDecode(user);
     }
   }
@@ -155,7 +157,8 @@ class UserAPI {
         method: config.get,
         endpoint: config.users + FirebaseAuth.instance.currentUser!.uid);
 
-    printOut(response);
+    UserModel userModel = UserModel.fromJson(response);
+    Get.find<AuthController>().usermodel.value = userModel;
 
     return UserModel.fromJson(response);
   }

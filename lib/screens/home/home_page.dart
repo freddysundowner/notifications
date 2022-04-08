@@ -137,7 +137,7 @@ class HomePage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _homeController.currentRoom.value.id == null
-                    ? SizedBox(
+                    ? const SizedBox(
                         height: 0,
                       )
                     : SizedBox(
@@ -552,10 +552,36 @@ class HomePage extends StatelessWidget {
                                     .addUserToRaisedHands(currentUser);
                               }
                             },
-                            icon: const Icon(
-                              Ionicons.hand_right,
-                              color: Colors.black54,
-                              size: 30,
+                            icon: Stack(
+                              children: [
+                                const Icon(
+                                  Ionicons.hand_right,
+                                  color: Colors.black54,
+                                  size: 30,
+                                ),
+                                if (_homeController
+                                    .currentRoom.value.raisedHands!.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Container(
+                                      height: 0.03.sh,
+                                      width: 0.04.sw,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                          BorderRadius.circular(30)),
+                                      child: Center(
+                                          child: Text(
+                                            _homeController.currentRoom.value
+                                                .raisedHands!.length
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.sp),
+                                          )),
+                                    ),
+                                  )
+                              ],
                             ),
                           )
                         : Container(

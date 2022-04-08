@@ -101,10 +101,36 @@ class RoomPage extends StatelessWidget {
                                     .addUserToRaisedHands(currentUser);
                               }
                             },
-                            icon: const Icon(
-                              Ionicons.hand_right,
-                              color: Colors.black54,
-                              size: 30,
+                            icon: Stack(
+                              children: [
+                                const Icon(
+                                  Ionicons.hand_right,
+                                  color: Colors.black54,
+                                  size: 30,
+                                ),
+                                if (_homeController
+                                    .currentRoom.value.raisedHands!.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Container(
+                                      height: 0.03.sh,
+                                      width: 0.04.sw,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      child: Center(
+                                          child: Text(
+                                        _homeController.currentRoom.value
+                                            .raisedHands!.length
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp),
+                                      )),
+                                    ),
+                                  )
+                              ],
                             ),
                           )
                         : Container(
@@ -370,11 +396,11 @@ class RoomPage extends StatelessWidget {
             _homeController.currentRoom.refresh();
           }
         } else if (decodedData["action"] == "added_raised_hands") {
-          printOut("add_speaker");
+          printOut("added_raised_hands");
 
-          if (_homeController.currentRoom.value.raisedHands!
-                  .indexWhere((element) => element.id == currentUser.id) ==
-              -1) {
+          if ((_homeController.currentRoom.value.raisedHands!
+                  .indexWhere((element) => element.id == user.id) ==
+              -1)) {
             //Show snackBar to the hosts of the room
             if (_homeController.currentRoom.value.hostIds!
                     .indexWhere((element) => element.id == currentUser.id) !=
@@ -685,9 +711,16 @@ class RoomUser extends StatelessWidget {
                                       .usermodel
                                       .value!
                                       .id &&
-                              room.hostIds!.indexWhere((e) => e.id == user.id) == -1 &&
+                              room.hostIds!
+                                      .indexWhere((e) => e.id == user.id) ==
+                                  -1 &&
                               room.hostIds!.indexWhere((e) =>
-                                      e.id == Get.find<AuthController>().usermodel.value!.id) != -1
+                                      e.id ==
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .id) !=
+                                  -1
                           ? InkWell(
                               onTap: () async {
                                 Get.back();

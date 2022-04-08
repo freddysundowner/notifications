@@ -25,7 +25,6 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
   _homeController.roomHosts.value = [];
   _homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
 
-
   return showModalBottomSheet(
     isScrollControlled: true,
     context: context,
@@ -631,16 +630,18 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                       children: [
                         Text(
                           "Add Co-hosts",
-                          style: TextStyle(color: Colors.black87, fontSize: 16.sp),
+                          style:
+                              TextStyle(color: Colors.black87, fontSize: 16.sp),
                         ),
                         IconButton(
                             onPressed: () async {
                               Get.back();
-                              if (private != null && private == true && _homeController.roomHosts.length > 1) {
+                              if (private != null &&
+                                  private == true &&
+                                  _homeController.roomHosts.length > 1) {
                                 showProductBottomSheet(context);
                                 await _homeController.fetchUserProducts();
                               }
-
                             },
                             icon: const Icon(Icons.done))
                       ],
@@ -669,7 +670,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                               child: Center(
                                 child: TextField(
                                   controller:
-                                  _homeController.searchUsersController,
+                                      _homeController.searchUsersController,
                                   autofocus: false,
                                   autocorrect: false,
                                   enableSuggestions: false,
@@ -734,7 +735,8 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                               _homeController.roomHosts
                                                   .add(user);
 
-                                              printOut("adding hosts ${_homeController.roomHosts.length}");
+                                              printOut(
+                                                  "adding hosts ${_homeController.roomHosts.length}");
                                             }
                                           },
                                           child: Column(
@@ -745,20 +747,23 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                       const EdgeInsets.all(8.0),
                                                   child: Center(
                                                     child: user.profilePhoto ==
-                                                            "" || user.profilePhoto == null
+                                                                "" ||
+                                                            user.profilePhoto ==
+                                                                null
                                                         ? CircleAvatar(
                                                             radius: 35,
                                                             backgroundColor:
                                                                 Colors
                                                                     .transparent,
-                                                            foregroundImage:
-                                                                _homeController
-                                                                        .roomHosts
-                                                                        .contains(
-                                                                            user)
-                                                                    ? const AssetImage(
-                                                                        "assets/icons/picked.png")
-                                                                    : MemoryImage(kTransparentImage) as ImageProvider,
+                                                            foregroundImage: _homeController
+                                                                    .roomHosts
+                                                                    .contains(
+                                                                        user)
+                                                                ? const AssetImage(
+                                                                    "assets/icons/picked.png")
+                                                                : MemoryImage(
+                                                                        kTransparentImage)
+                                                                    as ImageProvider,
                                                             backgroundImage:
                                                                 const AssetImage(
                                                                     "assets/icons/profile_placeholder.png"))
@@ -777,7 +782,9 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                                         user)
                                                                 ? const AssetImage(
                                                                     "assets/icons/picked.png")
-                                                                : MemoryImage(kTransparentImage) as ImageProvider,
+                                                                : MemoryImage(
+                                                                        kTransparentImage)
+                                                                    as ImageProvider,
                                                             backgroundImage:
                                                                 NetworkImage(
                                                                     imageUrl +
@@ -787,7 +794,14 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                 );
                                               }),
                                               Text(
-                                                user.userName.toString().length > 5 ? "${user.userName}".substring(0, 5) + "..." : "${user.userName}",
+                                                user.userName
+                                                            .toString()
+                                                            .length >
+                                                        5
+                                                    ? "${user.userName}"
+                                                            .substring(0, 5) +
+                                                        "..."
+                                                    : "${user.userName}",
                                                 style: TextStyle(
                                                     color: Colors.black87,
                                                     fontSize: 16.sp),

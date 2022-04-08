@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/all_chats_model.dart';
-import 'package:fluttergistshop/models/chat_room_model.dart';
+import 'package:fluttergistshop/models/chat.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -70,12 +70,13 @@ class ChatController extends GetxController {
   }
 
   Stream<List> allUserChatsStream() {
-    allChatStream =
-    FirebaseFirestore.instance.collection("chats").where("userIds", arrayContains: userId).snapshots();
+    allChatStream = FirebaseFirestore.instance
+        .collection("chats")
+        .where("userIds", arrayContains: userId)
+        .snapshots();
 
     return allChatStream.map((event) {
       var chatty = event.docs.map((e) {
-
         Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
 
         Inbox allChatsModel = Inbox(
@@ -87,8 +88,8 @@ class ChatController extends GetxController {
             data["users"],
             data[userId] ?? 0);
 
-
-        return allChatsModel;}).toList();
+        return allChatsModel;
+      }).toList();
       chatty.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
       return chatty;
     });
@@ -114,18 +115,14 @@ class ChatController extends GetxController {
         print("chat ${e.data().toString()}");
         Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
 
-              Chat chatRoomModel = Chat(
-                  data['date'],
-                  data["id"],
-                  data['message'],
-                  data['seen'],
-                  data['sender']);
+        Chat chatRoomModel = Chat(data['date'], data["id"], data['message'],
+            data['seen'], data['sender']);
 
-        return chatRoomModel;}).toList();
+        return chatRoomModel;
+      }).toList();
       chatty.sort((a, b) => a.date.compareTo(b.date));
       return chatty;
     });
-
 
     return chat;
   }

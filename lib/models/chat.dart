@@ -1,7 +1,4 @@
-
-
 class Chat {
-
   String date;
   String id;
   String message;

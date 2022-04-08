@@ -122,11 +122,18 @@ class ProductController extends GetxController {
     currentProduct.value = Product.fromJson(response);
   }
 
+  static Future<List<Product>> getMyProductsByShop(String id) async {
+    loading.value = true;
+    List<dynamic> response = await ShopApi.getMyProductsByShop(id);
+    _products.value = response.map((e) => Product.fromJson(e)).toList();
+
+    loading.value = false;
+    return response.map((e) => Product.fromJson(e)).toList();
+  }
+
   static Future<List<Product>> getProductsByShop(String id) async {
-    print("getProductsByShop");
     loading.value = true;
     List<dynamic> response = await ShopApi.getProductsByShop(id);
-    print("getProductsByShop ${response}");
     _products.value = response.map((e) => Product.fromJson(e)).toList();
 
     loading.value = false;

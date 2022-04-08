@@ -98,7 +98,7 @@ class Profile extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Obx(() {
-                UserModel profile = _userController.currentProfile.value;
+                UserModel profile = authController.usermodel.value!;
                 return _userController.profileLoading.isFalse
                     ? SingleChildScrollView(
                         child: Column(
@@ -401,7 +401,7 @@ class Profile extends StatelessWidget {
     );
   }
 
-    Future<void> followUser(UserModel profile) async {
+  Future<void> followUser(UserModel profile) async {
     _userController.currentProfile.value.followers
         .add(FirebaseAuth.instance.currentUser!.uid);
     _userController.currentProfile.value.followersCount =

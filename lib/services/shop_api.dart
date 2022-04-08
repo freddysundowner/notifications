@@ -27,6 +27,15 @@ class ShopApi {
     return jsonDecode(response);
   }
 
+  static getMyProductsByShop(String shopid) async {
+    var shops = await DbBase()
+        .databaseRequest(myshopproduct + shopid, DbBase().getRequestType);
+    return jsonDecode(shops);
+    List<dynamic> response = await Api.callApi(
+        method: config.get, endpoint: config.products + shopid);
+    return response;
+  }
+
   static getProductsByShop(String shopid) async {
     List<dynamic> response = await Api.callApi(
         method: config.get, endpoint: config.products + shopid);

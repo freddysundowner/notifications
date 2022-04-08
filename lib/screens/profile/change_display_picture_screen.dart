@@ -9,7 +9,6 @@ import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_ex
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/services/user_api.dart';
-import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
@@ -59,48 +58,6 @@ class ChageProfileImage extends StatelessWidget {
         ),
       ),
     );
-
-    // return ChangeNotifierProvider(
-    //   create: (context) => ChosenImage(),
-    //   child: SafeArea(
-    //     child: SingleChildScrollView(
-    //       physics: BouncingScrollPhysics(),
-    //       child: Padding(
-    //         padding: EdgeInsets.symmetric(
-    //             horizontal: getProportionateScreenWidth(screenPadding)),
-    //         child: SizedBox(
-    //           width: double.infinity,
-    //           child: Consumer<ChosenImage>(
-    //             builder: (context, bodyState, child) {
-    //               return Column(
-    //                 children: [
-    //                   Text(
-    //                     "Change Avatar",
-    //                     style: headingStyle,
-    //                   ),
-    //                   SizedBox(height: getProportionateScreenHeight(40)),
-    //                   GestureDetector(
-    //                     child: buildDisplayPictureAvatar(context, bodyState),
-    //                     onTap: () {
-    //                       getImageFromUser(context, bodyState);
-    //                     },
-    //                   ),
-    //                   SizedBox(height: getProportionateScreenHeight(80)),
-    //                   buildChosePictureButton(context, bodyState),
-    //                   SizedBox(height: getProportionateScreenHeight(20)),
-    //                   buildUploadPictureButton(context, bodyState),
-    //                   SizedBox(height: getProportionateScreenHeight(20)),
-    //                   buildRemovePictureButton(context, bodyState),
-    //                   SizedBox(height: getProportionateScreenHeight(80)),
-    //                 ],
-    //               );
-    //             },
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   Widget buildDisplayPictureAvatar(BuildContext context) {
@@ -120,11 +77,6 @@ class ChageProfileImage extends StatelessWidget {
             backgroundColor: Colors.grey,
             backgroundImage: backImage,
           );
-    return CircleAvatar(
-      radius: 100,
-      backgroundColor: Colors.grey,
-      backgroundImage: backImage ?? null,
-    );
   }
 
   void getImageFromUser(BuildContext context) async {
@@ -202,6 +154,7 @@ class ChageProfileImage extends StatelessWidget {
     } catch (e) {
       snackbarMessage = "Something went wrong ${e.toString()}";
     } finally {
+      authController.usermodel.value = await UserAPI.getUserById();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(snackbarMessage),

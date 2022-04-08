@@ -51,6 +51,7 @@ class AuthController extends GetxController {
 
   var error = "".obs;
   var isLoading = true.obs;
+  var passwordVisible = false.obs;
 
   Rx<File> _chosenImage = Rx(File(""));
   File get chosenImage => _chosenImage.value;
@@ -224,6 +225,7 @@ class AuthController extends GetxController {
         }
         if (snapshot.hasData == true) {
           usermodel.value = snapshot.data as UserModel?;
+          usermodel.refresh();
           return MainPage();
         }
 

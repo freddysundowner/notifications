@@ -34,6 +34,7 @@ const removeHost = rooms + "/host/remove/";
 const removeUserFromRaisedHands = rooms + "/raisedhans/remove/";
 
 const updateshop = shop + "shop/";
+const myshopproduct = product + "myshop/";
 const allShops = shop;
 const searchShopByName = shop + "search/";
 const updateproduct = product + "products/";

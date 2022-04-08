@@ -50,7 +50,7 @@ class UserModel {
     @required this.email,
     @required this.password,
     @required this.phonenumber,
-    @required this.shopId,
+    this.shopId,
     @required this.profilePhoto,
     @required this.memberShip,
     @required this.upgradedDate,
@@ -115,6 +115,8 @@ class UserModel {
         "memberShip": memberShip,
         "upgradedDate": upgradedDate,
       };
+
+  getCurrentShop() => this.shopId;
 }
 
 class ShopId {

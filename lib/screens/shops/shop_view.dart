@@ -66,182 +66,158 @@ class ShopView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Obx(() {
-              return Row(
-                children: [
-                  shopController.currentShop.value.image != null
-                      ? CachedNetworkImage(
-                          imageUrl: shopController.currentShop.value.image!,
-                          imageBuilder: (context, imageProvider) => Container(
-                            width: 0.25.sw,
-                            height: 0.14.sh,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover),
-                            ),
-                          ),
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) => Image.asset(
-                              "assets/icons/no_image.png",
-                              width: 0.25.sw,
-                              height: 0.14.sh),
-                        )
-                      : CircleAvatar(
-                          radius: 50,
-                          child: Image.asset("assets/icons/no_image.png",
-                              width: 0.25.sw, height: 0.14.sh),
-                        ),
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          shopController.currentShop.value.name!,
-                          style:
-                              TextStyle(fontSize: 13.sp, color: Colors.black),
-                        ),
-                        Text(
-                          shopController.currentShop.value.email!,
-                          style: TextStyle(fontSize: 14.sp),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (authController.currentuser!.shopId != null &&
-                      shopController.currentShop.value.id ==
-                          authController.currentuser!.shopId?.id)
-                    InkWell(
-                      onTap: () {
-                        Get.to(() => NewShop());
-                      },
-                      child: Icon(
-                        Icons.edit,
-                        color: primarycolor,
-                        size: 30.sm,
-                      ),
-                    ),
-                ],
-              );
-            }),
-            SizedBox(
-              height: 10.h,
-            ),
-            Text(
-              "${shopController.currentShop.value.description}",
-              style: TextStyle(fontSize: 14.sp, color: Colors.black),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            if (shopController.currentShop.value.open == true)
-              const Divider(
-                color: primarycolor,
-              ),
-            if (shopController.currentShop.value.open == true)
-              Text("Products", style: headingStyle),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const ScrollPhysics(),
-                child: Stack(
-                  children: [
-                    GetX<ProductController>(initState: (_) async {
-                      Get.find<ProductController>().products =
-                          await ProductController.getProductsByShop(
-                              shopController.currentShop.value.id!);
-                    }, builder: (_) {
-                      if (ProductController.loading.value == true) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if (shopController.currentShop.value.open == false) {
-                        return SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: Center(
-                            child: Text(
-                              "Your shop is closed, please open it too view your products",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                        );
-                      }
-                      return _.products.isNotEmpty
-                          ? SizedBox(
-                              height: MediaQuery.of(context).size.height,
-                              child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: _.products.length,
-                                  itemBuilder: (context, index) {
-                                    return authController
-                                                    .currentuser!.shopId !=
-                                                null &&
-                                            authController
-                                                    .currentuser!.shopId !=
-                                                null &&
-                                            shopController
-                                                    .currentShop.value.id ==
-                                                authController
-                                                    .currentuser!.shopId!.id
-                                        ? buildProductDismissible(
-                                            _.products[index], context)
-                                        : ShopShortDetailCard(
-                                            product: _.products[index],
-                                            onPressed: () {
-                                              printOut(
-                                                  "v ${_.products[index].shopId!.id}");
-                                              Get.to(() => FullProduct(
-                                                  product: _.products[index]));
-                                            },
-                                          );
-                                  }),
+            Column(
+              children: [
+                Obx(() {
+                  return Row(
+                    children: [
+                      shopController.currentShop.value.image != null
+                          ? CachedNetworkImage(
+                              imageUrl: shopController.currentShop.value.image!,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                width: 0.25.sw,
+                                height: 0.14.sh,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
+                              ),
+                              placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) => Image.asset(
+                                  "assets/icons/no_image.png",
+                                  width: 0.25.sw,
+                                  height: 0.14.sh),
                             )
-                          : const Text("No Products yet");
-                      // return Column(
-                      //   children: _.products.map((e) => Text(e.name)).toList(),
-                      // );
-                    }),
-                    if (authController.currentuser!.shopId != null &&
-                        shopController.currentShop.value.id !=
-                            authController.currentuser!.shopId?.id)
-                      Obx(() {
-                        return shopController.currentShop.value.open == false
-                            ? Center(
-                                child: Image.asset(
-                                shopClosedIcon,
-                                color: Colors.red,
-                                height: 0.3.sh,
-                                width: 0.6.sw,
-                              ))
-                            : Container();
-                      })
-                  ],
+                          : CircleAvatar(
+                              radius: 50,
+                              child: Image.asset("assets/icons/no_image.png",
+                                  width: 0.25.sw, height: 0.14.sh),
+                            ),
+                      SizedBox(
+                        width: 20.w,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              shopController.currentShop.value.name!,
+                              style: TextStyle(
+                                  fontSize: 13.sp, color: Colors.black),
+                            ),
+                            Text(
+                              shopController.currentShop.value.email!,
+                              style: TextStyle(fontSize: 14.sp),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (authController.currentuser!.shopId != null &&
+                          shopController.currentShop.value.id ==
+                              authController.currentuser!.shopId?.id)
+                        InkWell(
+                          onTap: () {
+                            Get.to(() => NewShop());
+                          },
+                          child: Icon(
+                            Icons.edit,
+                            color: primarycolor,
+                            size: 30.sm,
+                          ),
+                        ),
+                    ],
+                  );
+                }),
+                SizedBox(
+                  height: 10.h,
                 ),
-              ),
-            )
+                Text(
+                  "${shopController.currentShop.value.description}",
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                if (shopController.currentShop.value.open == true)
+                  const Divider(
+                    color: primarycolor,
+                  ),
+                if (shopController.currentShop.value.open == true)
+                  Text("Products", style: headingStyle),
+              ],
+            ),
+            Expanded(
+                child: GetX<ProductController>(initState: (_) async {
+              if (shopController.currentShop.value.id ==
+                  authController.currentuser!.shopId?.id) {
+                Get.find<ProductController>().products =
+                    await ProductController.getMyProductsByShop(
+                        shopController.currentShop.value.id!);
+              } else {
+                Get.find<ProductController>().products =
+                    await ProductController.getProductsByShop(
+                        shopController.currentShop.value.id!);
+              }
+            }, builder: (_) {
+              if (ProductController.loading.value == true) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              // if (shopController.currentShop.value.open == false) {
+              //   return SizedBox(
+              //     height: MediaQuery.of(context).size.height * 0.5,
+              //     child: Center(
+              //       child: Text(
+              //         "Your shop is closed, please open it too view your products",
+              //         style: TextStyle(fontSize: 16),
+              //       ),
+              //     ),
+              //   );
+              // }
+              return _.products.isNotEmpty
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: _.products.length,
+                      itemBuilder: (context, index) {
+                        return authController.currentuser!.shopId != null &&
+                                authController.currentuser!.shopId != null &&
+                                shopController.currentShop.value.id ==
+                                    authController.currentuser!.shopId!.id
+                            ? buildProductDismissible(
+                                _.products[index], context)
+                            : ShopShortDetailCard(
+                                product: _.products[index],
+                                onPressed: () {
+                                  printOut("v ${_.products[index].shopId!.id}");
+                                  Get.to(() =>
+                                      FullProduct(product: _.products[index]));
+                                },
+                              );
+                      })
+                  : const Text("No Products yet");
+              // return Column(
+              //   children: _.products.map((e) => Text(e.name)).toList(),
+              // );
+            }))
           ],
         ),
       ),
       floatingActionButton: Obx(() {
         return authController.currentuser!.shopId != null &&
                 shopController.currentShop.value.id ==
-                    authController.currentuser!.shopId!.id &&
-                authController.usermodel.value!.shopId!.open == true
+                    authController.currentuser!.shopId!.id
             ? FloatingActionButton(
                 child: const Icon(Icons.add),
                 elevation: 4,
                 hoverColor: Colors.green,
                 splashColor: Colors.green,
                 onPressed: () {
-                  // if (productController.product != null) {
-                  //   productController.product.id = null;
-                  // }
-
                   printOut("EditProductScreen");
                   Get.to(() => EditProductScreen());
                 },

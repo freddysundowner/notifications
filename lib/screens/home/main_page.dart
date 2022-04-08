@@ -190,7 +190,7 @@ class MainPage extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                             ),
-                            if (authController.currentuser!.shopId! != null)
+                            if (authController.currentuser?.shopId?.id != null)
                               ListTile(
                                 leading: new Icon(Icons.shopping_cart),
                                 title: new Text(
@@ -204,7 +204,7 @@ class MainPage extends StatelessWidget {
                                   Get.to(() => ShopView());
                                 },
                               ),
-                            if (authController.currentuser!.shopId! == null)
+                            if (authController.currentuser?.shopId?.id == null)
                               ListTile(
                                 leading: new Icon(Icons.shopping_cart),
                                 title: new Text(

@@ -240,10 +240,11 @@ class ChatController extends GetxController {
             }
           ],
           0);
-      allUserChats.add(allChatsModel);
-
-      allUserChats
-          .sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      // allUserChats.add(allChatsModel);
+      //
+      // allUserChats
+      //     .sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      getChatById(currentChatId.value);
 
       printOut("Chat saved successfully ");
     });

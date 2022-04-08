@@ -28,3 +28,11 @@ String convertTime(String time) {
 
   return timeDifference;
 }
+
+String showActualTime(String time) {
+  var convertedTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+  var timeDifference ="${convertedTime.hour}:${convertedTime.minute}  "
+      "${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
+
+  return timeDifference;
+}

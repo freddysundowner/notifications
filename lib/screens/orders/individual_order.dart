@@ -68,7 +68,7 @@ class IndividualOrderScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       Text(
-                        convertTime(ordersModel.date.toString()),
+                        showActualTime(ordersModel.date.toString()),
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                     ],
@@ -437,130 +437,155 @@ class IndividualOrderScreen extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Pending",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16.sp),
-                              ),
-                              Obx(() {
-                                return Radio(
-                                  value: _orderController
-                                              .currentOrder.value.status ==
-                                          "pending"
-                                      ? false
-                                      : true,
-                                  onChanged: (e) {
-                                    if (e == true) {
-                                      updateOrderStatus("pending");
-                                    }
-                                  },
-                                  groupValue: false,
-                                );
-                              })
-                            ],
+                          InkWell(
+                            onTap: () {
+                              updateOrderStatus("pending");
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Pending",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16.sp),
+                                ),
+                                Obx(() {
+                                  return Radio(
+                                    value: _orderController
+                                                .currentOrder.value.status ==
+                                            "pending"
+                                        ? false
+                                        : true,
+                                    onChanged: (e) {
+                                      if (e == true) {
+                                        updateOrderStatus("pending");
+                                      }
+                                    },
+                                    groupValue: false,
+                                  );
+                                })
+                              ],
+                            ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Processed",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16.sp),
-                              ),
-                              Obx(() {
-                                return Radio(
-                                  value: _orderController
-                                              .currentOrder.value.status ==
-                                          "processed"
-                                      ? false
-                                      : true,
-                                  onChanged: (e) {
-                                    if (e == true) {
-                                      updateOrderStatus("processed");
-                                    }
-                                  },
-                                  groupValue: false,
-                                );
-                              })
-                            ],
+                          InkWell(
+                            onTap: () {
+                              updateOrderStatus("processed");
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Processed",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16.sp),
+                                ),
+                                Obx(() {
+                                  return Radio(
+                                    value: _orderController
+                                                .currentOrder.value.status ==
+                                            "processed"
+                                        ? false
+                                        : true,
+                                    onChanged: (e) {
+                                      if (e == true) {
+                                        updateOrderStatus("processed");
+                                      }
+                                    },
+                                    groupValue: false,
+                                  );
+                                })
+                              ],
+                            ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Shipped",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16.sp),
-                              ),
-                              Obx(() {
-                                return Radio(
-                                  value: _orderController
-                                              .currentOrder.value.status ==
-                                          "shipped"
-                                      ? false
-                                      : true,
-                                  onChanged: (e) {
-                                    if (e == true) {
-                                      updateOrderStatus("shipped");
-                                    }
-                                  },
-                                  groupValue: false,
-                                );
-                              })
-                            ],
+                          InkWell(
+                            onTap: () {
+                              updateOrderStatus("shipped");
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Shipped",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16.sp),
+                                ),
+                                Obx(() {
+                                  return Radio(
+                                    value: _orderController
+                                                .currentOrder.value.status ==
+                                            "shipped"
+                                        ? false
+                                        : true,
+                                    onChanged: (e) {
+                                      if (e == true) {
+                                        updateOrderStatus("shipped");
+                                      }
+                                    },
+                                    groupValue: false,
+                                  );
+                                })
+                              ],
+                            ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Delivered",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16.sp),
-                              ),
-                              Obx(() {
-                                return Radio(
-                                  value: _orderController
-                                              .currentOrder.value.status ==
-                                          "delivered"
-                                      ? false
-                                      : true,
-                                  onChanged: (e) {
-                                    if (e == true) {
-                                      updateOrderStatus("delivered");
-                                    }
-                                  },
-                                  groupValue: false,
-                                );
-                              })
-                            ],
+                          InkWell(
+                            onTap: () {
+                              updateOrderStatus("delivered");
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Delivered",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16.sp),
+                                ),
+                                Obx(() {
+                                  return Radio(
+                                    value: _orderController
+                                                .currentOrder.value.status ==
+                                            "delivered"
+                                        ? false
+                                        : true,
+                                    onChanged: (e) {
+                                      if (e == true) {
+                                        updateOrderStatus("delivered");
+                                      }
+                                    },
+                                    groupValue: false,
+                                  );
+                                })
+                              ],
+                            ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Cancelled",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16.sp),
-                              ),
-                              Obx(() {
-                                return Radio(
-                                  value: _orderController
-                                              .currentOrder.value.status ==
-                                          "cancelled"
-                                      ? false
-                                      : true,
-                                  onChanged: (e) {
-                                    if (e == true) {
-                                      updateOrderStatus("cancelled");
-                                    }
-                                  },
-                                  groupValue: false,
-                                );
-                              })
-                            ],
+                          InkWell(
+                            onTap: () {
+                              updateOrderStatus("cancelled");
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Cancelled",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16.sp),
+                                ),
+                                Obx(() {
+                                  return Radio(
+                                    value: _orderController
+                                                .currentOrder.value.status ==
+                                            "cancelled"
+                                        ? false
+                                        : true,
+                                    onChanged: (e) {
+                                      if (e == true) {
+                                        updateOrderStatus("cancelled");
+                                      }
+                                    },
+                                    groupValue: false,
+                                  );
+                                })
+                              ],
+                            ),
                           ),
                         ],
                       )

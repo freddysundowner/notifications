@@ -475,18 +475,18 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Confirmation"),
-          content: Text("Are you sure you want to remove this Address ?"),
+          title: const Text("Confirmation"),
+          content: const Text("Are you sure you want to remove this Address ?"),
           actions: [
             FlatButton(
-              child: Text("Yes"),
+              child: const Text("Yes"),
               onPressed: () async {
                 Navigator.pop(context, true);
                 await addUserToRaisedHands(currentUser);
               },
             ),
             FlatButton(
-              child: Text("No"),
+              child: const Text("No"),
               onPressed: () {
                 Navigator.pop(context, false);
               },

@@ -11,6 +11,7 @@ class ChatRoomPage extends StatelessWidget {
   UserModel user;
   final ChatController _chatController = Get.find<ChatController>();
   TextEditingController messageController = TextEditingController();
+  final ScrollController _sc = ScrollController();
 
   ChatRoomPage(this.user, {Key? key}) : super(key: key);
 
@@ -36,9 +37,15 @@ class ChatRoomPage extends StatelessWidget {
                           .getChatById(_chatController.currentChatId.value),
                       child: _chatController.currentChat.isNotEmpty
                           ? ListView.builder(
+                              controller: _sc,
                               padding: const EdgeInsets.all(8.0),
                               itemCount: _chatController.currentChat.length,
                               itemBuilder: (context, index) {
+                                WidgetsBinding.instance?.addPostFrameCallback(
+                                    (_) => {
+                                          _sc.jumpTo(
+                                              _sc.position.maxScrollExtent)
+                                        });
                                 printOut(_chatController.currentChat.length);
                                 Chat chat = _chatController.currentChat
                                     .elementAt(index);
@@ -114,12 +121,15 @@ class ChatRoomPage extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 10.0, right: 10),
                       child: Center(
                         child: TextField(
+                          textCapitalization: TextCapitalization.sentences,
                           controller: messageController,
                           autofocus: false,
                           decoration: InputDecoration(
                             hintText: "Enter message here",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 16.sp),
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16.sp,
+                            ),
                             border: InputBorder.none,
                             disabledBorder: InputBorder.none,
                             enabledBorder: InputBorder.none,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
 import 'package:fluttergistshop/controllers/favorite_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/cart/checkout_screen.dart';
@@ -15,6 +16,8 @@ import '../../utils/utils.dart';
 class Favorites extends StatelessWidget {
   CheckOutController checkOutController = Get.find<CheckOutController>();
   FavoriteController favproductController = Get.find<FavoriteController>();
+  final RoomController _homeController = Get.find<RoomController>();
+
   Favorites({Key? key}) : super(key: key);
 
   Future<void> refreshPage() {
@@ -23,6 +26,7 @@ class Favorites extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _homeController.onChatPage.value = false;
     return Scaffold(
         appBar: AppBar(
           title: const Text(

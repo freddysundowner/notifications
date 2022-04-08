@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
@@ -26,6 +27,7 @@ class Profile extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();
   ShopController shopController = Get.find<ShopController>();
   ProductController productController = Get.find<ProductController>();
+  final RoomController _homeController = Get.find<RoomController>();
   final _nameFormKey = GlobalKey<FormState>();
   final _bioFormKey = GlobalKey<FormState>();
   var nameError = "";
@@ -38,6 +40,7 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _homeController.onChatPage.value = false;
     return Scaffold(
       appBar: AppBar(
         actions: [

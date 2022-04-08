@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
-import 'package:fluttergistshop/models/inbox.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
+import 'package:fluttergistshop/models/all_chats_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/chats/chat_room_page.dart';
 import 'package:fluttergistshop/screens/chats/new_chat_page.dart';
@@ -11,11 +12,13 @@ import 'package:ionicons/ionicons.dart';
 
 class AllChatsPage extends StatelessWidget {
   final ChatController _chatController = Get.put(ChatController());
+  final RoomController _homeController = Get.find<RoomController>();
 
   AllChatsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    _homeController.onChatPage.value = false;
     _chatController.getUserChats();
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +38,7 @@ class AllChatsPage extends StatelessWidget {
                       ? ListView.builder(
                           itemCount: _chatController.allUserChats.length,
                           itemBuilder: (context, index) {
-                            Inbox allChatsModel =
+                            AllChatsModel allChatsModel =
                                 _chatController.allUserChats.elementAt(index);
                             return InkWell(
                               onTap: () {
@@ -47,7 +50,7 @@ class AllChatsPage extends StatelessWidget {
                                     .elementAt(index)
                                     .unread = 0;
                                 _chatController.allUserChats.refresh();
-
+                                _homeController.onChatPage.value = true;
                                 Get.to(
                                     ChatRoomPage(getOtherUser(allChatsModel)));
                                 _chatController.getChatById(allChatsModel.id);
@@ -217,7 +220,7 @@ class AllChatsPage extends StatelessWidget {
     );
   }
 
-  UserModel getOtherUser(Inbox allChatsModel) {
+  UserModel getOtherUser(AllChatsModel allChatsModel) {
     UserModel user = UserModel.fromJson({});
 
     for (var i = 0; i < allChatsModel.users.length; i++) {

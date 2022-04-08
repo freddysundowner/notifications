@@ -2,18 +2,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/manage_addresses/manage_addresses_screen.dart';
+import 'package:fluttergistshop/screens/orders/orders_sceen.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 
-import 'orders_sceen.dart';
 
 class SettingsPage extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();
   AuthController authController = Get.find<AuthController>();
+  final RoomController _homeController = Get.find<RoomController>();
   String socialLinkError = '';
   final _formKey = GlobalKey<FormState>();
 
@@ -26,6 +28,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _homeController.onChatPage.value = false;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xfff5f5f5),

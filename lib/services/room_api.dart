@@ -10,8 +10,9 @@ import 'end_points.dart';
 
 class RoomAPI {
   getAllRooms() async {
-    var rooms =
-        await DbBase().databaseRequest(allRooms, DbBase().getRequestType);
+    var rooms = await DbBase().databaseRequest(
+        allRooms + Get.find<AuthController>().usermodel.value!.id!,
+        DbBase().getRequestType);
 
     return jsonDecode(rooms);
   }

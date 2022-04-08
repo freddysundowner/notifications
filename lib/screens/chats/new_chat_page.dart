@@ -17,6 +17,7 @@ class NewChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _homeController.onChatPage.value = false;
     _homeController.fetchAllUsers();
 
     return Scaffold(
@@ -106,7 +107,7 @@ class NewChatPage extends StatelessWidget {
                                                 .currentChatId.value = "";
                                             _chatController
                                                 .getPreviousChat(user);
-
+                                            _homeController.onChatPage.value = true;
                                             Get.to(ChatRoomPage(user));
                                           },
                                           child: Row(

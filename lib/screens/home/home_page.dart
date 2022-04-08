@@ -1,13 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
-import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
@@ -16,10 +14,9 @@ import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-
-import 'create_room.dart';
 
 class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
@@ -40,6 +37,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _homeController.onChatPage.value = false;
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -320,7 +318,7 @@ class HomePage extends StatelessWidget {
                       if (roomModel.id != null) {
                         await _homeController.joinRoom(roomModel.id!);
                       } else {
-                        Get.snackbar('', "Room is no longer available");
+                        Get.snackbar('', "Room is no longer available", backgroundColor: sc_snackBar,);
                       }
                     },
                     child: Padding(

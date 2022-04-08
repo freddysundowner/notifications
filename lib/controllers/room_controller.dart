@@ -28,6 +28,7 @@ import 'auth_controller.dart';
 class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   RtcEngineContext context = RtcEngineContext(agoraAppID);
   late RtcEngine engine;
+  var onChatPage = false.obs;
 
   var currentProfile = "".obs;
   var profileLoading = false.obs;
@@ -124,6 +125,14 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   var headers;
+  @override
+  void onClose() {
+    print("onClose");
+    leaveRoomWhenKilled();
+    leaveAgora();
+    super.onClose();
+  }
+
   @override
   void onInit() {
     _initAgora();
@@ -233,13 +242,20 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         } else {
           Get.offAll(MainPage());
           Get.snackbar(
-              "", "There was an error creating your room. Try again later");
+            "",
+            "There was an error creating your room. Try again later",
+            backgroundColor: sc_snackBar,
+          );
 
           endRoom(roomId);
         }
       } else {
         Get.offAll(MainPage());
-        Get.snackbar("", "Error creating your room");
+        Get.snackbar(
+          "",
+          "Error creating your room",
+          backgroundColor: sc_snackBar,
+        );
       }
 
       isCreatingRoom.value = false;
@@ -341,11 +357,16 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           Get.snackbar(
             '',
             "There was an error adding you to the room, Try again later",
+            backgroundColor: sc_snackBar,
           ).show();
           endRoom(roomId);
         }
       } else {
-        Get.snackbar('', "Room has ended");
+        Get.snackbar(
+          '',
+          "Room has ended",
+          backgroundColor: sc_snackBar,
+        );
       }
       isCurrentRoomLoading.value = false;
 
@@ -397,7 +418,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);
       Get.snackbar(
-          '', "There was an error adding you to the room, Try again later");
+        '',
+        "There was an error adding you to the room, Try again later",
+        backgroundColor: sc_snackBar,
+      );
     }
   }
 
@@ -447,7 +471,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   Future<void> addUserToRaisedHands(OwnerId user) async {
     currentRoom.value.raisedHands!.add(user);
 
-    Get.snackbar('', "You have raised your hand");
+    Get.snackbar(
+      '',
+      "You have raised your hand",
+      backgroundColor: sc_snackBar,
+    );
 
     currentRoom.refresh();
 
@@ -514,40 +542,45 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> leaveRoom(OwnerId user, {String? idRoom}) async {
-    await stopRecording(
-        channelname: currentRoom.value.id,
-        resourceid: resourceIdV.value,
-        uid: recordinguid.value,
-        sid: resourceSid.value);
-    if (currentRoom.value.hostIds!.length == 1 &&
-        currentRoom.value.hostIds!
-                .indexWhere((element) => element.id == user.id) !=
-            -1) {
+    // await stopRecording(
+    //     channelname: currentRoom.value.id,
+    //     resourceid: resourceIdV.value,
+    //     uid: recordinguid.value,
+    //     sid: resourceSid.value);
+    if (currentRoom.value.hostIds!
+            .indexWhere((element) => element.id == user.id) !=
+        -1) {
+      if (currentRoom.value.hostIds!.length == 1) {
+        endRoom(idRoom ?? currentRoom.value.id!);
+      } else {
+        await RoomAPI().removeUserFromHostInRoom({
+          "users": [user.id]
+        }, idRoom ?? currentRoom.value.id!);
+        emitRoom(
+            currentUser: user.toJson(),
+            action: "leave",
+            roomId: idRoom ?? currentRoom.value.id!);
+      }
+
       currentRoom.value = RoomModel();
-      endRoom(idRoom ?? currentRoom.value.id!);
     } else {
       if (currentRoom.value.userIds!
-              .indexWhere((element) => element.id == user.id) >
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeAUserFromRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
       } else if (currentRoom.value.speakerIds!
-              .indexWhere((element) => element.id == user.id) >
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeUserFromSpeakerInRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
-      } else if (currentRoom.value.raisedHands!
-              .indexWhere((element) => element.id == user.id) >
+      }
+      if (currentRoom.value.raisedHands!
+              .indexWhere((element) => element.id == user.id) !=
           -1) {
         await RoomAPI().removeUserFromRaisedHandsInRoom({
-          "users": [user.id]
-        }, idRoom ?? currentRoom.value.id!);
-      } else if (currentRoom.value.hostIds!
-              .indexWhere((element) => element.id == user.id) >
-          -1) {
-        await RoomAPI().removeUserFromHostInRoom({
           "users": [user.id]
         }, idRoom ?? currentRoom.value.id!);
       }
@@ -631,23 +664,16 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   void emitRoom(
       {Map? currentUser, required String action, String roomId = ""}) {
-    print("action $action");
+    print("action $action ${currentRoom.value.id} prev $roomId");
     if (action == "leave") {
-      customSocketIO.socketIO.off(roomId);
+      customSocketIO.socketIO.off(currentRoom.value.id ?? roomId);
     }
+
     customSocketIO.socketIO.emit("room_changes", {
       "action": action,
-      "userData": currentUser == null ? {} : currentUser,
+      "userData": currentUser ?? {},
       "roomId": currentRoom.value.id ?? roomId
     });
-  }
-
-  @override
-  void onClose() {
-    print("onClose");
-    leaveRoomWhenKilled();
-    leaveAgora();
-    super.onClose();
   }
 
   Future<void> leaveAgora() async {
@@ -766,8 +792,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       await leaveAgora();
       await engine.joinChannel(token, roomId, null, 0);
       await engine.enableAudioVolumeIndication(500, 3, true);
+      // recordAudio(token: token, channelname: roomId);
 
-      recordAudio(token: token, channelname: roomId);
     } catch (e, s) {
       printOut('error joining room $e $s');
     }

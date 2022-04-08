@@ -16,6 +16,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 final RoomController _homeController = Get.find<RoomController>();
 
@@ -219,7 +220,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                 disabledBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
-                hintText: "enter room title",
+                hintText: "Enter room title",
               ),
               style: TextStyle(color: Colors.black, fontSize: 12.sp),
             ),
@@ -236,7 +237,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                       "Cancel".toUpperCase(),
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 16.sp),
+                          fontSize: 12.sp),
                     ),
                   ),
                   SizedBox(
@@ -251,7 +252,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
                       "Okay".toUpperCase(),
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
-                          fontSize: 16.sp),
+                          fontSize: 12.sp),
                     ),
                   ),
                 ],
@@ -757,7 +758,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                                             user)
                                                                     ? const AssetImage(
                                                                         "assets/icons/picked.png")
-                                                                    : null,
+                                                                    : MemoryImage(kTransparentImage) as ImageProvider,
                                                             backgroundImage:
                                                                 const AssetImage(
                                                                     "assets/icons/profile_placeholder.png"))
@@ -776,7 +777,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                                         user)
                                                                 ? const AssetImage(
                                                                     "assets/icons/picked.png")
-                                                                : null,
+                                                                : MemoryImage(kTransparentImage) as ImageProvider,
                                                             backgroundImage:
                                                                 NetworkImage(
                                                                     imageUrl +

@@ -69,7 +69,7 @@ class ShopController extends GetxController {
             ShopApi.getPathForShop(
                 Get.find<AuthController>().currentuser!.shopId!.id!));
       }
-      Map<String, dynamic> productdata = new Shop(
+      Map<String, dynamic> productdata =  Shop(
               name: nameController.text,
               phoneNumber: mobileController.text,
               description: descriptionController.text,
@@ -85,6 +85,7 @@ class ShopController extends GetxController {
 
         _shop.value = Shop.fromJson(response["data"]);
         currentShop.value = Shop.fromJson(response["data"]);
+        Get.find<AuthController>().currentuser!.shopId = Shop.fromJson(response["data"]);
       } else {
         error.value = response["message"];
       }

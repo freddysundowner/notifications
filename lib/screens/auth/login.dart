@@ -74,12 +74,12 @@ class Login extends StatelessWidget {
 
       printOut(" responseyuu " + response.toString());
       if (response.isEmpty) {
-        Get.snackbar('', "Check your rrrrryyyy connection").show();
+        Get.snackbar('', "Check your rrrrryyyy connection", backgroundColor: sc_snackBar,).show();
       }
     } on SocketException catch (e) {
       printOut(e.message);
 
-      Get.snackbar('', "Check your rrrrr connection").show();
+      Get.snackbar('', "Check your rrrrr connection", backgroundColor: sc_snackBar,).show();
     } catch (e, s) {
       printOut("error accenssing internet $e $s");
     }

@@ -210,7 +210,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     agoraListeners();
 
     // Join channel
-
     await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
     await engine.enableAudioVolumeIndication(500, 3, true);
     await engine.enableAudio();

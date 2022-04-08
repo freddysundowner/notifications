@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
@@ -24,6 +25,7 @@ class MainPage extends StatelessWidget {
 
   final RoomController _homeController = Get.put(RoomController());
   ShopController shopController = Get.find<ShopController>();
+  final ChatController _chatController = Get.put(ChatController());
 
   OwnerId currentUser = OwnerId(
       id: Get.find<AuthController>().usermodel.value!.id,
@@ -34,25 +36,25 @@ class MainPage extends StatelessWidget {
       userName: Get.find<AuthController>().usermodel.value!.userName,
       profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
-  List<Widget> _pages = [
+  final List<Widget> _pages = [
     HomePage(),
     Favorites(),
     AllChatsPage(),
     SettingsPage()
   ];
-  _tabWidget(IconData icon, String title, Color color) {
+  _tabWidget(Widget icon, String title, Color color) {
     return Column(
       children: [
         SizedBox(
           height: 5.h,
         ),
-        Icon(icon),
+        icon,
         SizedBox(
           height: 2.h,
         ),
         Text(
           title,
-          style: TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: 12.sp),
         )
       ],
     );
@@ -77,6 +79,7 @@ class MainPage extends StatelessWidget {
         color: Colors.white,
         size: 20.0,
       ));
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -95,14 +98,28 @@ class MainPage extends StatelessWidget {
                 onTap: () {
                   _global.tabPosition.value = 0;
                 },
-                child: _tabWidget(Icons.home, "Home",
+                child: _tabWidget(
+                    Icon(
+                      Icons.home,
+                      color: _global.tabPosition.value == 0
+                          ? primarycolor
+                          : kTextColor,
+                    ),
+                    "Home",
                     _global.tabPosition.value == 0 ? primarycolor : kTextColor),
               ),
               InkWell(
                 onTap: () {
                   _global.tabPosition.value = 1;
                 },
-                child: _tabWidget(Icons.favorite, "Favorite",
+                child: _tabWidget(
+                    Icon(
+                      Icons.favorite,
+                      color: _global.tabPosition.value == 1
+                          ? primarycolor
+                          : kTextColor,
+                    ),
+                    "Favorite",
                     _global.tabPosition.value == 1 ? primarycolor : kTextColor),
               ),
               InkWell(
@@ -128,7 +145,8 @@ class MainPage extends StatelessWidget {
                                           .shopId!
                                           .open!) {
                                     _homeController.newRoomTitle.value = " ";
-                                    _homeController.newRoomType.value = "public";
+                                    _homeController.newRoomType.value =
+                                        "public";
                                     showRoomTypeBottomSheet(context);
                                   } else {
                                     await showDialog(
@@ -190,8 +208,8 @@ class MainPage extends StatelessWidget {
                               },
                             ),
                             ListTile(
-                              leading: new Icon(Icons.shopping_cart),
-                              title: new Text(
+                              leading:  const Icon(Icons.shopping_cart),
+                              title:  Text(
                                 Get.find<AuthController>()
                                             .usermodel
                                             .value!
@@ -204,7 +222,7 @@ class MainPage extends StatelessWidget {
                               ),
                               onTap: () {
                                 shopController.currentShop.value =
-                                authController.currentuser!.shopId!;
+                                    authController.currentuser!.shopId!;
                                 Get.to(() => ShopView());
                               },
                             ),
@@ -230,14 +248,49 @@ class MainPage extends StatelessWidget {
                 onTap: () {
                   _global.tabPosition.value = 2;
                 },
-                child: _tabWidget(Ionicons.chatbox, "Messages",
+                child: _tabWidget(Obx(() {
+                  return Stack(
+                    children: [
+                      Icon(
+                        Ionicons.chatbox,
+                        color: _global.tabPosition.value == 2
+                            ? primarycolor
+                            : kTextColor,
+                      ),
+                      if (_chatController.unReadChats > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: Container(
+                            height: 0.03.sh,
+                            width: 0.04.sw,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Center(
+                                child: Text(
+                              _chatController.unReadChats.toString(),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 12.sp),
+                            )),
+                          ),
+                        )
+                    ],
+                  );
+                }), "Messages",
                     _global.tabPosition.value == 2 ? primarycolor : kTextColor),
               ),
               InkWell(
                 onTap: () {
                   _global.tabPosition.value = 3;
                 },
-                child: _tabWidget(Icons.settings, "Settings",
+                child: _tabWidget(
+                    Icon(
+                      Icons.settings,
+                      color: _global.tabPosition.value == 3
+                          ? primarycolor
+                          : kTextColor,
+                    ),
+                    "Settings",
                     _global.tabPosition.value == 3 ? primarycolor : kTextColor),
               )
             ],

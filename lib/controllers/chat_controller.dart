@@ -21,6 +21,7 @@ class ChatController extends GetxController {
   var sendingMessage = false.obs;
   late Stream<QuerySnapshot> allChatStream;
   late Stream<QuerySnapshot> chatStream;
+  var unReadChats = 0.obs;
 
   @override
   void onInit() {
@@ -30,7 +31,7 @@ class ChatController extends GetxController {
 
   Future<void> getUserChats() async {
     gettingChats.value = true;
-    allUserChats.value = [];
+   // allUserChats.value = [];
     allUserChats.bindStream(allUserChatsStream());
   //  allChatStream.drain();
     gettingChats.value = false;
@@ -42,7 +43,10 @@ class ChatController extends GetxController {
         .where("userIds", arrayContains: userId)
         .snapshots();
 
+
+
     return allChatStream.map((event) {
+      var unread = 0;
       var chatty = event.docs.map((e) {
         Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
 
@@ -54,10 +58,12 @@ class ChatController extends GetxController {
             data["userIds"],
             data["users"],
             data[userId] ?? 0);
+        unread = unread + allChatsModel.unread;
 
         return allChatsModel;
       }).toList();
       chatty.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+      unReadChats.value = unread;
       return chatty;
     });
   }
@@ -126,6 +132,8 @@ class ChatController extends GetxController {
           .doc(currentChatId.value)
           .set({userId: 0}, SetOptions(merge: true));
 
+      Inbox inbox = allUserChats[allUserChats.indexWhere((element) => element['id'] == currentChatId)];
+      unReadChats.value = unReadChats.value - inbox.unread;
       printOut("Chat messages read");
     }
   }

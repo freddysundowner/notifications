@@ -11,7 +11,8 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class AllChatsPage extends StatelessWidget {
-  final ChatController _chatController = Get.put(ChatController());
+
+  final ChatController _chatController = Get.find<ChatController>();
   final RoomController _homeController = Get.find<RoomController>();
 
   AllChatsPage({Key? key}) : super(key: key);

@@ -62,11 +62,59 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var userProducts = [].obs;
   var userProductsLoading = false.obs;
   var userJoinedRoom = false.obs;
+  var isSearching = false.obs;
 
   var roomPickedImages = [].obs;
 
   final TextEditingController searchUsersController = TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
+
+  searchUsersWeAreFriends(String text) async {
+    if (searchUsersController.text.trim().isNotEmpty) {
+      try {
+        allUsersLoading.value = true;
+        var results = await UserAPI.searchFriends(text);
+        searchedfriendsToInvite.assignAll(results);
+        allUsersLoading.value = false;
+      } catch (e) {
+        printOut(e.toString());
+        allUsersLoading.value = false;
+      }
+    }
+  }
+
+  Future<void> friendsToInviteCall() async {
+    print("friendsToInviteCall");
+    if (friendsToInvite.isEmpty) {
+      try {
+        allUsersLoading.value = true;
+
+        var users = await UserAPI.friendsToInvite();
+        var list = [];
+
+        if (users != null) {
+          for (var i = 0; i < users.length; i++) {
+            if (users.elementAt(i)["_id"] !=
+                FirebaseAuth.instance.currentUser!.uid) {
+              list.add(users.elementAt(i));
+            }
+          }
+          friendsToInvite.value = list;
+        } else {
+          friendsToInvite.value = [];
+        }
+        searchedfriendsToInvite.value = friendsToInvite;
+
+        friendsToInvite.refresh();
+        allUsersLoading.value = false;
+      } catch (e) {
+        printOut(e);
+        allUsersLoading.value = false;
+      }
+    } else {
+      searchedfriendsToInvite.value = friendsToInvite;
+    }
+  }
 
   // Mandatory
   @override
@@ -687,39 +735,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     // }
   }
 
-  Future<void> friendsToInviteCall() async {
-    print("friendsToInviteCall");
-    if (friendsToInvite.isEmpty) {
-      try {
-        allUsersLoading.value = true;
-
-        var users = await UserAPI.friendsToInvite();
-        var list = [];
-
-        if (users != null) {
-          for (var i = 0; i < users.length; i++) {
-            if (users.elementAt(i)["_id"] !=
-                FirebaseAuth.instance.currentUser!.uid) {
-              list.add(users.elementAt(i));
-            }
-          }
-          friendsToInvite.value = list;
-        } else {
-          friendsToInvite.value = [];
-        }
-        searchedfriendsToInvite.value = friendsToInvite;
-
-        friendsToInvite.refresh();
-        allUsersLoading.value = false;
-      } catch (e) {
-        printOut(e);
-        allUsersLoading.value = false;
-      }
-    } else {
-      searchedfriendsToInvite.value = friendsToInvite;
-    }
-  }
-
   Future<void> fetchAllUsers() async {
     if (allUsers.isEmpty) {
       try {
@@ -885,33 +900,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         }
       }
     };
-
-    // var body = {
-    //   "uid": uid,
-    //   "cname": channelname,
-    //   "clientRequest": {
-    //     "token": token,
-    //     "recordingConfig": {
-    //       "maxIdleTime": 120,
-    //       "streamTypes": 0,
-    //       "audioProfile": 1,
-    //       "channelType": 0,
-    //     },
-    //     "recordingFileConfig": {
-    //       "avFileType": ["hls"]
-    //     },
-    //     "storageConfig": {
-    //       "accessKey": "AKIAWZXHGM4OSTZXTKXF",
-    //       "region": 3,
-    //       "bucket": "gistshopaudios",
-    //       "secretKey": "BXNnwpnZVNW3XWSZkozE9pH3Mhqd7j3TQck5himP",
-    //       "vendor": 1,
-    //       "fileNamePrefix": ["directory1", "directory2"],
-    //     }
-    //   }
-    // };
-
-    print(body);
 
     var response = await DbBase().databaseRequest(
         "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/mode/mix/start",

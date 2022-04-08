@@ -166,7 +166,6 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                             if (_homeController.newRoomType.value ==
                                 "private") {
                               showAddCoHostBottomSheet(context, private: true);
-                              _homeController.fetchAllUsers();
                             } else {
                               showProductBottomSheet(context);
                               await _homeController.fetchUserProducts();
@@ -608,6 +607,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
     builder: (context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
+        _homeController.friendsToInviteCall();
         return DraggableScrollableSheet(
             initialChildSize: 0.8,
             expand: false,
@@ -617,11 +617,6 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
                   children: [
-                    // Container(
-                    //   color: Theme.of(productContext).primaryColor,
-                    //   height: 0.01.sh,
-                    //   width: 0.15.sw,
-                    // ),
                     SizedBox(
                       height: 0.01.sh,
                     ),
@@ -675,8 +670,17 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                   autocorrect: false,
                                   enableSuggestions: false,
                                   keyboardType: TextInputType.visiblePassword,
-                                  onChanged: (text) =>
-                                      _homeController.searchUsers(),
+                                  onChanged: (text) {
+                                    print(
+                                        "entered ${_homeController.friendsToInvite.value.length}");
+                                    if (text.isNotEmpty) {
+                                      _homeController.searchUsersWeAreFriends(
+                                          _homeController
+                                              .searchUsersController.text);
+                                    } else {
+                                      _homeController.friendsToInviteCall();
+                                    }
+                                  },
                                   decoration: InputDecoration(
                                     hintText: "Search",
                                     hintStyle: TextStyle(
@@ -709,7 +713,8 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                       return _homeController.allUsersLoading.isFalse
                           ? SizedBox(
                               height: 0.55.sh,
-                              child: _homeController.searchedUsers.isNotEmpty
+                              child: _homeController
+                                      .searchedfriendsToInvite.isNotEmpty
                                   ? GridView.builder(
                                       scrollDirection: Axis.vertical,
                                       shrinkWrap: true,
@@ -719,11 +724,12 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                         crossAxisCount: 3,
                                         childAspectRatio: 0.9,
                                       ),
-                                      itemCount:
-                                          _homeController.searchedUsers.length,
+                                      itemCount: _homeController
+                                          .searchedfriendsToInvite.length,
                                       itemBuilder: (context, index) {
                                         UserModel user = UserModel.fromJson(
-                                            _homeController.searchedUsers
+                                            _homeController
+                                                .searchedfriendsToInvite
                                                 .elementAt(index));
                                         return InkWell(
                                           onTap: () {
@@ -734,9 +740,6 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                             } else {
                                               _homeController.roomHosts
                                                   .add(user);
-
-                                              printOut(
-                                                  "adding hosts ${_homeController.roomHosts.length}");
                                             }
                                           },
                                           child: Column(
@@ -793,18 +796,19 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                   ),
                                                 );
                                               }),
-                                              Text(
-                                                user.userName
-                                                            .toString()
-                                                            .length >
-                                                        5
-                                                    ? "${user.userName}"
-                                                            .substring(0, 5) +
-                                                        "..."
-                                                    : "${user.userName}",
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 16.sp),
+                                              Center(
+                                                child: Text(
+                                                  user.firstName! +
+                                                      " " +
+                                                      user.lastName!,
+                                                  style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 12.sp),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                  textAlign: TextAlign.center,
+                                                ),
                                               )
                                             ],
                                           ),

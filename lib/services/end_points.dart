@@ -50,6 +50,7 @@ const editUser = user + "/";
 const upgradeUser = user + "/upgrade/";
 const allUsers = user + "/";
 const searchUsersByFirstName = user + "/search/";
+const followersfollowingsearch = user + "/followersfollowing/search/";
 
 const userProducts = product + "/get/all/";
 

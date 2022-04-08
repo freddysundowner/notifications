@@ -191,8 +191,6 @@ class ShopSearchResults extends StatelessWidget {
     return InkWell(
       onTap: () {
         _userController.getUserProfile(e.id!);
-        print(e.id!);
-        print(Get.find<AuthController>().currentuser?.id);
         Get.to(() => Profile());
       },
       child: Padding(

@@ -143,7 +143,7 @@ class RoomPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () async {
-                      print("showInviteFriendsBottomSheet");
+                      printOut("showInviteFriendsBottomSheet");
                       showInviteFriendsBottomSheet(context);
                     },
                     icon: const Icon(
@@ -286,7 +286,7 @@ class RoomPage extends StatelessWidget {
                       RoomUser("Audience"),
                     ])
                   : const Center(child: CircularProgressIndicator())
-              : Center(
+              : const Center(
                   child: CircularProgressIndicator(
                   color: Colors.black87,
                 )),
@@ -539,7 +539,6 @@ class RoomUser extends StatelessWidget {
               ),
               itemCount: user.length,
               itemBuilder: (context, index) {
-                RoomModel room = _dx.currentRoom.value;
 
                 return InkWell(
                   onTap: () {

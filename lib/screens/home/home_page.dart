@@ -564,7 +564,10 @@ class HomePage extends StatelessWidget {
                                   size: 30,
                                 ),
                                 if (_homeController
-                                    .currentRoom.value.raisedHands!.isNotEmpty)
+                                    .currentRoom.value.raisedHands!.isNotEmpty && (_homeController.currentRoom.value.hostIds!
+                                    .indexWhere(
+                                        (e) => e.id == currentUser.id) !=
+                                    -1))
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
                                     child: Container(

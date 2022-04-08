@@ -109,8 +109,12 @@ class RoomPage extends StatelessWidget {
                                   color: Colors.black54,
                                   size: 30,
                                 ),
-                                if (_homeController
-                                    .currentRoom.value.raisedHands!.isNotEmpty)
+                                if (_homeController.currentRoom.value
+                                        .raisedHands!.isNotEmpty &&
+                                    (_homeController.currentRoom.value.hostIds!
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) !=
+                                        -1))
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
                                     child: Container(
@@ -539,7 +543,6 @@ class RoomUser extends StatelessWidget {
               ),
               itemCount: user.length,
               itemBuilder: (context, index) {
-
                 return InkWell(
                   onTap: () {
                     showUserBottomSheet(context, user.elementAt(index));

@@ -85,7 +85,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   Future<void> friendsToInviteCall() async {
     print("friendsToInviteCall");
-    if (friendsToInvite.isEmpty) {
+
       try {
         allUsersLoading.value = true;
 
@@ -111,9 +111,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut(e);
         allUsersLoading.value = false;
       }
-    } else {
-      searchedfriendsToInvite.value = friendsToInvite;
-    }
+
   }
 
   // Mandatory

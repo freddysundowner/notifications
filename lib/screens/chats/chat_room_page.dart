@@ -156,13 +156,13 @@ class ChatRoomPage extends StatelessWidget {
                       height: 0.07.sh,
                       width: 0.12.sw,
                       decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.circular(30)),
                       child: _chatController.sendingMessage.isFalse
-                          ? const Center(
+                          ?  Center(
                               child: Icon(
                               Ionicons.send,
-                              color: Colors.white,
+                              color: Theme.of(context).primaryColor,
+                                size: 35,
                             ))
                           : Transform.scale(
                               scale: 0.3,

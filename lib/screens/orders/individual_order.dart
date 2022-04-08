@@ -40,7 +40,9 @@ class IndividualOrderScreen extends StatelessWidget {
                       ),
                       Obx(() {
                         return Text(
-                          _orderController.currentOrder.value.status!.toString().capitalizeFirst!,
+                          _orderController.currentOrder.value.status!
+                              .toString()
+                              .capitalizeFirst!,
                           style:
                               TextStyle(color: Colors.black, fontSize: 16.sp),
                         );
@@ -79,35 +81,41 @@ class IndividualOrderScreen extends StatelessWidget {
             ),
             if (ordersModel.shopId ==
                 Get.find<AuthController>().usermodel.value!.shopId!.id)
-              InkWell(
-                onTap: () {
-                  showUpdateOrderStatusBottomSheet(context);
-                },
-                child: Column(
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 0.8.sw,
-                        decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 5.0, bottom: 5),
-                          child: Center(
-                              child: Text(
-                            "Update status",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.sp),
-                          )),
+              Obx(() {
+                return (_orderController.currentOrder.value.status != "delivered" &&
+                    _orderController.currentOrder.value.status != "cancelled")
+                    ? InkWell(
+                        onTap: () {
+                          showUpdateOrderStatusBottomSheet(context);
+                        },
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Container(
+                                width: 0.8.sw,
+                                decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, bottom: 5),
+                                  child: Center(
+                                      child: Text(
+                                    "Update status",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16.sp),
+                                  )),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 0.04.sh,
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 0.04.sh,
-                    ),
-                  ],
-                ),
-              ),
+                      )
+                    : Container();
+              }),
             const Divider(
               color: Colors.black12,
               thickness: 10,
@@ -515,8 +523,8 @@ class IndividualOrderScreen extends StatelessWidget {
                               Obx(() {
                                 return Radio(
                                   value: _orderController
-                                      .currentOrder.value.status ==
-                                      "delivered"
+                                              .currentOrder.value.status ==
+                                          "delivered"
                                       ? false
                                       : true,
                                   onChanged: (e) {

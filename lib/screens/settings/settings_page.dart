@@ -117,7 +117,7 @@ class SettingsPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "LInkedIn",
+                            "LinkedIn",
                             style:
                                 TextStyle(color: Colors.black, fontSize: 16.sp),
                           ),

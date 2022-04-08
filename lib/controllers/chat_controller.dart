@@ -6,7 +6,6 @@ import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 
 import 'auth_controller.dart';
 
@@ -33,40 +32,8 @@ class ChatController extends GetxController {
     gettingChats.value = true;
     allUserChats.value = [];
     allUserChats.bindStream(allUserChatsStream());
-    allChatStream.drain();
+  //  allChatStream.drain();
     gettingChats.value = false;
-
-    // db
-    //     .collection("chats")
-    //     .where("userIds", arrayContains: userId)
-    //     .get()
-    //     .then((querySnapshot) {
-    //   gettingChats.value = false;
-    //
-    //   printOut("Chats loaded ${querySnapshot.docs.length}");
-    //   allUserChats.value = [];
-    //   for (var i = 0; i < querySnapshot.docs.length; i++) {
-    //     var snapshot = querySnapshot.docs.elementAt(i);
-    //
-    //     AllChatsModel allChatsModel = AllChatsModel(
-    //         snapshot.id,
-    //         snapshot.get("lastMessage"),
-    //         snapshot.get("lastMessageTime"),
-    //         snapshot.get("lastSender"),
-    //         snapshot.get("userIds"),
-    //         snapshot.get("users"),
-    //         snapshot.get(userId) ?? 0);
-    //
-    //     newChats.add(allChatsModel);
-    //   }
-    //
-    //   newChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
-    //
-    //   allUserChats.value = newChats;
-    // }).onError((error, stackTrace) {
-    //   gettingChats.value = false;
-    //   printOut("Error getting all chats $error $stackTrace");
-    // });
   }
 
   Stream<List> allUserChatsStream() {

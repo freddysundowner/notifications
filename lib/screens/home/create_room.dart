@@ -213,7 +213,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
             TextField(
               controller: _homeController.roomTitleController,
               autofocus: true,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.visiblePassword,
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 disabledBorder: InputBorder.none,

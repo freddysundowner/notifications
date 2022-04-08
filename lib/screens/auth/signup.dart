@@ -111,7 +111,7 @@ class SignUpScreen extends StatelessWidget {
                           validator: (value) {
                             if (authController
                                 .bioFieldController.text.isEmpty) {
-                              return kUsernameNullError;
+                              return kBioNullError;
                             }
                             return null;
                           },

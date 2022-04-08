@@ -9,6 +9,7 @@ import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
+import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -632,11 +633,12 @@ class RoomUser extends StatelessWidget {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return DraggableScrollableSheet(
-              initialChildSize: 0.5,
+              initialChildSize: 0.55,
               expand: false,
               builder:
                   (BuildContext context, ScrollController scrollController) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -677,25 +679,257 @@ class RoomUser extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
+                      height: 0.01.sh,
+                    ),
+                    // if (user.id !=
+                    //     Get.find<AuthController>().usermodel.value!.id)
+                    //   Padding(
+                    //     padding: const EdgeInsets.only(left: 20.0),
+                    //     child: Column(
+                    //       children: [
+                    //         Obx(() {
+                    //           return InkWell(
+                    //             onTap: () async {
+                    //               if (user.followers!.contains(
+                    //                   Get.find<AuthController>()
+                    //                       .usermodel
+                    //                       .value!
+                    //                       .id)) {
+                    //                 await Profile()
+                    //                     .unFollowUser(UserModel(id: user.id));
+                    //                 if (_homeController
+                    //                         .currentRoom.value.hostIds!
+                    //                         .indexWhere((element) =>
+                    //                             element.id ==
+                    //                             Get.find<AuthController>()
+                    //                                 .usermodel
+                    //                                 .value!
+                    //                                 .id) !=
+                    //                     -1) {
+                    //                   _homeController
+                    //                       .currentRoom
+                    //                       .value
+                    //                       .hostIds![_homeController
+                    //                           .currentRoom.value.hostIds!
+                    //                           .indexWhere((element) =>
+                    //                               element.id ==
+                    //                               Get.find<AuthController>()
+                    //                                   .usermodel
+                    //                                   .value!
+                    //                                   .id)]
+                    //                       .followersCount = _homeController
+                    //                           .currentRoom
+                    //                           .value
+                    //                           .hostIds![_homeController
+                    //                               .currentRoom.value.hostIds!
+                    //                               .indexWhere((element) =>
+                    //                                   element.id ==
+                    //                                   Get.find<AuthController>()
+                    //                                       .usermodel
+                    //                                       .value!
+                    //                                       .id)]
+                    //                           .followersCount! -
+                    //                       1;
+                    //                 }
+                    //                 if (_homeController
+                    //                         .currentRoom.value.speakerIds!
+                    //                         .indexWhere((element) =>
+                    //                             element.id ==
+                    //                             Get.find<AuthController>()
+                    //                                 .usermodel
+                    //                                 .value!
+                    //                                 .id) !=
+                    //                     -1) {
+                    //                   _homeController
+                    //                       .currentRoom
+                    //                       .value
+                    //                       .speakerIds![_homeController
+                    //                           .currentRoom.value.speakerIds!
+                    //                           .indexWhere((element) =>
+                    //                               element.id ==
+                    //                               Get.find<AuthController>()
+                    //                                   .usermodel
+                    //                                   .value!
+                    //                                   .id)]
+                    //                       .followersCount = _homeController
+                    //                           .currentRoom
+                    //                           .value
+                    //                           .speakerIds![_homeController
+                    //                               .currentRoom.value.speakerIds!
+                    //                               .indexWhere((element) =>
+                    //                                   element.id ==
+                    //                                   Get.find<AuthController>()
+                    //                                       .usermodel
+                    //                                       .value!
+                    //                                       .id)]
+                    //                           .followersCount! -
+                    //                       1;
+                    //                 }
+                    //
+                    //                 if (_homeController
+                    //                         .currentRoom.value.userIds!
+                    //                         .indexWhere((element) =>
+                    //                             element.id ==
+                    //                             Get.find<AuthController>()
+                    //                                 .usermodel
+                    //                                 .value!
+                    //                                 .id) !=
+                    //                     -1) {
+                    //                   _homeController
+                    //                       .currentRoom
+                    //                       .value
+                    //                       .userIds![_homeController
+                    //                           .currentRoom.value.userIds!
+                    //                           .indexWhere((element) =>
+                    //                               element.id ==
+                    //                               Get.find<AuthController>()
+                    //                                   .usermodel
+                    //                                   .value!
+                    //                                   .id)]
+                    //                       .followersCount = _homeController
+                    //                           .currentRoom
+                    //                           .value
+                    //                           .userIds![_homeController
+                    //                               .currentRoom.value.userIds!
+                    //                               .indexWhere((element) =>
+                    //                                   element.id ==
+                    //                                   Get.find<AuthController>()
+                    //                                       .usermodel
+                    //                                       .value!
+                    //                                       .id)]
+                    //                           .followersCount! -
+                    //                       1;
+                    //                 }
+                    //               } else {
+                    //                 await Profile()
+                    //                     .followUser(UserModel(id: user.id));
+                    //               }
+                    //             },
+                    //             child: Container(
+                    //               width: 0.2.sw,
+                    //               height: 0.04.sh,
+                    //               decoration: BoxDecoration(
+                    //                 color: user.followers!.contains(
+                    //                         Get.find<AuthController>()
+                    //                             .usermodel
+                    //                             .value!
+                    //                             .id)
+                    //                     ? Colors.grey
+                    //                     : Colors.green,
+                    //                 borderRadius: BorderRadius.circular(5),
+                    //               ),
+                    //               child: Center(
+                    //                 child: Text(
+                    //                   user.followers!.contains(
+                    //                           Get.find<AuthController>()
+                    //                               .usermodel
+                    //                               .value!
+                    //                               .id)
+                    //                       ? "UnFollow"
+                    //                       : "Follow",
+                    //                   style: TextStyle(
+                    //                       color: Colors.white, fontSize: 12.sp),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           );
+                    //         }),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // SizedBox(
+                    //   height: 0.03.sh,
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _userController.getUserFollowing(user.id!);
+                              Get.to(FollowersFollowingPage("Following"));
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  user.following != null
+                                      ? user.following!.length.toString()
+                                      : "0",
+                                  style: TextStyle(
+                                      fontSize: 18.sp,
+                                      color: primarycolor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 0.01.sw,
+                                ),
+                                Text(
+                                  "Following",
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: primarycolor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 0.1.sw,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              _userController.getUserFollowers(user.id!);
+                              Get.to(FollowersFollowingPage("Followers"));
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  user.followers != null
+                                      ? user.followers!.length.toString()
+                                      : "0",
+                                  style: TextStyle(
+                                      fontSize: 18.sp,
+                                      color: primarycolor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 0.01.sw,
+                                ),
+                                Text(
+                                  "Followers",
+                                  style: TextStyle(
+                                    fontSize: 10.sp,
+                                    color: primarycolor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
                       height: 0.05.sh,
                     ),
-                    InkWell(
-                      onTap: () {
-                        Get.back();
-                        _userController.getUserProfile(user.id!);
-                        Get.to(Profile());
-                      },
-                      child: Container(
-                        height: 0.07.sh,
-                        width: 0.9.sw,
-                        decoration: BoxDecoration(
-                            color: primarycolor,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Center(
-                          child: Text(
-                            "View profile".toUpperCase(),
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.sp),
+                    Center(
+                      child: InkWell(
+                        onTap: () {
+                          Get.back();
+                          _userController.getUserProfile(user.id!);
+                          Get.to(Profile());
+                        },
+                        child: Container(
+                          height: 0.07.sh,
+                          width: 0.9.sw,
+                          decoration: BoxDecoration(
+                              color: primarycolor,
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Center(
+                            child: Text(
+                              "View profile".toUpperCase(),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 16.sp),
+                            ),
                           ),
                         ),
                       ),
@@ -703,56 +937,58 @@ class RoomUser extends StatelessWidget {
                     SizedBox(
                       height: 0.03.sh,
                     ),
-                    Obx(() {
-                      RoomModel room = _homeController.currentRoom.value;
+                    Center(
+                      child: Obx(() {
+                        RoomModel room = _homeController.currentRoom.value;
 
-                      return user.id !=
-                                  Get.find<AuthController>()
-                                      .usermodel
-                                      .value!
-                                      .id &&
-                              room.hostIds!
-                                      .indexWhere((e) => e.id == user.id) ==
-                                  -1 &&
-                              room.hostIds!.indexWhere((e) =>
-                                      e.id ==
-                                      Get.find<AuthController>()
-                                          .usermodel
-                                          .value!
-                                          .id) !=
-                                  -1
-                          ? InkWell(
-                              onTap: () async {
-                                Get.back();
-                                if (!room.speakerIds!.contains(user)) {
-                                  _homeController.addUserToSpeaker(user);
-                                } else {
-                                  _homeController.removeUserFromSpeaker(user);
-                                }
-                              },
-                              child: Container(
-                                height: 0.07.sh,
-                                width: 0.9.sw,
-                                decoration: BoxDecoration(
-                                    color: primarycolor,
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: Center(
-                                  child: Text(
-                                    !(_homeController
-                                                .currentRoom.value.speakerIds!
-                                                .indexWhere(
-                                                    (e) => e.id == user.id) !=
-                                            -1)
-                                        ? "Move to speakers".toUpperCase()
-                                        : "Move to audience".toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16.sp),
+                        return user.id !=
+                                    Get.find<AuthController>()
+                                        .usermodel
+                                        .value!
+                                        .id &&
+                                room.hostIds!
+                                        .indexWhere((e) => e.id == user.id) ==
+                                    -1 &&
+                                room.hostIds!.indexWhere((e) =>
+                                        e.id ==
+                                        Get.find<AuthController>()
+                                            .usermodel
+                                            .value!
+                                            .id) !=
+                                    -1
+                            ? InkWell(
+                                onTap: () async {
+                                  Get.back();
+                                  if (!room.speakerIds!.contains(user)) {
+                                    _homeController.addUserToSpeaker(user);
+                                  } else {
+                                    _homeController.removeUserFromSpeaker(user);
+                                  }
+                                },
+                                child: Container(
+                                  height: 0.07.sh,
+                                  width: 0.9.sw,
+                                  decoration: BoxDecoration(
+                                      color: primarycolor,
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: Center(
+                                    child: Text(
+                                      !(_homeController
+                                                  .currentRoom.value.speakerIds!
+                                                  .indexWhere(
+                                                      (e) => e.id == user.id) !=
+                                              -1)
+                                          ? "Move to speakers".toUpperCase()
+                                          : "Move to audience".toUpperCase(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16.sp),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          : Container();
-                    }),
+                              )
+                            : Container();
+                      }),
+                    ),
                   ],
                 );
               });

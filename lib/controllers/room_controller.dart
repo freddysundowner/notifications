@@ -618,6 +618,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         firstName: Get.find<AuthController>().usermodel.value!.firstName,
         lastName: Get.find<AuthController>().usermodel.value!.lastName,
         userName: Get.find<AuthController>().usermodel.value!.userName,
+        followers: Get.find<AuthController>().usermodel.value!.followers,
+        following: Get.find<AuthController>().usermodel.value!.following,
         profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
     if (currentRoom.value.id != null && currentRoom.value.id != roomId) {

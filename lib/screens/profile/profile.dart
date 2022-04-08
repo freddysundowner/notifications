@@ -435,6 +435,19 @@ class Profile extends StatelessWidget {
 
     await UserAPI()
         .unFollowAUser(FirebaseAuth.instance.currentUser!.uid, profile.id!);
+
+    if (_homeController.roomHosts
+            .indexWhere((element) => element.id == profile.id) !=
+        -1) {
+      _homeController
+          .roomHosts[_homeController.roomHosts
+              .indexWhere((element) => element.id == profile.id)]
+          .followersCount = _homeController
+              .roomHosts[_homeController.roomHosts
+                  .indexWhere((element) => element.id == profile.id)]
+              .followersCount! -
+          1;
+    }
   }
 
   updateName(BuildContext context) {

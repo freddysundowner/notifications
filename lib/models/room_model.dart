@@ -171,10 +171,14 @@ class OwnerId {
     this.profilePhoto,
     this.memberShip,
     this.upgradedDate,
+    this.followersCount,
+    this.followingCount,
   });
 
   List<String>? followers;
   List<String>? following;
+  int? followersCount;
+  int? followingCount;
   int? wallet;
   String? currentRoom;
   String? facebook;
@@ -223,6 +227,8 @@ class OwnerId {
         profilePhoto: json["profilePhoto"],
         memberShip: json["memberShip"],
         upgradedDate: json["upgradedDate"],
+        followersCount: json["followersCount"],
+        followingCount: json["followingCount"],
       );
 
   Map<String, dynamic> toJson() => {

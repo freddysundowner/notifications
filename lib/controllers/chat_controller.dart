@@ -78,7 +78,7 @@ class ChatController extends GetxController {
 
         Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
 
-        AllChatsModel allChatsModel = AllChatsModel(
+        Inbox allChatsModel = Inbox(
             data["id"],
             data["lastMessage"],
             data["lastMessageTime"],
@@ -114,7 +114,7 @@ class ChatController extends GetxController {
         print("chat ${e.data().toString()}");
         Map<String, dynamic> data = e.data()! as Map<String, dynamic>;
 
-              ChatRoomModel chatRoomModel = ChatRoomModel(
+              Chat chatRoomModel = Chat(
                   data['date'],
                   data["id"],
                   data['message'],
@@ -137,7 +137,7 @@ class ChatController extends GetxController {
 
     String chatId = "";
     for (var i = 0; i < allUserChats.length; i++) {
-      AllChatsModel chatsModel = allUserChats.elementAt(i);
+      Inbox chatsModel = allUserChats.elementAt(i);
 
       for (String user in chatsModel.userIds) {
         if (user == otherUser.id) {
@@ -179,7 +179,7 @@ class ChatController extends GetxController {
       printOut("Auto generated Firestore id $genId");
     }
 
-    ChatRoomModel newChat = ChatRoomModel(
+    Chat newChat = Chat(
         DateTime.now().millisecondsSinceEpoch.toString(),
         currentChatId.value,
         message,
@@ -245,7 +245,7 @@ class ChatController extends GetxController {
         .doc(currentChatId.value)
         .set(data, SetOptions(merge: true))
         .then((value) {
-      AllChatsModel allChatsModel = AllChatsModel(
+      Inbox allChatsModel = Inbox(
           chatId,
           message,
           DateTime.now().millisecondsSinceEpoch.toString(),

@@ -21,7 +21,8 @@ import 'package:ionicons/ionicons.dart';
 class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
 
-  final RoomController _homeController = Get.put(RoomController());
+  final RoomController _homeController = Get.find<RoomController>();
+
   final UserController _userController = Get.put(UserController());
 
   OwnerId currentUser = OwnerId(

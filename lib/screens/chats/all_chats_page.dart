@@ -38,7 +38,7 @@ class AllChatsPage extends StatelessWidget {
                       ? ListView.builder(
                           itemCount: _chatController.allUserChats.length,
                           itemBuilder: (context, index) {
-                            AllChatsModel allChatsModel =
+                            Inbox allChatsModel =
                                 _chatController.allUserChats.elementAt(index);
                             return InkWell(
                               onTap: () {
@@ -220,7 +220,7 @@ class AllChatsPage extends StatelessWidget {
     );
   }
 
-  UserModel getOtherUser(AllChatsModel allChatsModel) {
+  UserModel getOtherUser(Inbox allChatsModel) {
     UserModel user = UserModel.fromJson({});
 
     for (var i = 0; i < allChatsModel.users.length; i++) {

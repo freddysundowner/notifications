@@ -25,6 +25,7 @@ class UserController extends GetxController {
     try {
       profileLoading.value = true;
       var user = await UserAPI().getUserProfile(userId);
+      print("found ------- ${user}");
 
       if (user == null) {
         currentProfile.value = UserModel();
@@ -158,7 +159,8 @@ class UserController extends GetxController {
       printOut("Error upgrading account $e $s");
       Get.snackbar(
         "",
-        "An error occured while upgrading your account. Try again later", backgroundColor: sc_snackBar,
+        "An error occured while upgrading your account. Try again later",
+        backgroundColor: sc_snackBar,
       );
     }
   }

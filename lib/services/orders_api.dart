@@ -17,6 +17,9 @@ class OrderApi {
         singleproductqtycheck + productId, DbBase().postRequestType,
         body: {"productId": productId, "quantity": order.quantity});
     var dd = jsonDecode(responsecheck);
+
+    print("vvv ${order.toJson()}");
+    // return;
     if (dd["status"] == true) {
       var response = await DbBase().databaseRequest(
           config.orders + FirebaseAuth.instance.currentUser!.uid,

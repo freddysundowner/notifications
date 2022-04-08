@@ -8,6 +8,7 @@ class Order {
     required this.subTotal,
     required this.tax,
     required this.shippingFee,
+    this.shippingAddress,
     required this.quantity,
     required this.productOwnerId,
   });
@@ -16,6 +17,7 @@ class Order {
   String productId;
   String shopId;
   String subTotal;
+  String? shippingAddress;
   String tax;
   String shippingFee;
   int quantity;
@@ -23,6 +25,7 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
         shippingId: json["shippingId"],
+        shippingAddress: json["shippingAddress"] ?? "",
         productId: json["productId"],
         shopId: json["shopId"],
         subTotal: json["subTotal"],
@@ -35,6 +38,7 @@ class Order {
   Map<String, dynamic> toJson() => {
         "shippingId": shippingId,
         "productId": productId,
+        "shippingAddress": shippingAddress,
         "shopId": shopId,
         "subTotal": subTotal,
         "tax": tax,

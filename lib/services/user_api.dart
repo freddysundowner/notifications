@@ -245,4 +245,12 @@ class UserAPI {
         });
     return jsonDecode(response);
   }
+
+  static friendsToInvite() async {
+    print("friendsToInvite");
+    var response = await DbBase().databaseRequest(
+        followersfollowing + FirebaseAuth.instance.currentUser!.uid,
+        DbBase().getRequestType);
+    return jsonDecode(response);
+  }
 }

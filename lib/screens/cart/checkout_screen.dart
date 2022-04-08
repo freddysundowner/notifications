@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -424,6 +426,7 @@ class CheckOut extends StatelessWidget {
 
     Order order = Order(
         shippingId: checkOutController.address.value!.id,
+        shippingAddress: jsonEncode(checkOutController.address.value!.toJson()),
         productId: checkOutController.product.value!.id!,
         shopId: checkOutController.product.value!.shopId!.id.toString(),
         subTotal: checkOutController.ordertotal.value.toString(),

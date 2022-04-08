@@ -143,6 +143,7 @@ class RoomPage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () async {
+                      print("showInviteFriendsBottomSheet");
                       showInviteFriendsBottomSheet(context);
                     },
                     icon: const Icon(

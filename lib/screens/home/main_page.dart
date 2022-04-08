@@ -128,7 +128,8 @@ class MainPage extends StatelessWidget {
                                           .shopId!
                                           .open!) {
                                     _homeController.newRoomTitle.value = " ";
-                                    _homeController.newRoomType.value = "public";
+                                    _homeController.newRoomType.value =
+                                        "public";
                                     showRoomTypeBottomSheet(context);
                                   } else {
                                     await showDialog(
@@ -189,25 +190,32 @@ class MainPage extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                             ),
-                            ListTile(
-                              leading: new Icon(Icons.shopping_cart),
-                              title: new Text(
-                                Get.find<AuthController>()
-                                            .usermodel
-                                            .value!
-                                            .shopId !=
-                                        null
-                                    ? 'My Shop'
-                                    : "Create a Shop",
-                                style: TextStyle(
-                                    fontSize: 18.sp, color: Colors.black),
+                            if (authController.currentuser!.shopId! != null)
+                              ListTile(
+                                leading: new Icon(Icons.shopping_cart),
+                                title: new Text(
+                                  'My Shop',
+                                  style: TextStyle(
+                                      fontSize: 18.sp, color: Colors.black),
+                                ),
+                                onTap: () {
+                                  shopController.currentShop.value =
+                                      authController.currentuser!.shopId!;
+                                  Get.to(() => ShopView());
+                                },
                               ),
-                              onTap: () {
-                                shopController.currentShop.value =
-                                authController.currentuser!.shopId!;
-                                Get.to(() => ShopView());
-                              },
-                            ),
+                            if (authController.currentuser!.shopId! == null)
+                              ListTile(
+                                leading: new Icon(Icons.shopping_cart),
+                                title: new Text(
+                                  "Create a Shop",
+                                  style: TextStyle(
+                                      fontSize: 18.sp, color: Colors.black),
+                                ),
+                                onTap: () {
+                                  Get.to(() => NewShop());
+                                },
+                              ),
                           ],
                         );
                       });

@@ -11,7 +11,6 @@ import 'auth_controller.dart';
 
 class ChatController extends GetxController {
   FirebaseFirestore db = FirebaseFirestore.instance;
-  String userId = FirebaseAuth.instance.currentUser!.uid;
   var allUserChats = [].obs;
   var gettingChats = false.obs;
   var currentChatLoading = false.obs;
@@ -25,13 +24,14 @@ class ChatController extends GetxController {
 
   @override
   void onInit() {
+    allUserChats.value = [];
     getUserChats();
     super.onInit();
   }
 
   Future<void> getUserChats() async {
     gettingChats.value = true;
-   // allUserChats.value = [];
+
     allUserChats.bindStream(allUserChatsStream());
   //  allChatStream.drain();
     gettingChats.value = false;
@@ -40,10 +40,8 @@ class ChatController extends GetxController {
   Stream<List> allUserChatsStream() {
     allChatStream = FirebaseFirestore.instance
         .collection("chats")
-        .where("userIds", arrayContains: userId)
+        .where("userIds", arrayContains: FirebaseAuth.instance.currentUser!.uid)
         .snapshots();
-
-
 
     return allChatStream.map((event) {
       var unread = 0;
@@ -57,7 +55,7 @@ class ChatController extends GetxController {
             data["lastSender"],
             data["userIds"],
             data["users"],
-            data[userId] ?? 0);
+            data[FirebaseAuth.instance.currentUser!.uid] ?? 0);
         unread = unread + allChatsModel.unread;
 
         return allChatsModel;
@@ -130,7 +128,7 @@ class ChatController extends GetxController {
       await db
           .collection("chats")
           .doc(currentChatId.value)
-          .set({userId: 0}, SetOptions(merge: true));
+          .set({FirebaseAuth.instance.currentUser!.uid: 0}, SetOptions(merge: true));
 
       Inbox inbox = allUserChats[allUserChats.indexWhere((element) => element['id'] == currentChatId)];
       unReadChats.value = unReadChats.value - inbox.unread;
@@ -189,9 +187,9 @@ class ChatController extends GetxController {
       "id": chatId,
       "lastMessage": message,
       "lastMessageTime": DateTime.now().millisecondsSinceEpoch.toString(),
-      "lastSender": userId,
-      "userIds": [userId, otherUser.id],
-      userId: 0,
+      "lastSender": FirebaseAuth.instance.currentUser!.uid,
+      "userIds": [FirebaseAuth.instance.currentUser!.uid, otherUser.id],
+      FirebaseAuth.instance.currentUser!.uid: 0,
       otherUser.id!: 0,
       "users": [
         {
@@ -217,29 +215,29 @@ class ChatController extends GetxController {
         .doc(currentChatId.value)
         .set(data, SetOptions(merge: true))
         .then((value) {
-      Inbox allChatsModel = Inbox(
-          chatId,
-          message,
-          DateTime.now().millisecondsSinceEpoch.toString(),
-          userId,
-          [userId, otherUser.id],
-          [
-            {
-              "id": currentUser.id,
-              "firstName": currentUser.firstName,
-              "lastName": currentUser.lastName,
-              "userName": currentUser.userName,
-              "profilePhoto": currentUser.profilePhoto
-            },
-            {
-              "id": otherUser.id,
-              "firstName": otherUser.firstName,
-              "lastName": otherUser.lastName,
-              "userName": otherUser.userName,
-              "profilePhoto": otherUser.profilePhoto
-            }
-          ],
-          0);
+      // Inbox allChatsModel = Inbox(
+      //     chatId,
+      //     message,
+      //     DateTime.now().millisecondsSinceEpoch.toString(),
+      //     FirebaseAuth.instance.currentUser!.uid,
+      //     [FirebaseAuth.instance.currentUser!.uid, otherUser.id],
+      //     [
+      //       {
+      //         "id": currentUser.id,
+      //         "firstName": currentUser.firstName,
+      //         "lastName": currentUser.lastName,
+      //         "userName": currentUser.userName,
+      //         "profilePhoto": currentUser.profilePhoto
+      //       },
+      //       {
+      //         "id": otherUser.id,
+      //         "firstName": otherUser.firstName,
+      //         "lastName": otherUser.lastName,
+      //         "userName": otherUser.userName,
+      //         "profilePhoto": otherUser.profilePhoto
+      //       }
+      //     ],
+      //     0);
       // allUserChats.add(allChatsModel);
       //
       // allUserChats

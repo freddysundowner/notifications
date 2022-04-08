@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/models/chat.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -36,59 +38,67 @@ class ChatRoomPage extends StatelessWidget {
                       onRefresh: () => _chatController
                           .getChatById(_chatController.currentChatId.value),
                       child: _chatController.currentChat.isNotEmpty
-                          ? ListView.builder(
-                              controller: _sc,
-                              padding: const EdgeInsets.all(8.0),
-                              itemCount: _chatController.currentChat.length,
-                              itemBuilder: (context, index) {
-                                WidgetsBinding.instance?.addPostFrameCallback(
-                                    (_) => {
-                                          _sc.jumpTo(
-                                              _sc.position.maxScrollExtent)
-                                        });
-                                printOut(_chatController.currentChat.length);
-                                Chat chat = _chatController.currentChat
-                                    .elementAt(index);
-                                return Align(
-                                  alignment:
-                                      chat.sender != _chatController.userId
+                          ? SingleChildScrollView(
+                              reverse: true,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  controller: _sc,
+                                  padding: const EdgeInsets.all(8.0),
+                                  itemCount: _chatController.currentChat.length,
+                                  itemBuilder: (context, index) {
+                                    printOut(
+                                        _chatController.currentChat.length);
+                                    Chat chat = _chatController.currentChat
+                                        .elementAt(index);
+                                    return Align(
+                                      alignment: chat.sender !=
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid
                                           ? Alignment.centerLeft
                                           : Alignment.centerRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 0.5.sw,
-                                          decoration: BoxDecoration(
-                                              color: chat.sender ==
-                                                      _chatController.userId
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : Colors.black26,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Text(
-                                              chat.message,
-                                              style: TextStyle(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: 0.5.sw,
+                                              decoration: BoxDecoration(
                                                   color: chat.sender ==
-                                                          _chatController.userId
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontSize: 16.sp),
+                                                          FirebaseAuth.instance
+                                                              .currentUser!.uid
+                                                      ? Theme.of(context)
+                                                          .primaryColor
+                                                      : Colors.black26,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: Text(
+                                                  chat.message,
+                                                  style: TextStyle(
+                                                      color: chat.sender ==
+                                                              FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      fontSize: 16.sp),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Text(convertTime(chat.date))
+                                          ],
                                         ),
-                                        Text(convertTime(chat.date))
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              })
+                                      ),
+                                    );
+                                  }),
+                            )
                           : Center(
                               child: Text(
                                 "Nothing here",
@@ -158,16 +168,16 @@ class ChatRoomPage extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30)),
                       child: _chatController.sendingMessage.isFalse
-                          ?  Center(
+                          ? Center(
                               child: Icon(
                               Ionicons.send,
                               color: Theme.of(context).primaryColor,
-                                size: 35,
+                              size: 35,
                             ))
                           : Transform.scale(
                               scale: 0.3,
                               child: const CircularProgressIndicator(
-                                color: Colors.white,
+                                color: primarycolor,
                               )),
                     );
                   }),

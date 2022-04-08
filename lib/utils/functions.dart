@@ -10,7 +10,7 @@ printOut(data) {
 
 String convertTime(String time) {
   var convertedTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-  var timeDifference ="$convertedTime";
+  var timeDifference ="${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
 
   var diff = DateTime.now().difference(convertedTime);
 

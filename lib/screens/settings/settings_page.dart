@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
           "Settings",
           style: TextStyle(color: Colors.white),
         ),
-        centerTitle: true,
+        centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
@@ -274,6 +274,9 @@ class SettingsPage extends StatelessWidget {
                     style: TextStyle(color: Colors.black, fontSize: 16.sp),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 0.03.sh,
               ),
             ],
           ),

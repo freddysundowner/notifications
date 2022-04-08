@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
@@ -11,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
 class AllChatsPage extends StatelessWidget {
-
   final ChatController _chatController = Get.find<ChatController>();
   final RoomController _homeController = Get.find<RoomController>();
 
@@ -34,7 +34,10 @@ class AllChatsPage extends StatelessWidget {
         child: Obx(() {
           return _chatController.gettingChats.isFalse
               ? RefreshIndicator(
-                  onRefresh: () => _chatController.getUserChats(),
+                  onRefresh: () {
+                    _chatController.allUserChats.value = [];
+                    return _chatController.getUserChats();
+                  },
                   child: _chatController.allUserChats.isNotEmpty
                       ? ListView.builder(
                           itemCount: _chatController.allUserChats.length,
@@ -126,8 +129,10 @@ class AllChatsPage extends StatelessWidget {
                                                   Text(
                                                       allChatsModel
                                                                   .lastSender ==
-                                                              _chatController
-                                                                  .userId
+                                                              FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser!
+                                                                  .uid
                                                           ? "You: "
                                                           : getOtherUser(
                                                                       allChatsModel)
@@ -225,7 +230,8 @@ class AllChatsPage extends StatelessWidget {
     UserModel user = UserModel.fromJson({});
 
     for (var i = 0; i < allChatsModel.users.length; i++) {
-      if (allChatsModel.userIds.elementAt(i) != _chatController.userId) {
+      if (allChatsModel.userIds.elementAt(i) !=
+          FirebaseAuth.instance.currentUser!.uid) {
         user = UserModel.fromJson(allChatsModel.users.elementAt(i));
         user.id = allChatsModel.users.elementAt(i)["id"];
         printOut("other user chat ${user.userName}");

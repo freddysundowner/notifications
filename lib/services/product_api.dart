@@ -23,7 +23,6 @@ class ProductPI {
         method: config.put,
         endpoint: config.updateproduct + productid,
         body: productdata);
-    print(response);
     return response;
   }
 
@@ -60,8 +59,6 @@ class ProductPI {
 
   static Future<bool> updateProductsImages(
       String productId, List<dynamic> imgUrl) async {
-    print("updateProductsImages $imgUrl");
-    print("productId $productId");
     var respinse = await DbBase().databaseRequest(
         config.updateproductimages + productId, DbBase().patchRequestType,
         body: {"images": imgUrl});

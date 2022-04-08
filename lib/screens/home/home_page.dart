@@ -304,7 +304,6 @@ class HomePage extends StatelessWidget {
   }
 
   buildIndividualRoomCard() {
-    printOut("Home rooms ${_homeController.roomsList}");
     return Obx(() => RefreshIndicator(
         onRefresh: () {
           return _homeController.getRooms();

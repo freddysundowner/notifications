@@ -56,12 +56,10 @@ class NewShop extends StatelessWidget {
   Widget buildDisplayPictureAvatar(BuildContext context) {
     ImageProvider? backImage;
     if (shopController.chosenImage.path != "") {
-      print("one");
       backImage = MemoryImage(shopController.chosenImage.readAsBytesSync());
     } else if (authController.currentuser!.shopId != null &&
         authController.currentuser!.shopId!.image != null &&
         authController.currentuser!.shopId!.image!.isNotEmpty) {
-      print("two ${authController.currentuser!.shopId!.image}");
       final String? url = authController.currentuser!.shopId!.image;
       if (url != null) backImage = NetworkImage(url);
     }

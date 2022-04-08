@@ -189,8 +189,6 @@ class ChageProfileImage extends StatelessWidget {
           authController.chosenImage,
           UserAPI().getPathForCurrentUserDisplayPicture());
 
-      print(downloadUrl);
-
       uploadDisplayPictureStatus =
           await UserAPI.uploadDisplayPictureForCurrentUser(downloadUrl);
       if (uploadDisplayPictureStatus == true) {

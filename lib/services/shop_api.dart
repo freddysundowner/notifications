@@ -17,7 +17,6 @@ class ShopApi {
         config.shop + FirebaseAuth.instance.currentUser!.uid,
         DbBase().postRequestType,
         body: shopdata);
-    print(response);
     return jsonDecode(response);
   }
 
@@ -31,17 +30,14 @@ class ShopApi {
   static getProductsByShop(String shopid) async {
     List<dynamic> response = await Api.callApi(
         method: config.get, endpoint: config.products + shopid);
-    print(response);
     return response;
   }
 
   searchItems(String text, String searchOption, {last = ""}) async {
-    print({"lastid": last});
     var shops = await DbBase().databaseRequest(
         baseUrl + "/" + searchOption + "/search/" + text,
         DbBase().getRequestType,
         body: {"lastid": last});
-    print(jsonDecode(shops));
     return jsonDecode(shops);
   }
 
@@ -55,7 +51,6 @@ class ShopApi {
   getShopById(String? shopId) async {
     var shops = await DbBase()
         .databaseRequest(updateshop + shopId!, DbBase().getRequestType);
-    print("getShopById ${updateshop + shopId}");
     return jsonDecode(shops);
   }
 

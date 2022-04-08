@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +12,7 @@ import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
+import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
@@ -41,6 +44,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var audioMuted = true.obs;
 
   var newRoomTitle = " ".obs;
+  var resourceIdV = "".obs;
+  var resourceSid = "".obs;
+  var recordinguid = "".obs;
   var newRoomType = "public".obs;
   var agoraToken = "".obs;
 
@@ -117,11 +123,21 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     super.onReady();
   }
 
+  var headers;
   @override
   void onInit() {
     _initAgora();
     getRooms();
 
+    var plainCredentials =
+        "4714495b140b408baf6a22a8beb6df8d:f0703a9c08694f738c32bb8e8115e0d2";
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    var authorizationHeader =
+        "Basic " + stringToBase64.encode(plainCredentials);
+    headers = {
+      'Content-Type': 'application/json;charset=utf-8',
+      'Authorization': authorizationHeader
+    };
     super.onInit();
     printOut("room controller");
   }
@@ -201,9 +217,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
         if (token != null) {
           printOut("room title ${roomData["title"]}");
-          await RoomAPI().updateRoomById(
-              {"title": roomData["title"], "token": token,
-                "activeTime" : DateTime.now().microsecondsSinceEpoch}, roomId);
+          await RoomAPI().updateRoomById({
+            "title": roomData["title"],
+            "token": token,
+            "activeTime": DateTime.now().microsecondsSinceEpoch
+          }, roomId);
 
           await fetchRoom(roomId);
 
@@ -496,6 +514,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> leaveRoom(OwnerId user, {String? idRoom}) async {
+    await stopRecording(
+        channelname: currentRoom.value.id,
+        resourceid: resourceIdV.value,
+        uid: recordinguid.value,
+        sid: resourceSid.value);
     if (currentRoom.value.hostIds!.length == 1 &&
         currentRoom.value.hostIds!
                 .indexWhere((element) => element.id == user.id) !=
@@ -743,9 +766,146 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       await leaveAgora();
       await engine.joinChannel(token, roomId, null, 0);
       await engine.enableAudioVolumeIndication(500, 3, true);
+
+      recordAudio(token: token, channelname: roomId);
     } catch (e, s) {
       printOut('error joining room $e $s');
     }
+  }
+
+  getResourceId({String? channelname, String? uid}) async {
+    print("getResourceId");
+    var response = await DbBase().databaseRequest(
+        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/acquire",
+        DbBase().postRequestType,
+        body: {
+          "cname": channelname,
+          "uid": uid,
+          "clientRequest": {"region": "CN", "resourceExpiredHour": 24}
+        },
+        headers: headers);
+    return jsonDecode(response);
+  }
+
+  startRecording(
+      {String? resourceid,
+      String? channelname,
+      String? uid,
+      String? token}) async {
+    print("startRecording");
+    var body = {
+      "cname": channelname,
+      "uid": uid,
+      "clientRequest": {
+        "token": token,
+        "recordingConfig": {
+          "channelType": 0,
+          "streamTypes": 2,
+          "audioProfile": 1,
+          "maxIdleTime": 45,
+          "transcodingConfig": {
+            "width": 360,
+            "height": 640,
+            "fps": 30,
+            "bitrate": 600,
+            "maxResolutionUid": "1",
+            "mixedVideoLayout": 1
+          },
+          "recordingFileConfig": {
+            "avFileType": ["hls", "mp4"]
+          },
+        },
+        "storageConfig": {
+          "vendor": 1,
+          "region": 3,
+          "bucket": "gistshopaudios",
+          "accessKey": "AKIAWZXHGM4OSTZXTKXF",
+          "secretKey": "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"
+        }
+      }
+    };
+
+    // var body = {
+    //   "uid": uid,
+    //   "cname": channelname,
+    //   "clientRequest": {
+    //     "token": token,
+    //     "recordingConfig": {
+    //       "maxIdleTime": 120,
+    //       "streamTypes": 0,
+    //       "audioProfile": 1,
+    //       "channelType": 0,
+    //     },
+    //     "recordingFileConfig": {
+    //       "avFileType": ["hls"]
+    //     },
+    //     "storageConfig": {
+    //       "accessKey": "AKIAWZXHGM4OSTZXTKXF",
+    //       "region": 3,
+    //       "bucket": "gistshopaudios",
+    //       "secretKey": "BXNnwpnZVNW3XWSZkozE9pH3Mhqd7j3TQck5himP",
+    //       "vendor": 1,
+    //       "fileNamePrefix": ["directory1", "directory2"],
+    //     }
+    //   }
+    // };
+
+    print(body);
+
+    var response = await DbBase().databaseRequest(
+        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/mode/mix/start",
+        DbBase().postRequestType,
+        body: body,
+        headers: headers);
+    return jsonDecode(response);
+  }
+
+  stopRecording(
+      {String? channelname,
+      String? uid,
+      String? resourceid,
+      String? sid}) async {
+    print("stopRecording ${{channelname, resourceid}}");
+    var body = {
+      "cname": channelname,
+      "uid": uid,
+      "clientRequest": {"async_stop": false}
+    };
+    print(body);
+    print(headers);
+    print(
+        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/sid/$sid/mode/mix/stop");
+    var response = await DbBase().databaseRequest(
+        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/sid/$sid/mode/mix/stop",
+        DbBase().postRequestType,
+        body: body,
+        headers: headers);
+    print("after stoping $response");
+    return jsonDecode(response);
+  }
+
+  recordAudio({String? channelname, String? token}) async {
+    print("recordAudio");
+    var rng = new Random();
+    var code = rng.nextInt(900000) + 100000;
+    String uid = code.toString();
+    recordinguid.value = uid.toString();
+    var resourceId = await getResourceId(channelname: channelname, uid: uid);
+
+    resourceIdV.value = resourceId["resourceId"];
+    var startrecording = await startRecording(
+        resourceid: resourceId["resourceId"],
+        channelname: channelname,
+        uid: uid,
+        token: token);
+    resourceSid.value = startrecording["sid"];
+
+    await RoomAPI().updateRoomByIdNew({
+      "resourceId": resourceId["resourceId"],
+      "recordingsid": startrecording["sid"],
+      "recordingUid": uid,
+    }, channelname!);
+    print("startrecording $startrecording");
   }
 
   void agoraListeners() {
@@ -775,6 +935,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         if (totalVolume > 2) {
           writeToDbRoomActive();
         }
+      }, activeSpeaker: (int id) {
+        print("active speaker $id");
       }),
     );
   }

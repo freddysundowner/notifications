@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
-import 'package:fluttergistshop/models/chat_room_model.dart';
+import 'package:fluttergistshop/models/chat.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -40,7 +40,7 @@ class ChatRoomPage extends StatelessWidget {
                               itemCount: _chatController.currentChat.length,
                               itemBuilder: (context, index) {
                                 printOut(_chatController.currentChat.length);
-                                ChatRoomModel chat = _chatController.currentChat
+                                Chat chat = _chatController.currentChat
                                     .elementAt(index);
                                 return Align(
                                   alignment:

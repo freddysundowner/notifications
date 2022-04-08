@@ -24,7 +24,6 @@ class UserAPI {
   }
 
   getUserProfile(String uid) async {
-    print("getUserprofile ${userById + uid}");
     var user =
         await DbBase().databaseRequest(userById + uid, DbBase().getRequestType);
 
@@ -152,7 +151,6 @@ class UserAPI {
   }
 
   static Future<UserModel> getUserById() async {
-    print("getUserById ${FirebaseAuth.instance.currentUser!.uid}");
     var response = await Api.callApi(
         method: config.get,
         endpoint: config.users + FirebaseAuth.instance.currentUser!.uid);
@@ -187,7 +185,6 @@ class UserAPI {
   static deleteAddressForCurrentUser(String addressId) async {
     var response = await DbBase().databaseRequest(
         config.address + addressId, DbBase().deleteRequestType);
-    print("deleteAddressForCurrentUser $response");
     return jsonDecode(response)["success"];
   }
 
@@ -206,8 +203,6 @@ class UserAPI {
   }
 
   static uploadDisplayPictureForCurrentUser(String downloadUrl) async {
-    print(
-        "uploadDisplayPictureForCurrentUser ${{"profilePhoto": downloadUrl}}");
     await DbBase().databaseRequest(
         config.users + FirebaseAuth.instance.currentUser!.uid,
         DbBase().patchRequestType,
@@ -225,7 +220,6 @@ class UserAPI {
       favorite + FirebaseAuth.instance.currentUser!.uid,
       DbBase().getRequestType,
     );
-    print("getMyFavorites ${jsonDecode(response)}");
     return jsonDecode(response);
   }
 

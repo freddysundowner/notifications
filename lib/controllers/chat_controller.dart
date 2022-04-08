@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttergistshop/models/all_chats_model.dart';
-import 'package:fluttergistshop/models/chat_room_model.dart';
+import 'package:fluttergistshop/models/inbox.dart';
+import 'package:fluttergistshop/models/chat.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
@@ -36,32 +36,38 @@ class ChatController extends GetxController {
         .collection("chats")
         .where("userIds", arrayContains: userId)
         .get()
-        .then((querySnapshot) {
-      gettingChats.value = false;
+        .then((value) {
+      db
+          .collection("chats")
+          .where("userIds", arrayContains: userId)
+          .get()
+          .then((querySnapshot) {
+        gettingChats.value = false;
 
-      printOut("Chats loaded ${querySnapshot.docs.length}");
-      allUserChats.value = [];
-      for (var i = 0; i < querySnapshot.docs.length; i++) {
-        var snapshot = querySnapshot.docs.elementAt(i);
+        printOut("Chats loaded ${querySnapshot.docs.length}");
+        allUserChats.value = [];
+        for (var i = 0; i < querySnapshot.docs.length; i++) {
+          var snapshot = querySnapshot.docs.elementAt(i);
 
-        AllChatsModel allChatsModel = AllChatsModel(
-            snapshot.id,
-            snapshot.get("lastMessage"),
-            snapshot.get("lastMessageTime"),
-            snapshot.get("lastSender"),
-            snapshot.get("userIds"),
-            snapshot.get("users"),
-            snapshot.get(userId) ?? 0);
+          Inbox allChatsModel = Inbox(
+              snapshot.id,
+              snapshot.get("lastMessage"),
+              snapshot.get("lastMessageTime"),
+              snapshot.get("lastSender"),
+              snapshot.get("userIds"),
+              snapshot.get("users"),
+              snapshot.get(userId) ?? 0);
 
-        newChats.add(allChatsModel);
-      }
+          newChats.add(allChatsModel);
+        }
 
-      newChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+        newChats.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
 
-      allUserChats.value = newChats;
-    }).onError((error, stackTrace) {
-      gettingChats.value = false;
-      printOut("Error getting all chats $error $stackTrace");
+        allUserChats.value = newChats;
+      }).onError((error, stackTrace) {
+        gettingChats.value = false;
+        printOut("Error getting all chats $error $stackTrace");
+      });
     });
   }
 
@@ -77,7 +83,7 @@ class ChatController extends GetxController {
       for (var i = 0; i < snapshot.docs.length; i++) {
         var documentSnapshot = snapshot.docs.elementAt(i);
 
-        ChatRoomModel chatRoomModel = ChatRoomModel(
+        Chat chatRoomModel = Chat(
             documentSnapshot.get("date"),
             documentSnapshot.id,
             documentSnapshot.get("message"),
@@ -100,7 +106,7 @@ class ChatController extends GetxController {
 
     String chatId = "";
     for (var i = 0; i < allUserChats.length; i++) {
-      AllChatsModel chatsModel = allUserChats.elementAt(i);
+      Inbox chatsModel = allUserChats.elementAt(i);
 
       for (String user in chatsModel.userIds) {
         if (user == otherUser.id) {
@@ -142,7 +148,7 @@ class ChatController extends GetxController {
       printOut("Auto generated Firestore id $genId");
     }
 
-    ChatRoomModel newChat = ChatRoomModel(
+    Chat newChat = Chat(
         DateTime.now().millisecondsSinceEpoch.toString(),
         currentChatId.value,
         message,
@@ -203,7 +209,7 @@ class ChatController extends GetxController {
         .doc(currentChatId.value)
         .set(data, SetOptions(merge: true))
         .then((value) {
-      AllChatsModel allChatsModel = AllChatsModel(
+      Inbox allChatsModel = Inbox(
           chatId,
           message,
           DateTime.now().millisecondsSinceEpoch.toString(),

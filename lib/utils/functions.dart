@@ -1,15 +1,14 @@
-
+import 'package:flutter/foundation.dart';
 
 printOut(data) {
-  print(data);
-  // if (kDebugMode) {
-  //   print(data);
-  // }
+  if (kDebugMode) {
+    // print(data);
+  }
 }
 
 String convertTime(String time) {
   var convertedTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-  var timeDifference ="$convertedTime";
+  var timeDifference = "$convertedTime";
 
   var diff = DateTime.now().difference(convertedTime);
 

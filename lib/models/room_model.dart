@@ -33,6 +33,9 @@ class RoomModel {
     this.roomType,
     this.invitedhostIds,
     this.activeTime,
+    this.resourceId,
+    this.recordingsid,
+    this.recordingUid,
   });
 
   List<Product>? productIds;
@@ -48,6 +51,9 @@ class RoomModel {
   int? activeTime;
   UserModel? ownerId;
   String? title = "";
+  String? recordingUid = "";
+  String? resourceId = "";
+  String? recordingsid = "";
   Shop? shopId;
   int? productPrice;
   int? v;
@@ -97,6 +103,9 @@ class RoomModel {
         productPrice: json["productPrice"],
         v: json["__v"],
         token: json["token"],
+        recordingsid: json["recordingsid"] ?? "",
+        recordingUid: json["recordingUid"] ?? "",
+        resourceId: json["resourceId"] ?? "",
         activeTime: json["activeTime"] ?? DateTime.now().microsecondsSinceEpoch,
         roomType: json["roomType"],
       );
@@ -131,7 +140,10 @@ class RoomModel {
         "productPrice": productPrice,
         "__v": v,
         "token": token,
-        "roomType": roomType
+        "roomType": roomType,
+        "recordingsid": recordingsid,
+        "recordingUid": recordingUid,
+        "resourceId": resourceId,
       };
 }
 

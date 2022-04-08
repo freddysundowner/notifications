@@ -13,17 +13,17 @@ import 'end_points.dart';
 class OrderApi {
   static checkOut(Order order, String productId) async {
     Get.find<CheckOutController>().msg.value = "";
-    print({"productId": productId, "quantity": order.quantity});
     var responsecheck = await DbBase().databaseRequest(
         singleproductqtycheck + productId, DbBase().postRequestType,
         body: {"productId": productId, "quantity": order.quantity});
-    print(responsecheck);
     var dd = jsonDecode(responsecheck);
     if (dd["status"] == true) {
-
       var response = await DbBase().databaseRequest(
-          config.orders + FirebaseAuth.instance.currentUser!.uid, DbBase().postRequestType,
-          body: {"order": [order.toJson()]});
+          config.orders + FirebaseAuth.instance.currentUser!.uid,
+          DbBase().postRequestType,
+          body: {
+            "order": [order.toJson()]
+          });
 
       printOut("Checkout response $response");
 

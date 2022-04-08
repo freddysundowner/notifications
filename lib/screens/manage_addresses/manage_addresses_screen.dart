@@ -149,7 +149,6 @@ class ManageAddressesScreen extends StatelessWidget {
       } on FirebaseException catch (e) {
         snackbarMessage = "Something went wrong";
       } catch (e) {
-        print(e.toString());
         snackbarMessage = e.toString();
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(

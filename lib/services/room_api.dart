@@ -56,6 +56,20 @@ class RoomAPI {
     }
   }
 
+  updateRoomByIdNew(Map<String, dynamic> body, String id) async {
+    print("updateRoomByIdNew $body");
+    print("updateRoomByIdNew $id");
+    try {
+      var updated = await DbBase().databaseRequest(
+          updateRoomNew + id, DbBase().patchRequestType,
+          body: body);
+
+      printOut("updateRoomByIdNew $updated");
+    } catch (e) {
+      printOut("Error updateRoomByIdNew room $e");
+    }
+  }
+
   updateRoomById(Map<String, dynamic> body, String id) async {
     final RoomController _homeController = Get.find<RoomController>();
     try {
@@ -63,9 +77,10 @@ class RoomAPI {
         body.addAll({"title": _homeController.currentRoom.value.title});
       }
       if (body["activeTime"] == null) {
-        body.addAll({"activeTime" : _homeController.currentRoom.value.activeTime,});
+        body.addAll({
+          "activeTime": _homeController.currentRoom.value.activeTime,
+        });
       }
-
 
       printOut("Room to be updated title ${body["title"]}");
       var updated = await DbBase().databaseRequest(

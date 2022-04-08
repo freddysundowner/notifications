@@ -19,8 +19,6 @@ class CustomSocketIO {
     });
 
     socketIO.on("disconnect", (data) {
-      print("Socket Disconnected Unexpectedly..");
-
       try {
         _connectSocket(onSocketConnected);
       } catch (e, s) {

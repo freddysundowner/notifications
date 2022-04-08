@@ -15,16 +15,18 @@ class DbBase {
   var deleteRequestType = "DELETE";
 
   databaseRequest(String link, String type,
-      {Map<String, dynamic>? body}) async {
+      {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     // _tryConnection();
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("access_token");
 
-      var headers = {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + (token ?? "")
-      };
+      if (headers == null) {
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer " + (token ?? "")
+        };
+      }
 
       var request = http.Request(type, Uri.parse(link));
 

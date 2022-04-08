@@ -47,7 +47,7 @@ class ChatRoomPage extends StatelessWidget {
                                               _sc.position.maxScrollExtent)
                                         });
                                 printOut(_chatController.currentChat.length);
-                                ChatRoomModel chat = _chatController.currentChat
+                                Chat chat = _chatController.currentChat
                                     .elementAt(index);
                                 return Align(
                                   alignment:

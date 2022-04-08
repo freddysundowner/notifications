@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 
-class AllChatsModel {
+class Inbox {
   String id;
   String lastMessage;
   String lastMessageTime;
@@ -10,7 +10,7 @@ class AllChatsModel {
   List<dynamic> users;
   int unread;
 
-  AllChatsModel(this.id, this.lastMessage,
+  Inbox(this.id, this.lastMessage,
       this.lastMessageTime, this.lastSender, this.userIds, this.users, this.unread);
 
   Map<String, dynamic> toMap() {
@@ -24,8 +24,8 @@ class AllChatsModel {
     };
   }
 
-  factory AllChatsModel.fromMap(Map<String, dynamic> map) {
-    return AllChatsModel(
+  factory Inbox.fromMap(Map<String, dynamic> map) {
+    return Inbox(
       map['id'] as String,
       map['chatTitle'] as String,
       map['imageUrl'] as String,

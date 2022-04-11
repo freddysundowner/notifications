@@ -372,30 +372,34 @@ class HomePage extends StatelessWidget {
                             ),
                             SizedBox(
                               height: 0.1.sh,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: roomModel.hostIds?.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: roomModel.hostIds?[index]
-                                                    .profilePhoto ==
-                                                ""
-                                            ? const CircleAvatar(
-                                                radius: 22,
-                                                backgroundImage: AssetImage(
-                                                    "assets/icons/profile_placeholder.png"))
-                                            : CircleAvatar(
-                                                radius: 22,
-                                                onBackgroundImageError: (object,
-                                                        stacktrace) =>
-                                                    const AssetImage(
-                                                        "assets/icons/profile_placeholder.png"),
-                                                backgroundImage: NetworkImage(
-                                                    roomModel.hostIds![index]
-                                                        .profilePhoto!),
-                                              ));
-                                  }),
+                              child: Row(
+                                children: [
+                                   Stack(
+                                    children: roomModel.hostIds!.map((e) {
+                                      var index = roomModel.hostIds!.indexOf(e);
+                                      return Padding(
+                                          padding: EdgeInsets.only(left: (30.0 * index)),
+                                          child: e
+                                              .profilePhoto ==
+                                              ""
+                                              ? const CircleAvatar(
+                                              radius: 22,
+                                              backgroundImage: AssetImage(
+                                                  "assets/icons/profile_placeholder.png"))
+                                              : CircleAvatar(
+                                            radius: 22,
+                                            onBackgroundImageError: (object,
+                                                stacktrace) =>
+                                            const AssetImage(
+                                                "assets/icons/profile_placeholder.png"),
+                                            backgroundImage: NetworkImage(
+                                                e
+                                                    .profilePhoto!),
+                                          ));
+                                    }).toList(),
+                                  )
+                                ],
+                              ),
                             ),
                             roomModel.title != " "
                                 ? Column(

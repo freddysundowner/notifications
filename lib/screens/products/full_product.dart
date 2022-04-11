@@ -66,7 +66,7 @@ class FullProduct extends StatelessWidget {
                 imageList: productController.currentProduct.value!.images!,
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -136,12 +136,11 @@ class FullProduct extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: Get.find<FavoriteController>()
                                                 .products
-                                                .value
                                                 .indexWhere((element) =>
                                                     element.id == product.id) !=
                                             -1
                                         ? Colors.red
-                                        : Color(0xFFDCDCDC),
+                                        : const Color(0xFFDCDCDC),
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   alignment: Alignment.center,

@@ -102,8 +102,8 @@ class MainPage extends StatelessWidget {
         body: _pages[_global.tabPosition.value],
         bottomNavigationBar: Container(
           height: 80,
-          padding: EdgeInsets.only(bottom: 20, right: 10, left: 10),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.only(bottom: 20, right: 10, left: 10),
+          decoration: const BoxDecoration(
             color: Colors.white,
           ),
           child: Row(
@@ -283,8 +283,8 @@ class MainPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 15.0),
                           child: Container(
-                            height: 0.03.sh,
-                            width: 0.04.sw,
+                            height: 0.025.sh,
+                            width: 0.041.sw,
                             decoration: BoxDecoration(
                                 color: Colors.red,
                                 borderRadius: BorderRadius.circular(30)),
@@ -292,7 +292,7 @@ class MainPage extends StatelessWidget {
                                 child: Text(
                               _chatController.unReadChats.toString(),
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 12.sp),
+                                  color: Colors.white, fontSize: 10.sp),
                             )),
                           ),
                         )

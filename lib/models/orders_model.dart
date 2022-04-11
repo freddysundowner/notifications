@@ -51,7 +51,7 @@ class OrdersModel {
       id: json["_id"] == null ? null : json["_id"],
       customerId: UserModel.fromJson(json["customerId"] ?? {}),
       shippingId:
-          ShippingId.fromJson(jsonDecode(json["shippingAddress"]) ?? {}),
+          ShippingId.fromJson(json["shippingId"] ?? jsonDecode(json["shippingAddress"]) ?? {}),
       shopId: json["shopId"] == null ? null : json["shopId"],
       subTotal: json["subTotal"] == null ? null : json["subTotal"],
       tax: json["tax"] == null ? null : json["tax"],

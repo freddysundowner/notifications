@@ -8,9 +8,17 @@ import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/shop_controller.dart';
+import '../../controllers/user_controller.dart';
+import '../products/full_product.dart';
+import '../profile/profile.dart';
+import '../shops/shop_view.dart';
+
 class IndividualOrderScreen extends StatelessWidget {
   OrdersModel ordersModel;
   final OrderController _orderController = Get.find<OrderController>();
+  final UserController _userController = Get.find<UserController>();
+  final ShopController _shopController = Get.find<ShopController>();
 
   IndividualOrderScreen(this.ordersModel, {Key? key}) : super(key: key);
 
@@ -122,299 +130,546 @@ class IndividualOrderScreen extends StatelessWidget {
               color: Colors.black12,
               thickness: 10,
             ),
-            SizedBox(
-              height: 0.02.sh,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
-              child: Text(
-                "Delivery information",
-                style: TextStyle(color: Colors.black, fontSize: 16.sp),
-              ),
-            ),
-            SizedBox(
-              height: 0.02.sh,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Name: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 0.03.sw,
-                      ),
-                      Text(
-                        "${ordersModel.shippingId!.name}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 0.02.sh,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: Text(
+                    "Delivery information",
+                    style: TextStyle(color: Colors.black, fontSize: 16.sp),
                   ),
-                  Row(
+                ),
+                SizedBox(
+                  height: 0.02.sh,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: Column(
                     children: [
-                      Text(
-                        "Phone: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 0.03.sw,
-                      ),
-                      Text(
-                        "${ordersModel.shippingId!.phone}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Address 1: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 0.03.sw,
-                      ),
-                      Text(
-                        "${ordersModel.shippingId!.addrress1}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Address 2: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 0.03.sw,
-                      ),
-                      Text(
-                        "${ordersModel.shippingId!.addrress2}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "City: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 0.03.sw,
-                      ),
-                      Text(
-                        "${ordersModel.shippingId!.city}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "State: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      SizedBox(
-                        width: 0.03.sw,
-                      ),
-                      Text(
-                        "${ordersModel.shippingId!.state}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 0.02.sh,
-            ),
-            const Divider(
-              color: Colors.black12,
-              thickness: 10,
-            ),
-            SizedBox(
-              height: 0.02.sh,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
-              child: Text(
-                "Product information",
-                style: TextStyle(color: Colors.black, fontSize: 16.sp),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: ordersModel
-                                  .itemId!.productId!.images!.isNotEmpty
-                              ? Image.network(
-                                  ordersModel.itemId!.productId!.images!.first,
-                                  height: 0.1.sh,
-                                  width: 0.2.sw,
-                                  fit: BoxFit.fill,
-                                )
-                              : Image.asset(
-                                  "assets/icons/no_image.png",
-                                  height: 0.1.sh,
-                                  width: 0.2.sw,
-                                  fit: BoxFit.fill,
-                                ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
                           Text(
-                            ordersModel.itemId!.productId!.name!,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 14.sp),
+                            "Name: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            width: 0.03.sw,
                           ),
                           Text(
-                            "$gccurrency ${(ordersModel.totalCost! / ordersModel.itemId!.quantity!)} x ${ordersModel.itemId!.quantity}",
+                            "${ordersModel.shippingId!.name}",
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.bold),
+                                color: Colors.black54, fontSize: 16.sp),
                           ),
-                          if (ordersModel
-                              .itemId!.productId!.variations!.isNotEmpty)
-                            Row(
-                              children: [
-                                Text(
-                                  "Variation:",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 14.sp),
-                                ),
-                                SizedBox(
-                                  width: 0.02.sw,
-                                ),
-                                Text(
-                                  ordersModel.itemId!.variation != ""
-                                      ? ordersModel.itemId!.variation.toString()
-                                      : ordersModel
-                                          .itemId!.productId!.variations!.first,
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 14.sp),
-                                ),
-                              ],
-                            ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Phone: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            width: 0.03.sw,
+                          ),
+                          Text(
+                            "${ordersModel.shippingId!.phone}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Address 1: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            width: 0.03.sw,
+                          ),
+                          Text(
+                            "${ordersModel.shippingId!.addrress1}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "Address 2: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            width: 0.03.sw,
+                          ),
+                          Text(
+                            "${ordersModel.shippingId!.addrress2}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "City: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            width: 0.03.sw,
+                          ),
+                          Text(
+                            "${ordersModel.shippingId!.city}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "State: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            width: 0.03.sw,
+                          ),
+                          Text(
+                            "${ordersModel.shippingId!.state}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 0.02.sh,
+                ),
+                SizedBox(
+                  height: 0.02.sh,
+                ),
+              ],
             ),
             const Divider(
               color: Colors.black12,
               thickness: 10,
             ),
-            SizedBox(
-              height: 0.02.sh,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
+            InkWell(
+              onTap: () {
+                Get.to(FullProduct(
+                  product: ordersModel.itemId!.productId!,
+                ));
+              },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Order summary ",
-                    style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                  SizedBox(
+                    height: 0.02.sh,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Quantity: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      Text(
-                        "x ${ordersModel.itemId!.quantity}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                    child: Text(
+                      "Product information",
+                      style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Subtotal: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      Text(
-                        "$gccurrency ${ordersModel.totalCost! - ordersModel.shippingFee!}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: ordersModel
+                                        .itemId!.productId!.images!.isNotEmpty
+                                    ? Image.network(
+                                        ordersModel
+                                            .itemId!.productId!.images!.first,
+                                        height: 0.1.sh,
+                                        width: 0.2.sw,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : Image.asset(
+                                        "assets/icons/no_image.png",
+                                        height: 0.1.sh,
+                                        width: 0.2.sw,
+                                        fit: BoxFit.fill,
+                                      ),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ordersModel.itemId!.productId!.name!,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14.sp),
+                                ),
+                                Text(
+                                  "$gccurrency ${(ordersModel.totalCost! / ordersModel.itemId!.quantity!)} x ${ordersModel.itemId!.quantity}",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                if (ordersModel
+                                    .itemId!.productId!.variations!.isNotEmpty)
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Variation:",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 0.02.sw,
+                                      ),
+                                      Text(
+                                        ordersModel.itemId!.variation != ""
+                                            ? ordersModel.itemId!.variation
+                                                .toString()
+                                            : ordersModel.itemId!.productId!
+                                                .variations!.first,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14.sp),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Shipping: ",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                      Text(
-                        "$gccurrency ${ordersModel.shippingFee}",
-                        style:
-                            TextStyle(color: Colors.black54, fontSize: 16.sp),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Order total: ",
-                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
-                      ),
-                      Text(
-                        "$gccurrency ${ordersModel.totalCost}",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  SizedBox(
+                    height: 0.02.sh,
                   ),
                 ],
               ),
             ),
-            SizedBox(
-              height: 0.03.sh,
+            const Divider(
+              color: Colors.black12,
+              thickness: 10,
+            ),
+            ordersModel.itemId!.productId!.ownerId!.shopId!.id ==
+                    Get.find<AuthController>().usermodel.value!.shopId!.id
+                ? InkWell(
+                    onTap: () {
+                      _userController
+                          .getUserProfile(ordersModel.customerId!.id!);
+                      Get.to(Profile());
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 0.02.sh,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0, right: 15),
+                          child: Text(
+                            "Customer information",
+                            style:
+                            TextStyle(color: Colors.black, fontSize: 16.sp),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0, right: 15),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: ordersModel.itemId!.productId!.ownerId!
+                                      .shopId!.image !=
+                                      ""
+                                      ? Image.network(
+                                    ordersModel.itemId!.productId!
+                                        .ownerId!.shopId!.image!,
+                                    height: 0.1.sh,
+                                    width: 0.2.sw,
+                                    fit: BoxFit.fill,
+                                  )
+                                      : Image.asset(
+                                    "assets/icons/no_image.png",
+                                    height: 0.1.sh,
+                                    width: 0.2.sw,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Name: ",
+                                              style: TextStyle(
+                                                  color: Colors.black54, fontSize: 16.sp),
+                                            ),
+                                            SizedBox(
+                                              width: 0.03.sw,
+                                            ),
+                                            Text(
+                                              "${ordersModel.customerId!.firstName} ${ordersModel.customerId!.lastName}",
+                                              style: TextStyle(
+                                                  color: Colors.black54, fontSize: 16.sp),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "UserName: ",
+                                              style: TextStyle(
+                                                  color: Colors.black54, fontSize: 16.sp),
+                                            ),
+                                            SizedBox(
+                                              width: 0.03.sw,
+                                            ),
+                                            Text(
+                                              "${ordersModel.customerId!.userName}",
+                                              style: TextStyle(
+                                                  color: Colors.black54, fontSize: 16.sp),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 0.02.sh,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : InkWell(
+                    onTap: () {
+                      _shopController.currentShop.value =
+                          ordersModel.itemId!.productId!.ownerId!.shopId!;
+                      Get.to(() => ShopView());
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 0.02.sh,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0, right: 15),
+                          child: Text(
+                            "Shop information",
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 16.sp),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0, right: 15),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: ordersModel.itemId!.productId!.ownerId!
+                                              .shopId!.image !=
+                                          ""
+                                      ? Image.network(
+                                          ordersModel.itemId!.productId!
+                                              .ownerId!.shopId!.image!,
+                                          height: 0.1.sh,
+                                          width: 0.2.sw,
+                                          fit: BoxFit.fill,
+                                        )
+                                      : Image.asset(
+                                          "assets/icons/no_image.png",
+                                          height: 0.1.sh,
+                                          width: 0.2.sw,
+                                          fit: BoxFit.fill,
+                                        ),
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Name:",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 0.03.sw,
+                                      ),
+                                      Text(
+                                        "${ordersModel.itemId!.productId!.ownerId!.shopId!.name}",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16.sp),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Description:",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 0.03.sw,
+                                      ),
+                                      Text(
+                                        ordersModel.itemId!.productId!.ownerId!
+                                                    .shopId!.description
+                                                    .toString()
+                                                    .length >
+                                                10
+                                            ? ordersModel
+                                                    .itemId!
+                                                    .productId!
+                                                    .ownerId!
+                                                    .shopId!
+                                                    .description
+                                                    .toString()
+                                                    .substring(0, 10) +
+                                                "..."
+                                            : ordersModel.itemId!.productId!
+                                                .ownerId!.shopId!.description
+                                                .toString(),
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 16.sp),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 0.02.sh,
+                        ),
+                      ],
+                    ),
+                  ),
+            const Divider(
+              color: Colors.black12,
+              thickness: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 0.02.sh,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Order summary ",
+                        style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Quantity: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          Text(
+                            "x ${ordersModel.itemId!.quantity}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Subtotal: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          Text(
+                            "$gccurrency ${ordersModel.totalCost! - ordersModel.shippingFee!}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Shipping: ",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                          Text(
+                            "$gccurrency ${ordersModel.shippingFee}",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16.sp),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Order total: ",
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 16.sp),
+                          ),
+                          Text(
+                            "$gccurrency ${ordersModel.totalCost}",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 0.03.sh,
+                ),
+              ],
             ),
           ],
         ),

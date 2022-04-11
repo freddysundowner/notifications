@@ -9,7 +9,7 @@ class ProductSize extends StatelessWidget {
   final List productSizes;
   final Function(String) onSelected;
   CheckOutController checkOutController = Get.find<CheckOutController>();
-  ProductSize({required this.productSizes, required this.onSelected});
+  ProductSize({Key? key, required this.productSizes, required this.onSelected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

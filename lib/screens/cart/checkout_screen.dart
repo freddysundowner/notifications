@@ -434,7 +434,8 @@ class CheckOut extends StatelessWidget {
         shippingFee: checkOutController.shipping.value.toString(),
         quantity: int.parse(checkOutController.qty.value.toString()),
         productOwnerId:
-            checkOutController.product.value!.ownerId!.id.toString());
+            checkOutController.product.value!.ownerId!.id.toString(),
+        variation: checkOutController.selectetedvariationvalue.value);
     // Checkout checkout = new Checkout(order: order);
     // checkOutController.checkout.value = checkOutController.checkout.value.
     final orderFuture =

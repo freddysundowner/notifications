@@ -82,8 +82,10 @@ class IndividualOrderScreen extends StatelessWidget {
             if (ordersModel.shopId ==
                 Get.find<AuthController>().usermodel.value!.shopId!.id)
               Obx(() {
-                return (_orderController.currentOrder.value.status != "delivered" &&
-                    _orderController.currentOrder.value.status != "cancelled")
+                return (_orderController.currentOrder.value.status !=
+                            "delivered" &&
+                        _orderController.currentOrder.value.status !=
+                            "cancelled")
                     ? InkWell(
                         onTap: () {
                           showUpdateOrderStatusBottomSheet(context);
@@ -299,6 +301,28 @@ class IndividualOrderScreen extends StatelessWidget {
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.bold),
                           ),
+                          if (ordersModel
+                              .itemId!.productId!.variations!.isNotEmpty)
+                            Row(
+                              children: [
+                                Text(
+                                  "Variation:",
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14.sp),
+                                ),
+                                SizedBox(
+                                  width: 0.02.sw,
+                                ),
+                                Text(
+                                  ordersModel.itemId!.variation != ""
+                                      ? ordersModel.itemId!.variation.toString()
+                                      : ordersModel
+                                          .itemId!.productId!.variations!.first,
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14.sp),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     ],

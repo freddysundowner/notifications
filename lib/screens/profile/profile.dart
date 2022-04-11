@@ -107,7 +107,7 @@ class Profile extends StatelessWidget {
                             InkWell(
                                 onTap: () {
                                   if (profile.id ==
-                                      authController.currentuser!.id) {
+                                      FirebaseAuth.instance.currentUser!.uid) {
                                     Get.to(() => ChageProfileImage());
                                   }
                                 },
@@ -142,7 +142,12 @@ class Profile extends StatelessWidget {
                                             height: 0.14.sh),
                                       )),
                             InkWell(
-                              onTap: () => updateName(context),
+                              onTap: () {
+                                if (profile.id !=
+                                    FirebaseAuth.instance.currentUser!.uid) {
+                                  updateName(context);
+                                }
+                              },
                               child: Text(
                                 "${profile.firstName} ${profile.lastName}",
                                 style: TextStyle(
@@ -273,7 +278,10 @@ class Profile extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                updateBio(context);
+                                if (profile.id !=
+                                    FirebaseAuth.instance.currentUser!.uid) {
+                                  updateBio(context);
+                                }
                               },
                               child: Text(
                                 profile.bio == null ? "Add Bio" : profile.bio!,

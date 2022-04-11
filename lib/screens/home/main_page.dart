@@ -23,7 +23,7 @@ import 'package:ionicons/ionicons.dart';
 class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
 
-  GlobalController _global = Get.find<GlobalController>();
+  final GlobalController _global = Get.find<GlobalController>();
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());

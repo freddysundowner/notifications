@@ -11,11 +11,15 @@ import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/global.dart';
+
 
 class SettingsPage extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();
   AuthController authController = Get.find<AuthController>();
   final RoomController _homeController = Get.find<RoomController>();
+  final GlobalController _global = Get.find<GlobalController>();
+
   String socialLinkError = '';
   final _formKey = GlobalKey<FormState>();
 
@@ -29,256 +33,262 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: const Color(0xfff5f5f5),
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
-          "Settings",
-          style: TextStyle(color: Colors.white),
+    return  WillPopScope(
+      onWillPop: () async {
+        _global.tabPosition.value = 0;
+        return false;
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: const Color(0xfff5f5f5),
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: const Text(
+            "Settings",
+            style: TextStyle(color: Colors.white),
+          ),
+          centerTitle: false,
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-              left: 20.0,
-              right: 20,
-              top: 20,
-              bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () => setSocialLink('twitter', context),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Twitter",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: 20.0,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () => setSocialLink('twitter', context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Twitter",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    const Divider(),
-                    InkWell(
-                      onTap: () => setSocialLink('instagram', context),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Instagram",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
+                      const Divider(),
+                      InkWell(
+                        onTap: () => setSocialLink('instagram', context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Instagram",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    const Divider(),
-                    InkWell(
-                      onTap: () => setSocialLink('facebook', context),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Facebook",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
+                      const Divider(),
+                      InkWell(
+                        onTap: () => setSocialLink('facebook', context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Facebook",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    const Divider(),
-                    InkWell(
-                      onTap: () => setSocialLink('linkedIn', context),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "LinkedIn",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
+                      const Divider(),
+                      InkWell(
+                        onTap: () => setSocialLink('linkedIn', context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "LinkedIn",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 0.03.sh,
-              ),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        _userController.getUserOrders();
-                        Get.to(OrdersScreen());
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Orders",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
-                    ),
-                    const Divider(),
-                    InkWell(
-                      onTap: () {
-                        Get.to(ManageAddressesScreen(false));
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Addresses",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 0.03.sh,
-              ),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "What's new",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
-                    ),
-                    const Divider(),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "FAQ/Contact us",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
-                    ),
-                    const Divider(),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Community guidelines",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          const Icon(
-                            Icons.navigate_next,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 0.03.sh,
-              ),
-              Container(
-                width: 0.9.sw,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white),
-                child: InkWell(
-                  onTap: () {
-                    Get.defaultDialog(
-                        onConfirm: () => authController.signOut(),
-                        title: "Log out",
-                        content:
-                            const Text("Are you sure you want to log out?"),
-                        onCancel: () => Get.back(),
-                        textConfirm: "LogOut");
-                  },
-                  child: Text(
-                    "Log out",
-                    style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 0.03.sh,
-              ),
-            ],
+                SizedBox(
+                  height: 0.03.sh,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _userController.getUserOrders();
+                          Get.to(OrdersScreen());
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Orders",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                      InkWell(
+                        onTap: () {
+                          Get.to(ManageAddressesScreen(false));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Addresses",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 0.03.sh,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "What's new",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                      InkWell(
+                        onTap: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "FAQ/Contact us",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                      InkWell(
+                        onTap: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Community guidelines",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 0.03.sh,
+                ),
+                Container(
+                  width: 0.9.sw,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: InkWell(
+                    onTap: () {
+                      Get.defaultDialog(
+                          onConfirm: () => authController.signOut(),
+                          title: "Log out",
+                          content:
+                              const Text("Are you sure you want to log out?"),
+                          onCancel: () => Get.back(),
+                          textConfirm: "LogOut");
+                    },
+                    child: Text(
+                      "Log out",
+                      style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 0.03.sh,
+                ),
+              ],
+            ),
           ),
         ),
       ),

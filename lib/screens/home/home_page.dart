@@ -6,7 +6,6 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
-import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
@@ -18,6 +17,8 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+
+import '../../services/dynamic_link_services.dart';
 
 class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
@@ -40,6 +41,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
+    DynamicLinkService().handleDynamicLinks();
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -299,7 +301,10 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   RoomModel roomModel = RoomModel.fromJson(
                       _homeController.roomsList.elementAt(index));
-
+                  var hosts = [];
+                  hosts = roomModel.hostIds!.length > 10
+                      ? roomModel.hostIds!.sublist(0, 10)
+                      : roomModel.hostIds!;
                   return InkWell(
                     onTap: () async {
                       if (roomModel.id != null) {
@@ -330,6 +335,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ]),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
@@ -356,32 +362,34 @@ class HomePage extends StatelessWidget {
                                 ),
                               ],
                             ),
+
+                            SizedBox(
+                              height: 0.01.sh,
+                            ),
                             SizedBox(
                               height: 0.1.sh,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: roomModel.hostIds?.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: roomModel.hostIds?[index]
-                                                    .profilePhoto ==
-                                                ""
-                                            ? const CircleAvatar(
-                                                radius: 22,
-                                                backgroundImage: AssetImage(
-                                                    "assets/icons/profile_placeholder.png"))
-                                            : CircleAvatar(
-                                                radius: 22,
-                                                onBackgroundImageError: (object,
-                                                        stacktrace) =>
-                                                    const AssetImage(
-                                                        "assets/icons/profile_placeholder.png"),
-                                                backgroundImage: NetworkImage(
-                                                    roomModel.hostIds![index]
-                                                        .profilePhoto!),
-                                              ));
-                                  }),
+                              child: Stack(
+                                children: hosts.map((e) {
+                                  var index = hosts.indexOf(e);
+                                  return Padding(
+                                      padding:
+                                          EdgeInsets.only(left: (30.0 * index)),
+                                      child: e.profilePhoto == ""
+                                          ? const CircleAvatar(
+                                              radius: 22,
+                                              backgroundImage: AssetImage(
+                                                  "assets/icons/profile_placeholder.png"))
+                                          : CircleAvatar(
+                                              radius: 22,
+                                              onBackgroundImageError: (object,
+                                                      stacktrace) =>
+                                                  const AssetImage(
+                                                      "assets/icons/profile_placeholder.png"),
+                                              backgroundImage:
+                                                  NetworkImage(e.profilePhoto!),
+                                            ));
+                                }).toList(),
+                              ),
                             ),
                             roomModel.title != " "
                                 ? Column(

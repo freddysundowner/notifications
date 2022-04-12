@@ -25,7 +25,7 @@ import 'package:ionicons/ionicons.dart';
 class MainPage extends StatelessWidget {
   MainPage({Key? key}) : super(key: key);
 
-  GlobalController _global = Get.find<GlobalController>();
+  final GlobalController _global = Get.find<GlobalController>();
   AuthController authController = Get.find<AuthController>();
 
   final RoomController _homeController = Get.put(RoomController());
@@ -104,8 +104,8 @@ class MainPage extends StatelessWidget {
         body: _pages[_global.tabPosition.value],
         bottomNavigationBar: Container(
           height: 80,
-          padding: EdgeInsets.only(bottom: 20, right: 10, left: 10),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.only(bottom: 20, right: 10, left: 10),
+          decoration: const BoxDecoration(
             color: Colors.white,
           ),
           child: Row(
@@ -297,8 +297,8 @@ class MainPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 15.0),
                           child: Container(
-                            height: 0.03.sh,
-                            width: 0.04.sw,
+                            height: 0.025.sh,
+                            width: 0.041.sw,
                             decoration: BoxDecoration(
                                 color: Colors.red,
                                 borderRadius: BorderRadius.circular(30)),
@@ -306,7 +306,7 @@ class MainPage extends StatelessWidget {
                                 child: Text(
                               _chatController.unReadChats.toString(),
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 12.sp),
+                                  color: Colors.white, fontSize: 10.sp),
                             )),
                           ),
                         )

@@ -12,7 +12,7 @@ class ImageSwipe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.4.h,
       child: Stack(
         children: [
@@ -22,39 +22,35 @@ class ImageSwipe extends StatelessWidget {
             },
             children: [
               if (imageList.isEmpty)
-                Container(
-                  child: Image.asset(imageplaceholder),
-                ),
+                Image.asset(imageplaceholder),
               if (imageList.isNotEmpty)
                 for (var i = 0; i < imageList.length; i++)
-                  Container(
-                    child: CachedNetworkImage(
-                      imageUrl: "${imageList[i]}",
-                      imageBuilder: (context, imageProvider) => Container(
-                        width: 120.0,
-                        height: 120.0,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover),
-                        ),
+                  CachedNetworkImage(
+                    imageUrl: "${imageList[i]}",
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 120.0,
+                      height: 120.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
                       ),
-                      placeholder: (context, url) => SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: Transform.scale(
-                              scale: 0.3,
-                              child: const CircularProgressIndicator(
-                                color: Colors.black,
-                              ))),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.error,
-                        size: 80,
-                      ),
+                    ),
+                    placeholder: (context, url) => SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Transform.scale(
+                            scale: 0.3,
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ))),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.error,
+                      size: 80,
                     ),
                   )
             ],
           ),
-          if (imageList.length > 0)
+          if (imageList.isNotEmpty)
             Positioned(
               bottom: 20.0,
               left: 0,
@@ -64,9 +60,9 @@ class ImageSwipe extends StatelessWidget {
                     children: [
                       for (var i = 0; i <= imageList.length; i++)
                         AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOutCubic,
-                          margin: EdgeInsets.symmetric(
+                          margin: const EdgeInsets.symmetric(
                             horizontal: 5.0,
                           ),
                           width: productController.selectedPage.value == i

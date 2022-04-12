@@ -21,10 +21,10 @@ class GlobalController extends GetxController {
       if (scrollcontroller.position.atEdge) {
         bool isTop = scrollcontroller.position.pixels == 0;
         if (isTop) {
-          print('At the top');
+          printOut('At the top');
         } else {
           search(searchoption.value,
-              last: searchresults.value[searchresults.value.length - 1]["_id"]);
+              last: searchresults[searchresults.length - 1]["_id"]);
         }
       }
     });
@@ -37,7 +37,18 @@ class GlobalController extends GetxController {
         var results = await ShopApi().searchItems(
             searchShopController.text.trim(), searchOption,
             last: last);
-        searchresults.assignAll(results);
+        //searchresults.assignAll(results);
+       // searchresults.addAll(results);
+        //
+
+        for (var i = 0; i < results.length; i++) {
+          if (searchresults.indexWhere(
+                  (element) => element['_id'] == results[i]['_id']) ==
+              -1) {
+            searchresults.add(results[i]);
+          }
+        }
+
         isSearching.value = false;
       } catch (e) {
         printOut(e.toString());

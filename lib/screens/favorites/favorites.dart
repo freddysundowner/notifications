@@ -11,12 +11,14 @@ import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/global.dart';
 import '../../utils/utils.dart';
 
 class Favorites extends StatelessWidget {
   CheckOutController checkOutController = Get.find<CheckOutController>();
   FavoriteController favproductController = Get.find<FavoriteController>();
   final RoomController _homeController = Get.find<RoomController>();
+  final GlobalController _global = Get.find<GlobalController>();
 
   Favorites({Key? key}) : super(key: key);
 
@@ -27,54 +29,60 @@ class Favorites extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "My favorites",
-            style: TextStyle(color: Colors.black),
+    return WillPopScope(
+      onWillPop: () async {
+        _global.tabPosition.value = 0;
+        return false;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              "My favorites",
+              style: TextStyle(color: Colors.black),
+            ),
+            centerTitle: false,
           ),
-          centerTitle: false,
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
-              child: GetX<UserController>(
-                initState: (_) async {
-                  favproductController.products.value =
-                      await FavoriteController().getFavoriteProducts();
-                },
-                builder: (_) {
-                  return SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      children: [
-                        favproductController.products.length > 0
-                            ? Column(
-                                children: favproductController.products
-                                    .map((e) =>
-                                        buildProductDismissible(e, context))
-                                    .toList(),
-                              )
-                            : SizedBox(
-                                height: 0.5.sh,
-                                child: Center(
-                                    child: Text(
-                                  "You have no favourites yet",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 16.sp),
-                                )),
-                              ),
-                        SizedBox(height: 0.02.sh),
-                      ],
-                    ),
-                  );
-                },
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 0.3.sm),
+                child: GetX<UserController>(
+                  initState: (_) async {
+                    favproductController.products.value =
+                        await FavoriteController().getFavoriteProducts();
+                  },
+                  builder: (_) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          favproductController.products.length > 0
+                              ? Column(
+                                  children: favproductController.products
+                                      .map((e) =>
+                                          buildProductDismissible(e, context))
+                                      .toList(),
+                                )
+                              : SizedBox(
+                                  height: 0.5.sh,
+                                  child: Center(
+                                      child: Text(
+                                    "You have no favourites yet",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 16.sp),
+                                  )),
+                                ),
+                          SizedBox(height: 0.02.sh),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 
   Widget buildProductDismissible(Product product, BuildContext context) {

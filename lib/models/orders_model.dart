@@ -50,8 +50,8 @@ class OrdersModel {
       date: json["date"] == null ? null : json["date"],
       id: json["_id"] == null ? null : json["_id"],
       customerId: UserModel.fromJson(json["customerId"] ?? {}),
-      shippingId:
-          ShippingId.fromJson(jsonDecode(json["shippingAddress"]) ?? {}),
+      shippingId: ShippingId.fromJson(
+          json["shippingId"] ?? jsonDecode(json["shippingAddress"]) ?? {}),
       shopId: json["shopId"] == null ? null : json["shopId"],
       subTotal: json["subTotal"] == null ? null : json["subTotal"],
       tax: json["tax"] == null ? null : json["tax"],
@@ -85,27 +85,30 @@ class ItemId {
     this.productId,
     this.quantity,
     this.orderId,
+    this.variation,
   });
 
   String? id;
   Product? productId;
   int? quantity;
   String? orderId;
+  String? variation;
 
   factory ItemId.fromJson(Map<String, dynamic> json) => ItemId(
-        id: json["_id"] ?? null,
-        productId: json["productId"] == null
-            ? null
-            : Product.fromJson(json["productId"]),
-        quantity: json["quantity"] == null ? null : json["quantity"],
-        orderId: json["orderId"] == null ? null : json["orderId"],
-      );
+      id: json["_id"],
+      productId: json["productId"] == null
+          ? null
+          : Product.fromJson(json["productId"]),
+      quantity: json["quantity"],
+      orderId: json["orderId"],
+      variation: json["variation"] ?? "");
 
   Map<String, dynamic> toJson() => {
-        "_id": id == null ? null : id,
+        "_id": id,
         "productId": productId == null ? null : productId?.toJson(),
-        "quantity": quantity == null ? null : quantity,
-        "orderId": orderId == null ? null : orderId,
+        "quantity": quantity,
+        "orderId": orderId,
+        "variation": variation
       };
 }
 

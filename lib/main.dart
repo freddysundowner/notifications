@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
+import 'package:fluttergistshop/services/dynamic_link_services.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +25,13 @@ final RoomController _homeController = Get.find<RoomController>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   oneSignal();
+
+// // Get any initial links
+//   final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
+//
+//   print("link ${initialLink!.link.toString()}");
 
   runApp(MyApp());
 }
@@ -174,6 +181,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
+    DynamicLinkService().handleDynamicLinks();
   }
 
   @override

@@ -19,9 +19,11 @@ class RoomModel {
     this.hostIds,
     this.userIds,
     this.raisedHands,
+    this.eventDate,
     this.speakerIds,
     this.invitedIds,
     this.status,
+    this.event,
     this.productImages,
     this.id,
     this.ownerId,
@@ -35,6 +37,7 @@ class RoomModel {
     this.activeTime,
     this.resourceId,
     this.recordingsid,
+    this.description,
     this.recordingUid,
   });
 
@@ -45,14 +48,17 @@ class RoomModel {
   List<OwnerId>? raisedHands = [];
   List<OwnerId>? speakerIds = [];
   List<OwnerId>? invitedIds = [];
+  bool? event;
   bool? status;
   List<dynamic>? productImages = [];
   String? id;
   int? activeTime;
   UserModel? ownerId;
   String? title = "";
+  int? eventDate = 0;
   String? recordingUid = "";
   String? resourceId = "";
+  String? description = "";
   String? recordingsid = "";
   Shop? shopId;
   int? productPrice;
@@ -104,10 +110,13 @@ class RoomModel {
         v: json["__v"],
         token: json["token"],
         recordingsid: json["recordingsid"] ?? "",
+        description: json["description"] ?? "",
         recordingUid: json["recordingUid"] ?? "",
         resourceId: json["resourceId"] ?? "",
+        eventDate: json["eventDate"] ?? "",
         activeTime: json["activeTime"] ?? DateTime.now().microsecondsSinceEpoch,
         roomType: json["roomType"],
+        event: json["event"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -143,7 +152,9 @@ class RoomModel {
         "roomType": roomType,
         "recordingsid": recordingsid,
         "recordingUid": recordingUid,
+        "eventDate": eventDate,
         "resourceId": resourceId,
+        "event": event,
       };
 }
 

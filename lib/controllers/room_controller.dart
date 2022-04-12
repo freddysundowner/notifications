@@ -33,6 +33,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var currentProfile = "".obs;
   var profileLoading = false.obs;
   var isLoading = false.obs;
+  var isSwitched = false.obs;
   var allUsersLoading = false.obs;
   var allUsers = [].obs;
   var searchedUsers = [].obs;
@@ -40,6 +41,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var searchedfriendsToInvite = [].obs;
   var isCurrentRoomLoading = false.obs;
   var roomsList = [].obs;
+  var eventsList = [].obs;
   var currentRoom = RoomModel().obs;
   var isCreatingRoom = false.obs;
   var newRoom = RoomModel().obs;
@@ -47,15 +49,18 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var audioMuted = true.obs;
 
   var newRoomTitle = " ".obs;
+  Rxn<DateTime> eventDate = Rxn<DateTime>(null);
   var resourceIdV = "".obs;
   var resourceSid = "".obs;
   var recordinguid = "".obs;
   var newRoomType = "public".obs;
+  var selectedEvents = "all".obs;
   var agoraToken = "".obs;
 
   var roomPickedProduct = Product().obs;
 
   var roomHosts = <UserModel>[].obs;
+  var eventHosts = <OwnerId>[].obs;
   var roomShopId = "".obs;
   var roomProductImages = [].obs;
 
@@ -66,8 +71,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   var roomPickedImages = [].obs;
 
-  final TextEditingController searchUsersController = TextEditingController();
+  TextEditingController searchUsersController = TextEditingController();
   TextEditingController roomTitleController = TextEditingController();
+  TextEditingController eventTitleController = TextEditingController();
+  TextEditingController eventDateController = TextEditingController();
+  TextEditingController eventDescriptiion = TextEditingController();
 
   searchUsersWeAreFriends(String text) async {
     if (searchUsersController.text.trim().isNotEmpty) {
@@ -86,32 +94,31 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   Future<void> friendsToInviteCall() async {
     print("friendsToInviteCall");
 
-      try {
-        allUsersLoading.value = true;
+    try {
+      allUsersLoading.value = true;
 
-        var users = await UserAPI.friendsToInvite();
-        var list = [];
+      var users = await UserAPI.friendsToInvite();
+      var list = [];
 
-        if (users != null) {
-          for (var i = 0; i < users.length; i++) {
-            if (users.elementAt(i)["_id"] !=
-                FirebaseAuth.instance.currentUser!.uid) {
-              list.add(users.elementAt(i));
-            }
+      if (users != null) {
+        for (var i = 0; i < users.length; i++) {
+          if (users.elementAt(i)["_id"] !=
+              FirebaseAuth.instance.currentUser!.uid) {
+            list.add(users.elementAt(i));
           }
-          friendsToInvite.value = list;
-        } else {
-          friendsToInvite.value = [];
         }
-        searchedfriendsToInvite.value = friendsToInvite;
-
-        friendsToInvite.refresh();
-        allUsersLoading.value = false;
-      } catch (e) {
-        printOut(e);
-        allUsersLoading.value = false;
+        friendsToInvite.value = list;
+      } else {
+        friendsToInvite.value = [];
       }
+      searchedfriendsToInvite.value = friendsToInvite;
 
+      friendsToInvite.refresh();
+      allUsersLoading.value = false;
+    } catch (e) {
+      printOut(e);
+      allUsersLoading.value = false;
+    }
   }
 
   // Mandatory
@@ -370,6 +377,48 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }
   }
 
+  fetchEvents() async {
+    try {
+      isLoading.value = true;
+
+      var events = await RoomAPI().getAllEvents();
+      eventsList.value = events;
+      isLoading.value = false;
+      return events;
+      if (events != null) {
+        eventsList.value = events;
+      } else {
+        eventsList.value = [];
+      }
+      print("eventsList ${eventsList.length}");
+      isLoading.value = false;
+      return eventsList;
+    } catch (e) {
+      isLoading.value = false;
+    }
+  }
+
+  fetchMyEvents() async {
+    try {
+      isLoading.value = true;
+
+      var events = await RoomAPI().getAllMyEvents();
+      isLoading.value = false;
+      print("events $events");
+      return events;
+      if (events != null) {
+        eventsList.value = events;
+      } else {
+        eventsList.value = [];
+      }
+      print("eventsList ${eventsList.length}");
+      isLoading.value = false;
+      return eventsList;
+    } catch (e) {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> fetchUserCurrentRoom() async {
     try {
       isLoading.value = true;
@@ -495,7 +544,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         );
       },
     );
-
   }
 
   void leaveRoomWhenKilled() {
@@ -1061,5 +1109,64 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } catch (e, s) {
       printOut("Error getting user $userId profile $e $s");
     }
+  }
+
+  createEvent() async {
+    try {
+      isCreatingRoom.value = true;
+
+      var hosts = [];
+      for (var element in roomHosts) {
+        hosts.add(element.id);
+      }
+
+      String roomTitle =
+          eventTitleController.text.isEmpty ? " " : eventTitleController.text;
+
+      var roomData = {
+        "title": roomTitle,
+        "roomType": newRoomType.value,
+        "productIds": [roomPickedProduct.value.id],
+        "hostIds": hosts,
+        "description": eventDescriptiion.text,
+        "userIds": [],
+        "raisedHands": [],
+        "speakerIds": [],
+        "event": true,
+        "invitedIds": [],
+        "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
+        "status": true,
+        "productPrice": roomPickedProduct.value.price,
+        "productImages": roomPickedProduct.value.images,
+        "activeTime": DateTime.now().microsecondsSinceEpoch,
+        "eventDate": eventDate.value!.millisecondsSinceEpoch
+      };
+
+      var rooms = await RoomAPI().createEvent(roomData);
+
+      if (rooms != null) {
+        Get.back();
+        eventTitleController.text = "";
+        Get.snackbar(
+          "",
+          "Event created successfully",
+          backgroundColor: Colors.green,
+        );
+      } else {
+        Get.snackbar(
+          "",
+          "Error creating your room",
+          backgroundColor: sc_snackBar,
+        );
+      }
+      isCreatingRoom.value = false;
+    } catch (e, s) {
+      printOut("Error creating room in controller $e $s");
+      isCreatingRoom.value = false;
+    }
+  }
+
+  updateEvent(String roomId, var data) async {
+    await RoomAPI().updateRoomByIdNew(data, roomId);
   }
 }

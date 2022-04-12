@@ -19,12 +19,15 @@ const notifications = baseUrl + "/notifications";
 
 const singleproductqtycheck = singleproduct + "product/qtycheck/";
 const allRooms = rooms + "/get/all/";
+const allEvents = rooms + "/events";
+const myEvents = rooms + "/myevents";
 const roomById = rooms + "/rooms/";
 const roomByUser = rooms + "/get/all/"; //Add user Id
 const roomByShop = rooms + "/get/all/shops/"; //Add shop Id
 const updateRoom = rooms + "/rooms/";
 const updateRoomNew = rooms + "/rooms/updatenew/";
 const createRoom = rooms + "/";
+const createEventE = rooms + "/newevent/";
 const deleteRoom = rooms + "/rooms/";
 const addUserToRoom = rooms + "/user/add/";
 const removeUserFromRoom = rooms + "/user/remove/";

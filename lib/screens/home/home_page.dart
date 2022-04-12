@@ -10,6 +10,7 @@ import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
+import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -62,21 +63,6 @@ class HomePage extends StatelessWidget {
                 color: Colors.grey,
                 width: 0.06.sw,
                 height: 0.005.sh,
-              ),
-            ),
-            SizedBox(
-              width: 0.05.sw,
-            ),
-            InkWell(
-              onTap: () => Get.to(() => Favorites()),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: Image(
-                  image: const AssetImage(
-                    "assets/images/tab_saved.png",
-                  ),
-                  width: 15.w,
-                ),
               ),
             ),
             SizedBox(
@@ -552,7 +538,8 @@ class HomePage extends StatelessWidget {
                                   0)) {
                                 showRaisedHandsBottomSheet(context);
                               } else {
-                                await _homeController.raiseHand(context, currentUser);
+                                await _homeController.raiseHand(
+                                    context, currentUser);
                               }
                             },
                             icon: Stack(
@@ -562,11 +549,12 @@ class HomePage extends StatelessWidget {
                                   color: Colors.black54,
                                   size: 30,
                                 ),
-                                if (_homeController
-                                    .currentRoom.value.raisedHands!.isNotEmpty && (_homeController.currentRoom.value.hostIds!
-                                    .indexWhere(
-                                        (e) => e.id == currentUser.id) !=
-                                    -1))
+                                if (_homeController.currentRoom.value
+                                        .raisedHands!.isNotEmpty &&
+                                    (_homeController.currentRoom.value.hostIds!
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) !=
+                                        -1))
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
                                     child: Container(
@@ -575,16 +563,16 @@ class HomePage extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           color: Colors.red,
                                           borderRadius:
-                                          BorderRadius.circular(30)),
+                                              BorderRadius.circular(30)),
                                       child: Center(
                                           child: Text(
-                                            _homeController.currentRoom.value
-                                                .raisedHands!.length
-                                                .toString(),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.sp),
-                                          )),
+                                        _homeController.currentRoom.value
+                                            .raisedHands!.length
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp),
+                                      )),
                                     ),
                                   )
                               ],

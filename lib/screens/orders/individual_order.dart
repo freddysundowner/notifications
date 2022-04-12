@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/order_controller.dart';
@@ -385,7 +386,7 @@ class IndividualOrderScreen extends StatelessWidget {
                           child: Text(
                             "Customer information",
                             style:
-                            TextStyle(color: Colors.black, fontSize: 16.sp),
+                                TextStyle(color: Colors.black, fontSize: 16.sp),
                           ),
                         ),
                         Padding(
@@ -396,37 +397,48 @@ class IndividualOrderScreen extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Center(
                                   child: ordersModel.itemId!.productId!.ownerId!
-                                      .shopId!.image !=
-                                      ""
+                                              .profilePhoto !=
+                                          ""
                                       ? Image.network(
-                                    ordersModel.itemId!.productId!
-                                        .ownerId!.shopId!.image!,
-                                    height: 0.1.sh,
-                                    width: 0.2.sw,
-                                    fit: BoxFit.fill,
-                                  )
+                                          ordersModel.itemId!.productId!
+                                              .ownerId!.profilePhoto!,
+                                          height: 0.1.sh,
+                                          width: 0.2.sw,
+                                          fit: BoxFit.fill,
+                                          errorBuilder:
+                                              (context, object, stackTrace) =>
+                                                  Image.asset(
+                                            "assets/icons/no_image.png",
+                                            height: 0.1.sh,
+                                            width: 0.2.sw,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        )
                                       : Image.asset(
-                                    "assets/icons/no_image.png",
-                                    height: 0.1.sh,
-                                    width: 0.2.sw,
-                                    fit: BoxFit.fill,
-                                  ),
+                                          "assets/icons/no_image.png",
+                                          height: 0.1.sh,
+                                          width: 0.2.sw,
+                                          fit: BoxFit.fill,
+                                        ),
                                 ),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                                    padding: const EdgeInsets.only(
+                                        left: 15.0, right: 15),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Text(
                                               "Name: ",
                                               style: TextStyle(
-                                                  color: Colors.black54, fontSize: 16.sp),
+                                                  color: Colors.black54,
+                                                  fontSize: 16.sp),
                                             ),
                                             SizedBox(
                                               width: 0.03.sw,
@@ -434,7 +446,8 @@ class IndividualOrderScreen extends StatelessWidget {
                                             Text(
                                               "${ordersModel.customerId!.firstName} ${ordersModel.customerId!.lastName}",
                                               style: TextStyle(
-                                                  color: Colors.black54, fontSize: 16.sp),
+                                                  color: Colors.black54,
+                                                  fontSize: 16.sp),
                                             ),
                                           ],
                                         ),
@@ -443,7 +456,8 @@ class IndividualOrderScreen extends StatelessWidget {
                                             Text(
                                               "UserName: ",
                                               style: TextStyle(
-                                                  color: Colors.black54, fontSize: 16.sp),
+                                                  color: Colors.black54,
+                                                  fontSize: 16.sp),
                                             ),
                                             SizedBox(
                                               width: 0.03.sw,
@@ -451,7 +465,8 @@ class IndividualOrderScreen extends StatelessWidget {
                                             Text(
                                               "${ordersModel.customerId!.userName}",
                                               style: TextStyle(
-                                                  color: Colors.black54, fontSize: 16.sp),
+                                                  color: Colors.black54,
+                                                  fontSize: 16.sp),
                                             ),
                                           ],
                                         ),
@@ -505,6 +520,14 @@ class IndividualOrderScreen extends StatelessWidget {
                                           height: 0.1.sh,
                                           width: 0.2.sw,
                                           fit: BoxFit.fill,
+                                          errorBuilder:
+                                              (context, object, stackTrace) =>
+                                                  Image.asset(
+                                            "assets/icons/no_image.png",
+                                            height: 0.1.sh,
+                                            width: 0.2.sw,
+                                            fit: BoxFit.fill,
+                                          ),
                                         )
                                       : Image.asset(
                                           "assets/icons/no_image.png",

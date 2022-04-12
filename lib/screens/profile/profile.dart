@@ -13,7 +13,6 @@ import 'package:fluttergistshop/screens/products/my_products.dart';
 import 'package:fluttergistshop/screens/profile/change_display_picture_screen.dart';
 import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/upgrade_account.dart';
-import 'package:fluttergistshop/screens/settings/settings_page.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -70,25 +69,6 @@ class Profile extends StatelessWidget {
           SizedBox(
             width: 15.w,
           ),
-          Obx(() {
-            return _userController.profileLoading.isFalse &&
-                    _userController.currentProfile.value.id ==
-                        authController.currentuser!.id
-                ? InkWell(
-                    onTap: () {
-                      Get.to(SettingsPage());
-                    },
-                    child: const Icon(
-                      Icons.settings,
-                      color: primarycolor,
-                      size: 30,
-                    ),
-                  )
-                : Container();
-          }),
-          SizedBox(
-            width: 10.w,
-          )
         ],
       ),
       body: SingleChildScrollView(
@@ -143,7 +123,7 @@ class Profile extends StatelessWidget {
                                       )),
                             InkWell(
                               onTap: () {
-                                if (profile.id !=
+                                if (profile.id ==
                                     FirebaseAuth.instance.currentUser!.uid) {
                                   updateName(context);
                                 }
@@ -278,7 +258,7 @@ class Profile extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () {
-                                if (profile.id !=
+                                if (profile.id ==
                                     FirebaseAuth.instance.currentUser!.uid) {
                                   updateBio(context);
                                 }

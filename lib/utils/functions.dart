@@ -31,7 +31,10 @@ String convertTime(String time) {
 
 String showActualTime(String time) {
   var convertedTime = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-  var timeDifference ="${convertedTime.hour}:${convertedTime.minute}  "
+  var hour = convertedTime.hour.toString().length == 2 ? convertedTime.hour : "0${convertedTime.hour}";
+  var minute = convertedTime.minute.toString().length == 2 ? convertedTime.minute : "0${convertedTime.minute}";
+
+  var timeDifference ="$hour:$minute  "
       "${convertedTime.day}/${convertedTime.month}/${convertedTime.year}";
 
   return timeDifference;

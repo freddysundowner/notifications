@@ -298,11 +298,9 @@ class HomePage extends StatelessWidget {
                   RoomModel roomModel = RoomModel.fromJson(
                       _homeController.roomsList.elementAt(index));
                   var hosts = [];
-                  RoomModel room = _homeController.currentRoom.value;
-
-                  hosts =
-                  room.userIds!.length > 10 ? room.userIds!.sublist(0, 10) : room.userIds!;
-
+                  hosts = roomModel.hostIds!.length > 10
+                      ? roomModel.hostIds!.sublist(0, 10)
+                      : roomModel.hostIds!;
                   return InkWell(
                     onTap: () async {
                       if (roomModel.id != null) {
@@ -333,6 +331,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ]),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
@@ -359,36 +358,33 @@ class HomePage extends StatelessWidget {
                                 ),
                               ],
                             ),
+
+                            SizedBox(
+                              height: 0.01.sh,
+                            ),
                             SizedBox(
                               height: 0.1.sh,
-                              child: Row(
-                                children: [
-                                   Stack(
-                                    children: hosts.map((e) {
-
-                                      var index = hosts.indexOf(e);
-                                      return Padding(
-                                          padding: EdgeInsets.only(left: (30.0 * index)),
-                                          child: e
-                                              .profilePhoto ==
-                                              ""
-                                              ? const CircleAvatar(
+                              child: Stack(
+                                children: hosts.map((e) {
+                                  var index = hosts.indexOf(e);
+                                  return Padding(
+                                      padding:
+                                          EdgeInsets.only(left: (30.0 * index)),
+                                      child: e.profilePhoto == ""
+                                          ? const CircleAvatar(
                                               radius: 22,
                                               backgroundImage: AssetImage(
                                                   "assets/icons/profile_placeholder.png"))
-                                              : CircleAvatar(
-                                            radius: 22,
-                                            onBackgroundImageError: (object,
-                                                stacktrace) =>
-                                            const AssetImage(
-                                                "assets/icons/profile_placeholder.png"),
-                                            backgroundImage: NetworkImage(
-                                                e
-                                                    .profilePhoto!),
-                                          ));
-                                    }).toList(),
-                                  )
-                                ],
+                                          : CircleAvatar(
+                                              radius: 22,
+                                              onBackgroundImageError: (object,
+                                                      stacktrace) =>
+                                                  const AssetImage(
+                                                      "assets/icons/profile_placeholder.png"),
+                                              backgroundImage:
+                                                  NetworkImage(e.profilePhoto!),
+                                            ));
+                                }).toList(),
                               ),
                             ),
                             roomModel.title != " "
@@ -546,7 +542,8 @@ class HomePage extends StatelessWidget {
                                   0)) {
                                 showRaisedHandsBottomSheet(context);
                               } else {
-                                await _homeController.raiseHand(context, currentUser);
+                                await _homeController.raiseHand(
+                                    context, currentUser);
                               }
                             },
                             icon: Stack(
@@ -556,11 +553,12 @@ class HomePage extends StatelessWidget {
                                   color: Colors.black54,
                                   size: 30,
                                 ),
-                                if (_homeController
-                                    .currentRoom.value.raisedHands!.isNotEmpty && (_homeController.currentRoom.value.hostIds!
-                                    .indexWhere(
-                                        (e) => e.id == currentUser.id) !=
-                                    -1))
+                                if (_homeController.currentRoom.value
+                                        .raisedHands!.isNotEmpty &&
+                                    (_homeController.currentRoom.value.hostIds!
+                                            .indexWhere((e) =>
+                                                e.id == currentUser.id) !=
+                                        -1))
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
                                     child: Container(
@@ -569,16 +567,16 @@ class HomePage extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           color: Colors.red,
                                           borderRadius:
-                                          BorderRadius.circular(30)),
+                                              BorderRadius.circular(30)),
                                       child: Center(
                                           child: Text(
-                                            _homeController.currentRoom.value
-                                                .raisedHands!.length
-                                                .toString(),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.sp),
-                                          )),
+                                        _homeController.currentRoom.value
+                                            .raisedHands!.length
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp),
+                                      )),
                                     ),
                                   )
                               ],

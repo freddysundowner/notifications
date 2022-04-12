@@ -93,48 +93,44 @@ class ShopSearchResults extends StatelessWidget {
                 return Column(
                   children: [
                     if (_globalController.isSearching.isTrue)
-                      Expanded(
-                        child: SizedBox(
-                          height: 0.5.sh,
-                          child: const Center(
-                              child: CircularProgressIndicator(
+                      Transform.scale(
+                          scale: 0.3,
+                          child: const CircularProgressIndicator(
                             color: Colors.black,
                           )),
-                        ),
-                      ),
                     _searchTabs(),
                   ],
                 );
               }),
               Expanded(
                 child: Obx(() {
-                  if (_globalController.searchresults.value.length == 0 &&
+                  if (_globalController.searchresults.isEmpty &&
                       _globalController.searchShopController.text.isNotEmpty) {
                     return Container(
                         margin: const EdgeInsets.only(top: 20),
                         child: const Text("No results"));
                   }
-                  if (_globalController.searchresults.length > 0 &&
+                  if (_globalController.searchresults.isNotEmpty &&
                       _globalController.isSearching.isFalse) {
                     return ListView.builder(
                       controller: _globalController.scrollcontroller,
-                      itemBuilder: (_, i) => Column(
-                        children: _globalController.searchresults.map((e) {
-                          if (_globalController.currentsearchtab.value == 0) {
-                            return _singleItemShop(Shop.fromJson(e));
-                          }
-                          if (_globalController.currentsearchtab.value == 1) {
-                            return _singleItemUser(UserModel.fromJson(e));
-                          }
-                          if (_globalController.currentsearchtab.value == 2) {
-                            return _singleItemProduct(Product.fromJson(e));
-                          }
-                          if (_globalController.currentsearchtab.value == 3) {
-                            return _singleItemRoom(RoomModel.fromJson(e));
-                          }
-                          return Container();
-                        }).toList(),
-                      ),
+                      itemBuilder: (_, i) {
+                        var e = _globalController.searchresults.elementAt(i);
+
+                        if (_globalController.currentsearchtab.value == 0) {
+                          return _singleItemShop(Shop.fromJson(e));
+                        }
+                        if (_globalController.currentsearchtab.value == 1) {
+                          return _singleItemUser(UserModel.fromJson(e));
+                        }
+                        if (_globalController.currentsearchtab.value == 2) {
+                          return _singleItemProduct(Product.fromJson(e));
+                        }
+                        if (_globalController.currentsearchtab.value == 3) {
+                          return _singleItemRoom(RoomModel.fromJson(e));
+                        }
+                        return Container();
+                      },
                       itemCount: _globalController.searchresults.length,
                     );
                   }
@@ -239,7 +235,7 @@ class ShopSearchResults extends StatelessWidget {
             CircleAvatar(
               radius: 25,
               backgroundImage: NetworkImage(
-                  e.images!.length > 0 ? e.images![0] : imageplaceholder),
+                  e.images!.isNotEmpty ? e.images![0] : imageplaceholder),
             ),
             SizedBox(
               width: 0.04.sw,
@@ -313,6 +309,7 @@ class ShopSearchResults extends StatelessWidget {
   }
 
   _search(int index) {
+    _globalController.searchresults.value = [];
     _globalController.currentsearchtab.value = index;
     _globalController.searchoption.value = searchOptions[index].toLowerCase();
     _globalController.search(searchOptions[index].toLowerCase());
@@ -320,7 +317,7 @@ class ShopSearchResults extends StatelessWidget {
 
   _searchTabs() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, top: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
       decoration: BoxDecoration(
         color: Colors.black12,
         borderRadius: BorderRadius.circular(5),
@@ -334,7 +331,7 @@ class ShopSearchResults extends StatelessWidget {
                       onTap: () => _search(index),
                       child: Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                            const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         decoration: _globalController.currentsearchtab.value ==
                                 index
                             ? BoxDecoration(
@@ -352,7 +349,7 @@ class ShopSearchResults extends StatelessWidget {
                             : null,
                         child: Text(
                           searchOptions[index],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: "Muli", fontWeight: FontWeight.bold),
                         ),
                       ),

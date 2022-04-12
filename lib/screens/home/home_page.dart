@@ -6,7 +6,6 @@ import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/activities/activities_page.dart';
-import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
@@ -298,6 +297,11 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   RoomModel roomModel = RoomModel.fromJson(
                       _homeController.roomsList.elementAt(index));
+                  var hosts = [];
+                  RoomModel room = _homeController.currentRoom.value;
+
+                  hosts =
+                  room.userIds!.length > 10 ? room.userIds!.sublist(0, 10) : room.userIds!;
 
                   return InkWell(
                     onTap: () async {
@@ -360,8 +364,9 @@ class HomePage extends StatelessWidget {
                               child: Row(
                                 children: [
                                    Stack(
-                                    children: roomModel.hostIds!.map((e) {
-                                      var index = roomModel.hostIds!.indexOf(e);
+                                    children: hosts.map((e) {
+
+                                      var index = hosts.indexOf(e);
                                       return Padding(
                                           padding: EdgeInsets.only(left: (30.0 * index)),
                                           child: e

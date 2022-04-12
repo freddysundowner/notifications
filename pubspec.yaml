@@ -32,6 +32,8 @@ dependencies:
 #  socket_io_client: ^1.0.0
   socket_io_client: ^1.0.2
   transparent_image: ^2.0.0
+  firebase_dynamic_links: ^4.1.2
+  share: ^2.0.4
 
 dependency_overrides:
   firebase_messaging_platform_interface: 3.1.6

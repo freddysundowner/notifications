@@ -213,6 +213,9 @@ class FullProduct extends StatelessWidget {
                         : Container()
                   ],
                 ),
+              ),
+              SizedBox(
+                height: 0.03.sh,
               )
             ],
           ),

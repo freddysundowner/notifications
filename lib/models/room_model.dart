@@ -232,8 +232,8 @@ class OwnerId {
       );
 
   Map<String, dynamic> toJson() => {
-        // "followers": List<dynamic>.from(followers!.map((x) => x)),
-        // "following": List<dynamic>.from(following!.map((x) => x)),
+        "followers": List<dynamic>.from(followers!.map((x) => x)),
+        "following": List<dynamic>.from(following!.map((x) => x)),
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,

@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
-import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/screens/edit_product/edit_product_screen.dart';
 import 'package:fluttergistshop/screens/products/components/shop_short_details_card.dart';
@@ -164,7 +163,7 @@ class ShopView extends StatelessWidget {
               }
             }, builder: (_) {
               if (ProductController.loading.value == true) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
@@ -179,10 +178,10 @@ class ShopView extends StatelessWidget {
               //     ),
               //   );
               // }
-              return _.products.isNotEmpty
+              return _.products.isNotEmpty && shopController.currentShop.value.open!
                   ? ListView.builder(
                       shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       itemCount: _.products.length,
                       itemBuilder: (context, index) {
                         return authController.currentuser!.shopId != null &&
@@ -233,9 +232,9 @@ class ShopView extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Confirmation"),
+          title: const Text("Confirmation"),
           content: Text(authController.usermodel.value!.shopId!.open == true
-              ? "Are you sure you want to close your shop? all your products will be disabled"
+              ? "Are you sure you want to close your shop? All your products will be disabled"
               : "Are you sure you want to open your shop?"),
           actions: [
             FlatButton(
@@ -268,7 +267,7 @@ class ShopView extends StatelessWidget {
                     SnackBar(
                       content: Text(
                           authController.usermodel.value!.shopId!.open == false
-                              ? "Shop crossed successfully"
+                              ? "Shop closed successfully"
                               : "Shop opened successfully"),
                     ),
                   );

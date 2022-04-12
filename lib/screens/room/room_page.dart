@@ -11,11 +11,13 @@ import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
+import 'package:fluttergistshop/services/dynamic_link_services.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:share/share.dart';
 
 import 'components/show_friends_to_invite.dart';
 import 'components/show_room_raised_hands.dart';
@@ -54,6 +56,16 @@ class RoomPage extends StatelessWidget {
         centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                DynamicLinkService()
+                    .createGroupJoinLink(
+                        _homeController.currentRoom.value.id!, "room")
+                    .then((value) async => await Share.share(value));
+              },
+              icon: const Icon(Icons.share))
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
@@ -98,7 +110,8 @@ class RoomPage extends StatelessWidget {
                                   -1)) {
                                 showRaisedHandsBottomSheet(context);
                               } else {
-                                await _homeController.raiseHand(context, currentUser);
+                                await _homeController.raiseHand(
+                                    context, currentUser);
                               }
                             },
                             icon: Stack(

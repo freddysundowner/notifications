@@ -152,11 +152,11 @@ class AllChatsPage extends StatelessWidget {
                                                     Text(
                                                       allChatsModel
                                                                   .lastMessage.length >
-                                                              40
+                                                              20
                                                           ? allChatsModel
                                                                   .lastMessage
                                                                   .substring(
-                                                                      0, 40) +
+                                                                      0, 20) +
                                                               "..."
                                                           : allChatsModel
                                                               .lastMessage,

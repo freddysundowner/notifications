@@ -25,7 +25,7 @@ class DynamicLinkService {
         minimumVersion: '3.3',
         appStoreId: '1529768550',
       ),
-      socialMetaTagParameters: SocialMetaTagParameters(
+      socialMetaTagParameters: const SocialMetaTagParameters(
         title: "GistShop",
       ),
     );
@@ -62,8 +62,8 @@ class DynamicLinkService {
    */
   Future<void> _handleDeepLink(PendingDynamicLinkData data) async {
     final Uri? deepLink = data.link;
-    print("deep link " + deepLink!.queryParameters.toString());
-    if (FirebaseAuth.instance.currentUser == null &&
+    printOut("deep link " + deepLink!.queryParameters.toString());
+    if (FirebaseAuth.instance.currentUser != null &&
         deepLink.queryParameters['type'] == "room") {
       var groupId = deepLink.queryParameters['groupid'];
       _homeController.joinRoom(groupId!);

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
-import 'package:fluttergistshop/utils/functions.dart';
+import 'package:fluttergistshop/services/room_api.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -66,6 +66,13 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                         "${FirebaseAuth.instance.currentUser!.displayName}",
                                     "RoomScreen",
                                     _homeController.currentRoom.value.id!);
+
+                                await RoomAPI().updateRoomById({
+                                  "title": _homeController.currentRoom.value.title,
+                                  "token": _homeController.currentRoom.value.token,
+                                  "activeTime": _homeController.currentRoom.value.activeTime,
+                                  "invitedIds": _homeController.toInviteUsers
+                                }, _homeController.currentRoom.value.id!);
                               }
                             },
                             icon: const Icon(Icons.done))

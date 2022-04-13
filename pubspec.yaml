@@ -20,7 +20,7 @@ dependencies:
   image_picker:
   image_cropper: ^1.0.2
   shared_preferences: ^2.0.13
-  agora_rtc_engine: ^4.0.5
+  agora_rtc_engine: ^5.0.1
   permission_handler: ^9.2.0
   connectivity_plus: ^2.2.1
   firebase_storage:

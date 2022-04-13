@@ -10,11 +10,11 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
+import 'package:fluttergistshop/models/event_model.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
-import 'package:fluttergistshop/screens/home/create_room.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
@@ -29,7 +29,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:intl/intl.dart';
 
 class NewEventUpcoming extends StatelessWidget {
-  RoomModel? roomModel;
+  EventModel? roomModel;
   NewEventUpcoming({Key? key, this.roomModel}) : super(key: key);
   RoomController homeController = Get.find<RoomController>();
   void toggleSwitch(bool value) {
@@ -57,7 +57,7 @@ class NewEventUpcoming extends StatelessWidget {
       );
       return;
     }
-    if (homeController.eventHosts.length == 0) {
+    if (homeController.roomHosts.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("add atleast one host"),
@@ -88,7 +88,7 @@ class NewEventUpcoming extends StatelessWidget {
     String snackbarMessage = "";
     if (roomModel != null) {
       var hosts = [];
-      for (var element in homeController.eventHosts) {
+      for (var element in homeController.roomHosts) {
         hosts.add(element.id);
       }
 
@@ -136,7 +136,7 @@ class NewEventUpcoming extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     homeController.roomPickedImages.value = [];
-    homeController.eventHosts.value = [];
+    homeController.roomHosts.value = [];
     homeController.eventTitleController.text = "";
     homeController.eventDate.value = null;
     homeController.roomPickedProduct.value = Product();
@@ -144,17 +144,7 @@ class NewEventUpcoming extends StatelessWidget {
     homeController.newRoomType.value = "";
 
     if (roomModel == null) {
-      OwnerId currentUser = OwnerId(
-          id: Get.find<AuthController>().usermodel.value!.id,
-          bio: Get.find<AuthController>().usermodel.value!.bio,
-          email: Get.find<AuthController>().usermodel.value!.email,
-          firstName: Get.find<AuthController>().usermodel.value!.firstName,
-          lastName: Get.find<AuthController>().usermodel.value!.lastName,
-          userName: Get.find<AuthController>().usermodel.value!.userName,
-          profilePhoto:
-              Get.find<AuthController>().usermodel.value!.profilePhoto);
-
-      homeController.eventHosts.add(currentUser);
+      homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
     } else {
       homeController.eventTitleController.text = roomModel!.title!;
       homeController.eventDescriptiion.text = roomModel!.description!;
@@ -162,7 +152,16 @@ class NewEventUpcoming extends StatelessWidget {
       homeController.eventDate.value =
           new DateTime.fromMillisecondsSinceEpoch(roomModel!.eventDate!);
       homeController.newRoomType.value = roomModel!.roomType!;
-      homeController.eventHosts.value = roomModel!.hostIds!;
+      homeController.roomHosts.value = roomModel!.invitedhostIds!
+          .map((e) => UserModel(
+              profilePhoto: e.profilePhoto,
+              bio: e.bio,
+              id: e.id,
+              firstName: e.firstName,
+              lastName: e.lastName,
+              userName: e.userName,
+              email: e.email))
+          .toList();
     }
 
     var formatter = new DateFormat('yyyy/MM/dd hh:mm');
@@ -226,7 +225,7 @@ class NewEventUpcoming extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Add Co-Hosts (${homeController.eventHosts.length})",
+                          "Add Co-Hosts (${homeController.roomHosts.length})",
                           style: TextStyle(fontSize: 13.sm),
                         ),
                         Icon(
@@ -241,28 +240,27 @@ class NewEventUpcoming extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                if (homeController.eventHosts.value.length > 0)
+                if (homeController.roomHosts.value.length > 0)
                   ListView(
                     shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
-                    children: homeController.eventHosts
+                    children: homeController.roomHosts
                         .map((element) => InkWell(
                               onTap: () {
                                 Get.find<UserController>()
                                     .getUserProfile(element.id!);
                                 Get.to(() => Profile());
                               },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              child: Wrap(
                                 children: [
                                   CachedNetworkImage(
                                     imageUrl: element.profilePhoto!,
                                     imageBuilder: (context, imageProvider) =>
                                         Container(
-                                      width: double.infinity,
-                                      height: 0.16.sh,
+                                      width: 40,
+                                      height: 40,
                                       decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
                                         image: DecorationImage(
                                             image: imageProvider,
                                             fit: BoxFit.fill),
@@ -278,27 +276,21 @@ class NewEventUpcoming extends StatelessWidget {
                                       size: 40,
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          element.firstName! +
-                                              " " +
-                                              element.lastName!,
-                                          style: TextStyle(fontSize: 13),
-                                        )
-                                      ],
+                                  Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    child: Text(
+                                      element.firstName! +
+                                          " " +
+                                          element.lastName!,
+                                      style: TextStyle(fontSize: 13),
                                     ),
                                   ),
-                                  if (homeController.eventHosts.indexWhere(
+                                  if (homeController.roomHosts.indexWhere(
                                           (e) => element.id! == e.id!) ==
                                       -1)
                                     InkWell(
                                       onTap: () {
-                                        homeController.eventHosts.removeWhere(
+                                        homeController.roomHosts.removeWhere(
                                             (e) => element.id! == e.id);
                                       },
                                       child: Icon(
@@ -851,7 +843,7 @@ class NewEventUpcoming extends StatelessWidget {
                                 Get.back();
                                 if (private != null &&
                                     private == true &&
-                                    homeController.eventHosts.length > 1) {
+                                    homeController.roomHosts.length > 1) {
                                   showProductBottomSheet(context);
                                   await homeController.fetchUserProducts();
                                 }
@@ -946,28 +938,19 @@ class NewEventUpcoming extends StatelessWidget {
                                         itemCount: homeController
                                             .searchedfriendsToInvite.length,
                                         itemBuilder: (context, index) {
-                                          UserModel userr = UserModel.fromJson(
+                                          UserModel user = UserModel.fromJson(
                                               homeController
                                                   .searchedfriendsToInvite
                                                   .elementAt(index));
 
-                                          OwnerId user = OwnerId(
-                                              id: userr.id,
-                                              bio: userr.bio,
-                                              email: userr.email,
-                                              firstName: userr.firstName,
-                                              lastName: userr.lastName,
-                                              userName: userr.userName,
-                                              profilePhoto: userr.profilePhoto);
-
                                           return InkWell(
                                             onTap: () {
-                                              if (homeController.eventHosts
+                                              if (homeController.roomHosts
                                                   .contains(user)) {
-                                                homeController.eventHosts
+                                                homeController.roomHosts
                                                     .remove(user);
                                               } else {
-                                                homeController.eventHosts
+                                                homeController.roomHosts
                                                     .add(user);
                                               }
                                             },
@@ -989,7 +972,7 @@ class NewEventUpcoming extends StatelessWidget {
                                                                   Colors
                                                                       .transparent,
                                                               foregroundImage: homeController
-                                                                      .eventHosts
+                                                                      .roomHosts
                                                                       .contains(
                                                                           user)
                                                                   ? const AssetImage(
@@ -1010,7 +993,7 @@ class NewEventUpcoming extends StatelessWidget {
                                                                   Colors
                                                                       .black38,
                                                               foregroundImage: homeController
-                                                                      .eventHosts
+                                                                      .roomHosts
                                                                       .contains(
                                                                           user)
                                                                   ? const AssetImage(

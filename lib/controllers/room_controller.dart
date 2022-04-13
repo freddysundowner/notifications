@@ -60,7 +60,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var roomPickedProduct = Product().obs;
 
   var roomHosts = <UserModel>[].obs;
-  var eventHosts = <OwnerId>[].obs;
+  // var eventHosts = <OwnerId>[].obs;
   var roomShopId = "".obs;
   var roomProductImages = [].obs;
 
@@ -242,8 +242,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       for (var element in roomHosts) {
         hosts.add(element.id);
       }
-
-      printOut("Room title ${roomTitleController.text}");
 
       String roomTitle =
           roomTitleController.text.isEmpty ? " " : roomTitleController.text;

@@ -337,31 +337,36 @@ class HomePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  roomModel.hostIds!.length.toString(),
-                                  style: const TextStyle(color: Colors.grey),
+                                Row(
+                                  children: [
+                                    Text(
+                                      roomModel.hostIds!.length.toString(),
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                    SizedBox(width: 0.006.sw),
+                                    const Icon(
+                                      Ionicons.people,
+                                      color: Colors.grey,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 0.03.sw),
+                                    Text(
+                                      roomModel.userIds!.length.toString(),
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                    SizedBox(width: 0.006.sw),
+                                    const Icon(
+                                      Ionicons.chatbubble_outline,
+                                      color: Colors.grey,
+                                      size: 20,
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 0.006.sw),
-                                const Icon(
-                                  Ionicons.people,
-                                  color: Colors.grey,
-                                  size: 20,
-                                ),
-                                SizedBox(width: 0.03.sw),
-                                Text(
-                                  roomModel.userIds!.length.toString(),
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                                SizedBox(width: 0.006.sw),
-                                const Icon(
-                                  Ionicons.chatbubble_outline,
-                                  color: Colors.grey,
-                                  size: 20,
-                                ),
+                                if(roomModel.roomType == "private") const Icon(Icons.lock)
                               ],
                             ),
-
                             SizedBox(
                               height: 0.01.sh,
                             ),

@@ -11,8 +11,10 @@ import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/event_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/home/create_room.dart';
+import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/upcomingRooms/new.dart';
+import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
@@ -127,133 +129,174 @@ class UpcomingEvents extends StatelessWidget {
             ],
           ),
         )),
-        body: GetX<RoomController>(initState: (_) async {
-          homeController.eventsList.value =
-              await RoomController().fetchEvents();
-        }, builder: (_) {
-          List<EventModel> rooms = homeController.eventsList
-              .map((element) => EventModel.fromJson(element))
-              .toList();
-          if (homeController.isLoading.isTrue) {
-            return Center(
-              child: Container(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          return ListView(
-            children: rooms
-                .map((element) => Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.all(10),
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.grey[200],
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          upcomingEventBoottomSheet(context, element);
-                        },
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(_date(element.eventDate),
-                                    style: TextStyle(
-                                        fontSize: 12.sp, color: primarycolor)),
-                                if (element.ownerId!.id ==
-                                    Get.find<AuthController>()
-                                        .usermodel
-                                        .value!
-                                        .id)
-                                  InkWell(
-                                    onTap: () {
-                                      Get.to(() => NewEventUpcoming(
-                                            roomModel: element,
-                                          ));
-                                    },
-                                    child: Text(
-                                      "Edit",
-                                      style: TextStyle(color: primarycolor),
-                                    ),
-                                  )
-                              ],
-                            ),
-                            Text(
-                              element.title!,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 14.sp),
-                            ),
-                            Divider(),
-                            Wrap(
-                              children: List.generate(
-                                  element.invitedhostIds!.length,
-                                  (i) => Text(
-                                        element.invitedhostIds![i].firstName! +
-                                            " " +
-                                            element
-                                                .invitedhostIds![i].lastName! +
-                                            ", ",
-                                        style: TextStyle(
-                                            fontSize: 13, color: primarycolor),
-                                        overflow: TextOverflow.ellipsis,
-                                      )).toList(),
-                            ),
-                            Wrap(
-                              children: List.generate(
-                                  element.invitedhostIds!.length,
-                                  (i) => InkWell(
-                                        onTap: () {
-                                          Get.find<UserController>()
-                                              .getUserProfile(element
-                                                  .invitedhostIds![i].id!);
-                                          Get.to(() => Profile());
-                                        },
-                                        child: CachedNetworkImage(
-                                          imageUrl: element
-                                              .invitedhostIds![i].profilePhoto!,
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.fill),
+        body: RefreshIndicator(
+          onRefresh: () {
+            if (homeController.selectedEvents.value == "mine") {
+              return roomController.fetchMyEvents();
+            } else {
+              return roomController.fetchEvents();
+            }
+          },
+          child: GetX<RoomController>(initState: (_) async {
+            homeController.eventsList.value =
+                await RoomController().fetchEvents();
+          }, builder: (_) {
+            List<EventModel> rooms = homeController.eventsList
+                .map((element) => EventModel.fromJson(element))
+                .toList();
+            if (homeController.isLoading.isTrue) {
+              return Center(
+                child: Container(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            if (homeController.eventsList.value.length == 0) {
+              return Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "No Events to show",
+                    style: regularDarkText,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      CupertinoIcons.calendar_badge_plus,
+                      size: 80,
+                      color: primarycolor,
+                    ),
+                    onPressed: () {
+                      Get.to(() => NewEventUpcoming());
+                    },
+                  )
+                ],
+              ));
+            }
+            return ListView(
+              children: rooms
+                  .map((element) => Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.all(10),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.grey[200],
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            upcomingEventBoottomSheet(context, element);
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(_date(element.eventDate),
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: primarycolor)),
+                                  if (element.ownerId!.id ==
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .id)
+                                    InkWell(
+                                      onTap: () {
+                                        Get.to(() => NewEventUpcoming(
+                                              roomModel: element,
+                                            ));
+                                      },
+                                      child: Text(
+                                        "Edit",
+                                        style: TextStyle(color: primarycolor),
+                                      ),
+                                    )
+                                ],
+                              ),
+                              Text(
+                                element.title!,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.sp),
+                              ),
+                              Divider(),
+                              Wrap(
+                                children: List.generate(
+                                    element.invitedhostIds!.length,
+                                    (i) => Text(
+                                          element.invitedhostIds![i]
+                                                  .firstName! +
+                                              " " +
+                                              element.invitedhostIds![i]
+                                                  .lastName! +
+                                              ", ",
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: primarycolor),
+                                          overflow: TextOverflow.ellipsis,
+                                        )).toList(),
+                              ),
+                              Wrap(
+                                children: List.generate(
+                                    element.invitedhostIds!.length,
+                                    (i) => InkWell(
+                                          onTap: () {
+                                            Get.find<UserController>()
+                                                .getUserProfile(element
+                                                    .invitedhostIds![i].id!);
+                                            Get.to(() => Profile());
+                                          },
+                                          child: CachedNetworkImage(
+                                            imageUrl: element.invitedhostIds![i]
+                                                .profilePhoto!,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              width: 35,
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.fill),
+                                              ),
+                                            ),
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(
+                                              color: Colors.black,
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(
+                                              Icons
+                                                  .supervised_user_circle_rounded,
+                                              size: 40,
                                             ),
                                           ),
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(
-                                            color: Colors.black,
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(
-                                            Icons
-                                                .supervised_user_circle_rounded,
-                                            size: 40,
-                                          ),
-                                        ),
-                                      )).toList(),
-                            ),
-                            Text(
-                              element.description!,
-                              style: TextStyle(fontSize: 14.sp),
-                            ),
-                          ],
+                                        )).toList(),
+                              ),
+                              Text(
+                                element.description!,
+                                style: TextStyle(fontSize: 14.sp),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ))
-                .toList(),
-          );
-        }));
+                      ))
+                  .toList(),
+            );
+          }),
+        ));
   }
 
   Future<dynamic> upcomingEventBoottomSheet(
@@ -268,11 +311,10 @@ class UpcomingEvents extends StatelessWidget {
         topRight: Radius.circular(15),
       )),
       builder: (context) {
-        print("DraggableScrollableSheet 1");
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return DraggableScrollableSheet(
-              initialChildSize: 0.3,
+              initialChildSize: 0.5,
               expand: false,
               builder:
                   (BuildContext context, ScrollController scrollController) {
@@ -291,27 +333,110 @@ class UpcomingEvents extends StatelessWidget {
                       SizedBox(
                         height: 5,
                       ),
-                      Wrap(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            "W/",
-                            style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                color: primarycolor),
+                          Wrap(
+                            children: [
+                              Text(
+                                "W/",
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: primarycolor),
+                              ),
+                              ...element.invitedhostIds!
+                                  .map((e) => Text(
+                                        "${e.firstName} ${e.lastName}, ",
+                                        style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            color: primarycolor),
+                                      ))
+                                  .toList()
+                            ],
                           ),
-                          ...element.invitedhostIds!
-                              .map((e) => Text(
-                                    "${e.firstName} ${e.lastName}, ",
-                                    style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        color: primarycolor),
-                                  ))
-                              .toList(),
-                          Text(
-                            element.description!,
-                            style: TextStyle(fontSize: 16, color: primarycolor),
-                          )
+                          if (element.ownerId!.id ==
+                              Get.find<AuthController>().usermodel.value!.id!)
+                            InkWell(
+                              onTap: () {
+                                roomController.deleteEvent(element.id!);
+                              },
+                              child: Icon(
+                                CupertinoIcons.delete,
+                                size: 25,
+                                color: Colors.red,
+                              ),
+                            ),
                         ],
+                      ),
+                      if (element.description!.isNotEmpty)
+                        Text(
+                          element.description!,
+                        ),
+                      Divider(),
+                      Text("Product"),
+                      InkWell(
+                        onTap: () {
+                          Get.to(() =>
+                              FullProduct(product: element.productIds![0]));
+                        },
+                        child: ListTile(
+                          minLeadingWidth: 0,
+                          contentPadding: EdgeInsets.all(0),
+                          title: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              element.productIds![0].images!.isNotEmpty
+                                  ? CachedNetworkImage(
+                                      imageUrl:
+                                          element.productIds![0].images!.first,
+                                      height: 70,
+                                      width: 70,
+                                      fit: BoxFit.fill,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    )
+                                  : Image.asset(
+                                      "assets/icons/no_image.png",
+                                      height: 0.1.sh,
+                                      width: 0.2.sw,
+                                      fit: BoxFit.fill,
+                                    ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    element.productIds![0].name!,
+                                    style: TextStyle(fontSize: 13),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                  Text(
+                                    "GC " +
+                                        element.productIds![0].price!
+                                            .toString(),
+                                    style: TextStyle(fontSize: 13),
+                                  ),
+                                  if (element
+                                      .productIds![0].description!.isNotEmpty)
+                                    Text(
+                                      element.productIds![0].description!,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 5,
@@ -362,29 +487,36 @@ class UpcomingEvents extends StatelessWidget {
                       SizedBox(
                         height: 30,
                       ),
-                      DefaultButton(
-                          text: "Go Live",
-                          press: () {
-                            roomController.roomHosts.value = element
-                                .invitedhostIds!
-                                .map((e) => UserModel(
-                                    profilePhoto: e.profilePhoto,
-                                    bio: e.bio,
-                                    id: e.id,
-                                    firstName: e.firstName,
-                                    lastName: e.lastName,
-                                    userName: e.userName,
-                                    email: e.email))
-                                .toList();
-                            roomController.roomTitleController.text =
-                                element.title!;
-                            roomController.newRoomType.value =
-                                element.roomType!;
-                            roomController.roomPickedProduct.value =
-                                element.productIds![0];
-
-                            homeController.createRoom();
-                          })
+                      if (element.invitedhostIds!.indexWhere((element) =>
+                              element.id ==
+                              Get.find<AuthController>()
+                                  .usermodel
+                                  .value!
+                                  .id!) !=
+                          -1)
+                        DefaultButton(
+                            text:
+                                element.token != null ? "Join Live" : "Go Live",
+                            press: () {
+                              if (element.token != null) {
+                                roomController.joinRoom(element.id!);
+                              } else {
+                                roomController.createRoomFromEvent(element);
+                              }
+                            }),
+                      if (element.invitedhostIds!.indexWhere((element) =>
+                                  element.id ==
+                                  Get.find<AuthController>()
+                                      .usermodel
+                                      .value!
+                                      .id!) ==
+                              -1 &&
+                          element.token != null)
+                        DefaultButton(
+                            text: "Join Live",
+                            press: () {
+                              roomController.joinRoom(element.id!);
+                            }),
                     ],
                   ),
                 );

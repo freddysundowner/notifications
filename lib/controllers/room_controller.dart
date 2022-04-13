@@ -6,6 +6,7 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/models/event_model.dart' as event;
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
 import 'package:fluttergistshop/models/room_model.dart';
@@ -234,7 +235,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       isCreatingRoom.value = true;
 
       Get.defaultDialog(
-          title: "We are creating your room",
+          title: "Going live...",
+          contentPadding: EdgeInsets.all(10),
           content: const CircularProgressIndicator(),
           barrierDismissible: false);
 
@@ -261,6 +263,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "productImages": roomPickedProduct.value.images,
         "activeTime": DateTime.now().microsecondsSinceEpoch
       };
+
+      print("roomData $roomData");
 
       leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
 
@@ -311,6 +315,67 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       isCreatingRoom.value = false;
 
       update();
+    } catch (e, s) {
+      Get.back();
+      printOut("Error creating room in controller $e $s");
+      isCreatingRoom.value = false;
+    }
+  }
+
+  createRoomFromEvent(event.EventModel eventModel) async {
+    try {
+      isCreatingRoom.value = true;
+
+      Get.defaultDialog(
+          title: "Going live...",
+          contentPadding: EdgeInsets.all(10),
+          content: const CircularProgressIndicator(),
+          barrierDismissible: false);
+
+      leaveRoom(OwnerId(id: Get.find<AuthController>().usermodel.value!.id));
+
+      printOut("room created $eventModel");
+
+      if (eventModel != null) {
+        var roomId = eventModel.id!;
+        var token = await RoomAPI().generateAgoraToken(roomId, "0");
+        printOut("room token $token");
+        roomTitleController.text = "";
+
+        if (token != null) {
+          await RoomAPI().updateRoomByIdNew({
+            "title": eventModel.title,
+            "token": token,
+            "roomType": eventModel.roomType,
+            "event": false,
+            "activeTime": DateTime.now().microsecondsSinceEpoch
+          }, roomId);
+
+          await fetchRoom(roomId);
+
+          initAgora(token, roomId);
+          uploadImageToFireStorage(roomId);
+
+          Get.offAll(MainPage());
+          Get.to(RoomPage(roomId: roomId));
+        } else {
+          Get.offAll(MainPage());
+          Get.snackbar(
+            "",
+            "There was an error creating your room. Try again later",
+            backgroundColor: sc_snackBar,
+          );
+
+          endRoom(roomId);
+        }
+      } else {
+        Get.offAll(MainPage());
+        Get.snackbar(
+          "",
+          "Error creating your room",
+          backgroundColor: sc_snackBar,
+        );
+      }
     } catch (e, s) {
       Get.back();
       printOut("Error creating room in controller $e $s");
@@ -1125,7 +1190,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       var roomData = {
         "title": roomTitle,
-        "roomType": newRoomType.value,
+        "roomType": newRoomType.value.isEmpty ? "public" : newRoomType.value,
         "productIds": [roomPickedProduct.value.id],
         "hostIds": hosts,
         "description": eventDescriptiion.text,
@@ -1141,6 +1206,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "activeTime": DateTime.now().microsecondsSinceEpoch,
         "eventDate": eventDate.value!.millisecondsSinceEpoch
       };
+
+      print("createEvent $roomData");
 
       var rooms = await RoomAPI().createEvent(roomData);
 
@@ -1168,5 +1235,17 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   updateEvent(String roomId, var data) async {
     await RoomAPI().updateRoomByIdNew(data, roomId);
+  }
+
+  void deleteEvent(String roomId) async {
+    Get.defaultDialog(
+        title: "Deleting event",
+        contentPadding: EdgeInsets.all(10),
+        content: const CircularProgressIndicator(),
+        barrierDismissible: false);
+    await RoomAPI().deleteARoom(roomId);
+    fetchEvents();
+    Get.back();
+    Get.back();
   }
 }

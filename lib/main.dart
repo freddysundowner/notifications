@@ -25,14 +25,7 @@ final RoomController _homeController = Get.find<RoomController>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   oneSignal();
-
-// // Get any initial links
-//   final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
-//
-//   print("link ${initialLink!.link.toString()}");
-
   runApp(MyApp());
 }
 
@@ -55,23 +48,22 @@ initOneSignal() {
 }
 
 oneSignalObservers() {
-
   OneSignal.shared.setNotificationWillShowInForegroundHandler(
       (OSNotificationReceivedEvent event) {
     // Will be called whenever a notification is received in foreground
     // Display Notification, pass null param for not displaying the notification
 
     //handleNotificationOneSignal(event.notification);
-        printOut("A  notification ${event.notification.additionalData!}");
-        printOut("A  onChatPage ${_homeController.onChatPage.value}");
-        if (event.notification.additionalData!["screen"] == "ChatScreen" && _homeController.onChatPage.value == true) {
-          printOut("A chatScreen notification");
-          event.complete(null);
-        } else {
-          printOut("not A chatScreen notification");
-          event.complete(event.notification);
-        }
-
+    printOut("A  notification ${event.notification.additionalData!}");
+    printOut("A  onChatPage ${_homeController.onChatPage.value}");
+    if (event.notification.additionalData!["screen"] == "ChatScreen" &&
+        _homeController.onChatPage.value == true) {
+      printOut("A chatScreen notification");
+      event.complete(null);
+    } else {
+      printOut("not A chatScreen notification");
+      event.complete(event.notification);
+    }
   });
 
   OneSignal.shared
@@ -140,7 +132,6 @@ goToPageFromNotification(var payload) async {
 
 bool showloading = false;
 
-
 Future redirectToRooms(Map<String, dynamic> mess) async {
   printOut('One signal Notification clicked redirecting');
 
@@ -148,7 +139,8 @@ Future redirectToRooms(Map<String, dynamic> mess) async {
   String id = mess["id"];
 
   if (screen == 'ChatScreen') {
-    print("context.widget.toStringShort: ${navigatorKey.currentContext?.widget.toStringShort()}");
+    print(
+        "context.widget.toStringShort: ${navigatorKey.currentContext?.widget.toStringShort()}");
     Get.to(AllChatsPage());
   } else if (screen == "ProfileScreen") {
     _userController.getUserProfile(id);

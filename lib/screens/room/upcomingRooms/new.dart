@@ -33,10 +33,10 @@ class NewEventUpcoming extends StatelessWidget {
   NewEventUpcoming({Key? key, this.roomModel}) : super(key: key);
   RoomController homeController = Get.find<RoomController>();
   void toggleSwitch(bool value) {
-    if (homeController.isSwitched.value == false) {
-      homeController.newRoomType.value = "private";
-    } else {
+    if (value == false) {
       homeController.newRoomType.value = "public";
+    } else {
+      homeController.newRoomType.value = "private";
     }
   }
 
@@ -113,6 +113,7 @@ class NewEventUpcoming extends StatelessWidget {
 
       response = homeController.updateEvent(roomModel!.id!, roomData);
     } else {
+      print("before event");
       response = homeController.createEvent();
     }
 
@@ -338,6 +339,8 @@ class NewEventUpcoming extends StatelessWidget {
                 ),
                 if (homeController.roomPickedProduct.value.id != null)
                   ListTile(
+                    minLeadingWidth: 0,
+                    contentPadding: EdgeInsets.all(0),
                     title: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -449,13 +452,11 @@ class NewEventUpcoming extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Private",
+                        "Private? ",
                       ),
                       CupertinoSwitch(
                         value: homeController.isSwitched.value,
-                        onChanged: (value) {
-                          homeController.isSwitched.value = value;
-                        },
+                        onChanged: toggleSwitch,
                       ),
                     ],
                   ),

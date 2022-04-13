@@ -26,7 +26,7 @@ class MainPage extends StatelessWidget {
   final GlobalController _global = Get.find<GlobalController>();
   AuthController authController = Get.find<AuthController>();
 
-  final RoomController _homeController = Get.put(RoomController());
+  final RoomController _homeController = Get.find<RoomController>();
   ShopController shopController = Get.find<ShopController>();
   final ChatController _chatController = Get.put(ChatController());
 
@@ -77,7 +77,7 @@ class MainPage extends StatelessWidget {
         ),
         color: Colors.black,
       ),
-      child: Icon(
+      child: const Icon(
         Icons.add,
         color: Colors.white,
         size: 20.0,
@@ -146,7 +146,7 @@ class MainPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             ListTile(
-                              leading: new Icon(Icons.live_tv),
+                              leading: const Icon(Icons.live_tv),
                               title: InkWell(
                                 onTap: () async {
                                   if (Get.find<AuthController>()

@@ -16,8 +16,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-
-import '../../services/dynamic_link_services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
@@ -40,7 +39,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
-    DynamicLinkService().handleDynamicLinks();
+    _homeController.getRooms();
+    [Permission.microphone].request();
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(

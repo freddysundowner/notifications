@@ -21,7 +21,6 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'auth_controller.dart';
 
@@ -199,7 +198,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   _initAgora() async {
     // Get microphone permission
-    await [Permission.microphone].request();
+    // await [Permission.microphone].request();
 
     // Create RTC client instance
     engine = await RtcEngine.createWithContext(context);

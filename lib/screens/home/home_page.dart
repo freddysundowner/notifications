@@ -40,7 +40,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
-    _homeController.getRooms();
+    if (_homeController.roomsList.isEmpty) {
+      _homeController.getRooms();
+    }
     [Permission.microphone].request();
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,

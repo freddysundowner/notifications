@@ -806,6 +806,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   Future<void> leaveAgora() async {
     // if (engine != null) {
 
+
     await engine.leaveChannel();
     await engine.muteLocalAudioStream(true);
     // await engine.destroy();
@@ -917,6 +918,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       printOut("Joining agora room");
 
       await leaveAgora();
+      _initAgora();
       await engine.joinChannel(token, roomId, null, 0);
       await engine.enableAudioVolumeIndication(500, 3, true);
       // recordAudio(token: token, channelname: roomId);

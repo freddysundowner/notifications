@@ -31,74 +31,71 @@ class ManageAddressesScreen extends StatelessWidget {
         child: RefreshIndicator(
           onRefresh: refreshPage,
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  children: [
-                    Text(
-                      "Manage Addresses",
-                      style: headingStyle,
-                    ),
-                    Text(
-                      "Swipe LEFT to Edit, Swipe RIGHT to Delete",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    SizedBox(height: 10.h),
-                    DefaultButton(
-                      text: "Add New Address",
-                      press: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditAddressScreen(),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  Text(
+                    "Manage Addresses",
+                    style: headingStyle,
+                  ),
+                  Text(
+                    "Swipe LEFT to Edit, Swipe RIGHT to Delete",
+                    style: TextStyle(fontSize: 12.sp),
+                  ),
+                  SizedBox(height: 10.h),
+                  DefaultButton(
+                    text: "Add New Address",
+                    press: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditAddressScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10.h),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: Obx(
+                      () {
+                        if (userController.myAddresses.isEmpty) {
+                          return const Center(
+                            child: NothingToShowContainer(
+                              iconPath: "assets/icons/add_location.svg",
+                              secondaryMessage: "Add your first Address",
+                            ),
+                          );
+                        }
+                        if (userController.myAddresses.isNotEmpty) {
+                          return ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount:
+                                  userController.myAddresses.length,
+                              itemBuilder: (context, index) {
+                                return buildAddressItemCard(
+                                    userController.myAddresses[index],
+                                    context);
+                              });
+                        }
+                        if (userController.gettingAddress.isTrue) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return const Center(
+                          child: NothingToShowContainer(
+                            iconPath: "assets/icons/network_error.svg",
+                            primaryMessage: "Something went wrong",
+                            secondaryMessage: "Unable to connect to Database",
                           ),
                         );
                       },
                     ),
-                    SizedBox(height: 10.h),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: Obx(
-                        () {
-                          if (userController.myAddresses.value.length == 0) {
-                            return Center(
-                              child: NothingToShowContainer(
-                                iconPath: "assets/icons/add_location.svg",
-                                secondaryMessage: "Add your first Address",
-                              ),
-                            );
-                          }
-                          if (userController.myAddresses.value.length > 0) {
-                            return ListView.builder(
-                                physics: BouncingScrollPhysics(),
-                                itemCount:
-                                    userController.myAddresses.value.length,
-                                itemBuilder: (context, index) {
-                                  return buildAddressItemCard(
-                                      userController.myAddresses.value[index],
-                                      context);
-                                });
-                          }
-                          if (userController.gettingAddress.isTrue) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return Center(
-                            child: NothingToShowContainer(
-                              iconPath: "assets/icons/network_error.svg",
-                              primaryMessage: "Something went wrong",
-                              secondaryMessage: "Unable to connect to Database",
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

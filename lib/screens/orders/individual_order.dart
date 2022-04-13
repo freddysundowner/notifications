@@ -65,7 +65,9 @@ class IndividualOrderScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                       Text(
-                        ordersModel.id.toString(),
+                        ordersModel.id.toString().length > 25
+                            ? ordersModel.id.toString() + "..."
+                            : ordersModel.id.toString(),
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                     ],
@@ -552,7 +554,15 @@ class IndividualOrderScreen extends StatelessWidget {
                                         width: 0.03.sw,
                                       ),
                                       Text(
-                                        "${ordersModel.itemId!.productId!.ownerId!.shopId!.name}",
+                                        ordersModel.itemId!.productId!.ownerId!
+                                                    .shopId!.name
+                                                    .toString()
+                                                    .length >
+                                                10
+                                            ? "${ordersModel.itemId!.productId!.ownerId!.shopId!.name.toString().substring(0, 9)}..."
+                                            : ordersModel.itemId!.productId!
+                                                .ownerId!.shopId!.name
+                                                .toString(),
                                         style: TextStyle(
                                             color: Colors.black54,
                                             fontSize: 16.sp),

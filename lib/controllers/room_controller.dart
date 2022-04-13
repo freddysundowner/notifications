@@ -290,6 +290,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
             "",
             "There was an error creating your room. Try again later",
             backgroundColor: sc_snackBar,
+            colorText: Colors.white
           );
 
           endRoom(roomId);
@@ -299,7 +300,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         Get.snackbar(
           "",
           "Error creating your room",
-          backgroundColor: sc_snackBar,
+            backgroundColor: sc_snackBar,
+            colorText: Colors.white
         );
       }
 
@@ -345,7 +347,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } finally {
-      GetSnackBar(title: "", message: snackBarMessage);
+      GetSnackBar(title: "", backgroundColor: sc_snackBar,
+          messageText: Text(snackBarMessage, style: const TextStyle(color: Colors.white),),);
     }
   }
 
@@ -402,7 +405,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           Get.snackbar(
             '',
             "There was an error adding you to the room, Try again later",
-            backgroundColor: sc_snackBar,
+              backgroundColor: sc_snackBar,
+              colorText: Colors.white
           ).show();
           endRoom(roomId);
         }
@@ -410,7 +414,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         Get.snackbar(
           '',
           "Room has ended",
-          backgroundColor: sc_snackBar,
+            backgroundColor: sc_snackBar,
+            colorText: Colors.white
         );
       }
       isCurrentRoomLoading.value = false;
@@ -465,7 +470,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       Get.snackbar(
         '',
         "There was an error adding you to the room, Try again later",
-        backgroundColor: sc_snackBar,
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white
       );
     }
   }
@@ -546,8 +552,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
     Get.snackbar(
       '',
-      "You have raised your hand",
-      backgroundColor: sc_snackBar,
+      "You have raised your hand", colorText: Colors.white,
+        backgroundColor: sc_snackBar,
+
     );
 
     currentRoom.refresh();

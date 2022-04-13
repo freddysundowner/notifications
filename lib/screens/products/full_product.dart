@@ -128,6 +128,11 @@ class FullProduct extends StatelessWidget {
                                   await _addToSaved(context);
                                   GetSnackBar(
                                     message: _snackBarMessage,
+                                    backgroundColor: sc_snackBar,
+                                    messageText: Text(
+                                      _snackBarMessage,
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
                                   );
                                 },
                                 child: Container(

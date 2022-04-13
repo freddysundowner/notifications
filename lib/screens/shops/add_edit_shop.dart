@@ -32,16 +32,16 @@ class NewShop extends StatelessWidget {
     if (color == "red") {
       clr = Colors.red;
     }
-    var snackBar = new SnackBar(
-      content: new Text(
+    var snackBar =  SnackBar(
+      content: Text(
         string,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.normal,
         ),
       ),
-      backgroundColor: clr,
+      backgroundColor: sc_snackBar,
       action: SnackBarAction(
         label: "Ok",
         textColor: Colors.white,
@@ -84,7 +84,8 @@ class NewShop extends StatelessWidget {
       if (snackbarMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(snackbarMessage),
+            content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+            backgroundColor: sc_snackBar,
           ),
         );
       }
@@ -177,7 +178,8 @@ class NewShop extends StatelessWidget {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(snackbarMessage),
+                        content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+                        backgroundColor: sc_snackBar,
                       ),
                     );
                   }

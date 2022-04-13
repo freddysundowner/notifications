@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/utils.dart';
+
 class Helper {
   String getPathForProductImage(String? id, int index) {
     String path = "products/images/$id";
@@ -25,8 +27,8 @@ class Helper {
       {MaterialColor? color = Colors.green}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        backgroundColor: color,
+        content: Text(message, style: TextStyle(color: Colors.white),),
+        backgroundColor: sc_snackBar,
       ),
     );
   }

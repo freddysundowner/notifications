@@ -114,7 +114,11 @@ class MyProducts extends StatelessWidget {
                 snackbarMessage = e.toString();
               } finally {
                 GetSnackBar(
-                  message: snackbarMessage,
+                  messageText: Text(
+                    snackbarMessage,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: sc_snackBar,
                 );
               }
             }

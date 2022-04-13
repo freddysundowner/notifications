@@ -11,6 +11,7 @@ import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/widgets/nothingtoshow_container.dart';
 import 'package:get/get.dart';
 
+import '../../utils/styles.dart';
 import '../../widgets/default_button.dart';
 import 'components/address_box.dart';
 
@@ -153,7 +154,8 @@ class ManageAddressesScreen extends StatelessWidget {
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(snackbarMessage),
+            content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+              backgroundColor: sc_snackBar,
           ),
         );
       }

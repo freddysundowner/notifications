@@ -130,7 +130,7 @@ class ChatController extends GetxController {
           .doc(currentChatId.value)
           .set({FirebaseAuth.instance.currentUser!.uid: 0}, SetOptions(merge: true));
 
-      Inbox inbox = allUserChats[allUserChats.indexWhere((element) => element['id'] == currentChatId)];
+      Inbox inbox = allUserChats[allUserChats.indexWhere((element) => element.id == currentChatId)];
       unReadChats.value = unReadChats.value - inbox.unread;
       printOut("Chat messages read");
     }

@@ -175,8 +175,8 @@ class OwnerId {
     this.followingCount,
   });
 
-  List<String>? followers;
-  List<String>? following;
+  List<String>? followers = [];
+  List<String>? following = [];
   int? followersCount;
   int? followingCount;
   int? wallet;
@@ -232,8 +232,8 @@ class OwnerId {
       );
 
   Map<String, dynamic> toJson() => {
-        "followers": List<dynamic>.from(followers!.map((x) => x)),
-        "following": List<dynamic>.from(following!.map((x) => x)),
+        "followers": followers == null ? [] : List<dynamic>.from(followers!.map((x) => x)),
+        "following": following == null ? [] : List<dynamic>.from(following!.map((x) => x)),
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,

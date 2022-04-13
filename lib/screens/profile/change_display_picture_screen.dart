@@ -14,6 +14,8 @@ import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
+import '../../utils/utils.dart';
+
 class ChageProfileImage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
   @override
@@ -95,7 +97,8 @@ class ChageProfileImage extends StatelessWidget {
       if (snackbarMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(snackbarMessage),
+            content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+              backgroundColor: sc_snackBar,
           ),
         );
       }
@@ -128,7 +131,8 @@ class ChageProfileImage extends StatelessWidget {
           },
         );
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Display Picture updated")));
+            .showSnackBar(SnackBar(content: Text("Display Picture updated", style: const TextStyle(color: Colors.white),),
+            backgroundColor: sc_snackBar,));
       },
     );
   }
@@ -157,7 +161,8 @@ class ChageProfileImage extends StatelessWidget {
       authController.usermodel.value = await UserAPI.getUserById();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(snackbarMessage),
+          content: Text(snackbarMessage, style: TextStyle(color: Colors.white),),
+            backgroundColor: sc_snackBar,
         ),
       );
     }
@@ -186,7 +191,8 @@ class ChageProfileImage extends StatelessWidget {
     } finally {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(snackbarMessage),
+          content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+            backgroundColor: sc_snackBar,
         ),
       );
     }

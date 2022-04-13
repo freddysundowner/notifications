@@ -231,11 +231,9 @@ upgradeAccount(BuildContext context) async {
 
             if (userModel.wallet! < PREMIUM_UPGRADE_COINS_AMOUNT) {
               Get.back();
-              Get.snackbar(
-                "",
-                "You do not have enough GC to upgrade your account to premium",
-                backgroundColor: sc_snackBar,
-              );
+              Get.snackbar("",
+                  "You do not have enough GC to upgrade your account to premium",
+                  backgroundColor: sc_snackBar, colorText: Colors.white);
             } else {
               Get.back();
 

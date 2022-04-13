@@ -268,7 +268,8 @@ class ShopView extends StatelessWidget {
                       content: Text(
                           authController.usermodel.value!.shopId!.open == false
                               ? "Shop closed successfully"
-                              : "Shop opened successfully"),
+                              : "Shop opened successfully", style: TextStyle(color: Colors.white),),
+                      backgroundColor: sc_snackBar,
                     ),
                   );
                   Navigator.pop(context, false);
@@ -328,7 +329,8 @@ class ShopView extends StatelessWidget {
               snackbarMessage = e.toString();
             } finally {
               GetSnackBar(
-                message: snackbarMessage,
+                messageText: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+                backgroundColor: sc_snackBar,
               );
             }
           }

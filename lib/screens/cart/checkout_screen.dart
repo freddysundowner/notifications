@@ -296,7 +296,8 @@ class CheckOut extends StatelessWidget {
             if (checkOutController.address.value == null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Pick address first"),
+                  content: const Text("Pick address first", style: TextStyle(color: Colors.white),),
+                    backgroundColor: sc_snackBar,
                 ),
               );
             } else {

@@ -17,8 +17,7 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-
-import '../../services/dynamic_link_services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
@@ -41,7 +40,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
-    DynamicLinkService().handleDynamicLinks();
+    if (_homeController.roomsList.isEmpty) {
+      _homeController.getRooms();
+    }
+    [Permission.microphone].request();
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
@@ -310,11 +312,9 @@ class HomePage extends StatelessWidget {
                       if (roomModel.id != null) {
                         await _homeController.joinRoom(roomModel.id!);
                       } else {
-                        Get.snackbar(
-                          '',
-                          "Room is no longer available",
-                          backgroundColor: sc_snackBar,
-                        );
+                        Get.snackbar('', "Room is no longer available",
+                            backgroundColor: sc_snackBar,
+                            colorText: Colors.white);
                       }
                     },
                     child: Padding(
@@ -344,7 +344,8 @@ class HomePage extends StatelessWidget {
                                   children: [
                                     Text(
                                       roomModel.hostIds!.length.toString(),
-                                      style: const TextStyle(color: Colors.grey),
+                                      style:
+                                          const TextStyle(color: Colors.grey),
                                     ),
                                     SizedBox(width: 0.006.sw),
                                     const Icon(
@@ -355,7 +356,8 @@ class HomePage extends StatelessWidget {
                                     SizedBox(width: 0.03.sw),
                                     Text(
                                       roomModel.userIds!.length.toString(),
-                                      style: const TextStyle(color: Colors.grey),
+                                      style:
+                                          const TextStyle(color: Colors.grey),
                                     ),
                                     SizedBox(width: 0.006.sw),
                                     const Icon(
@@ -365,7 +367,8 @@ class HomePage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                if(roomModel.roomType == "private") const Icon(Icons.lock)
+                                if (roomModel.roomType == "private")
+                                  const Icon(Icons.lock)
                               ],
                             ),
                             SizedBox(

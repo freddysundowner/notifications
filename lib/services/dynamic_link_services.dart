@@ -62,7 +62,7 @@ class DynamicLinkService {
    */
   Future<void> _handleDeepLink(PendingDynamicLinkData data) async {
     final Uri? deepLink = data.link;
-    printOut("deep link " + deepLink!.queryParameters.toString());
+    printOut("" + deepLink!.queryParameters.toString());
     if (FirebaseAuth.instance.currentUser != null &&
         deepLink.queryParameters['type'] == "room") {
       var groupId = deepLink.queryParameters['groupid'];

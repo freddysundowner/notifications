@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -153,14 +154,16 @@ class UserController extends GetxController {
       Get.snackbar(
         "",
         "You have successfully upgraded your account o premium membership, Enjoy Gisting",
-        backgroundColor: sc_snackBar,
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white
       );
     } catch (e, s) {
       printOut("Error upgrading account $e $s");
       Get.snackbar(
         "",
         "An error occured while upgrading your account. Try again later",
-        backgroundColor: sc_snackBar,
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white
       );
     }
   }

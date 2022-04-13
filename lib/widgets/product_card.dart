@@ -39,10 +39,10 @@ class ProductCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: product.images!.length == 0
-              ? EdgeInsets.all(8.0)
-              : EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
+          padding: product.images!.isEmpty
+              ? const EdgeInsets.all(8.0)
+              : const EdgeInsets.all(8.0),
+          decoration: const BoxDecoration(
               color: Color(0XFFC9C9C9),
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(8), topLeft: Radius.circular(8))),
@@ -98,17 +98,6 @@ class ProductCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     fontSize: 11.sp,
                   ),
-                  children: [
-                    TextSpan(
-                      text: product.htmlPrice(product.discountPrice).toString(),
-                      style: TextStyle(
-                        color: kTextColor,
-                        decoration: TextDecoration.lineThrough,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 9.sp,
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ],

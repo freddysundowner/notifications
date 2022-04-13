@@ -50,8 +50,9 @@ class OrdersModel {
       date: json["date"] == null ? null : json["date"],
       id: json["_id"] == null ? null : json["_id"],
       customerId: UserModel.fromJson(json["customerId"] ?? {}),
-      shippingId: ShippingId.fromJson(
-          json["shippingId"] ?? jsonDecode(json["shippingAddress"]) ?? {}),
+      shippingId: ShippingId.fromJson(json["shippingAddress"] == "" || json["shippingAddress"] == null
+          ? json["shippingId"] == null ? {} : jsonDecode(json["shippingId"])
+          : jsonDecode(json["shippingAddress"])),
       shopId: json["shopId"] == null ? null : json["shopId"],
       subTotal: json["subTotal"] == null ? null : json["subTotal"],
       tax: json["tax"] == null ? null : json["tax"],

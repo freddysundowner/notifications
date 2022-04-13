@@ -10,7 +10,6 @@ import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/services/product_api.dart';
-import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
@@ -68,8 +67,11 @@ class EditProductForm extends StatelessWidget {
             allImagesUpdated = false;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content:
-                    Text("Couldn't upload image ${i + 1} due to some issue"),
+                content: Text(
+                  "Couldn't upload image ${i + 1} due to some issue",
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: sc_snackBar,
               ),
             );
           }
@@ -203,7 +205,8 @@ class EditProductForm extends StatelessWidget {
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(snackbarMessage),
+            content: Text(snackbarMessage, style: TextStyle(color: Colors.white),),
+              backgroundColor: sc_snackBar,
           ),
         );
         Get.back();

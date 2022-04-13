@@ -77,7 +77,8 @@ class Login extends StatelessWidget {
         Get.snackbar(
           '',
           "Check your rrrrryyyy connection",
-          backgroundColor: sc_snackBar,
+            backgroundColor: sc_snackBar,
+            colorText: Colors.white
         ).show();
       }
     } on SocketException catch (e) {
@@ -86,7 +87,8 @@ class Login extends StatelessWidget {
       Get.snackbar(
         '',
         "Check your rrrrr connection",
-        backgroundColor: sc_snackBar,
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white
       ).show();
     } catch (e, s) {
       printOut("error accenssing internet $e $s");
@@ -195,7 +197,8 @@ class Login extends StatelessWidget {
       } finally {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(snackbarMessage),
+            content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
+              backgroundColor: sc_snackBar,
           ),
         );
       }

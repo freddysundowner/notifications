@@ -378,7 +378,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   fetchEvents() async {
     try {
       isLoading.value = true;
-
+      eventsList.clear();
       var events = await RoomAPI().getAllEvents();
       eventsList.value = events;
       isLoading.value = false;
@@ -400,9 +400,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     try {
       isLoading.value = true;
 
+      eventsList.clear();
       var events = await RoomAPI().getAllMyEvents();
+      eventsList.value = events;
       isLoading.value = false;
-      print("events $events");
+      print("events ${events.length}");
       return events;
       if (events != null) {
         eventsList.value = events;

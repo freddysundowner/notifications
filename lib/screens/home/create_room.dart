@@ -18,12 +18,12 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-final RoomController _homeController = Get.find<RoomController>();
+final RoomController homeController = Get.find<RoomController>();
 
 Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
-  _homeController.roomPickedImages.value = [];
-  _homeController.roomHosts.value = [];
-  _homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
+  homeController.roomPickedImages.value = [];
+  homeController.roomHosts.value = [];
+  homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
 
   return showModalBottomSheet(
     isScrollControlled: true,
@@ -74,7 +74,7 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                         children: [
                           InkWell(
                             onTap: () {
-                              _homeController.newRoomType.value = "public";
+                              homeController.newRoomType.value = "public";
                             },
                             child: Column(
                               children: [
@@ -82,12 +82,12 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
                                       border: Border.all(
-                                          color: _homeController
+                                          color: homeController
                                                       .newRoomType.value ==
                                                   "public"
                                               ? Theme.of(context).primaryColor
                                               : Colors.black38,
-                                          width: _homeController
+                                          width: homeController
                                                       .newRoomType.value ==
                                                   "public"
                                               ? 5
@@ -115,7 +115,7 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                           ),
                           InkWell(
                             onTap: () {
-                              _homeController.newRoomType.value = "private";
+                              homeController.newRoomType.value = "private";
                             },
                             child: Column(
                               children: [
@@ -123,12 +123,12 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
                                       border: Border.all(
-                                          color: _homeController
+                                          color: homeController
                                                       .newRoomType.value ==
                                                   "private"
                                               ? Theme.of(context).primaryColor
                                               : Colors.black38,
-                                          width: _homeController
+                                          width: homeController
                                                       .newRoomType.value ==
                                                   "private"
                                               ? 5
@@ -163,12 +163,11 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                     Obx(() {
                       return InkWell(
                           onTap: () async {
-                            if (_homeController.newRoomType.value ==
-                                "private") {
+                            if (homeController.newRoomType.value == "private") {
                               showAddCoHostBottomSheet(context, private: true);
                             } else {
                               showProductBottomSheet(context);
-                              await _homeController.fetchUserProducts();
+                              await homeController.fetchUserProducts();
                             }
                           },
                           child: Container(
@@ -180,7 +179,7 @@ Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
                               padding: const EdgeInsets.all(10.0),
                               child: Center(
                                 child: Text(
-                                  _homeController.newRoomType.value == "private"
+                                  homeController.newRoomType.value == "private"
                                       ? "Pick friends to chat with"
                                       : "Proceed",
                                   style: TextStyle(
@@ -210,7 +209,7 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
           ),
           children: [
             TextField(
-              controller: _homeController.roomTitleController,
+              controller: homeController.roomTitleController,
               autofocus: true,
               keyboardType: TextInputType.visiblePassword,
               decoration: const InputDecoration(
@@ -261,141 +260,6 @@ Future<dynamic> showAddTitleDialog(BuildContext context) {
       });
 }
 
-Future<dynamic> showProductBottomSheet(BuildContext context) async {
-  return showModalBottomSheet(
-    isScrollControlled: true,
-    context: context,
-    backgroundColor: Colors.grey[200],
-    shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(15),
-      topRight: Radius.circular(15),
-    )),
-    builder: (context) {
-      return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-        return DraggableScrollableSheet(
-            initialChildSize: 0.5,
-            expand: false,
-            builder: (BuildContext productContext,
-                ScrollController scrollController) {
-              return Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Container(
-                      color: Theme.of(productContext).primaryColor,
-                      height: 0.01.sh,
-                      width: 0.15.sw,
-                    ),
-                    SizedBox(
-                      height: 0.02.sh,
-                    ),
-                    Text(
-                      "Choose product",
-                      style: TextStyle(color: Colors.black87, fontSize: 16.sp),
-                    ),
-                    SizedBox(
-                      height: 0.01.sh,
-                    ),
-                    Obx(() {
-                      return _homeController.userProductsLoading.isFalse
-                          ? SizedBox(
-                              height: 0.35.sh,
-                              child: _homeController.userProducts.isNotEmpty
-                                  ? GridView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      // physics: ScrollPhysics(),
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio: 0.8,
-                                      ),
-                                      itemCount:
-                                          _homeController.userProducts.length,
-                                      itemBuilder: (context, index) {
-                                        Product product = Product.fromJson(
-                                            _homeController.userProducts
-                                                .elementAt(index));
-
-                                        return InkWell(
-                                          onTap: () {
-                                            Get.back();
-                                            _homeController.roomPickedProduct
-                                                .value = product;
-
-                                            showChooseImagesBottomSheet(
-                                                context, product);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  child: Center(
-                                                    child: product
-                                                            .images!.isNotEmpty
-                                                        ? CachedNetworkImage(
-                                                            imageUrl: product
-                                                                .images!.first,
-                                                            height: 0.1.sh,
-                                                            width: 0.2.sw,
-                                                            fit: BoxFit.fill,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                const CircularProgressIndicator(),
-                                                            errorWidget: (context,
-                                                                    url,
-                                                                    error) =>
-                                                                const Icon(Icons
-                                                                    .error),
-                                                          )
-                                                        : Image.asset(
-                                                            "assets/icons/no_image.png",
-                                                            height: 0.1.sh,
-                                                            width: 0.2.sw,
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                  ),
-                                                ),
-                                                Center(
-                                                    child: Text(
-                                                  product.name!,
-                                                  style: TextStyle(
-                                                      color: Colors.black54,
-                                                      fontSize: 12.sp),
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      })
-                                  : Text(
-                                      "You have no products yet",
-                                      style: TextStyle(
-                                          fontSize: 16.sp, color: Colors.grey),
-                                    ))
-                          : const CircularProgressIndicator(
-                              color: Colors.black,
-                            );
-                    }),
-                  ],
-                ),
-              );
-            });
-      });
-    },
-  );
-}
-
 Future<dynamic> showChooseImagesBottomSheet(
     BuildContext context, Product product) {
   generateProductImages(product);
@@ -432,7 +296,7 @@ Future<dynamic> showChooseImagesBottomSheet(
                     InkWell(
                       onTap: () {
                         showAddCoHostBottomSheet(context);
-                        _homeController.fetchAllUsers();
+                        homeController.fetchAllUsers();
                       },
                       child: Row(
                         children: [
@@ -473,9 +337,9 @@ Future<dynamic> showChooseImagesBottomSheet(
                               crossAxisCount: 3,
                               childAspectRatio: 0.99,
                             ),
-                            itemCount: _homeController.roomPickedImages.length,
+                            itemCount: homeController.roomPickedImages.length,
                             itemBuilder: (context, index) {
-                              RoomImagesModel roomImages = _homeController
+                              RoomImagesModel roomImages = homeController
                                   .roomPickedImages
                                   .elementAt(index);
                               return InkWell(
@@ -581,7 +445,7 @@ Future<dynamic> showChooseImagesBottomSheet(
                         onTap: () {
                           Get.back();
                           Get.back();
-                          _homeController.createRoom();
+                          homeController.createRoom();
                         },
                         child: Button(text: "Finish", width: 0.9.sw))
                   ],
@@ -607,7 +471,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
     builder: (context) {
       return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-        _homeController.friendsToInviteCall();
+        homeController.friendsToInviteCall();
         return DraggableScrollableSheet(
             initialChildSize: 0.8,
             expand: false,
@@ -633,9 +497,9 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                               Get.back();
                               if (private != null &&
                                   private == true &&
-                                  _homeController.roomHosts.length > 1) {
+                                  homeController.roomHosts.length > 1) {
                                 showProductBottomSheet(context);
-                                await _homeController.fetchUserProducts();
+                                await homeController.fetchUserProducts();
                               }
                             },
                             icon: const Icon(Icons.done))
@@ -665,20 +529,20 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                               child: Center(
                                 child: TextField(
                                   controller:
-                                      _homeController.searchUsersController,
+                                      homeController.searchUsersController,
                                   autofocus: false,
                                   autocorrect: false,
                                   enableSuggestions: false,
                                   keyboardType: TextInputType.visiblePassword,
                                   onChanged: (text) {
                                     print(
-                                        "entered ${_homeController.friendsToInvite.value.length}");
+                                        "entered ${homeController.friendsToInvite.value.length}");
                                     if (text.isNotEmpty) {
-                                      _homeController.searchUsersWeAreFriends(
-                                          _homeController
+                                      homeController.searchUsersWeAreFriends(
+                                          homeController
                                               .searchUsersController.text);
                                     } else {
-                                      _homeController.friendsToInviteCall();
+                                      homeController.friendsToInviteCall();
                                     }
                                   },
                                   decoration: InputDecoration(
@@ -710,10 +574,10 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                       height: 0.01.sh,
                     ),
                     Obx(() {
-                      return _homeController.allUsersLoading.isFalse
+                      return homeController.allUsersLoading.isFalse
                           ? SizedBox(
                               height: 0.55.sh,
-                              child: _homeController
+                              child: homeController
                                       .searchedfriendsToInvite.isNotEmpty
                                   ? GridView.builder(
                                       scrollDirection: Axis.vertical,
@@ -724,21 +588,21 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                         crossAxisCount: 3,
                                         childAspectRatio: 0.9,
                                       ),
-                                      itemCount: _homeController
+                                      itemCount: homeController
                                           .searchedfriendsToInvite.length,
                                       itemBuilder: (context, index) {
                                         UserModel user = UserModel.fromJson(
-                                            _homeController
+                                            homeController
                                                 .searchedfriendsToInvite
                                                 .elementAt(index));
                                         return InkWell(
                                           onTap: () {
-                                            if (_homeController.roomHosts
+                                            if (homeController.roomHosts
                                                 .contains(user)) {
-                                              _homeController.roomHosts
+                                              homeController.roomHosts
                                                   .remove(user);
                                             } else {
-                                              _homeController.roomHosts
+                                              homeController.roomHosts
                                                   .add(user);
                                             }
                                           },
@@ -758,7 +622,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                             backgroundColor:
                                                                 Colors
                                                                     .transparent,
-                                                            foregroundImage: _homeController
+                                                            foregroundImage: homeController
                                                                     .roomHosts
                                                                     .contains(
                                                                         user)
@@ -779,7 +643,7 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
                                                                         .error),
                                                             backgroundColor:
                                                                 Colors.black38,
-                                                            foregroundImage: _homeController
+                                                            foregroundImage: homeController
                                                                     .roomHosts
                                                                     .contains(
                                                                         user)
@@ -840,14 +704,14 @@ Future<dynamic> showAddCoHostBottomSheet(BuildContext context,
 
 generateProductImages(Product product) {
   for (var i = 0; i < product.images!.length; i++) {
-    _homeController.roomPickedImages
+    homeController.roomPickedImages
         .add(RoomImagesModel(product.images!.elementAt(i), true, false));
   }
 
   do {
-    _homeController.roomPickedImages
+    homeController.roomPickedImages
         .add(RoomImagesModel("assets/icons/no_image.png", false, false));
-  } while (_homeController.roomPickedImages.length < 6);
+  } while (homeController.roomPickedImages.length < 6);
 }
 
 pickImage(BuildContext context) async {
@@ -856,8 +720,8 @@ pickImage(BuildContext context) async {
 
   printOut("Path to picked image $path");
 
-  _homeController.roomPickedImages.insert(
-      _homeController.roomPickedImages.indexWhere(
+  homeController.roomPickedImages.insert(
+      homeController.roomPickedImages.indexWhere(
           (element) => element.isReal == false && element.isPath == false),
       RoomImagesModel(path, false, true));
   if (path == null) {

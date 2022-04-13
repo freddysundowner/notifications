@@ -17,6 +17,21 @@ class RoomAPI {
     return jsonDecode(rooms);
   }
 
+  getAllMyEvents() async {
+    var rooms = await DbBase().databaseRequest(
+        myEvents + "/" + Get.find<AuthController>().usermodel.value!.id!,
+        DbBase().getRequestType);
+
+    return jsonDecode(rooms);
+  }
+
+  getAllEvents() async {
+    var rooms =
+        await DbBase().databaseRequest(allEvents, DbBase().getRequestType);
+
+    return jsonDecode(rooms);
+  }
+
   getRoomById(String roomId) async {
     var room = await DbBase()
         .databaseRequest(roomById + roomId, DbBase().getRequestType);
@@ -33,6 +48,21 @@ class RoomAPI {
           body: roomData);
 
       printOut("created room $room");
+      return jsonDecode(room);
+    } catch (e, s) {
+      printOut("Error creating room $e $s");
+    }
+  }
+
+  createEvent(Map<String, dynamic> roomData) async {
+    try {
+      printOut("create createEventE $roomData");
+      var room = await DbBase().databaseRequest(
+          createEventE + Get.find<AuthController>().usermodel.value!.id!,
+          DbBase().postRequestType,
+          body: roomData);
+
+      printOut("created createEventE $room");
       return jsonDecode(room);
     } catch (e, s) {
       printOut("Error creating room $e $s");

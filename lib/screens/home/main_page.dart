@@ -13,6 +13,8 @@ import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/favorites/favorites.dart';
 import 'package:fluttergistshop/screens/home/create_room.dart';
 import 'package:fluttergistshop/screens/home/home_page.dart';
+import 'package:fluttergistshop/screens/room/upcomingRooms/new.dart';
+import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
 import 'package:fluttergistshop/screens/settings/settings_page.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
@@ -215,7 +217,7 @@ class MainPage extends StatelessWidget {
                                 child: Text(
                                   "Go Live",
                                   style: TextStyle(
-                                      fontSize: 18.sp, color: Colors.black),
+                                      fontSize: 16.sp, color: Colors.black),
                                 ),
                               ),
                               onTap: () {
@@ -224,11 +226,23 @@ class MainPage extends StatelessWidget {
                             ),
                             if (authController.currentuser?.shopId?.id != null)
                               ListTile(
+                                leading: new Icon(Icons.calendar_today_rounded),
+                                title: new Text(
+                                  'Upcoming Events',
+                                  style: TextStyle(
+                                      fontSize: 16.sp, color: Colors.black),
+                                ),
+                                onTap: () {
+                                  Get.to(() => UpcomingEvents());
+                                },
+                              ),
+                            if (authController.currentuser?.shopId?.id != null)
+                              ListTile(
                                 leading: new Icon(Icons.shopping_cart),
                                 title: new Text(
                                   'My Shop',
                                   style: TextStyle(
-                                      fontSize: 18.sp, color: Colors.black),
+                                      fontSize: 16.sp, color: Colors.black),
                                 ),
                                 onTap: () {
                                   shopController.currentShop.value =
@@ -242,12 +256,12 @@ class MainPage extends StatelessWidget {
                                 title: new Text(
                                   "Create a Shop",
                                   style: TextStyle(
-                                      fontSize: 18.sp, color: Colors.black),
+                                      fontSize: 16.sp, color: Colors.black),
                                 ),
                                 onTap: () {
                                   Get.to(() => NewShop());
                                 },
-                              ),
+                              )
                           ],
                         );
                       });

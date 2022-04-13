@@ -9,12 +9,13 @@ import 'package:fluttergistshop/models/user_model.dart';
 
 import 'shop.dart';
 
-RoomModel roomModelFromJson(String str) => RoomModel.fromJson(json.decode(str));
+EventModel roomModelFromJson(String str) =>
+    EventModel.fromJson(json.decode(str));
 
-String roomModelToJson(RoomModel data) => json.encode(data.toJson());
+String roomModelToJson(EventModel data) => json.encode(data.toJson());
 
-class RoomModel {
-  RoomModel({
+class EventModel {
+  EventModel({
     this.productIds,
     this.hostIds,
     this.userIds,
@@ -43,7 +44,7 @@ class RoomModel {
 
   List<Product>? productIds;
   List<OwnerId>? hostIds = [];
-  List<String>? invitedhostIds = [];
+  List<OwnerId>? invitedhostIds = [];
   List<OwnerId>? userIds = [];
   List<OwnerId>? raisedHands = [];
   List<OwnerId>? speakerIds = [];
@@ -66,7 +67,7 @@ class RoomModel {
   String? roomType;
   dynamic? token;
 
-  factory RoomModel.fromJson(Map<String, dynamic> json) => RoomModel(
+  factory EventModel.fromJson(Map<String, dynamic> json) => EventModel(
         productIds: json["productIds"] == null
             ? []
             : List<Product>.from(
@@ -105,7 +106,8 @@ class RoomModel {
             : UserModel.fromJson(json["ownerId"]).shopId,
         invitedhostIds: json["invitedhostIds"] == null
             ? []
-            : List<String>.from(json["invitedhostIds"].map((x) => x)),
+            : List<OwnerId>.from(
+                json["invitedhostIds"].map((x) => OwnerId.fromJson(x))),
         productPrice: json["productPrice"],
         v: json["__v"],
         token: json["token"],
@@ -186,8 +188,8 @@ class OwnerId {
     this.followingCount,
   });
 
-  List<String>? followers = [];
-  List<String>? following = [];
+  List<String>? followers;
+  List<String>? following;
   int? followersCount;
   int? followingCount;
   int? wallet;
@@ -243,8 +245,8 @@ class OwnerId {
       );
 
   Map<String, dynamic> toJson() => {
-        "followers": followers == null ? [] : List<dynamic>.from(followers!.map((x) => x)),
-        "following": following == null ? [] : List<dynamic>.from(following!.map((x) => x)),
+        "followers": List<dynamic>.from(followers!.map((x) => x)),
+        "following": List<dynamic>.from(following!.map((x) => x)),
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,

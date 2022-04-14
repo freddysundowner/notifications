@@ -862,9 +862,22 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         //   roomId: roomId,
         // ));
       } else {
+        Get.snackbar(
+            '',
+            "There was an error adding you to the room. Try again later.",
+            backgroundColor: sc_snackBar,
+            colorText: Colors.white
+        );
         roomsList.removeWhere((element) => element.id == roomId);
       }
     } else {
+      Get.snackbar(
+          '',
+          "Room has ended",
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white
+      );
+      Get.offAll(() => MainPage());
       await fetchRooms();
     }
   }

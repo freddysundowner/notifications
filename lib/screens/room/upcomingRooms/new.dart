@@ -85,54 +85,76 @@ class NewEventUpcoming extends StatelessWidget {
       return;
     }
 
-    var response;
-    String snackbarMessage = "";
-    if (roomModel != null) {
-      var hosts = [];
-      for (var element in homeController.roomHosts) {
-        hosts.add(element.id);
+    try {
+      var response;
+      String snackbarMessage = "";
+      if (roomModel != null) {
+        var hosts = [];
+        for (var element in homeController.roomHosts) {
+          hosts.add(element.id);
+        }
+
+        var roomData = {
+          "title": homeController.eventTitleController.text,
+          "description": homeController.eventDescriptiion.text,
+          "roomType": homeController.newRoomType.value,
+          "productIds": [homeController.roomPickedProduct.value.id],
+          "hostIds": hosts,
+          "userIds": [],
+          "raisedHands": [],
+          "speakerIds": [],
+          "event": true,
+          "invitedIds": [],
+          "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
+          "status": true,
+          "productPrice": homeController.roomPickedProduct.value.price,
+          "productImages": homeController.roomPickedProduct.value.images,
+          "activeTime": DateTime.now().microsecondsSinceEpoch,
+          "eventDate": homeController.eventDate.value!.millisecondsSinceEpoch
+        };
+
+        response = homeController.updateEvent(roomModel!.id!, roomData);
+      } else {
+        print("before event");
+        response = homeController.createEvent();
       }
 
-      var roomData = {
-        "title": homeController.eventTitleController.text,
-        "description": homeController.eventDescriptiion.text,
-        "roomType": homeController.newRoomType.value,
-        "productIds": [homeController.roomPickedProduct.value.id],
-        "hostIds": hosts,
-        "userIds": [],
-        "raisedHands": [],
-        "speakerIds": [],
-        "event": true,
-        "invitedIds": [],
-        "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
-        "status": true,
-        "productPrice": homeController.roomPickedProduct.value.price,
-        "productImages": homeController.roomPickedProduct.value.images,
-        "activeTime": DateTime.now().microsecondsSinceEpoch,
-        "eventDate": homeController.eventDate.value!.millisecondsSinceEpoch
-      };
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AsyncProgressDialog(
+            response,
+            message:
+                Text(roomModel != null ? "Updating event" : "Creating event"),
+            onError: (e) {
+              snackbarMessage = e.toString();
+            },
+          );
+        },
+      );
 
-      response = homeController.updateEvent(roomModel!.id!, roomData);
-    } else {
-      print("before event");
-      response = homeController.createEvent();
+      homeController.fetchEvents();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error happened",
+            style: TextStyle(color: Colors.red),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } finally {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            roomModel != null ? "Updated successfully" : "Saved succesfully",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
     }
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AsyncProgressDialog(
-          response,
-          message:
-              Text(roomModel != null ? "Updating event" : "Creating event"),
-          onError: (e) {
-            snackbarMessage = e.toString();
-          },
-        );
-      },
-    );
-
-    homeController.fetchEvents();
   }
 
   @override

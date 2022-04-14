@@ -872,7 +872,7 @@ class NewEventUpcoming extends StatelessWidget {
                                   await homeController.fetchUserProducts();
                                 }
                               },
-                              icon: const Icon(Icons.done))
+                              icon: Icon(Icons.done))
                         ],
                       ),
                       SizedBox(
@@ -906,8 +906,6 @@ class NewEventUpcoming extends StatelessWidget {
                                     enableSuggestions: false,
                                     keyboardType: TextInputType.visiblePassword,
                                     onChanged: (text) {
-                                      print(
-                                          "entered ${homeController.friendsToInvite.value.length}");
                                       if (text.isNotEmpty) {
                                         homeController.searchUsersWeAreFriends(
                                             homeController
@@ -970,12 +968,17 @@ class NewEventUpcoming extends StatelessWidget {
                                           return InkWell(
                                             onTap: () {
                                               if (homeController.roomHosts
-                                                  .contains(user)) {
-                                                homeController.roomHosts
-                                                    .remove(user);
-                                              } else {
+                                                      .indexWhere((element) =>
+                                                          element.id! ==
+                                                          user.id) ==
+                                                  -1) {
                                                 homeController.roomHosts
                                                     .add(user);
+                                              } else {
+                                                homeController.roomHosts
+                                                    .removeWhere((element) =>
+                                                        element.id! ==
+                                                        user.id!);
                                               }
                                             },
                                             child: Column(
@@ -996,9 +999,12 @@ class NewEventUpcoming extends StatelessWidget {
                                                                   Colors
                                                                       .transparent,
                                                               foregroundImage: homeController
-                                                                      .roomHosts
-                                                                      .contains(
-                                                                          user)
+                                                                          .roomHosts
+                                                                          .indexWhere((element) =>
+                                                                              element.id! ==
+                                                                              user
+                                                                                  .id!) !=
+                                                                      -1
                                                                   ? const AssetImage(
                                                                       "assets/icons/picked.png")
                                                                   : MemoryImage(
@@ -1016,10 +1022,12 @@ class NewEventUpcoming extends StatelessWidget {
                                                               backgroundColor:
                                                                   Colors
                                                                       .black38,
-                                                              foregroundImage: homeController
-                                                                      .roomHosts
-                                                                      .contains(
-                                                                          user)
+                                                              foregroundImage: homeController.roomHosts.indexWhere((element) =>
+                                                                          element
+                                                                              .id! ==
+                                                                          user
+                                                                              .id!) !=
+                                                                      -1
                                                                   ? const AssetImage(
                                                                       "assets/icons/picked.png")
                                                                   : MemoryImage(

@@ -22,6 +22,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final UserController _userController = Get.find<UserController>();
 final RoomController _homeController = Get.find<RoomController>();
+final AuthController authController = Get.put(AuthController());
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -156,7 +157,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  final AuthController authController = Get.put(AuthController());
+
 
   @override
   void initState() {

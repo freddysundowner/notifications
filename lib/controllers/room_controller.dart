@@ -794,11 +794,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
-    Get.defaultDialog(
-        title: "Joining room...",
-        contentPadding: const EdgeInsets.all(10),
-        content: const CircularProgressIndicator(),
-        barrierDismissible: false);
+
+    if (Get.find<AuthController>().usermodel.value == null) {
+      await UserAPI.getUserById();
+      Get.find<AuthController>().usermodel.refresh();
+    }
 
     OwnerId currentUser = OwnerId(
         id: Get.find<AuthController>().usermodel.value!.id,
@@ -810,6 +810,12 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         followers: Get.find<AuthController>().usermodel.value!.followers,
         following: Get.find<AuthController>().usermodel.value!.following,
         profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
+
+    Get.defaultDialog(
+        title: "Joining room...",
+        contentPadding: const EdgeInsets.all(10),
+        content: const CircularProgressIndicator(),
+        barrierDismissible: false);
 
     if (currentRoom.value.id != null && currentRoom.value.id != roomId) {
       var prevRoom = currentRoom.value.id;
@@ -851,9 +857,22 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         //   roomId: roomId,
         // ));
       } else {
+        Get.snackbar(
+            '',
+            "There was an error adding you to the room. Try again later.",
+            backgroundColor: sc_snackBar,
+            colorText: Colors.white
+        );
         roomsList.removeWhere((element) => element.id == roomId);
       }
     } else {
+      Get.snackbar(
+          '',
+          "Room has ended",
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white
+      );
+      Get.offAll(() => MainPage());
       await fetchRooms();
     }
   }

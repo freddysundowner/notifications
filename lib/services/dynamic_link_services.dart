@@ -8,7 +8,8 @@ import '../controllers/room_controller.dart';
 
 class DynamicLinkService {
 
-  final RoomController _homeController = Get.find<RoomController>();
+  final RoomController _homeController = Get.put(RoomController());
+
   /*
     generate sharing dynamic link
    */
@@ -62,7 +63,12 @@ class DynamicLinkService {
    */
   Future<void> _handleDeepLink(PendingDynamicLinkData data) async {
     final Uri? deepLink = data.link;
-    printOut("" + deepLink!.queryParameters.toString());
+
+    if (deepLink == null) {
+      return;
+    }
+
+    printOut("" + deepLink.queryParameters.toString());
     if (FirebaseAuth.instance.currentUser != null &&
         deepLink.queryParameters['type'] == "room") {
       var groupId = deepLink.queryParameters['groupid'];

@@ -1226,7 +1226,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
             [element.id],
             "${Get.find<AuthController>().usermodel.value!.firstName}"
                 " ${Get.find<AuthController>().usermodel.value!.firstName}",
-            "invited you to an event to be held on ",
+            "invited you to ${roomTitle} event",
             "ProfileScreen",
             Get.find<AuthController>().usermodel.value!.id!);
       });

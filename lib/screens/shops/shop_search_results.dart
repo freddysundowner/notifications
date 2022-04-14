@@ -277,7 +277,7 @@ class ShopSearchResults extends StatelessWidget {
                 : const CircleAvatar(
                     radius: 25,
                     backgroundImage:
-                        AssetImage("assets/icons/profile_placeholder.png"),
+                        AssetImage("assets/icons/productavatar.jpeg"),
                   ),
             SizedBox(
               width: 0.04.sw,
@@ -330,8 +330,8 @@ class ShopSearchResults extends StatelessWidget {
                     () => InkWell(
                       onTap: () => _search(index),
                       child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
                         decoration: _globalController.currentsearchtab.value ==
                                 index
                             ? BoxDecoration(

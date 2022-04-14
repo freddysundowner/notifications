@@ -311,7 +311,7 @@ class NewEventUpcoming extends StatelessWidget {
                                   ),
                                   if (homeController.roomHosts.indexWhere(
                                           (e) => element.id! == e.id!) ==
-                                      -1)
+                                      1)
                                     InkWell(
                                       onTap: () {
                                         homeController.roomHosts.removeWhere(

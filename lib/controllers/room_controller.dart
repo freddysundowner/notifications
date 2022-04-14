@@ -794,7 +794,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
-
     if (Get.find<AuthController>().usermodel.value == null) {
       await UserAPI.getUserById();
       Get.find<AuthController>().usermodel.refresh();
@@ -858,20 +857,13 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         // ));
       } else {
         Get.snackbar(
-            '',
-            "There was an error adding you to the room. Try again later.",
-            backgroundColor: sc_snackBar,
-            colorText: Colors.white
-        );
+            '', "There was an error adding you to the room. Try again later.",
+            backgroundColor: sc_snackBar, colorText: Colors.white);
         roomsList.removeWhere((element) => element.id == roomId);
       }
     } else {
-      Get.snackbar(
-          '',
-          "Room has ended",
-          backgroundColor: sc_snackBar,
-          colorText: Colors.white
-      );
+      Get.snackbar('', "Room has ended",
+          backgroundColor: sc_snackBar, colorText: Colors.white);
       Get.offAll(() => MainPage());
       await fetchRooms();
     }

@@ -125,8 +125,6 @@ goToPageFromNotification(var payload) async {
 bool showloading = false;
 
 Future redirectToRooms(Map<String, dynamic> mess) async {
-  printOut('One signal Notification clicked redirecting');
-
   String screen = mess["screen"];
   String id = mess["id"];
 

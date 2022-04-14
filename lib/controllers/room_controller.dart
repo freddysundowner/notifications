@@ -15,6 +15,7 @@ import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
+import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -295,22 +296,15 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         } else {
           Get.offAll(MainPage());
           Get.snackbar(
-            "",
-            "There was an error creating your room. Try again later",
-            backgroundColor: sc_snackBar,
-            colorText: Colors.white
-          );
+              "", "There was an error creating your room. Try again later",
+              backgroundColor: sc_snackBar, colorText: Colors.white);
 
           endRoom(roomId);
         }
       } else {
         Get.offAll(MainPage());
-        Get.snackbar(
-          "",
-          "Error creating your room",
-            backgroundColor: sc_snackBar,
-            colorText: Colors.white
-        );
+        Get.snackbar("", "Error creating your room",
+            backgroundColor: sc_snackBar, colorText: Colors.white);
       }
 
       isCreatingRoom.value = false;
@@ -416,8 +410,14 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } finally {
-      GetSnackBar(title: "", backgroundColor: sc_snackBar,
-          messageText: Text(snackBarMessage, style: const TextStyle(color: Colors.white),),);
+      GetSnackBar(
+        title: "",
+        backgroundColor: sc_snackBar,
+        messageText: Text(
+          snackBarMessage,
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
     }
   }
 
@@ -515,21 +515,15 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         if (room.token != null) {
           currentRoom.value = room;
         } else {
-          Get.snackbar(
-            '',
-            "There was an error adding you to the room, Try again later",
-              backgroundColor: sc_snackBar,
-              colorText: Colors.white
-          ).show();
+          Get.snackbar('',
+                  "There was an error adding you to the room, Try again later",
+                  backgroundColor: sc_snackBar, colorText: Colors.white)
+              .show();
           endRoom(roomId);
         }
       } else {
-        Get.snackbar(
-          '',
-          "Room has ended",
-            backgroundColor: sc_snackBar,
-            colorText: Colors.white
-        );
+        Get.snackbar('', "Room has ended",
+            backgroundColor: sc_snackBar, colorText: Colors.white);
       }
       isCurrentRoomLoading.value = false;
 
@@ -581,11 +575,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     } else {
       roomsList.removeWhere((element) => element.id == currentRoom.value.id);
       Get.snackbar(
-        '',
-        "There was an error adding you to the room, Try again later",
-          backgroundColor: sc_snackBar,
-          colorText: Colors.white
-      );
+          '', "There was an error adding you to the room, Try again later",
+          backgroundColor: sc_snackBar, colorText: Colors.white);
     }
   }
 
@@ -664,9 +655,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
     Get.snackbar(
       '',
-      "You have raised your hand", colorText: Colors.white,
-        backgroundColor: sc_snackBar,
-
+      "You have raised your hand",
+      colorText: Colors.white,
+      backgroundColor: sc_snackBar,
     );
 
     currentRoom.refresh();
@@ -803,7 +794,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
-
     Get.defaultDialog(
         title: "Joining room...",
         contentPadding: const EdgeInsets.all(10),
@@ -835,8 +825,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     if (currentRoom.value.id != null) {
       Get.back();
       Get.to(() => RoomPage(
-        roomId: roomId,
-      ));
+            roomId: roomId,
+          ));
       await addUserToRoom(currentUser);
       if (currentRoom.value.token != null) {
         //If user is not a speaker or a host, disable their audio
@@ -852,7 +842,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           } catch (e, s) {
             printOut("Error disabling audio $e $s");
           }
-
         } else {
           await engine.enableLocalAudio(false);
           await engine.muteLocalAudioStream(true);
@@ -885,7 +874,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   Future<void> leaveAgora() async {
     // if (engine != null) {
-
 
     await engine.leaveChannel();
     await engine.enableLocalAudio(false);
@@ -1229,9 +1217,19 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "eventDate": eventDate.value!.millisecondsSinceEpoch
       };
 
-      print("createEvent $roomData");
-
       var rooms = await RoomAPI().createEvent(roomData);
+
+      //send nootification to hosts eexcept me
+
+      hosts.forEach((element) async {
+        await NotificationApi().sendNotification(
+            [element.id],
+            "${Get.find<AuthController>().usermodel.value!.firstName}"
+                " ${Get.find<AuthController>().usermodel.value!.firstName}",
+            "invited you to an event to be held on ",
+            "ProfileScreen",
+            Get.find<AuthController>().usermodel.value!.id!);
+      });
 
       if (rooms != null) {
         Get.back();

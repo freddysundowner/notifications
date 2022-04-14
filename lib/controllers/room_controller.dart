@@ -803,6 +803,13 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
+
+    Get.defaultDialog(
+        title: "Joining room...",
+        contentPadding: const EdgeInsets.all(10),
+        content: const CircularProgressIndicator(),
+        barrierDismissible: false);
+
     OwnerId currentUser = OwnerId(
         id: Get.find<AuthController>().usermodel.value!.id,
         bio: Get.find<AuthController>().usermodel.value!.bio,
@@ -826,28 +833,34 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     await fetchRoom(roomId);
 
     if (currentRoom.value.id != null) {
+      Get.back();
+      Get.to(() => RoomPage(
+        roomId: roomId,
+      ));
       await addUserToRoom(currentUser);
-
       if (currentRoom.value.token != null) {
         //If user is not a speaker or a host, disable their audio
         if (currentRoom.value.userIds!
                 .indexWhere((e) => e.id == currentUser.id) ==
             -1) {
           try {
-            engine.enableAudio();
-            engine.enableLocalAudio(true);
+            await engine.enableAudio();
+            await engine.enableLocalAudio(true);
 
-            engine.muteLocalAudioStream(audioMuted.value);
+            await engine.muteLocalAudioStream(audioMuted.value);
             currentRoom.refresh();
           } catch (e, s) {
             printOut("Error disabling audio $e $s");
           }
+
         } else {
-          engine.enableLocalAudio(false);
+          await engine.enableLocalAudio(false);
+          await engine.muteLocalAudioStream(true);
         }
-        Get.to(RoomPage(
-          roomId: roomId,
-        ));
+        // Get.back();
+        // Get.to(() => RoomPage(
+        //   roomId: roomId,
+        // ));
       } else {
         roomsList.removeWhere((element) => element.id == roomId);
       }
@@ -875,6 +888,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
 
     await engine.leaveChannel();
+    await engine.enableLocalAudio(false);
     await engine.muteLocalAudioStream(true);
     // await engine.destroy();
     // }

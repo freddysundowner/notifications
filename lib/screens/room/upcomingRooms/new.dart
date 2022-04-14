@@ -38,6 +38,7 @@ class NewEventUpcoming extends StatelessWidget {
     } else {
       homeController.newRoomType.value = "private";
     }
+    homeController.isSwitched.value = value;
   }
 
   Future<void> _saveEvent(BuildContext context) async {
@@ -84,54 +85,76 @@ class NewEventUpcoming extends StatelessWidget {
       return;
     }
 
-    var response;
-    String snackbarMessage = "";
-    if (roomModel != null) {
-      var hosts = [];
-      for (var element in homeController.roomHosts) {
-        hosts.add(element.id);
+    try {
+      var response;
+      String snackbarMessage = "";
+      if (roomModel != null) {
+        var hosts = [];
+        for (var element in homeController.roomHosts) {
+          hosts.add(element.id);
+        }
+
+        var roomData = {
+          "title": homeController.eventTitleController.text,
+          "description": homeController.eventDescriptiion.text,
+          "roomType": homeController.newRoomType.value,
+          "productIds": [homeController.roomPickedProduct.value.id],
+          "hostIds": hosts,
+          "userIds": [],
+          "raisedHands": [],
+          "speakerIds": [],
+          "event": true,
+          "invitedIds": [],
+          "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
+          "status": true,
+          "productPrice": homeController.roomPickedProduct.value.price,
+          "productImages": homeController.roomPickedProduct.value.images,
+          "activeTime": DateTime.now().microsecondsSinceEpoch,
+          "eventDate": homeController.eventDate.value!.millisecondsSinceEpoch
+        };
+
+        response = homeController.updateEvent(roomModel!.id!, roomData);
+      } else {
+        print("before event");
+        response = homeController.createEvent();
       }
 
-      var roomData = {
-        "title": homeController.eventTitleController.text,
-        "description": homeController.eventDescriptiion.text,
-        "roomType": homeController.newRoomType.value,
-        "productIds": [homeController.roomPickedProduct.value.id],
-        "hostIds": hosts,
-        "userIds": [],
-        "raisedHands": [],
-        "speakerIds": [],
-        "event": true,
-        "invitedIds": [],
-        "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
-        "status": true,
-        "productPrice": homeController.roomPickedProduct.value.price,
-        "productImages": homeController.roomPickedProduct.value.images,
-        "activeTime": DateTime.now().microsecondsSinceEpoch,
-        "eventDate": homeController.eventDate.value!.millisecondsSinceEpoch
-      };
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AsyncProgressDialog(
+            response,
+            message:
+                Text(roomModel != null ? "Updating event" : "Creating event"),
+            onError: (e) {
+              snackbarMessage = e.toString();
+            },
+          );
+        },
+      );
 
-      response = homeController.updateEvent(roomModel!.id!, roomData);
-    } else {
-      print("before event");
-      response = homeController.createEvent();
+      homeController.fetchEvents();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error happened",
+            style: TextStyle(color: Colors.red),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } finally {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            roomModel != null ? "Updated successfully" : "Saved succesfully",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
     }
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AsyncProgressDialog(
-          response,
-          message:
-              Text(roomModel != null ? "Updating event" : "Creating event"),
-          onError: (e) {
-            snackbarMessage = e.toString();
-          },
-        );
-      },
-    );
-
-    homeController.fetchEvents();
   }
 
   @override
@@ -288,7 +311,7 @@ class NewEventUpcoming extends StatelessWidget {
                                   ),
                                   if (homeController.roomHosts.indexWhere(
                                           (e) => element.id! == e.id!) ==
-                                      -1)
+                                      1)
                                     InkWell(
                                       onTap: () {
                                         homeController.roomHosts.removeWhere(
@@ -849,7 +872,7 @@ class NewEventUpcoming extends StatelessWidget {
                                   await homeController.fetchUserProducts();
                                 }
                               },
-                              icon: const Icon(Icons.done))
+                              icon: Icon(Icons.done))
                         ],
                       ),
                       SizedBox(
@@ -883,8 +906,6 @@ class NewEventUpcoming extends StatelessWidget {
                                     enableSuggestions: false,
                                     keyboardType: TextInputType.visiblePassword,
                                     onChanged: (text) {
-                                      print(
-                                          "entered ${homeController.friendsToInvite.value.length}");
                                       if (text.isNotEmpty) {
                                         homeController.searchUsersWeAreFriends(
                                             homeController
@@ -947,12 +968,17 @@ class NewEventUpcoming extends StatelessWidget {
                                           return InkWell(
                                             onTap: () {
                                               if (homeController.roomHosts
-                                                  .contains(user)) {
-                                                homeController.roomHosts
-                                                    .remove(user);
-                                              } else {
+                                                      .indexWhere((element) =>
+                                                          element.id! ==
+                                                          user.id) ==
+                                                  -1) {
                                                 homeController.roomHosts
                                                     .add(user);
+                                              } else {
+                                                homeController.roomHosts
+                                                    .removeWhere((element) =>
+                                                        element.id! ==
+                                                        user.id!);
                                               }
                                             },
                                             child: Column(
@@ -973,9 +999,12 @@ class NewEventUpcoming extends StatelessWidget {
                                                                   Colors
                                                                       .transparent,
                                                               foregroundImage: homeController
-                                                                      .roomHosts
-                                                                      .contains(
-                                                                          user)
+                                                                          .roomHosts
+                                                                          .indexWhere((element) =>
+                                                                              element.id! ==
+                                                                              user
+                                                                                  .id!) !=
+                                                                      -1
                                                                   ? const AssetImage(
                                                                       "assets/icons/picked.png")
                                                                   : MemoryImage(
@@ -993,10 +1022,12 @@ class NewEventUpcoming extends StatelessWidget {
                                                               backgroundColor:
                                                                   Colors
                                                                       .black38,
-                                                              foregroundImage: homeController
-                                                                      .roomHosts
-                                                                      .contains(
-                                                                          user)
+                                                              foregroundImage: homeController.roomHosts.indexWhere((element) =>
+                                                                          element
+                                                                              .id! ==
+                                                                          user
+                                                                              .id!) !=
+                                                                      -1
                                                                   ? const AssetImage(
                                                                       "assets/icons/picked.png")
                                                                   : MemoryImage(

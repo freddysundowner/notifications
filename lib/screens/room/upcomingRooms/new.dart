@@ -38,6 +38,7 @@ class NewEventUpcoming extends StatelessWidget {
     } else {
       homeController.newRoomType.value = "private";
     }
+    homeController.isSwitched.value = value;
   }
 
   Future<void> _saveEvent(BuildContext context) async {

@@ -166,6 +166,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
     DynamicLinkService().handleDynamicLinks();
+    _runWhileAppIsTerminated();
+  }
+
+  void _runWhileAppIsTerminated() async {
+    var details =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    if (details!.didNotificationLaunchApp) {
+      if (details.payload != null) {
+        final prefs = await SharedPreferences.getInstance();
+      }
+    }
   }
 
   @override

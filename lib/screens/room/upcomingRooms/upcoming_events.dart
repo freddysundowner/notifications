@@ -529,8 +529,6 @@ class UpcomingEvents extends StatelessWidget {
   _date(date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    print("today  $today");
-    final yesterday = DateTime(now.year, now.month, now.day - 1);
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
 
     final dateToCheck = DateTime.fromMillisecondsSinceEpoch(date);

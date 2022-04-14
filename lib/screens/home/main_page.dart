@@ -233,6 +233,7 @@ class MainPage extends StatelessWidget {
                                       fontSize: 16.sp, color: Colors.black),
                                 ),
                                 onTap: () {
+                                  Get.back();
                                   Get.to(() => UpcomingEvents());
                                 },
                               ),
@@ -245,6 +246,7 @@ class MainPage extends StatelessWidget {
                                       fontSize: 16.sp, color: Colors.black),
                                 ),
                                 onTap: () {
+                                  Get.back();
                                   shopController.currentShop.value =
                                       authController.currentuser!.shopId!;
                                   Get.to(() => ShopView());
@@ -259,6 +261,7 @@ class MainPage extends StatelessWidget {
                                       fontSize: 16.sp, color: Colors.black),
                                 ),
                                 onTap: () {
+                                  Get.back();
                                   Get.to(() => NewShop());
                                 },
                               )

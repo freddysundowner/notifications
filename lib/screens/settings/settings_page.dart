@@ -13,7 +13,6 @@ import 'package:get/get.dart';
 
 import '../../controllers/global.dart';
 
-
 class SettingsPage extends StatelessWidget {
   final UserController _userController = Get.find<UserController>();
   AuthController authController = Get.find<AuthController>();
@@ -33,7 +32,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
-    return  WillPopScope(
+    return WillPopScope(
       onWillPop: () async {
         _global.tabPosition.value = 0;
         return false;
@@ -67,90 +66,6 @@ class SettingsPage extends StatelessWidget {
                   child: Column(
                     children: [
                       InkWell(
-                        onTap: () => setSocialLink('twitter', context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Twitter",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
-                            ),
-                            const Icon(
-                              Icons.navigate_next,
-                              color: Colors.black,
-                            )
-                          ],
-                        ),
-                      ),
-                      const Divider(),
-                      InkWell(
-                        onTap: () => setSocialLink('instagram', context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Instagram",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
-                            ),
-                            const Icon(
-                              Icons.navigate_next,
-                              color: Colors.black,
-                            )
-                          ],
-                        ),
-                      ),
-                      const Divider(),
-                      InkWell(
-                        onTap: () => setSocialLink('facebook', context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Facebook",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
-                            ),
-                            const Icon(
-                              Icons.navigate_next,
-                              color: Colors.black,
-                            )
-                          ],
-                        ),
-                      ),
-                      const Divider(),
-                      InkWell(
-                        onTap: () => setSocialLink('linkedIn', context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "LinkedIn",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
-                            ),
-                            const Icon(
-                              Icons.navigate_next,
-                              color: Colors.black,
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 0.03.sh,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white),
-                  child: Column(
-                    children: [
-                      InkWell(
                         onTap: () {
                           _userController.getUserOrders();
                           Get.to(OrdersScreen());
@@ -159,9 +74,9 @@ class SettingsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Orders",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                              "My Orders",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
                             ),
                             const Icon(
                               Icons.navigate_next,
@@ -179,9 +94,9 @@ class SettingsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Addresses",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                              "Manage Addresses",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
                             ),
                             const Icon(
                               Icons.navigate_next,
@@ -204,14 +119,14 @@ class SettingsPage extends StatelessWidget {
                   child: Column(
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () => setSocialLink('twitter', context),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "What's new",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                              "Twitter",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
                             ),
                             const Icon(
                               Icons.navigate_next,
@@ -222,14 +137,14 @@ class SettingsPage extends StatelessWidget {
                       ),
                       const Divider(),
                       InkWell(
-                        onTap: () {},
+                        onTap: () => setSocialLink('instagram', context),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "FAQ/Contact us",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                              "Instagram",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
                             ),
                             const Icon(
                               Icons.navigate_next,
@@ -240,14 +155,32 @@ class SettingsPage extends StatelessWidget {
                       ),
                       const Divider(),
                       InkWell(
-                        onTap: () {},
+                        onTap: () => setSocialLink('facebook', context),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Community guidelines",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16.sp),
+                              "Facebook",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
+                            ),
+                            const Icon(
+                              Icons.navigate_next,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                      InkWell(
+                        onTap: () => setSocialLink('linkedIn', context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "LinkedIn",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
                             ),
                             const Icon(
                               Icons.navigate_next,
@@ -259,6 +192,72 @@ class SettingsPage extends StatelessWidget {
                     ],
                   ),
                 ),
+                // SizedBox(
+                //   height: 0.03.sh,
+                // ),
+                // Container(
+                //   padding: const EdgeInsets.all(20),
+                //   decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(10),
+                //       color: Colors.white),
+                //   child: Column(
+                //     children: [
+                //       InkWell(
+                //         onTap: () {},
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             Text(
+                //               "What's new",
+                //               style: TextStyle(
+                //                   color: Colors.black, fontSize: 16.sp),
+                //             ),
+                //             const Icon(
+                //               Icons.navigate_next,
+                //               color: Colors.black,
+                //             )
+                //           ],
+                //         ),
+                //       ),
+                //       const Divider(),
+                //       InkWell(
+                //         onTap: () {},
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             Text(
+                //               "FAQ/Contact us",
+                //               style: TextStyle(
+                //                   color: Colors.black, fontSize: 16.sp),
+                //             ),
+                //             const Icon(
+                //               Icons.navigate_next,
+                //               color: Colors.black,
+                //             )
+                //           ],
+                //         ),
+                //       ),
+                //       const Divider(),
+                //       InkWell(
+                //         onTap: () {},
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             Text(
+                //               "Community guidelines",
+                //               style: TextStyle(
+                //                   color: Colors.black, fontSize: 16.sp),
+                //             ),
+                //             const Icon(
+                //               Icons.navigate_next,
+                //               color: Colors.black,
+                //             )
+                //           ],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
                   height: 0.03.sh,
                 ),
@@ -276,16 +275,13 @@ class SettingsPage extends StatelessWidget {
                           content:
                               const Text("Are you sure you want to log out?"),
                           onCancel: () => Get.back(),
-                          textConfirm: "LogOut");
+                          textConfirm: "Log Out");
                     },
                     child: Text(
                       "Log out",
                       style: TextStyle(color: Colors.black, fontSize: 16.sp),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 0.03.sh,
                 ),
               ],
             ),

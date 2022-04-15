@@ -38,6 +38,9 @@ Future<void> oneSignal() async {
 initOneSignal() {
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
   OneSignal.shared.setAppId(oneSignalAppID);
+  OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
+    print("Accepted permission: $accepted");
+  });
 }
 
 oneSignalObservers() {
@@ -157,8 +160,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
-
   @override
   void initState() {
     // TODO: implement initState

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>533803420489-k4sn1onqnkncrt19aca9f4lr9ft4c19n.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.533803420489-k4sn1onqnkncrt19aca9f4lr9ft4c19n</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>533803420489-3rpnklsg7m01nghst1aupuo83t82sku2.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDReCzLRYUoN6gFTfAsTyBNis18mkK1kqI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>533803420489</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gistshop</string>
+	<key>PROJECT_ID</key>
+	<string>gistshop-f3e7e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gistshop-f3e7e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:533803420489:ios:d7dc8058ba7a43dce46898</string>
+	<key>DATABASE_URL</key>
+	<string>https://gistshop-f3e7e-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

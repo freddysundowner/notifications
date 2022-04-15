@@ -2,9 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttergistshop/models/event_model.dart';
+import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
+import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
 import 'package:fluttergistshop/services/dynamic_link_services.dart';
+import 'package:fluttergistshop/services/room_api.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -94,6 +98,8 @@ Future<void> handleNotificationOneSignal(OSNotification osNotification) async {
           channel.id,
           channel.name,
           channelDescription: channel.description,
+          importance: Importance.high,
+          priority: Priority.high,
           // TODO add a proper drawable resource to android, for now using
           //      one that already exists in example app.
           icon: '@mipmap/ic_launcher',
@@ -133,14 +139,16 @@ Future redirectToRooms(Map<String, dynamic> mess) async {
   String id = mess["id"];
 
   if (screen == 'ChatScreen') {
-    print(
-        "context.widget.toStringShort: ${navigatorKey.currentContext?.widget.toStringShort()}");
     Get.to(AllChatsPage());
   } else if (screen == "ProfileScreen") {
     _userController.getUserProfile(id);
     Get.to(Profile());
   } else if (screen == "RoomScreen") {
     _homeController.joinRoom(id);
+  } else if (screen == "EventScreen") {
+    EventModel roomModel =
+        EventModel.fromJson(await RoomAPI().getEventById(id));
+    Get.to(() => UpcomingEvents(roomModel: roomModel));
   } else if (screen == "OrderScreen") {
     Get.to(OrdersScreen());
   }

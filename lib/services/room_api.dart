@@ -39,6 +39,13 @@ class RoomAPI {
     return jsonDecode(room);
   }
 
+  getEventById(String roomId) async {
+    var room = await DbBase()
+        .databaseRequest(eventById + roomId, DbBase().getRequestType);
+    printOut("Getting room ${jsonDecode(room)}");
+    return jsonDecode(room);
+  }
+
   createARoom(Map<String, dynamic> roomData) async {
     try {
       printOut("create $roomData");

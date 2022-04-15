@@ -1232,15 +1232,15 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       //send nootification to hosts eexcept me
 
-      hosts.forEach((element) async {
-        await NotificationApi().sendNotification(
-            [element.id],
-            "${Get.find<AuthController>().usermodel.value!.firstName}"
-                " ${Get.find<AuthController>().usermodel.value!.firstName}",
-            "invited you to ${roomTitle} event",
-            "ProfileScreen",
-            Get.find<AuthController>().usermodel.value!.id!);
-      });
+      // hosts.forEach((element) async {
+      //   await NotificationApi().sendNotification(
+      //       [element.id],
+      //       "${Get.find<AuthController>().usermodel.value!.firstName}"
+      //           " ${Get.find<AuthController>().usermodel.value!.firstName}",
+      //       "invited you to ${roomTitle} event",
+      //       "ProfileScreen",
+      //       Get.find<AuthController>().usermodel.value!.id!);
+      // });
 
       if (rooms != null) {
         Get.back();

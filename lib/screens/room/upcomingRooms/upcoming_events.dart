@@ -9,7 +9,6 @@ import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/models/event_model.dart';
-import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/home/create_room.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
@@ -21,282 +20,278 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class UpcomingEvents extends StatelessWidget {
-  UpcomingEvents({Key? key}) : super(key: key);
+  EventModel? roomModel;
+  UpcomingEvents({Key? key, this.roomModel}) : super(key: key);
   RoomController roomController = Get.find<RoomController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Obx(
-          () => Row(
-            children: [
-              Expanded(
-                child: Container(
-                    child: InkWell(
-                  onTap: () {
-                    showCupertinoModalPopup(
-                      context: context,
-                      builder: (BuildContext context) => CupertinoActionSheet(
-                          title: Text('What would you like to see?'),
-                          actions: [
-                            CupertinoActionSheetAction(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: const Text('Upcoming For You',
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                  if (homeController.selectedEvents.value ==
-                                      "all")
-                                    Icon(
-                                      Icons.check,
-                                      color: Colors.blue,
-                                    )
-                                ],
-                              ),
-                              onPressed: () {
-                                homeController.selectedEvents.value = "all";
-                                homeController.fetchEvents();
-                                Navigator.pop(context);
-                              },
-                              isDefaultAction: true,
-                            ),
-                            CupertinoActionSheetAction(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: const Text('My Events',
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                  if (homeController.selectedEvents.value ==
-                                      "mine")
-                                    Icon(
-                                      Icons.check,
-                                      color: Colors.blue,
-                                    )
-                                ],
-                              ),
-                              onPressed: () {
-                                homeController.selectedEvents.value = "mine";
-                                homeController.fetchMyEvents();
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                          cancelButton: CupertinoActionSheetAction(
-                            child: Text(
-                              'Cancel',
+      appBar: AppBar(
+          title: Obx(
+        () => Row(
+          children: [
+            Expanded(
+              child: Container(
+                  child: InkWell(
+                onTap: () {
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (BuildContext context) => CupertinoActionSheet(
+                        title: Text('What would you like to see?'),
+                        actions: [
+                          CupertinoActionSheetAction(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: const Text('Upcoming For You',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                                if (homeController.selectedEvents.value ==
+                                    "all")
+                                  Icon(
+                                    Icons.check,
+                                    color: Colors.blue,
+                                  )
+                              ],
                             ),
                             onPressed: () {
+                              homeController.selectedEvents.value = "all";
+                              homeController.fetchEvents();
                               Navigator.pop(context);
                             },
-                          )),
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        homeController.selectedEvents.value == "mine"
-                            ? "MY EVENTS"
-                            : "UPCOMING FOR YOU",
-                        style: TextStyle(fontSize: 17),
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down,
-                        size: 20,
-                      )
-                    ],
-                  ),
-                )),
-              ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  CupertinoIcons.calendar_badge_plus,
-                  size: 25,
-                  color: primarycolor,
-                ),
-                onPressed: () {
-                  Get.to(() => NewEventUpcoming());
-                },
-              )
-            ],
-          ),
-        )),
-        body: RefreshIndicator(
-          onRefresh: () {
-            if (homeController.selectedEvents.value == "mine") {
-              return roomController.fetchMyEvents();
-            } else {
-              return roomController.fetchEvents();
-            }
-          },
-          child: GetX<RoomController>(initState: (_) async {
-            homeController.eventsList.value =
-                await RoomController().fetchEvents();
-          }, builder: (_) {
-            List<EventModel> rooms = homeController.eventsList
-                .map((element) => EventModel.fromJson(element))
-                .toList();
-            if (homeController.isLoading.isTrue) {
-              return Center(
-                child: Container(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-            if (homeController.eventsList.value.length == 0) {
-              return Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "No Events to show",
-                    style: regularDarkText,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(
-                      CupertinoIcons.calendar_badge_plus,
-                      size: 80,
-                      color: primarycolor,
-                    ),
-                    onPressed: () {
-                      Get.to(() => NewEventUpcoming());
-                    },
-                  )
-                ],
-              ));
-            }
-            return ListView(
-              children: rooms
-                  .map((element) => Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(10),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.grey[200],
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            upcomingEventBoottomSheet(context, element);
+                            isDefaultAction: true,
+                          ),
+                          CupertinoActionSheetAction(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: const Text('My Events',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                                if (homeController.selectedEvents.value ==
+                                    "mine")
+                                  Icon(
+                                    Icons.check,
+                                    color: Colors.blue,
+                                  )
+                              ],
+                            ),
+                            onPressed: () {
+                              homeController.selectedEvents.value = "mine";
+                              homeController.fetchMyEvents();
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                        cancelButton: CupertinoActionSheetAction(
+                          child: Text(
+                            'Cancel',
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
                           },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(_date(element.eventDate),
-                                      style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: primarycolor)),
-                                  if (element.ownerId!.id ==
-                                      Get.find<AuthController>()
-                                          .usermodel
-                                          .value!
-                                          .id)
-                                    InkWell(
-                                      onTap: () {
-                                        Get.to(() => NewEventUpcoming(
-                                              roomModel: element,
-                                            ));
-                                      },
-                                      child: Text(
-                                        "Edit",
-                                        style: TextStyle(color: primarycolor),
-                                      ),
-                                    )
-                                ],
-                              ),
-                              Text(
-                                element.title!,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp),
-                              ),
-                              Divider(),
-                              Wrap(
-                                children: List.generate(
-                                    element.invitedhostIds!.length,
-                                    (i) => Text(
-                                          element.invitedhostIds![i]
-                                                  .firstName! +
-                                              " " +
-                                              element.invitedhostIds![i]
-                                                  .lastName! +
-                                              ", ",
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: primarycolor),
-                                          overflow: TextOverflow.ellipsis,
-                                        )).toList(),
-                              ),
-                              Wrap(
-                                children: List.generate(
-                                    element.invitedhostIds!.length,
-                                    (i) => InkWell(
-                                          onTap: () {
-                                            Get.find<UserController>()
-                                                .getUserProfile(element
-                                                    .invitedhostIds![i].id!);
-                                            Get.to(() => Profile());
-                                          },
-                                          child: CachedNetworkImage(
-                                            imageUrl: element.invitedhostIds![i]
-                                                .profilePhoto!,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              width: 35,
-                                              height: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.fill),
-                                              ),
-                                            ),
-                                            placeholder: (context, url) =>
-                                                const CircularProgressIndicator(
-                                              color: Colors.black,
-                                            ),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(
-                                              Icons
-                                                  .supervised_user_circle_rounded,
-                                              size: 40,
+                        )),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      homeController.selectedEvents.value == "mine"
+                          ? "MY EVENTS"
+                          : "UPCOMING FOR YOU",
+                      style: TextStyle(fontSize: 17),
+                    ),
+                    Icon(
+                      Icons.arrow_drop_down,
+                      size: 20,
+                    )
+                  ],
+                ),
+              )),
+            ),
+            IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                CupertinoIcons.calendar_badge_plus,
+                size: 25,
+                color: primarycolor,
+              ),
+              onPressed: () {
+                Get.to(() => NewEventUpcoming());
+              },
+            )
+          ],
+        ),
+      )),
+      body: RefreshIndicator(
+        onRefresh: () {
+          if (homeController.selectedEvents.value == "mine") {
+            return roomController.fetchMyEvents();
+          } else {
+            return roomController.fetchEvents();
+          }
+        },
+        child: GetX<RoomController>(initState: (_) async {
+          homeController.eventsList.value =
+              await RoomController().fetchEvents();
+        }, builder: (_) {
+          List<EventModel> rooms = homeController.eventsList
+              .map((element) => EventModel.fromJson(element))
+              .toList();
+          if (homeController.isLoading.isTrue) {
+            return Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          if (homeController.eventsList.value.length == 0) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "No Events to show",
+                  style: regularDarkText,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    CupertinoIcons.calendar_badge_plus,
+                    size: 80,
+                    color: primarycolor,
+                  ),
+                  onPressed: () {
+                    Get.to(() => NewEventUpcoming());
+                  },
+                )
+              ],
+            ));
+          }
+          return ListView(
+            children: rooms
+                .map((element) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(10),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.grey[200],
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          upcomingEventBoottomSheet(context, element);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(_date(element.eventDate),
+                                    style: TextStyle(
+                                        fontSize: 12.sp, color: primarycolor)),
+                                if (element.ownerId!.id ==
+                                    Get.find<AuthController>()
+                                        .usermodel
+                                        .value!
+                                        .id)
+                                  InkWell(
+                                    onTap: () {
+                                      Get.to(() => NewEventUpcoming(
+                                            roomModel: element,
+                                          ));
+                                    },
+                                    child: Text(
+                                      "Edit",
+                                      style: TextStyle(color: primarycolor),
+                                    ),
+                                  )
+                              ],
+                            ),
+                            Text(
+                              element.title!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14.sp),
+                            ),
+                            Divider(),
+                            Wrap(
+                              children: List.generate(
+                                  element.invitedhostIds!.length,
+                                  (i) => Text(
+                                        element.invitedhostIds![i].firstName! +
+                                            " " +
+                                            element
+                                                .invitedhostIds![i].lastName! +
+                                            ", ",
+                                        style: TextStyle(
+                                            fontSize: 13, color: primarycolor),
+                                        overflow: TextOverflow.ellipsis,
+                                      )).toList(),
+                            ),
+                            Wrap(
+                              children: List.generate(
+                                  element.invitedhostIds!.length,
+                                  (i) => InkWell(
+                                        onTap: () {
+                                          Get.find<UserController>()
+                                              .getUserProfile(element
+                                                  .invitedhostIds![i].id!);
+                                          Get.to(() => Profile());
+                                        },
+                                        child: CachedNetworkImage(
+                                          imageUrl: element
+                                              .invitedhostIds![i].profilePhoto!,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            width: 35,
+                                            height: 35,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.fill),
                                             ),
                                           ),
-                                        )).toList(),
-                              ),
-                              Text(
-                                element.description!,
-                                style: TextStyle(fontSize: 14.sp),
-                              ),
-                            ],
-                          ),
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(
+                                            color: Colors.black,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(
+                                            Icons
+                                                .supervised_user_circle_rounded,
+                                            size: 40,
+                                          ),
+                                        ),
+                                      )).toList(),
+                            ),
+                            Text(
+                              element.description!,
+                              style: TextStyle(fontSize: 14.sp),
+                            ),
+                          ],
                         ),
-                      ))
-                  .toList(),
-            );
-          }),
-        ));
+                      ),
+                    ))
+                .toList(),
+          );
+        }),
+      ),
+    );
   }
 
   Future<dynamic> upcomingEventBoottomSheet(

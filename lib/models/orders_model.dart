@@ -44,15 +44,19 @@ class OrdersModel {
   int? totalCost;
 
   factory OrdersModel.fromJson(Map<String, dynamic> json) {
+    // print("shippingAddress ${json["shippingAddress"]}");
     return OrdersModel(
       status: json["status"] == null ? null : json["status"],
       quantity: json["quantity"] == null ? null : json["quantity"],
       date: json["date"] == null ? null : json["date"],
       id: json["_id"] == null ? null : json["_id"],
       customerId: UserModel.fromJson(json["customerId"] ?? {}),
-      shippingId: ShippingId.fromJson(json["shippingAddress"] == "" || json["shippingAddress"] == null
-          ? json["shippingId"] == null ? {} : jsonDecode(json["shippingId"])
-          : jsonDecode(json["shippingAddress"])),
+      shippingId: ShippingId.fromJson(
+          json["shippingAddress"] == "" || json["shippingAddress"] == null
+              ? json["shippingId"] == null
+                  ? {}
+                  : jsonDecode(json["shippingId"])
+              : jsonDecode(json["shippingAddress"])),
       shopId: json["shopId"] == null ? null : json["shopId"],
       subTotal: json["subTotal"] == null ? null : json["subTotal"],
       tax: json["tax"] == null ? null : json["tax"],
@@ -135,14 +139,14 @@ class ShippingId {
   String? userId;
 
   factory ShippingId.fromJson(Map<String, dynamic> json) => ShippingId(
-        addrress2: json["addrress2"],
-        state: json["state"],
-        id: json["_id"],
+        addrress2: json["addrress2"] == "" ? "" : json["addrress2"],
+        state: json["state"] ?? "",
+        id: json["_id"] ?? "",
         name: json["name"],
-        addrress1: json["addrress1"],
-        city: json["city"],
-        phone: json["phone"],
-        userId: json["userId"],
+        addrress1: json["addrress1"] ?? "",
+        city: json["city"] ?? "",
+        phone: json["phone"] ?? "",
+        userId: json["userId"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

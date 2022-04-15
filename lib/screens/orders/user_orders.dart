@@ -25,8 +25,6 @@ class UserOrders extends StatelessWidget {
               ? ListView.builder(
                   itemCount: _userController.userOrders.length,
                   itemBuilder: (context, index) {
-                    print(
-                        "_userController.userOrders ${_userController.userOrders}");
                     OrdersModel ordersModel = OrdersModel.fromJson(
                         _userController.userOrders.elementAt(index));
                     return InkWell(

@@ -22,6 +22,7 @@ const allRooms = rooms + "/get/all/";
 const allEvents = rooms + "/events";
 const myEvents = rooms + "/myevents";
 const roomById = rooms + "/rooms/";
+const eventById = rooms + "/event/";
 const roomByUser = rooms + "/get/all/"; //Add user Id
 const roomByShop = rooms + "/get/all/shops/"; //Add shop Id
 const updateRoom = rooms + "/rooms/";

@@ -131,7 +131,8 @@ class FullProduct extends StatelessWidget {
                                     backgroundColor: sc_snackBar,
                                     messageText: Text(
                                       _snackBarMessage,
-                                      style: const TextStyle(color: Colors.white),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                     ),
                                   );
                                 },

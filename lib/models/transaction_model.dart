@@ -45,7 +45,7 @@ class TransactionModel {
           amount: json["amount"],
           type: json["type"],
           deducting: json["deducting"],
-          shopId: json["shopId"]);
+          shopId: json["shopId"] ?? "");
 
   Map<String, dynamic> toJson() => {
         "date": date,

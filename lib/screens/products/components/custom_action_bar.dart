@@ -15,15 +15,7 @@ class CustomActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-        colors: [
-          Colors.white,
-          Colors.white.withOpacity(0),
-        ],
-        begin: Alignment(0, 0),
-        end: Alignment(0, 1),
-      )),
+      color: Colors.transparent,
       padding: EdgeInsets.only(
         top: 56.0.sm,
         left: 24.0.sm,

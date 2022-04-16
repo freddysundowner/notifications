@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
@@ -15,9 +19,13 @@ import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/upgrade_account.dart';
 import 'package:fluttergistshop/screens/shops/add_edit_shop.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
+import 'package:fluttergistshop/services/client.dart';
+import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/utils/utils.dart';
+import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
+import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:fluttergistshop/widgets/product_card.dart';
 import 'package:get/get.dart';
 
@@ -79,314 +87,584 @@ class Profile extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Obx(() {
                 UserModel profile = _userController.currentProfile.value;
-                return _userController.profileLoading.isFalse
-                    ? SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  if (profile.id ==
-                                      FirebaseAuth.instance.currentUser!.uid) {
-                                    Get.to(() => ChageProfileImage());
-                                  }
-                                },
-                                child: profile.profilePhoto != null
-                                    ? CachedNetworkImage(
-                                        imageUrl: profile.profilePhoto!,
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          width: 0.25.sw,
-                                          height: 0.14.sh,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                          ),
-                                        ),
-                                        placeholder: (context, url) =>
-                                            const CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Image.asset(
-                                                "assets/icons/profile_placeholder.png",
-                                                width: 0.25.sw,
-                                                height: 0.14.sh),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 50,
-                                        child: Image.asset(
+                if (_userController.profileLoading.isFalse) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              if (profile.id ==
+                                  FirebaseAuth.instance.currentUser!.uid) {
+                                Get.to(() => ChageProfileImage());
+                              }
+                            },
+                            child: profile.profilePhoto != null
+                                ? CachedNetworkImage(
+                                    imageUrl: profile.profilePhoto!,
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      width: 0.25.sw,
+                                      height: 0.14.sh,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset(
                                             "assets/icons/profile_placeholder.png",
                                             width: 0.25.sw,
                                             height: 0.14.sh),
-                                      )),
+                                  )
+                                : CircleAvatar(
+                                    radius: 50,
+                                    child: Image.asset(
+                                        "assets/icons/profile_placeholder.png",
+                                        width: 0.25.sw,
+                                        height: 0.14.sh),
+                                  )),
+                        InkWell(
+                          onTap: () {
+                            if (profile.id ==
+                                FirebaseAuth.instance.currentUser!.uid) {
+                              updateName(context);
+                            }
+                          },
+                          child: Text(
+                            "${profile.firstName} ${profile.lastName}",
+                            style:
+                                TextStyle(fontSize: 18.sp, color: Colors.black),
+                          ),
+                        ),
+                        Text(
+                          "@${profile.userName}",
+                          style:
+                              TextStyle(fontSize: 14.sp, color: Colors.black),
+                        ),
+                        if (profile.id !=
+                            FirebaseAuth.instance.currentUser!.uid)
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: 0.03.sh,
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  if (profile.followers.contains(
+                                      FirebaseAuth.instance.currentUser!.uid)) {
+                                    await unFollowUser(profile);
+                                  } else {
+                                    await followUser(profile);
+                                  }
+                                },
+                                child: Container(
+                                  width: 0.2.sw,
+                                  height: 0.04.sh,
+                                  decoration: BoxDecoration(
+                                    color: profile.followers.contains(
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid)
+                                        ? Colors.grey
+                                        : Colors.green,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      profile.followers.contains(FirebaseAuth
+                                              .instance.currentUser!.uid)
+                                          ? "UnFollow"
+                                          : "Follow",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12.sp),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        SizedBox(
+                          height: 0.03.sh,
+                        ),
+                        Row(
+                          children: [
                             InkWell(
                               onTap: () {
-                                if (profile.id ==
-                                    FirebaseAuth.instance.currentUser!.uid) {
-                                  updateName(context);
-                                }
+                                _userController.getUserFollowing(profile.id!);
+                                Get.to(FollowersFollowingPage("Following"));
                               },
-                              child: Text(
-                                "${profile.firstName} ${profile.lastName}",
-                                style: TextStyle(
-                                    fontSize: 18.sp, color: Colors.black),
-                              ),
-                            ),
-                            Text(
-                              "@${profile.userName}",
-                              style: TextStyle(
-                                  fontSize: 14.sp, color: Colors.black),
-                            ),
-                            if (profile.id !=
-                                FirebaseAuth.instance.currentUser!.uid)
-                              Column(
+                              child: Row(
                                 children: [
-                                  SizedBox(
-                                    height: 0.03.sh,
+                                  Text(
+                                    profile.followingCount != null
+                                        ? profile.followingCount.toString()
+                                        : "0",
+                                    style: TextStyle(
+                                        fontSize: 18.sp,
+                                        color: primarycolor,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  InkWell(
-                                    onTap: () async {
-                                      if (profile.followers.contains(
-                                          FirebaseAuth
-                                              .instance.currentUser!.uid)) {
-                                        await unFollowUser(profile);
-                                      } else {
-                                        await followUser(profile);
-                                      }
-                                    },
-                                    child: Container(
-                                      width: 0.2.sw,
-                                      height: 0.04.sh,
-                                      decoration: BoxDecoration(
-                                        color: profile.followers.contains(
-                                                FirebaseAuth
-                                                    .instance.currentUser!.uid)
-                                            ? Colors.grey
-                                            : Colors.green,
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          profile.followers.contains(
-                                                  FirebaseAuth.instance
-                                                      .currentUser!.uid)
-                                              ? "UnFollow"
-                                              : "Follow",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12.sp),
-                                        ),
-                                      ),
+                                  SizedBox(
+                                    width: 0.01.sw,
+                                  ),
+                                  Text(
+                                    "Following",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: primarycolor,
                                     ),
                                   ),
                                 ],
                               ),
-                            SizedBox(
-                              height: 0.03.sh,
-                            ),
-                            Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    _userController
-                                        .getUserFollowing(profile.id!);
-                                    Get.to(FollowersFollowingPage("Following"));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        profile.followingCount != null
-                                            ? profile.followingCount.toString()
-                                            : "0",
-                                        style: TextStyle(
-                                            fontSize: 18.sp,
-                                            color: primarycolor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        width: 0.01.sw,
-                                      ),
-                                      Text(
-                                        "Following",
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: primarycolor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 0.1.sw,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    _userController
-                                        .getUserFollowers(profile.id!);
-                                    Get.to(FollowersFollowingPage("Followers"));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        profile.followersCount != null
-                                            ? profile.followersCount.toString()
-                                            : "0",
-                                        style: TextStyle(
-                                            fontSize: 18.sp,
-                                            color: primarycolor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        width: 0.01.sw,
-                                      ),
-                                      Text(
-                                        "Followers",
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: primarycolor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
                             ),
                             SizedBox(
-                              height: 0.03.sh,
+                              width: 0.1.sw,
                             ),
                             InkWell(
                               onTap: () {
-                                if (profile.id ==
-                                    FirebaseAuth.instance.currentUser!.uid) {
-                                  updateBio(context);
-                                }
+                                _userController.getUserFollowers(profile.id!);
+                                Get.to(FollowersFollowingPage("Followers"));
                               },
-                              child: Text(
-                                profile.bio == null ? "Add Bio" : profile.bio!,
-                                style: TextStyle(fontSize: 15.sp),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    profile.followersCount != null
+                                        ? profile.followersCount.toString()
+                                        : "0",
+                                    style: TextStyle(
+                                        fontSize: 18.sp,
+                                        color: primarycolor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: 0.01.sw,
+                                  ),
+                                  Text(
+                                    "Followers",
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
+                                      color: primarycolor,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Obx(() {
-                              if (productController.products.isNotEmpty) {
-                                return Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("Products",
-                                            style: TextStyle(
-                                                fontSize: 13.sp,
-                                                color: primarycolor)),
-                                        InkWell(
-                                          onTap: () => Get.to(
-                                            () => MyProducts(
-                                                title:
-                                                    "${profile.firstName} Products",
-                                                edit: profile.id ==
-                                                    FirebaseAuth.instance
-                                                        .currentUser!.uid),
-                                          ),
-                                          child: Text("View all",
-                                              style: TextStyle(
-                                                  fontSize: 13.sp,
-                                                  color: primarycolor)),
-                                        )
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 0.03.sh,
-                                    ),
-                                    SizedBox(
-                                        height: 0.3.sh,
-                                        width: double.infinity,
-                                        child: ListView.separated(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.horizontal,
-                                          separatorBuilder: (context, index) =>
-                                              SizedBox(
-                                            height: 0.1.sh,
-                                          ),
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemCount:
-                                              productController.products.length,
-                                          itemBuilder: (context, index) {
-                                            return ProductCard(
-                                              product: productController
-                                                  .products[index],
-                                              press: () {
-                                                Get.to(FullProduct(
-                                                  product: productController
-                                                      .products[index],
-                                                ));
-                                              },
-                                            );
-                                          },
-                                        )),
-                                  ],
-                                );
-                              }
-                              return Container();
-                            }),
-                            SizedBox(
-                              height: 0.03.sh,
-                            ),
-                            if (profile.id ==
-                                FirebaseAuth.instance.currentUser!.uid)
-                              Obx(() {
-                                return _userController
-                                            .currentProfile.value.memberShip ==
-                                        0
-                                    ? Center(
-                                        child: InkWell(
-                                          onTap: () {
-                                            showPremiumAlert(context);
-                                          },
-                                          child: Container(
-                                            width: 0.7.sw,
-                                            height: 0.07.sh,
-                                            decoration: BoxDecoration(
-                                                color: Colors.green,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Colors.black12,
-                                                    spreadRadius: 0.5,
-                                                    blurRadius: 0.8,
-                                                    offset: Offset(0,
-                                                        5), // changes position of shadow
-                                                  ),
-                                                ]),
-                                            child: Center(
-                                              child: Text(
-                                                "Upgrade account",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18.sp),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : Container();
-                              }),
+                            )
                           ],
                         ),
-                      )
-                    : SizedBox(
-                        height: 0.5.sh,
-                        child:
-                            const Center(child: CircularProgressIndicator()));
+                        SizedBox(
+                          height: 0.03.sh,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (profile.id ==
+                                FirebaseAuth.instance.currentUser!.uid) {
+                              updateBio(context);
+                            }
+                          },
+                          child: Text(
+                            profile.bio == null ? "Add Bio" : profile.bio!,
+                            style: TextStyle(fontSize: 15.sp),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            depositAmount(context, "send", gccurrency,
+                                userModel: profile,
+                                onButtonPressed: (type, amount) async {
+                              var response = DbBase().databaseRequest(
+                                  userSendGift, DbBase().postRequestType,
+                                  body: {
+                                    "fromuser":
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    "touser": profile.id,
+                                    "amount": amount
+                                  });
+                              await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AsyncProgressDialog(
+                                    response,
+                                    message: Text("Sending gift..."),
+                                    onError: (e) {},
+                                  );
+                                },
+                              );
+                              var waitedResponse = jsonDecode(await response);
+                              print("waitedResponse $waitedResponse");
+                              if (waitedResponse["status"] == false) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      waitedResponse["message"],
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      waitedResponse["message"],
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                              Get.back();
+                              print(waitedResponse);
+                            });
+                          },
+                          child: Container(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.wallet_giftcard,
+                                  color: Colors.amber,
+                                ),
+                                Text(
+                                  " -- Gift ${profile.userName}",
+                                  style: TextStyle(
+                                      color: primarycolor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30.h,
+                        ),
+                        Obx(() {
+                          if (productController.products.isNotEmpty) {
+                            return Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Products",
+                                        style: TextStyle(
+                                            fontSize: 13.sp,
+                                            color: primarycolor)),
+                                    InkWell(
+                                      onTap: () => Get.to(
+                                        () => MyProducts(
+                                            title:
+                                                "${profile.firstName} Products",
+                                            edit: profile.id ==
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid),
+                                      ),
+                                      child: Text("View all",
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              color: primarycolor)),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 0.03.sh,
+                                ),
+                                SizedBox(
+                                    height: 0.3.sh,
+                                    width: double.infinity,
+                                    child: ListView.separated(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      separatorBuilder: (context, index) =>
+                                          SizedBox(
+                                        height: 0.1.sh,
+                                      ),
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount:
+                                          productController.products.length,
+                                      itemBuilder: (context, index) {
+                                        return ProductCard(
+                                          product:
+                                              productController.products[index],
+                                          press: () {
+                                            Get.to(FullProduct(
+                                              product: productController
+                                                  .products[index],
+                                            ));
+                                          },
+                                        );
+                                      },
+                                    )),
+                              ],
+                            );
+                          }
+                          return Container();
+                        }),
+                        SizedBox(
+                          height: 0.03.sh,
+                        ),
+                        if (profile.id ==
+                            FirebaseAuth.instance.currentUser!.uid)
+                          Obx(() {
+                            return _userController
+                                        .currentProfile.value.memberShip ==
+                                    0
+                                ? Center(
+                                    child: InkWell(
+                                      onTap: () {
+                                        upgradeToPremium(context, userModel);
+                                      },
+                                      child: Container(
+                                        width: 0.7.sw,
+                                        height: 0.07.sh,
+                                        decoration: BoxDecoration(
+                                            color: primarycolor,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Colors.black12,
+                                                spreadRadius: 0.5,
+                                                blurRadius: 0.8,
+                                                offset: Offset(0,
+                                                    5), // changes position of shadow
+                                              ),
+                                            ]),
+                                        child: Center(
+                                          child: Text(
+                                            "Upgrade account",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.sp),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container();
+                          }),
+                      ],
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                      height: 0.5.sh,
+                      child: const Center(child: CircularProgressIndicator()));
+                }
               }),
             ),
           ],
         ),
       ),
     );
+  }
+
+  static depositAmount(BuildContext context, String type, String currency,
+      {Function? onButtonPressed, UserModel? userModel}) {
+    var amountcontroller = TextEditingController();
+
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.9,
+              expand: false,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Column(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    type == "send"
+                                        ? "How much ${currency == gccurrency ? "GistPoints" : "Money"} you want to send to ${userModel!.firstName!}"
+                                        : "Deposit  $type",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    decoration: new BoxDecoration(
+                                        shape: BoxShape.rectangle,
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: TextFormField(
+                                      controller: amountcontroller,
+                                      autofocus: true,
+                                      maxLength: null,
+                                      maxLines: null,
+                                      keyboardType:
+                                          TextInputType.numberWithOptions(
+                                              signed: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      decoration: InputDecoration(
+                                          hintStyle: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                          prefixIcon: currency == gccurrency
+                                              ? Icon(Icons
+                                                  .account_balance_wallet_sharp)
+                                              : Icon(
+                                                  CupertinoIcons.money_dollar),
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                          fillColor: Colors.white),
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  DefaultButton(
+                                      text: type == "send" ? "Send" : "Deposit",
+                                      press: () {
+                                        int amount =
+                                            int.parse(amountcontroller.text);
+                                        if (amount > 0) {
+                                          onButtonPressed!(
+                                              type, amountcontroller.text);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "Amount has to be greater than 0",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      })
+                                ]))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
+    // showModalBottomSheet(
+    //   context: context,
+    //   shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.only(
+    //     topLeft: Radius.circular(15),
+    //     topRight: Radius.circular(15),
+    //   )),
+    //   builder: (context) {
+    //     return Container(
+    //       child: Padding(
+    //         padding: EdgeInsets.only(
+    //             bottom: MediaQuery.of(context).viewInsets.bottom),
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           mainAxisSize: MainAxisSize.min,
+    //           children: [
+    //             InkWell(
+    //               onTap: () {
+    //                 Get.back();
+    //               },
+    //               child: Padding(
+    //                 padding: MediaQuery.of(context).viewInsets,
+    //                 child: Icon(Icons.clear, size: 30, color: Colors.white),
+    //               ),
+    //             ),
+    //             Spacer(),
+    //             Container(
+    //               padding: EdgeInsets.symmetric(horizontal: 20),
+    //               child: Column(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: [
+    //                   Text(
+    //                     type == "send"
+    //                         ? "How much ${currency == gccurrency ? "GistPoints" : "Money"} you want to send to ${userModel!.firstName!}"
+    //                         : "Deposit  $type",
+    //                     style: TextStyle(fontSize: 21),
+    //                   ),
+    //                   SizedBox(
+    //                     height: 10,
+    //                   ),
+    //                   Container(
+    //                     decoration: new BoxDecoration(
+    //                         shape: BoxShape.rectangle,
+    //                         color: Colors.white,
+    //                         borderRadius: BorderRadius.circular(10)),
+    //                     padding: EdgeInsets.symmetric(horizontal: 10),
+    //                     child: TextFormField(
+    //                       controller: amountcontroller,
+    //                       maxLength: null,
+    //                       maxLines: null,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: InputDecoration(
+    //                           hintStyle: TextStyle(
+    //                             fontSize: 20,
+    //                           ),
+    //                           prefixIcon: currency == gccurrency
+    //                               ? Icon(Icons.account_balance_wallet_sharp)
+    //                               : Icon(CupertinoIcons.money_dollar),
+    //                           border: InputBorder.none,
+    //                           focusedBorder: InputBorder.none,
+    //                           enabledBorder: InputBorder.none,
+    //                           errorBorder: InputBorder.none,
+    //                           disabledBorder: InputBorder.none,
+    //                           fillColor: Colors.white),
+    //                       style: TextStyle(
+    //                         fontSize: 20,
+    //                         color: Colors.black,
+    //                         fontWeight: FontWeight.w400,
+    //                       ),
+    //                     ),
+    //                   ),
+    //                   SizedBox(
+    //                     height: 10,
+    //                   ),
+    //                   DefaultButton(
+    //                       text: type == "send" ? "Send" : "Deposit",
+    //                       press: () {
+    //                         // int amount = int.parse(amountcontroller.text);
+    //                         // if (amount > 0) {
+    //                         //   onButtonPressed(type, amountcontroller.text);
+    //                         // } else {
+    //                         //   topTrayPopup(
+    //                         //       "Amount has to be greater than 0");
+    //                         // }
+    //                       })
+    //                 ],
+    //               ),
+    //             ),
+    //             Spacer(),
+    //           ],
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
   }
 
   Future<void> followUser(UserModel profile) async {

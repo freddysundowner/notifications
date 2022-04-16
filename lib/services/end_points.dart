@@ -45,6 +45,7 @@ const updateproduct = product + "products/";
 const updateproductimages = product + "images/";
 
 const userById = user + "/";
+const userSendGift = user + "/sendgift";
 const userFollowers = user + "/followers/";
 const followersfollowing = user + "/followersfollowing/";
 const userFollowing = user + "/following/";

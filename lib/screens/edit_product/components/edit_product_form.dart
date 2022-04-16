@@ -143,6 +143,18 @@ class EditProductForm extends StatelessWidget {
         response =
             productController.updateProduct(productController.product.id!);
       } else {
+        if (productController.selectedImages.length == 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "add atleast one image",
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
         response = productController.saveProduct();
       }
       await showDialog(
@@ -205,8 +217,11 @@ class EditProductForm extends StatelessWidget {
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(snackbarMessage, style: TextStyle(color: Colors.white),),
-              backgroundColor: sc_snackBar,
+            content: Text(
+              snackbarMessage,
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: sc_snackBar,
           ),
         );
         Get.back();

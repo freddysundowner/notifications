@@ -94,6 +94,9 @@ class WalletPage extends StatelessWidget {
                                       TransactionModel.fromJson(
                                           _walletController.userTransaction
                                               .elementAt(index));
+
+                                  print("from " + transaction.from!.id!);
+                                  print(authController.usermodel.value!.id);
                                   return Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -112,7 +115,7 @@ class WalletPage extends StatelessWidget {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              transaction.reason,
+                                              "${transaction.type == "gift" ? transaction.reason + " -- ${transaction.from!.firstName!}" : transaction.reason}",
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 13.sp),

@@ -243,4 +243,6 @@ class AuthController extends GetxController {
       },
     );
   }
+
+  sendGift(amount) {}
 }

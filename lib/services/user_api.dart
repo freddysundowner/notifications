@@ -135,8 +135,6 @@ class UserAPI {
   }
 
   static authenticate(data, String type) async {
-    Helper.debug("data $data");
-    Helper.debug("type $type");
     var response;
     if (type == "register") {
       response = await DbBase().databaseRequest(

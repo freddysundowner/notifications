@@ -58,6 +58,9 @@ class RoomPage extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
+              onPressed: () async {},
+              icon: const Icon(Icons.fiber_smart_record)),
+          IconButton(
               onPressed: () async {
                 DynamicLinkService()
                     .createGroupJoinLink(
@@ -81,15 +84,15 @@ class RoomPage extends StatelessWidget {
                       idRoom: _homeController.currentRoom.value.id);
                 },
                 child: Container(
-                  height: 0.07.sh,
+                  height: 0.06.sh,
                   width: 0.4.sw,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.red),
                   child: Center(
                       child: Text(
-                    "Exit Room",
-                    style: TextStyle(color: Colors.white, fontSize: 18.sp),
+                    "Leave Room",
+                    style: TextStyle(color: Colors.white, fontSize: 15.sp),
                   )),
                 ),
               ),

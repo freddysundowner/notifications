@@ -79,13 +79,11 @@ showPremiumAlert(BuildContext context) {
 upgradeToPremium(BuildContext context, UserModel userModel) {
   showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0XFF0A0D2C),
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
             height: MediaQuery.of(context).size.height * .8,
             margin: const EdgeInsets.only(top: 30),
-            color: const Color(0XFF0A0D2C),
             child: SingleChildScrollView(
               child: Column(children: [
                 Container(
@@ -101,8 +99,7 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                               Text(
                                 "UPGRADE PREMIUM GISTER",
                                 style: TextStyle(
-                                    fontSize: 15.sp,
-                                    color: const Color(0XFF00FFB0)),
+                                    fontSize: 15.sp, color: primarycolor),
                               ),
                               InkWell(
                                 onTap: () => Get.back(),
@@ -116,10 +113,10 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                           ),
                           SizedBox(height: 0.01.sh),
                           Text(
-                            "Upgrade now to get unlimited access to amazing next-level features of GistHouse",
+                            "Upgrade now to get unlimited access to amazing next-level features of GistShop",
                             style: TextStyle(
                                 fontSize: 13.sp,
-                                color: const Color(0XFF00FFB0),
+                                color: primarycolor,
                                 height: 1.3),
                           ),
                           SizedBox(height: 0.01.sh),
@@ -127,23 +124,12 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                               "Activate  Peer To Peer In-App Donations",
                               "Activate feature to Receive donations and gifts from your GistRooms, Followers and other Gisters"),
                           SizedBox(height: 0.01.sh),
-                          premiumFeature(
-                              "Activate Detailed Analytics Of Your GistRooms",
-                              "Take the managing and marketing of your Rooms to next level with full business analytics of your rooms (attendee records, Room Length, Best Rooms in your clubs, moderator records, etc"),
-                          SizedBox(height: 0.01.sh),
-                          premiumFeature("Activate Room Advert/ Sponsorships",
-                              "Monetize your rooms with ability to put sponsor names/tags at the top of your rooms."),
-                          SizedBox(height: 0.01.sh),
-                          premiumFeature("Activate Paid Rooms",
-                              "Monetize your knowledge, followership and skills by running paid rooms right inside the app. "),
-                          SizedBox(height: 0.01.sh),
-                          premiumFeature(
-                              "Access GistDeck For Desktop/Laptop Access",
-                              "Get access to the desktop/laptop version of the app with extra features not found on the phone apps"),
+                          premiumFeature("Access ShopRooms",
+                              "Create Shop and Open Rooms with your products"),
                           SizedBox(height: 0.01.sh),
                           premiumFeature(
                               "Record and repurpose your room content",
-                              "Access to gistdeck lets you record any room and you can use recordings in your podcasts and repurpose for other places"),
+                              "Access to recording feature which lets you record any room and you can use recordings in your podcasts and repurpose for other places"),
                         ])),
                 SizedBox(height: 0.04.sh),
                 InkWell(
@@ -155,7 +141,7 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                     width: 0.7.sw,
                     height: 0.1.sh,
                     decoration: BoxDecoration(
-                        color: const Color(0XFF00FFB0),
+                        color: primarycolor,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: const [
                           BoxShadow(
@@ -167,9 +153,9 @@ upgradeToPremium(BuildContext context, UserModel userModel) {
                         ]),
                     child: Center(
                       child: Text(
-                        "$PREMIUM_UPGRADE_COINS_AMOUNT GIST/Month \n \n UPGRADE NOW",
+                        "$PREMIUM_UPGRADE_COINS_AMOUNT GC/Month \n \n UPGRADE NOW",
                         style: TextStyle(
-                            color: const Color(0XFF0A0D2C),
+                            color: Colors.white,
                             fontFamily: "LucidaGrande",
                             fontSize: 16.sp),
                       ),
@@ -190,17 +176,11 @@ Widget premiumFeature(String title, String body) {
         children: [
           Text(title,
               style: const TextStyle(
-                  fontSize: 18,
-                  fontFamily: "LucidaGrande",
-                  color: Colors.white,
-                  height: 1.2)),
+                  fontSize: 18, fontFamily: "LucidaGrande", height: 1.2)),
           const SizedBox(height: 10),
           Text(body,
               style: const TextStyle(
-                  fontSize: 14,
-                  fontFamily: "LucidaGrande",
-                  height: 1.5,
-                  color: Colors.white)),
+                  fontSize: 14, fontFamily: "LucidaGrande", height: 1.5)),
         ]),
   );
 }
@@ -227,8 +207,6 @@ upgradeAccount(BuildContext context) async {
           child: Text('Confirm Payment',
               style: TextStyle(fontSize: 16.sp, color: Colors.red)),
           onPressed: () {
-            printOut("Upgrading account ${userModel.wallet!}");
-
             if (userModel.wallet! < PREMIUM_UPGRADE_COINS_AMOUNT) {
               Get.back();
               Get.snackbar("",

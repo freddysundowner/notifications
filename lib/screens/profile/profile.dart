@@ -270,75 +270,76 @@ class Profile extends StatelessWidget {
                             style: TextStyle(fontSize: 15.sp),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            depositAmount(context, "send", gccurrency,
-                                userModel: profile,
-                                onButtonPressed: (type, amount) async {
-                              var response = DbBase().databaseRequest(
-                                  userSendGift, DbBase().postRequestType,
-                                  body: {
-                                    "fromuser":
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                    "touser": profile.id,
-                                    "amount": amount
-                                  });
-                              await showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AsyncProgressDialog(
-                                    response,
-                                    message: Text("Sending gift..."),
-                                    onError: (e) {},
+                        if (profile.memberShip == 1)
+                          InkWell(
+                            onTap: () {
+                              sendGift(context, "send", gccurrency,
+                                  userModel: profile,
+                                  onButtonPressed: (type, amount) async {
+                                var response = DbBase().databaseRequest(
+                                    userSendGift, DbBase().postRequestType,
+                                    body: {
+                                      "fromuser": FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      "touser": profile.id,
+                                      "amount": amount
+                                    });
+                                await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AsyncProgressDialog(
+                                      response,
+                                      message: Text("Sending gift..."),
+                                      onError: (e) {},
+                                    );
+                                  },
+                                );
+                                var waitedResponse = jsonDecode(await response);
+                                print("waitedResponse $waitedResponse");
+                                if (waitedResponse["status"] == false) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        waitedResponse["message"],
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
                                   );
-                                },
-                              );
-                              var waitedResponse = jsonDecode(await response);
-                              print("waitedResponse $waitedResponse");
-                              if (waitedResponse["status"] == false) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      waitedResponse["message"],
-                                      style: TextStyle(color: Colors.white),
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        waitedResponse["message"],
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.green,
                                     ),
-                                    backgroundColor: Colors.red,
+                                  );
+                                }
+                                Get.back();
+                                print(waitedResponse);
+                              });
+                            },
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.wallet_giftcard,
+                                    color: Colors.amber,
                                   ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      waitedResponse["message"],
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    backgroundColor: Colors.green,
+                                  Text(
+                                    " -- Gift ${profile.userName}",
+                                    style: TextStyle(
+                                        color: primarycolor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
                                   ),
-                                );
-                              }
-                              Get.back();
-                              print(waitedResponse);
-                            });
-                          },
-                          child: Container(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.wallet_giftcard,
-                                  color: Colors.amber,
-                                ),
-                                Text(
-                                  " -- Gift ${profile.userName}",
-                                  style: TextStyle(
-                                      color: primarycolor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                              ],
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 10),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 10),
                           ),
-                        ),
                         SizedBox(
                           height: 30.h,
                         ),
@@ -463,7 +464,7 @@ class Profile extends StatelessWidget {
     );
   }
 
-  static depositAmount(BuildContext context, String type, String currency,
+  static sendGift(BuildContext context, String type, String currency,
       {Function? onButtonPressed, UserModel? userModel}) {
     var amountcontroller = TextEditingController();
 
@@ -492,7 +493,7 @@ class Profile extends StatelessWidget {
                                   ),
                                   Text(
                                     type == "send"
-                                        ? "How much ${currency == gccurrency ? "GistPoints" : "Money"} you want to send to ${userModel!.firstName!}"
+                                        ? "How much GistPoints you want to send to ${userModel!.firstName!}"
                                         : "Deposit  $type",
                                     style: TextStyle(fontSize: 16),
                                   ),

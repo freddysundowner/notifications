@@ -6,6 +6,7 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/main.dart';
 import 'package:fluttergistshop/models/event_model.dart' as event;
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
@@ -14,6 +15,7 @@ import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/client.dart';
+import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
 import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/product_api.dart';
@@ -1008,65 +1010,65 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }
   }
 
-  getResourceId({String? channelname, String? uid}) async {
-    print("getResourceId");
-    var response = await DbBase().databaseRequest(
-        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/acquire",
-        DbBase().postRequestType,
-        body: {
-          "cname": channelname,
-          "uid": uid,
-          "clientRequest": {"region": "CN", "resourceExpiredHour": 24}
-        },
-        headers: headers);
-    return jsonDecode(response);
-  }
+  // getResourceId({String? channelname, String? uid}) async {
+  //   print("getResourceId");
+  //   var response = await DbBase().databaseRequest(
+  //       "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/acquire",
+  //       DbBase().postRequestType,
+  //       body: {
+  //         "cname": channelname,
+  //         "uid": uid,
+  //         "clientRequest": {"region": "CN", "resourceExpiredHour": 24}
+  //       },
+  //       headers: headers);
+  //   return jsonDecode(response);
+  // }
 
-  startRecording(
-      {String? resourceid,
-      String? channelname,
-      String? uid,
-      String? token}) async {
-    print("startRecording");
-    var body = {
-      "cname": channelname,
-      "uid": uid,
-      "clientRequest": {
-        "token": token,
-        "recordingConfig": {
-          "channelType": 0,
-          "streamTypes": 2,
-          "audioProfile": 1,
-          "maxIdleTime": 45,
-          "transcodingConfig": {
-            "width": 360,
-            "height": 640,
-            "fps": 30,
-            "bitrate": 600,
-            "maxResolutionUid": "1",
-            "mixedVideoLayout": 1
-          },
-          "recordingFileConfig": {
-            "avFileType": ["hls", "mp4"]
-          },
-        },
-        "storageConfig": {
-          "vendor": 1,
-          "region": 3,
-          "bucket": "gistshopaudios",
-          "accessKey": "AKIAWZXHGM4OSTZXTKXF",
-          "secretKey": "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"
-        }
-      }
-    };
-
-    var response = await DbBase().databaseRequest(
-        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/mode/mix/start",
-        DbBase().postRequestType,
-        body: body,
-        headers: headers);
-    return jsonDecode(response);
-  }
+  // startRecording(
+  //     {String? resourceid,
+  //     String? channelname,
+  //     String? uid,
+  //     String? token}) async {
+  //   print("startRecording");
+  //   var body = {
+  //     "cname": channelname,
+  //     "uid": uid,
+  //     "clientRequest": {
+  //       "token": token,
+  //       "recordingConfig": {
+  //         "channelType": 0,
+  //         "streamTypes": 2,
+  //         "audioProfile": 1,
+  //         "maxIdleTime": 45,
+  //         "transcodingConfig": {
+  //           "width": 360,
+  //           "height": 640,
+  //           "fps": 30,
+  //           "bitrate": 600,
+  //           "maxResolutionUid": "1",
+  //           "mixedVideoLayout": 1
+  //         },
+  //         "recordingFileConfig": {
+  //           "avFileType": ["hls", "mp4"]
+  //         },
+  //       },
+  //       "storageConfig": {
+  //         "vendor": 1,
+  //         "region": 3,
+  //         "bucket": "gistshopaudios",
+  //         "accessKey": "AKIAWZXHGM4OSTZXTKXF",
+  //         "secretKey": "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"
+  //       }
+  //     }
+  //   };
+  //
+  //   var response = await DbBase().databaseRequest(
+  //       "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/mode/mix/start",
+  //       DbBase().postRequestType,
+  //       body: body,
+  //       headers: headers);
+  //   return jsonDecode(response);
+  // }
 
   stopRecording(
       {String? channelname,
@@ -1075,46 +1077,45 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       String? sid}) async {
     print("stopRecording ${{channelname, resourceid}}");
     var body = {
-      "cname": channelname,
+      "resourceid": resourceid,
+      "channelname": channelname,
       "uid": uid,
-      "clientRequest": {"async_stop": false}
+      "roomuid": [Get.find<AuthController>().usermodel.value!.roomuid]
     };
     print(body);
     print(headers);
-    print(
-        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/sid/$sid/mode/mix/stop");
+    print(stoprecording + channelname!);
     var response = await DbBase().databaseRequest(
-        "https://api.agora.io/v1/apps/${agoraAppID}/cloud_recording/resourceid/${resourceid}/sid/$sid/mode/mix/stop",
-        DbBase().postRequestType,
-        body: body,
-        headers: headers);
+        stoprecording + sid!, DbBase().postRequestType,
+        body: body, headers: headers);
     print("after stoping $response");
     return jsonDecode(response);
   }
 
-  recordAudio({String? channelname, String? token}) async {
-    print("recordAudio");
-    var rng = new Random();
-    var code = rng.nextInt(900000) + 100000;
-    String uid = code.toString();
-    recordinguid.value = uid.toString();
-    var resourceId = await getResourceId(channelname: channelname, uid: uid);
-
-    resourceIdV.value = resourceId["resourceId"];
-    var startrecording = await startRecording(
-        resourceid: resourceId["resourceId"],
-        channelname: channelname,
-        uid: uid,
-        token: token);
-    resourceSid.value = startrecording["sid"];
-
-    await RoomAPI().updateRoomByIdNew({
-      "resourceId": resourceId["resourceId"],
-      "recordingsid": startrecording["sid"],
-      "recordingUid": uid,
-    }, channelname!);
-    print("startrecording $startrecording");
-  }
+  // recordAudio({String? channelname, String? token}) async {
+  //   print("recordAudio");
+  //   var rng = new Random();
+  //   var code = rng.nextInt(900000) + 100000;
+  //   String uid = code.toString();
+  //   recordinguid.value = uid.toString();
+  //   var resourceId = await getResourceId(channelname: channelname, uid: uid);
+  //
+  //   resourceIdV.value = resourceId["resourceId"];
+  //   var startrecording = await startRecording(
+  //       resourceid: resourceId["resourceId"],
+  //       channelname: channelname,
+  //       uid: uid,
+  //       token: token);
+  //   resourceSid.value = startrecording["sid"];
+  //
+  //   await RoomAPI().updateRoomByIdNew({
+  //     "resourceId": resourceId["resourceId"],
+  //     "recordingsid": startrecording["sid"],
+  //     "recordingUid": uid,
+  //   }, channelname!);
+  //
+  //   print("startrecording $startrecording");
+  // }
 
   void agoraListeners() {
     // Define event handling logic
@@ -1132,6 +1133,10 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         }
       }, joinChannelSuccess: (String channel, int uid, int elapsed) {
         printOut('joinChannelSuccess $channel $uid');
+        // if (authController.usermodel.value!.roomuid == "") {
+        UserAPI()
+            .updateUser({"roomuid": uid}, authController.usermodel.value!.id!);
+        // }
 
         userJoinedRoom.value = true;
       }, userJoined: (int uid, int elapsed) async {
@@ -1278,5 +1283,24 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     fetchEvents();
     Get.back();
     Get.back();
+  }
+
+  startrecordingAudio({token, String? channelname}) async {
+    Map<String, dynamic> response =
+        await RoomAPI().recordRoom(channelname!, token);
+    if (response.containsKey("message")) {
+      print(response["message"]);
+      Get.snackbar('', 'Start recording failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2));
+    } else {
+      currentRoom.value = RoomModel.fromJson(response);
+      Get.snackbar('', 'Recoding started...',
+          backgroundColor: sc_snackBar,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2));
+    }
+    return response;
   }
 }

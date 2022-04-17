@@ -8,13 +8,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<String> choseImageFromLocalFiles(BuildContext context,
-    {
-
-    CropAspectRatio aspectration =
-    const CropAspectRatio(ratioX: 1, ratioY: 1),int maxSizeInKB = 1024,
+    {CropAspectRatio aspectration = const CropAspectRatio(ratioX: 1, ratioY: 1),
+    int maxSizeInKB = 1024,
     int minSizeInKB = 5}) async {
   final PermissionStatus photoPermissionStatus =
       await Permission.photos.request();
+
+  print("photoPermissionStatus.isGranted ${photoPermissionStatus.isGranted}");
   if (!photoPermissionStatus.isGranted) {
     throw LocalFileHandlingStorageReadPermissionDeniedException(
         message: "Permission required to read storage, please give permission");

@@ -200,4 +200,18 @@ class RoomAPI {
       printOut("Error deleteARoom  room $e");
     }
   }
+
+  recordRoom(String id, String token) async {
+    try {
+      var response = await DbBase()
+          .databaseRequest(record + id, DbBase().postRequestType, body: {
+        "token": token,
+        "roomuid": Get.find<AuthController>().usermodel.value!.roomuid,
+      });
+      print("recordRoom $response");
+      return jsonDecode(response);
+    } catch (e) {
+      printOut("Error deleteARoom  room $e");
+    }
+  }
 }

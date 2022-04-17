@@ -13,6 +13,7 @@ import 'package:fluttergistshop/screens/profile/followers_following_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/dynamic_link_services.dart';
 import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/utils/styles.dart';
 import 'package:get/get.dart';
@@ -58,7 +59,76 @@ class RoomPage extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-              onPressed: () async {},
+              onPressed: () async {
+                RoomModel roo = RoomModel.fromJson(await RoomAPI()
+                    .getRoomById(_homeController.currentRoom.value.id!));
+                print(Get.find<AuthController>().usermodel.value!.roomuid);
+                if (roo.recordingIds!.indexWhere((element) =>
+                        element ==
+                        Get.find<AuthController>().usermodel.value!.roomuid) !=
+                    -1) {
+                  return await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                            "Are you sure you want to stop the recording?"),
+                        content: Text(
+                            "once you stop the recording you cannot record again for this room"),
+                        actions: [
+                          FlatButton(
+                            child: Text("Yes"),
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                              _stopRecording();
+                              Get.snackbar('', 'Recoding stopped...',
+                                  backgroundColor: sc_snackBar,
+                                  colorText: Colors.white,
+                                  duration: const Duration(seconds: 2));
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("No"),
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  return await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                            "Are you sure you want to start recording this room?"),
+                        content: Text(
+                            "The recorded audio wil be saved for 30 days only, for you to extend the time to have the audio, you have to upgrade your account to premium membership by going to your profile page and click upgrade account."),
+                        actions: [
+                          FlatButton(
+                            child: Text("Yes"),
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                              _homeController.startrecordingAudio(
+                                  token:
+                                      _homeController.currentRoom.value.token,
+                                  channelname: roomId);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("No"),
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
               icon: const Icon(Icons.fiber_smart_record)),
           IconButton(
               onPressed: () async {
@@ -82,6 +152,8 @@ class RoomPage extends StatelessWidget {
                   Get.offAll(MainPage());
                   await _homeController.leaveRoom(currentUser,
                       idRoom: _homeController.currentRoom.value.id);
+
+                  _stopRecording();
                 },
                 child: Container(
                   height: 0.06.sh,
@@ -314,10 +386,17 @@ class RoomPage extends StatelessWidget {
     );
   }
 
+  void _stopRecording() {
+    _homeController.stopRecording(
+        channelname: _homeController.currentRoom.value.id,
+        uid: _homeController.currentRoom.value.recordingUid,
+        resourceid: _homeController.currentRoom.value.resourceId,
+        sid: _homeController.currentRoom.value.recordingsid);
+  }
+
   void roomListener() {
     customSocketIO.socketIO.on(roomId, (data) {
       var decodedData = jsonDecode(data);
-      printOut("there is response, roomId  ${decodedData["roomId"]}");
       if (decodedData["roomId"] == roomId) {
         var user = OwnerId.fromJson(decodedData["userData"]);
 

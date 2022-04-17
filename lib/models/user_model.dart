@@ -12,6 +12,7 @@ class UserModel {
   List<String> followers = [];
   List<String> following = [];
   int? wallet;
+  String? roomuid;
   String? currentRoom;
   String? facebook;
   String? instagram;
@@ -40,6 +41,7 @@ class UserModel {
     this.currentRoom,
     this.facebook,
     this.instagram,
+    this.roomuid,
     this.linkedIn,
     this.twitter,
     this.id,
@@ -67,6 +69,7 @@ class UserModel {
             ? []
             : List<String>.from(json["following"].map((x) => x)),
         wallet: json["wallet"],
+        roomuid: json["roomuid"] ?? "0",
         currentRoom: json["currentRoom"] ?? "",
         facebook: json["facebook"],
         instagram: json["instagram"],
@@ -102,6 +105,7 @@ class UserModel {
         "linkedIn": linkedIn,
         "twitter": twitter,
         "_id": id,
+        "roomuid": roomuid,
         "firstName": firstName,
         "lastName": lastName,
         "bio": bio,

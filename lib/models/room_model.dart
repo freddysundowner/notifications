@@ -34,6 +34,7 @@ class RoomModel {
     this.token,
     this.roomType,
     this.invitedhostIds,
+    this.recordingIds,
     this.activeTime,
     this.resourceId,
     this.recordingsid,
@@ -58,6 +59,7 @@ class RoomModel {
   int? eventDate = 0;
   String? recordingUid = "";
   String? resourceId = "";
+  List<String>? recordingIds = [];
   String? description = "";
   String? recordingsid = "";
   Shop? shopId;
@@ -106,6 +108,9 @@ class RoomModel {
         invitedhostIds: json["invitedhostIds"] == null
             ? []
             : List<String>.from(json["invitedhostIds"].map((x) => x)),
+        recordingIds: json["recordingIds"] == null
+            ? []
+            : List<String>.from(json["recordingIds"].map((x) => x)),
         productPrice: json["productPrice"],
         v: json["__v"],
         token: json["token"],
@@ -113,7 +118,7 @@ class RoomModel {
         description: json["description"] ?? "",
         recordingUid: json["recordingUid"] ?? "",
         resourceId: json["resourceId"] ?? "",
-        eventDate: json["eventDate"] ?? "",
+        eventDate: json["eventDate"] ?? 0,
         activeTime: json["activeTime"] ?? DateTime.now().microsecondsSinceEpoch,
         roomType: json["roomType"],
         event: json["event"],
@@ -243,8 +248,12 @@ class OwnerId {
       );
 
   Map<String, dynamic> toJson() => {
-        "followers": followers == null ? [] : List<dynamic>.from(followers!.map((x) => x)),
-        "following": following == null ? [] : List<dynamic>.from(following!.map((x) => x)),
+        "followers": followers == null
+            ? []
+            : List<dynamic>.from(followers!.map((x) => x)),
+        "following": following == null
+            ? []
+            : List<dynamic>.from(following!.map((x) => x)),
         "wallet": wallet,
         "currentRoom": currentRoom,
         "facebook": facebook,

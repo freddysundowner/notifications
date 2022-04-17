@@ -22,6 +22,8 @@ const allRooms = rooms + "/get/all/";
 const allEvents = rooms + "/events";
 const myEvents = rooms + "/myevents";
 const roomById = rooms + "/rooms/";
+const record = rooms + "/record/";
+const stoprecording = rooms + "/stoprecording/";
 const eventById = rooms + "/event/";
 const roomByUser = rooms + "/get/all/"; //Add user Id
 const roomByShop = rooms + "/get/all/shops/"; //Add shop Id
@@ -46,6 +48,7 @@ const updateproductimages = product + "images/";
 
 const userById = user + "/";
 const userSendGift = user + "/sendgift";
+const userWithdraw = user + "/withdraw/requests";
 const userFollowers = user + "/followers/";
 const followersfollowing = user + "/followersfollowing/";
 const userFollowing = user + "/following/";

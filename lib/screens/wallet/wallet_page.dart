@@ -1,12 +1,22 @@
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/wallet_controller.dart';
 import 'package:fluttergistshop/models/transaction_model.dart';
+import 'package:fluttergistshop/models/user_model.dart';
+import 'package:fluttergistshop/services/client.dart';
+import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
+
+import '../../widgets/widgets.dart';
 
 class WalletPage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
@@ -36,7 +46,6 @@ class WalletPage extends StatelessWidget {
             children: [
               Center(
                 child: Container(
-                  height: 0.15.sh,
                   width: 0.9.sw,
                   decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
@@ -59,7 +68,28 @@ class WalletPage extends StatelessWidget {
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold),
                           );
-                        })
+                        }),
+                        InkWell(
+                          onTap: () {
+                            withdrawGP(context, "send", gccurrency,
+                                userModel: authController.currentuser!,
+                                onButtonPressed: (type, amount) async {
+                              print("oooooooook");
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.wallet_giftcard,
+                                color: Colors.green,
+                              ),
+                              Text(
+                                " Withdraw",
+                                style: TextStyle(color: Colors.white),
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -124,9 +154,12 @@ class WalletPage extends StatelessWidget {
                                             ),
                                           ),
                                           Text(
-                                            "$gccurrency ${transaction.amount}",
+                                            "$gccurrency ${transaction.deducting == true ? "-" : "+"}${transaction.amount}",
                                             style: TextStyle(
-                                                color: Colors.red,
+                                                color: transaction.deducting ==
+                                                        true
+                                                    ? Colors.red
+                                                    : Colors.green,
                                                 fontSize: 13.sp),
                                           ),
                                         ],
@@ -156,5 +189,260 @@ class WalletPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  static withdrawGP(BuildContext context, String currency, String gccurrency,
+      {Function? onButtonPressed, UserModel? userModel}) {
+    var amountcontroller = TextEditingController();
+
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.9,
+              expand: false,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom),
+                    child: Column(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "How much GistPoints you want to withdraw? ",
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    decoration: new BoxDecoration(
+                                        shape: BoxShape.rectangle,
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: TextFormField(
+                                      controller: amountcontroller,
+                                      autofocus: true,
+                                      maxLength: null,
+                                      maxLines: null,
+                                      keyboardType:
+                                          TextInputType.numberWithOptions(
+                                              signed: true),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ],
+                                      decoration: InputDecoration(
+                                          hintStyle: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                          prefixIcon: currency == gccurrency
+                                              ? Icon(Icons
+                                                  .account_balance_wallet_sharp)
+                                              : Icon(
+                                                  CupertinoIcons.money_dollar),
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                          fillColor: Colors.white),
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  DefaultButton(
+                                      text: "Withdraw",
+                                      press: () async {
+                                        int amount =
+                                            int.parse(amountcontroller.text);
+                                        var response = DbBase().databaseRequest(
+                                            userWithdraw,
+                                            DbBase().postRequestType,
+                                            body: {
+                                              "userId":
+                                                  Get.find<AuthController>()
+                                                      .usermodel
+                                                      .value!
+                                                      .id,
+                                              "amount": amount
+                                            });
+                                        await showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AsyncProgressDialog(
+                                              response,
+                                              message: Text("Please wait.."),
+                                              onError: (e) {},
+                                            );
+                                          },
+                                        );
+                                        var waitedResponse =
+                                            jsonDecode(await response);
+                                        print("waitedResponse $waitedResponse");
+                                        if (waitedResponse["status"] == false) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                waitedResponse["message"],
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                waitedResponse["message"],
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        }
+                                        Get.back();
+                                        print(waitedResponse);
+                                        // int amount =
+                                        //     int.parse(amountcontroller.text);
+                                        // if (amount > 0) {
+                                        //   onButtonPressed!(
+                                        //       amountcontroller.text);
+                                        // } else {
+                                        //   ScaffoldMessenger.of(context)
+                                        //       .showSnackBar(
+                                        //     SnackBar(
+                                        //       content: Text(
+                                        //         "Amount has to be greater than 0",
+                                        //         style: TextStyle(
+                                        //             color: Colors.white),
+                                        //       ),
+                                        //       backgroundColor: Colors.red,
+                                        //     ),
+                                        //   );
+                                        // }
+                                      })
+                                ]))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
+    // showModalBottomSheet(
+    //   context: context,
+    //   shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.only(
+    //     topLeft: Radius.circular(15),
+    //     topRight: Radius.circular(15),
+    //   )),
+    //   builder: (context) {
+    //     return Container(
+    //       child: Padding(
+    //         padding: EdgeInsets.only(
+    //             bottom: MediaQuery.of(context).viewInsets.bottom),
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           mainAxisSize: MainAxisSize.min,
+    //           children: [
+    //             InkWell(
+    //               onTap: () {
+    //                 Get.back();
+    //               },
+    //               child: Padding(
+    //                 padding: MediaQuery.of(context).viewInsets,
+    //                 child: Icon(Icons.clear, size: 30, color: Colors.white),
+    //               ),
+    //             ),
+    //             Spacer(),
+    //             Container(
+    //               padding: EdgeInsets.symmetric(horizontal: 20),
+    //               child: Column(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: [
+    //                   Text(
+    //                     type == "send"
+    //                         ? "How much ${currency == gccurrency ? "GistPoints" : "Money"} you want to send to ${userModel!.firstName!}"
+    //                         : "Deposit  $type",
+    //                     style: TextStyle(fontSize: 21),
+    //                   ),
+    //                   SizedBox(
+    //                     height: 10,
+    //                   ),
+    //                   Container(
+    //                     decoration: new BoxDecoration(
+    //                         shape: BoxShape.rectangle,
+    //                         color: Colors.white,
+    //                         borderRadius: BorderRadius.circular(10)),
+    //                     padding: EdgeInsets.symmetric(horizontal: 10),
+    //                     child: TextFormField(
+    //                       controller: amountcontroller,
+    //                       maxLength: null,
+    //                       maxLines: null,
+    //                       keyboardType: TextInputType.number,
+    //                       decoration: InputDecoration(
+    //                           hintStyle: TextStyle(
+    //                             fontSize: 20,
+    //                           ),
+    //                           prefixIcon: currency == gccurrency
+    //                               ? Icon(Icons.account_balance_wallet_sharp)
+    //                               : Icon(CupertinoIcons.money_dollar),
+    //                           border: InputBorder.none,
+    //                           focusedBorder: InputBorder.none,
+    //                           enabledBorder: InputBorder.none,
+    //                           errorBorder: InputBorder.none,
+    //                           disabledBorder: InputBorder.none,
+    //                           fillColor: Colors.white),
+    //                       style: TextStyle(
+    //                         fontSize: 20,
+    //                         color: Colors.black,
+    //                         fontWeight: FontWeight.w400,
+    //                       ),
+    //                     ),
+    //                   ),
+    //                   SizedBox(
+    //                     height: 10,
+    //                   ),
+    //                   DefaultButton(
+    //                       text: type == "send" ? "Send" : "Deposit",
+    //                       press: () {
+    //                         // int amount = int.parse(amountcontroller.text);
+    //                         // if (amount > 0) {
+    //                         //   onButtonPressed(type, amountcontroller.text);
+    //                         // } else {
+    //                         //   topTrayPopup(
+    //                         //       "Amount has to be greater than 0");
+    //                         // }
+    //                       })
+    //                 ],
+    //               ),
+    //             ),
+    //             Spacer(),
+    //           ],
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }

@@ -308,6 +308,12 @@ class WalletPage extends StatelessWidget {
                                             ),
                                           );
                                         } else {
+                                          // Get.snackbar(
+                                          //   'Withdrawal Request Inititated',
+                                          //   waitedResponse["message"],
+                                          //   backgroundColor: Colors.green,
+                                          // ).show();
+
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(

@@ -206,13 +206,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         designSize: Size(360, 690),
         minTextAdapt: true,
         splitScreenMode: true,
-        builder: () => GetMaterialApp(
-              navigatorKey: navigatorKey,
-              title: appName,
-              debugShowCheckedModeBanner: false,
-              theme: theme(),
-              initialBinding: AuthBinding(),
-              home: authController.handleAuth(),
-            ));
+        builder: (BuildContext context) {
+          return GetMaterialApp(
+            navigatorKey: navigatorKey,
+            title: appName,
+            debugShowCheckedModeBanner: false,
+            theme: theme(),
+            initialBinding: AuthBinding(),
+            home: authController.handleAuth(),
+          );
+        });
   }
 }

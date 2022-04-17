@@ -222,7 +222,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     await engine.enableAudioVolumeIndication(500, 3, true);
     await engine.enableAudio();
     await engine.muteLocalAudioStream(audioMuted.value);
-    await engine.setDefaultAudioRoutetoSpeakerphone(true);
+    await engine.setDefaultAudioRouteToSpeakerphone(true);
 
     await engine.setClientRole(ClientRole.Broadcaster);
   }
@@ -1302,5 +1302,20 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           duration: const Duration(seconds: 2));
     }
     return response;
+  }
+
+  Future<void> sendRoomNotification(RoomModel roomModel) async {
+    if (currentRoom.value.speakersSentNotifications!.indexWhere((element) =>
+            element == Get.find<AuthController>().usermodel.value!.id) ==
+        -1) {
+      var response = await RoomAPI().sendRoomNotication({
+        "user": Get.find<AuthController>().usermodel.value!.toJson(),
+        "type": "speaking",
+        "room": roomModel.toJson()
+      });
+      printOut("speakersSentNotifications ${response}");
+      currentRoom.value = RoomModel.fromJson(response);
+      currentRoom.refresh();
+    }
   }
 }

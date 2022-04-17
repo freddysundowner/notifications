@@ -101,8 +101,8 @@ class RoomAPI {
       var updated = await DbBase().databaseRequest(
           updateRoomNew + id, DbBase().patchRequestType,
           body: body);
-
       printOut("updateRoomByIdNew $updated");
+      return jsonDecode(updated);
     } catch (e) {
       printOut("Error updateRoomByIdNew room $e");
     }
@@ -212,6 +212,18 @@ class RoomAPI {
       return jsonDecode(response);
     } catch (e) {
       printOut("Error deleteARoom  room $e");
+    }
+  }
+
+  sendRoomNotication(Map<String, dynamic> body) async {
+    print("sendRoomNotication ${body["room"]}");
+    try {
+      var updated = await DbBase().databaseRequest(
+          roomNotication, DbBase().postRequestType,
+          body: body);
+      return jsonDecode(updated);
+    } catch (e) {
+      printOut("Error sendRoomNotication room $e");
     }
   }
 }

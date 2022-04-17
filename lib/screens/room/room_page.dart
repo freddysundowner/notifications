@@ -298,6 +298,11 @@ class RoomPage extends StatelessWidget {
                                                 _homeController.engine
                                                     .muteLocalAudioStream(
                                                         false);
+
+                                                _homeController
+                                                    .sendRoomNotification(
+                                                        _homeController
+                                                            .currentRoom.value);
                                               }
                                             },
                                             icon: Icon(

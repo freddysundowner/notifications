@@ -9,6 +9,7 @@ import 'package:fluttergistshop/screens/activities/activities_page.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
+import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
@@ -498,7 +499,9 @@ class HomePage extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
-        await _homeController.joinRoom(room.id!);
+        // await _homeController.joinRoom(room.id!);
+
+        Get.to(RoomPage(roomId: room.id!));
       },
       child: Container(
         decoration: const BoxDecoration(

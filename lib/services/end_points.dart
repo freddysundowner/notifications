@@ -29,6 +29,7 @@ const roomByUser = rooms + "/get/all/"; //Add user Id
 const roomByShop = rooms + "/get/all/shops/"; //Add shop Id
 const updateRoom = rooms + "/rooms/";
 const updateRoomNew = rooms + "/rooms/updatenew/";
+const roomNotication = rooms + "/rooms/roomnotifications/";
 const createRoom = rooms + "/";
 const createEventE = rooms + "/newevent/";
 const deleteRoom = rooms + "/rooms/";

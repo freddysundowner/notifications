@@ -33,6 +33,8 @@ class RoomModel {
     this.v,
     this.token,
     this.roomType,
+    this.allUsers,
+    this.speakersSentNotifications,
     this.invitedhostIds,
     this.recordingIds,
     this.activeTime,
@@ -60,6 +62,8 @@ class RoomModel {
   String? recordingUid = "";
   String? resourceId = "";
   List<String>? recordingIds = [];
+  List<String>? allUsers = [];
+  List<String>? speakersSentNotifications = [];
   String? description = "";
   String? recordingsid = "";
   Shop? shopId;
@@ -111,6 +115,13 @@ class RoomModel {
         recordingIds: json["recordingIds"] == null
             ? []
             : List<String>.from(json["recordingIds"].map((x) => x)),
+        speakersSentNotifications: json["speakersSentNotifications"] == null
+            ? []
+            : List<String>.from(
+                json["speakersSentNotifications"].map((x) => x)),
+        allUsers: json["allUsers"] == null
+            ? []
+            : List<String>.from(json["allUsers"].map((x) => x)),
         productPrice: json["productPrice"],
         v: json["__v"],
         token: json["token"],
@@ -143,6 +154,8 @@ class RoomModel {
         "invitedIds": invitedIds == []
             ? []
             : List<dynamic>.from(invitedIds!.map((x) => x)),
+        "allUsers":
+            allUsers == [] ? [] : List<dynamic>.from(allUsers!.map((x) => x)),
         "status": status,
         "productImages": productImages == []
             ? []

@@ -18,13 +18,23 @@ import 'notification_api.dart';
 // api //
 class UserAPI {
   getAllUsers(int pageNumber) async {
-    var users =
-        await DbBase().databaseRequest(allUsers + pageNumber.toString(), DbBase().getRequestType);
+    try {
+      var users = await DbBase().databaseRequest(
+          allUsers + pageNumber.toString(), DbBase().getRequestType);
 
-    var decodedUsers = jsonDecode(users);
+      var decodedUsers = jsonDecode(users);
+      var finalUsers = [];
 
-    printOut("users ${decodedUsers[0]["data"]}" );
-    return decodedUsers[0]["data"];
+      for (var a in decodedUsers.elementAt(0)["data"]) {
+        a["shopId"] = a["shopId"].isEmpty ? null : a["shopId"].elementAt(0);
+        finalUsers.add(a);
+      }
+
+      printOut("users $finalUsers");
+      return finalUsers;
+    } catch (e, s) {
+      printOut("$e $s");
+    }
   }
 
   getUserProfile(String uid) async {

@@ -55,9 +55,9 @@ class NewChatPage extends StatelessWidget {
                         Expanded(
                           child: Center(
                             child: TextField(
-                              controller:
-                                  _homeController.searchUsersController,
-                              autofocus: true,autocorrect: false,
+                              controller: _homeController.searchUsersController,
+                              autofocus: true,
+                              autocorrect: false,
                               enableSuggestions: false,
                               keyboardType: TextInputType.visiblePassword,
                               onChanged: (text) =>
@@ -65,7 +65,9 @@ class NewChatPage extends StatelessWidget {
                               decoration: InputDecoration(
                                 hintText: "Search",
                                 hintStyle: TextStyle(
-                                    color: Colors.grey, fontSize: 16.sp, decoration: TextDecoration.none),
+                                    color: Colors.grey,
+                                    fontSize: 16.sp,
+                                    decoration: TextDecoration.none),
                                 border: InputBorder.none,
                                 disabledBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -75,7 +77,9 @@ class NewChatPage extends StatelessWidget {
                                 contentPadding: EdgeInsets.zero,
                               ),
                               style: TextStyle(
-                                  color: Colors.black, fontSize: 16.sp, decoration: TextDecoration.none),
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  decoration: TextDecoration.none),
                             ),
                           ),
                         )
@@ -86,6 +90,18 @@ class NewChatPage extends StatelessWidget {
                 SizedBox(
                   height: 0.01.sh,
                 ),
+                if(_homeController.moreUsersLoading.isTrue)
+                  Column(
+                    children: [
+                      const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          )),
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
+                    ],
+                  ),
                 SizedBox(
                     height: 0.78.sh,
                     child: _homeController.allUsersLoading.isFalse
@@ -93,6 +109,7 @@ class NewChatPage extends StatelessWidget {
                             return _dx.searchedUsers.isNotEmpty
                                 ? ListView.builder(
                                     shrinkWrap: true,
+                                    controller: _dx.usersScrollController,
                                     itemCount: _dx.searchedUsers.length,
                                     itemBuilder: (context, index) {
                                       UserModel user = UserModel.fromJson(
@@ -107,7 +124,8 @@ class NewChatPage extends StatelessWidget {
                                                 .currentChatId.value = "";
                                             _chatController
                                                 .getPreviousChat(user);
-                                            _homeController.onChatPage.value = true;
+                                            _homeController.onChatPage.value =
+                                                true;
                                             Get.to(ChatRoomPage(user));
                                           },
                                           child: Row(
@@ -118,7 +136,9 @@ class NewChatPage extends StatelessWidget {
                                                 children: [
                                                   Center(
                                                     child: user.profilePhoto ==
-                                                            "" || user.profilePhoto == null
+                                                                "" ||
+                                                            user.profilePhoto ==
+                                                                null
                                                         ? const CircleAvatar(
                                                             radius: 25,
                                                             backgroundColor:

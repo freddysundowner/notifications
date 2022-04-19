@@ -75,7 +75,8 @@ class AllChatsPage extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: getOtherUser(allChatsModel)
                                                     .profilePhoto ==
-                                                ""
+                                                "" || getOtherUser(allChatsModel)
+                                            .profilePhoto == null
                                             ? const CircleAvatar(
                                                 radius: 25,
                                                 backgroundColor:

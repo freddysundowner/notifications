@@ -57,7 +57,7 @@ const followUser = user + "/follow/";
 const unFollowUser = user + "/unfollow/";
 const editUser = user + "/";
 const upgradeUser = user + "/upgrade/";
-const allUsers = user + "/";
+const allUsers = user + "/paginated/";
 const searchUsersByFirstName = user + "/search/";
 const followersfollowingsearch = user + "/followersfollowing/search/";
 

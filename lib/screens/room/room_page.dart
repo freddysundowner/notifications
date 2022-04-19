@@ -657,7 +657,9 @@ class RoomUser extends StatelessWidget {
                               Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: user.elementAt(index).profilePhoto ==
-                                          ""
+                                              "" ||
+                                          user.elementAt(index).profilePhoto ==
+                                              null
                                       ? const CircleAvatar(
                                           radius: 30,
                                           backgroundImage: AssetImage(
@@ -686,7 +688,8 @@ class RoomUser extends StatelessWidget {
                             ])
                           : Padding(
                               padding: const EdgeInsets.all(3.0),
-                              child: user.elementAt(index).profilePhoto == ""
+                              child: user.elementAt(index).profilePhoto == "" ||
+                                      user.elementAt(index).profilePhoto == null
                                   ? const CircleAvatar(
                                       radius: 30,
                                       backgroundImage: AssetImage(
@@ -750,7 +753,7 @@ class RoomUser extends StatelessWidget {
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
                         children: [
-                          user.profilePhoto == ""
+                          user.profilePhoto == "" || user.profilePhoto == null
                               ? const CircleAvatar(
                                   radius: 35,
                                   backgroundImage: AssetImage(

@@ -74,7 +74,7 @@ Future<dynamic> showRaisedHandsBottomSheet(BuildContext context) {
                                           children: [
                                             Row(
                                               children: [
-                                                user.profilePhoto == ""
+                                                user.profilePhoto == "" || user.profilePhoto == null
                                                     ? const CircleAvatar(
                                                         radius: 25,
                                                         backgroundImage: AssetImage(

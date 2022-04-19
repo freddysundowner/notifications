@@ -118,7 +118,7 @@ class NewChatPage extends StatelessWidget {
                                                 children: [
                                                   Center(
                                                     child: user.profilePhoto ==
-                                                            ""
+                                                            "" || user.profilePhoto == null
                                                         ? const CircleAvatar(
                                                             radius: 25,
                                                             backgroundColor:

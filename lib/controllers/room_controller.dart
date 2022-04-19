@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +16,6 @@ import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
-import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -900,7 +898,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       try {
         allUsersLoading.value = true;
 
-        var users = await UserAPI().getAllUsers();
+        var users = await UserAPI().getAllUsers(0);
         var list = [];
 
         if (users != null) {

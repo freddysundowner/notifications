@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,6 @@ import 'package:fluttergistshop/models/transaction_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
-import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -107,6 +105,21 @@ class WalletPage extends StatelessWidget {
               SizedBox(
                 height: 0.01.sh,
               ),
+              Obx(() {
+                return _walletController.moreTransactionsLoading.isTrue
+                    ? Column(
+                        children: [
+                          const Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.black,
+                          )),
+                          SizedBox(
+                            height: 0.01.sh,
+                          ),
+                        ],
+                      )
+                    : Container();
+              }),
               const Divider(),
               SizedBox(
                 height: 0.01.sh,
@@ -117,6 +130,8 @@ class WalletPage extends StatelessWidget {
                     child: _walletController.transactionsLoading.isFalse
                         ? _walletController.userTransaction.isNotEmpty
                             ? ListView.builder(
+                                controller: _walletController
+                                    .transactionScrollController,
                                 itemCount:
                                     _walletController.userTransaction.length,
                                 itemBuilder: (context, index) {
@@ -124,9 +139,6 @@ class WalletPage extends StatelessWidget {
                                       TransactionModel.fromJson(
                                           _walletController.userTransaction
                                               .elementAt(index));
-
-                                  print("from " + transaction.from!.id!);
-                                  print(authController.usermodel.value!.id);
                                   return Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

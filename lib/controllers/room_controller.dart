@@ -206,6 +206,13 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     };
     super.onInit();
 
+    userScrollControllerListener();
+
+    printOut("room controller");
+  }
+
+  void userScrollControllerListener() {
+
     usersScrollController.addListener(() {
       if (usersScrollController.position.atEdge) {
         bool isTop = usersScrollController.position.pixels == 0;
@@ -219,8 +226,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         }
       }
     });
-
-    printOut("room controller");
   }
 
   _initAgora() async {

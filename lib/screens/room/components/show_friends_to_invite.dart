@@ -182,6 +182,7 @@ Future<dynamic> showInviteFriendsBottomSheet(BuildContext context) {
                                                     Obx(() => Center(
                                                           child: user.profilePhoto ==
                                                                       "" ||
+                                                              user.profilePhoto == null ||
                                                                   user.profilePhoto!
                                                                           .length >
                                                                       300

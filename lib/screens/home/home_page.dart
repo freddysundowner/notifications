@@ -10,7 +10,6 @@ import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/components/show_friends_to_invite.dart';
 import 'package:fluttergistshop/screens/room/components/show_room_raised_hands.dart';
 import 'package:fluttergistshop/screens/room/room_page.dart';
-import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
 import 'package:fluttergistshop/screens/shops/shop_search_results.dart';
 import 'package:fluttergistshop/screens/wallet/wallet_page.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -383,7 +382,7 @@ class HomePage extends StatelessWidget {
                                   return Padding(
                                       padding:
                                           EdgeInsets.only(left: (30.0 * index)),
-                                      child: e.profilePhoto == ""
+                                      child: e.profilePhoto == "" || e.profilePhoto == null
                                           ? const CircleAvatar(
                                               radius: 22,
                                               backgroundImage: AssetImage(
@@ -518,7 +517,7 @@ class HomePage extends StatelessWidget {
                 var index = room.hostIds!.indexOf(e);
                 return Padding(
                   padding: EdgeInsets.only(left: (30.0 * index)),
-                  child: e.profilePhoto == ""
+                  child: e.profilePhoto == "" || e.profilePhoto == null
                       ? const CircleAvatar(
                           radius: 25,
                           backgroundImage: AssetImage(

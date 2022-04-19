@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +16,6 @@ import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
-import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -38,6 +36,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var isLoading = false.obs;
   var isSwitched = false.obs;
   var allUsersLoading = false.obs;
+  var moreUsersLoading = false.obs;
   var allUsers = [].obs;
   var searchedUsers = [].obs;
   var friendsToInvite = [].obs;
@@ -71,6 +70,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var userProductsLoading = false.obs;
   var userJoinedRoom = false.obs;
   var isSearching = false.obs;
+  var usersPageNumber = 0.obs;
+  final usersScrollController = ScrollController();
 
   var roomPickedImages = [].obs;
 
@@ -204,7 +205,27 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       'Authorization': authorizationHeader
     };
     super.onInit();
+
+    userScrollControllerListener();
+
     printOut("room controller");
+  }
+
+  void userScrollControllerListener() {
+
+    usersScrollController.addListener(() {
+      if (usersScrollController.position.atEdge) {
+        bool isTop = usersScrollController.position.pixels == 0;
+        printOut('current position controller ' + usersScrollController.position.pixels.toString());
+        if (isTop) {
+          printOut('At the top');
+        } else {
+          printOut('At the bottom');
+          usersPageNumber.value = usersPageNumber.value + 1;
+          fetchMoreUsers();
+        }
+      }
+    });
   }
 
   _initAgora() async {
@@ -896,11 +917,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> fetchAllUsers() async {
-    if (allUsers.isEmpty) {
       try {
         allUsersLoading.value = true;
 
-        var users = await UserAPI().getAllUsers();
+        usersPageNumber.value = 0;
+        var users = await UserAPI().getAllUsers(0);
         var list = [];
 
         if (users != null) {
@@ -924,8 +945,37 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut(e);
         allUsersLoading.value = false;
       }
-    } else {
-      searchedUsers.value = allUsers;
+  }
+
+  Future<void> fetchMoreUsers() async {
+    try {
+      moreUsersLoading.value = true;
+
+      var users = await UserAPI().getAllUsers(usersPageNumber.value);
+      var list = [];
+
+      if (users != null) {
+        for (var i = 0; i < users.length; i++) {
+          if (users.elementAt(i)["_id"] !=
+              FirebaseAuth.instance.currentUser!.uid) {
+            list.add(users.elementAt(i));
+          }
+        }
+        allUsers.addAll(list);
+        // searchedUsers.value = allUsers;
+        searchedUsers.addAll(list);
+        allUsers.refresh();
+        moreUsersLoading.value = false;
+
+        update();
+      } else {
+        moreUsersLoading.value = false;
+        searchedUsers = allUsers;
+      }
+
+    } catch (e) {
+      printOut(e);
+      moreUsersLoading.value = false;
     }
   }
 

@@ -7,9 +7,19 @@ import 'end_points.dart';
 
 class TransactionAPI {
   getUserTransactions() async {
+    var transactions = await DbBase().databaseRequest(
+        userTransactions + FirebaseAuth.instance.currentUser!.uid,
+        DbBase().getRequestType);
 
-    var transactions =
-    await DbBase().databaseRequest(userTransactions + FirebaseAuth.instance.currentUser!.uid, DbBase().getRequestType);
+    return jsonDecode(transactions);
+  }
+
+  getMoreUserTransactions(int pageNumber) async {
+    var transactions = await DbBase().databaseRequest(
+        userTransactionsPaginated +
+            FirebaseAuth.instance.currentUser!.uid + "/" +
+            pageNumber.toString(),
+        DbBase().getRequestType);
 
     return jsonDecode(transactions);
   }

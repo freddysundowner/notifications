@@ -71,7 +71,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var userJoinedRoom = false.obs;
   var isSearching = false.obs;
   var usersPageNumber = 0.obs;
+  var roomsPageNumber = 0.obs;
   final usersScrollController = ScrollController();
+  final roomsScrollController = ScrollController();
 
   var roomPickedImages = [].obs;
 
@@ -206,12 +208,12 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     };
     super.onInit();
 
-    userScrollControllerListener();
+    scrollControllerListener();
 
     printOut("room controller");
   }
 
-  void userScrollControllerListener() {
+  void scrollControllerListener() {
 
     usersScrollController.addListener(() {
       if (usersScrollController.position.atEdge) {
@@ -223,6 +225,19 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           printOut('At the bottom');
           usersPageNumber.value = usersPageNumber.value + 1;
           fetchMoreUsers();
+        }
+      }
+    });
+
+    roomsScrollController.addListener(() {
+      if (roomsScrollController.position.atEdge) {
+        bool isTop = roomsScrollController.position.pixels == 0;
+        if (isTop) {
+          printOut('At the top');
+        } else {
+          printOut('At the bottom');
+          roomsPageNumber.value = roomsPageNumber.value + 1;
+          fetchMoreRooms();
         }
       }
     });
@@ -448,7 +463,28 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     try {
       isLoading.value = true;
 
-      var rooms = await RoomAPI().getAllRooms();
+      var rooms = await RoomAPI().getAllRoomsPaginated(0);
+
+      if (rooms != null) {
+        roomsList.value = rooms;
+      } else {
+        roomsList.value = [];
+      }
+      roomsList.refresh();
+      isLoading.value = false;
+
+      update();
+    } catch (e) {
+      printOut(e);
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchMoreRooms() async {
+    try {
+      isLoading.value = true;
+
+      var rooms = await RoomAPI().getAllRoomsPaginated(roomsPageNumber.value);
 
       if (rooms != null) {
         roomsList.value = rooms;

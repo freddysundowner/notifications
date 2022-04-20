@@ -19,6 +19,7 @@ const notifications = baseUrl + "/notifications";
 
 const singleproductqtycheck = singleproduct + "product/qtycheck/";
 const allRooms = rooms + "/get/all/";
+const allRoomsPaginated = rooms + "/get/paginated/";
 const allEvents = rooms + "/events";
 const myEvents = rooms + "/myevents";
 const roomById = rooms + "/rooms/";

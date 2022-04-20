@@ -64,8 +64,14 @@ class WalletController extends GetxController {
 
       var transactions = await TransactionAPI().getMoreUserTransactions(transactionPageNumber.value);
 
-      if (transactions != null) {
-        userTransaction.addAll(transactions);
+      printOut("transactions $transactions");
+
+      if (transactions != null && transactions != []) {
+
+        for (var i = 0; i < transactions.length; i++) {
+          userTransaction.add(transactions.elementAt(i));
+        }
+
       }
       moreTransactionsLoading.value = false;
     } catch(e, s) {

@@ -17,6 +17,29 @@ class RoomAPI {
     return jsonDecode(rooms);
   }
 
+  getAllRoomsPaginated(int pageNumber) async {
+    var rooms = await DbBase().databaseRequest(
+        allRoomsPaginated +
+            Get.find<AuthController>().usermodel.value!.id! +
+            "/$pageNumber",
+        DbBase().getRequestType);
+
+    var decodedRooms = jsonDecode(rooms);
+    var finalRooms = [];
+
+    for (var a in decodedRooms.elementAt(0)["data"]) {
+      a["ownerId"] = a["ownerId"].isEmpty ? null : a["ownerId"].elementAt(0);
+      a["ownerId"]["shopId"] = a["ownerId"]["shopId"].isEmpty ? null : a["ownerId"]["shopId"].elementAt(0);
+      a["shopId"] = a["shopId"].isEmpty ? null : a["shopId"].elementAt(0);
+      a["productIds"].elementAt(0)["ownerId"] = a["productIds"].elementAt(0)["ownerId"].isEmpty ? null : a["productIds"].elementAt(0)["ownerId"].elementAt(0);
+      a["productIds"].elementAt(0)["ownerId"]["shopId"] = a["productIds"].elementAt(0)["ownerId"]["shopId"].isEmpty ? null : a["productIds"].elementAt(0)["ownerId"]["shopId"].elementAt(0);
+
+      printOut("Outed room $a");
+      finalRooms.add(a);
+    }
+    return finalRooms;
+  }
+
   getAllMyEvents() async {
     var rooms = await DbBase().databaseRequest(
         myEvents + "/" + Get.find<AuthController>().usermodel.value!.id!,

@@ -36,12 +36,18 @@ class WalletPage extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _walletController.getUserTransactions(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
+      body: Padding(
+        padding: const EdgeInsets.only(
+          left: 20.0,
+          right: 20.0,
+        ),
+        child: RefreshIndicator(
+          onRefresh: () => _walletController.getUserTransactions(),
           child: Column(
             children: [
+              SizedBox(
+                height: 0.015.sh,
+              ),
               Center(
                 child: Container(
                   width: 0.9.sw,
@@ -76,7 +82,7 @@ class WalletPage extends StatelessWidget {
                             });
                           },
                           child: Row(
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.wallet_giftcard,
                                 color: Colors.green,
@@ -94,108 +100,115 @@ class WalletPage extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 0.03.sh,
+                height: 0.02.sh,
               ),
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Recent Transactions",
-                    style: TextStyle(color: Colors.red, fontSize: 14.sp),
-                  )),
-              SizedBox(
-                height: 0.01.sh,
-              ),
-              Obx(() {
-                return _walletController.moreTransactionsLoading.isTrue
-                    ? Column(
-                        children: [
-                          const Center(
-                              child: CircularProgressIndicator(
-                            color: Colors.black,
-                          )),
-                          SizedBox(
-                            height: 0.01.sh,
-                          ),
-                        ],
-                      )
-                    : Container();
-              }),
-              const Divider(),
-              SizedBox(
-                height: 0.01.sh,
-              ),
-              Obx(() {
-                return SizedBox(
-                    height: 0.57.sh,
-                    child: _walletController.transactionsLoading.isFalse
-                        ? _walletController.userTransaction.isNotEmpty
-                            ? ListView.builder(
-                                controller: _walletController
-                                    .transactionScrollController,
-                                itemCount:
-                                    _walletController.userTransaction.length,
-                                itemBuilder: (context, index) {
-                                  TransactionModel transaction =
-                                      TransactionModel.fromJson(
-                                          _walletController.userTransaction
-                                              .elementAt(index));
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        convertTime(
-                                            transaction.date.toString()),
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontSize: 12.sp),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              "${transaction.type == "gift" ? transaction.reason + " -- ${transaction.from!.firstName!}" : transaction.reason}",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13.sp),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          Text(
-                                            "$gccurrency ${transaction.deducting == true ? "-" : "+"}${transaction.amount}",
-                                            style: TextStyle(
-                                                color: transaction.deducting ==
-                                                        true
-                                                    ? Colors.red
-                                                    : Colors.green,
-                                                fontSize: 13.sp),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 0.02.sh,
-                                      ),
-                                      Divider()
-                                    ],
-                                  );
-                                })
-                            : Center(
-                                child: Text(
-                                  "You have no transactions yet",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 16.sp),
-                                ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Recent Transactions",
+                          style: TextStyle(color: Colors.red, fontSize: 14.sp),
+                        )),
+                    SizedBox(
+                      height: 0.005.sh,
+                    ),
+                    const Divider(),
+                    SizedBox(
+                      height: 0.005.sh,
+                    ),
+                    Obx(() {
+                      return _walletController.transactionsLoading.isFalse
+                          ? _walletController.userTransaction.isNotEmpty
+                              ? Stack(
+                                children: [
+                                  SizedBox(
+                                      height: 0.6.sh,
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          controller: _walletController
+                                              .transactionScrollController,
+                                          itemCount: _walletController
+                                              .userTransaction.length,
+                                          itemBuilder: (context, index) {
+                                            TransactionModel transaction =
+                                                TransactionModel.fromJson(
+                                                    _walletController
+                                                        .userTransaction
+                                                        .elementAt(index));
+                                            return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  convertTime(
+                                                      transaction.date.toString()),
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 12.sp),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        "${transaction.type == "gift" ? transaction.reason + " -- ${transaction.from!.firstName!}" : transaction.reason}",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 13.sp),
+                                                        maxLines: 2,
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "$gccurrency ${transaction.deducting == true ? "-" : "+"}${transaction.amount}",
+                                                      style: TextStyle(
+                                                          color: transaction
+                                                                      .deducting ==
+                                                                  true
+                                                              ? Colors.red
+                                                              : Colors.green,
+                                                          fontSize: 13.sp),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 0.02.sh,
+                                                ),
+                                                Divider()
+                                              ],
+                                            );
+                                          }),
+                                    ),
+                                  _walletController.moreTransactionsLoading.isTrue
+                                      ? const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                      ))
+                                      : Container()
+                                ],
                               )
-                        : const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.black,
-                            ),
-                          ));
-              })
+                              : Center(
+                                  child: Text(
+                                    "You have no transactions yet",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 16.sp),
+                                  ),
+                                )
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                              ),
+                            );
+                    }),
+                  ],
+                ),
+              )
             ],
           ),
         ),

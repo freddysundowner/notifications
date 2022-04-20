@@ -19,6 +19,7 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     _tryConnection();
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.sp),

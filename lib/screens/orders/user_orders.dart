@@ -19,10 +19,12 @@ class UserOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _userController.getUserOrders();
+    _userController.userOrdersPageNumber.value = 1;
     return Obx(() {
       return _userController.ordersLoading.isFalse
           ? _userController.userOrders.isNotEmpty
               ? ListView.builder(
+                  controller: _userController.userOrdersScrollController,
                   itemCount: _userController.userOrders.length,
                   itemBuilder: (context, index) {
                     OrdersModel ordersModel = OrdersModel.fromJson(

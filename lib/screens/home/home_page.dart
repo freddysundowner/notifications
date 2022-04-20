@@ -40,6 +40,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
+    _homeController.roomsPageNumber.value = 0;
     if (_homeController.roomsList.isEmpty) {
       _homeController.getRooms();
     }

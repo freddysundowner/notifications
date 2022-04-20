@@ -19,6 +19,7 @@ const notifications = baseUrl + "/notifications";
 
 const singleproductqtycheck = singleproduct + "product/qtycheck/";
 const allRooms = rooms + "/get/all/";
+const allRoomsPaginated = rooms + "/get/paginated/";
 const allEvents = rooms + "/events";
 const myEvents = rooms + "/myevents";
 const roomById = rooms + "/rooms/";
@@ -69,5 +70,7 @@ const userTransactions = transactions + "/";
 const userTransactionsPaginated = transactions + "/paginated/";
 
 const userOrders = orders + "/";
+const userOrdersPaginated = orders + "/paginated/user/";
 const shopOrders = orders + "/all/shop/";
+const shopOrdersPaginated = orders + "/paginated/shop/";
 const updateOrders = orders + "/orders/";

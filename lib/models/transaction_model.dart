@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:fluttergistshop/models/user_model.dart';
+import 'package:fluttergistshop/models/event_model.dart';
 
 TransactionModel transactionModelFromJson(String str) =>
     TransactionModel.fromJson(json.decode(str));
@@ -27,8 +27,8 @@ class TransactionModel {
 
   int date;
   String id;
-  UserModel? from;
-  UserModel to;
+  OwnerId? from;
+  OwnerId to;
   String reason;
   int amount;
   String type;
@@ -39,8 +39,8 @@ class TransactionModel {
       TransactionModel(
           date: json["date"],
           id: json["_id"],
-          from: UserModel.fromJson(json["from"] ?? {}),
-          to: UserModel.fromJson(json["to"]),
+          from: OwnerId.fromJson(json["from"] ?? {}),
+          to: OwnerId.fromJson(json["to"]),
           reason: json["reason"],
           amount: json["amount"],
           type: json["type"],

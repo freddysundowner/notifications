@@ -21,6 +21,15 @@ class TransactionAPI {
             pageNumber.toString(),
         DbBase().getRequestType);
 
-    return jsonDecode(transactions);
+    var decodedTransactions = jsonDecode(transactions);
+    var finalTransactions = [];
+
+    for (var a in decodedTransactions.elementAt(0)["data"]) {
+      a["from"] = a["from"].isEmpty ? null : a["from"].elementAt(0);
+      a["to"] = a["to"].isEmpty ? null : a["to"].elementAt(0);
+      finalTransactions.add(a);
+    }
+
+    return finalTransactions;
   }
 }

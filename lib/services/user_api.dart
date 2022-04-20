@@ -89,7 +89,23 @@ class UserAPI {
     var orders = await DbBase()
         .databaseRequest(userOrdersPaginated + "$uid/$pageNumber", DbBase().getRequestType);
 
-    return jsonDecode(orders);
+    var decodedOrders = jsonDecode(orders);
+    var finalOrders = [];
+
+    for (var a in decodedOrders.elementAt(0)["data"]) {
+      a["customerId"] = a["customerId"].isEmpty ? null : a["customerId"].elementAt(0);
+      a["customerId"]["shopId"] = a["customerId"]["shopId"].isEmpty ? null : a["customerId"]["shopId"].elementAt(0);
+      a["shippingId"] = a["shippingId"].isEmpty ? null : a["shippingId"].elementAt(0);
+      a["billingId"] = a["billingId"].isEmpty ? null : a["billingId"].elementAt(0);
+      a["itemId"] = a["itemId"].isEmpty ? null : a["itemId"].elementAt(0);
+      a["itemId"]["productId"] = a["itemId"]["productId"].isEmpty ? null : a["itemId"]["productId"].elementAt(0);
+      a["itemId"]["productId"]["ownerId"] = a["itemId"]["productId"]["ownerId"].isEmpty ? null : a["itemId"]["productId"]["ownerId"].elementAt(0);
+      a["itemId"]["productId"]["ownerId"]["shopId"] = a["itemId"]["productId"]["ownerId"]["shopId"].isEmpty ? null : a["itemId"]["productId"]["ownerId"]["shopId"].elementAt(0);
+
+      finalOrders.add(a);
+    }
+
+    return finalOrders;
   }
 
   getShopOrders(String id) async {
@@ -97,6 +113,29 @@ class UserAPI {
         .databaseRequest(shopOrders + id, DbBase().getRequestType);
 
     return jsonDecode(orders);
+  }
+
+  getShopOrdersPaginated(String id, int pageNumber) async {
+    var orders = await DbBase()
+        .databaseRequest(shopOrdersPaginated + "$id/$pageNumber", DbBase().getRequestType);
+
+    var decodedOrders = jsonDecode(orders);
+    var finalOrders = [];
+
+    for (var a in decodedOrders.elementAt(0)["data"]) {
+      a["customerId"] = a["customerId"].isEmpty ? null : a["customerId"].elementAt(0);
+      a["customerId"]["shopId"] = a["customerId"]["shopId"].isEmpty ? null : a["customerId"]["shopId"].elementAt(0);
+      a["shippingId"] = a["shippingId"].isEmpty ? null : a["shippingId"].elementAt(0);
+      a["billingId"] = a["billingId"].isEmpty ? null : a["billingId"].elementAt(0);
+      a["itemId"] = a["itemId"].isEmpty ? null : a["itemId"].elementAt(0);
+      a["itemId"]["productId"] = a["itemId"]["productId"].isEmpty ? null : a["itemId"]["productId"].elementAt(0);
+      a["itemId"]["productId"]["ownerId"] = a["itemId"]["productId"]["ownerId"].isEmpty ? null : a["itemId"]["productId"]["ownerId"].elementAt(0);
+      a["itemId"]["productId"]["ownerId"]["shopId"] = a["itemId"]["productId"]["ownerId"]["shopId"].isEmpty ? null : a["itemId"]["productId"]["ownerId"]["shopId"].elementAt(0);
+
+      finalOrders.add(a);
+    }
+
+    return finalOrders;
   }
 
   updateUser(Map<String, dynamic> body, String id) async {

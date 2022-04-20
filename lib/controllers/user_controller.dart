@@ -23,18 +23,18 @@ class UserController extends GetxController {
   var userOrdersPageNumber = 1.obs;
   var loadingMoreUserOrders = false.obs;
   final userOrdersScrollController = ScrollController();
-
+  var shopOrdersPageNumber = 1.obs;
+  var loadingMoreShopOrders = false.obs;
+  final shopOrdersScrollController = ScrollController();
 
   @override
   void onInit() {
     super.onInit();
 
     orderScrollControllerListener();
-
   }
 
   void orderScrollControllerListener() {
-
     userOrdersScrollController.addListener(() {
       if (userOrdersScrollController.position.atEdge) {
         bool isTop = userOrdersScrollController.position.pixels == 0;
@@ -43,6 +43,18 @@ class UserController extends GetxController {
         } else {
           userOrdersPageNumber.value = userOrdersPageNumber.value + 1;
           getMoreUserOrders();
+        }
+      }
+    });
+
+    shopOrdersScrollController.addListener(() {
+      if (shopOrdersScrollController.position.atEdge) {
+        bool isTop = shopOrdersScrollController.position.pixels == 0;
+        if (isTop) {
+          printOut('At the top');
+        } else {
+          shopOrdersPageNumber.value = shopOrdersPageNumber.value + 1;
+          getMoreShopOrders();
         }
       }
     });
@@ -95,8 +107,8 @@ class UserController extends GetxController {
   getMoreUserOrders() async {
     try {
       loadingMoreUserOrders.value = true;
-      var orders =
-      await UserAPI().getUserOrders(FirebaseAuth.instance.currentUser!.uid);
+      var orders = await UserAPI().getUserOrdersPaginated(
+          FirebaseAuth.instance.currentUser!.uid, userOrdersPageNumber.value);
 
       if (orders != null) {
         userOrders.addAll(orders);
@@ -110,6 +122,26 @@ class UserController extends GetxController {
   }
 
   getShopOrders() async {
+    try {
+      ordersLoading.value = true;
+      var orders = await UserAPI().getShopOrders(
+          Get.find<AuthController>().usermodel.value!.shopId!.id!);
+
+      if (orders == null) {
+        shopOrders.value = [];
+      } else {
+        shopOrders.value = orders;
+      }
+
+      ordersLoading.value = false;
+    } catch (e, s) {
+
+      printOut("Error getting user orders $e $s");
+    }
+    ordersLoading.value = false;
+  }
+
+  getMoreShopOrders() async {
     try {
       ordersLoading.value = true;
       var orders = await UserAPI().getShopOrders(
@@ -195,20 +227,14 @@ class UserController extends GetxController {
       currentProfile.value.wallet =
           currentProfile.value.wallet! - PREMIUM_UPGRADE_COINS_AMOUNT;
       currentProfile.refresh();
-      Get.snackbar(
-        "",
-        "You have successfully upgraded your account o premium membership, Enjoy Gisting",
-          backgroundColor: sc_snackBar,
-          colorText: Colors.white
-      );
+      Get.snackbar("",
+          "You have successfully upgraded your account o premium membership, Enjoy Gisting",
+          backgroundColor: sc_snackBar, colorText: Colors.white);
     } catch (e, s) {
       printOut("Error upgrading account $e $s");
       Get.snackbar(
-        "",
-        "An error occured while upgrading your account. Try again later",
-          backgroundColor: sc_snackBar,
-          colorText: Colors.white
-      );
+          "", "An error occured while upgrading your account. Try again later",
+          backgroundColor: sc_snackBar, colorText: Colors.white);
     }
   }
 }

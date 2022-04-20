@@ -19,6 +19,7 @@ class UserOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _userController.getUserOrders();
+    _userController.userOrdersPageNumber.value = 1;
     return Obx(() {
       return _userController.ordersLoading.isFalse
           ? _userController.userOrders.isNotEmpty

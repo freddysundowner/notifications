@@ -85,6 +85,13 @@ class UserAPI {
     return jsonDecode(orders);
   }
 
+  getUserOrdersPaginated(String uid, int pageNumber) async {
+    var orders = await DbBase()
+        .databaseRequest(userOrdersPaginated + "$uid/$pageNumber", DbBase().getRequestType);
+
+    return jsonDecode(orders);
+  }
+
   getShopOrders(String id) async {
     var orders = await DbBase()
         .databaseRequest(shopOrders + id, DbBase().getRequestType);

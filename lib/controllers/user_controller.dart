@@ -20,6 +20,33 @@ class UserController extends GetxController {
   var gettingFollowers = false.obs;
   var gettingAddress = false.obs;
   var myAddresses = [].obs;
+  var userOrdersPageNumber = 1.obs;
+  var loadingMoreUserOrders = false.obs;
+  final userOrdersScrollController = ScrollController();
+
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    orderScrollControllerListener();
+
+  }
+
+  void orderScrollControllerListener() {
+
+    userOrdersScrollController.addListener(() {
+      if (userOrdersScrollController.position.atEdge) {
+        bool isTop = userOrdersScrollController.position.pixels == 0;
+        if (isTop) {
+          printOut('At the top');
+        } else {
+          userOrdersPageNumber.value = userOrdersPageNumber.value + 1;
+          getMoreUserOrders();
+        }
+      }
+    });
+  }
 
   getUserProfile(String userId) async {
     Get.find<ProductController>().products.clear();
@@ -61,6 +88,23 @@ class UserController extends GetxController {
       ordersLoading.value = false;
     } catch (e, s) {
       ordersLoading.value = false;
+      printOut("Error getting user orders $e $s");
+    }
+  }
+
+  getMoreUserOrders() async {
+    try {
+      loadingMoreUserOrders.value = true;
+      var orders =
+      await UserAPI().getUserOrders(FirebaseAuth.instance.currentUser!.uid);
+
+      if (orders != null) {
+        userOrders.addAll(orders);
+      }
+
+      loadingMoreUserOrders.value = false;
+    } catch (e, s) {
+      loadingMoreUserOrders.value = false;
       printOut("Error getting user orders $e $s");
     }
   }

@@ -23,6 +23,7 @@ class UserOrders extends StatelessWidget {
       return _userController.ordersLoading.isFalse
           ? _userController.userOrders.isNotEmpty
               ? ListView.builder(
+                  controller: _userController.userOrdersScrollController,
                   itemCount: _userController.userOrders.length,
                   itemBuilder: (context, index) {
                     OrdersModel ordersModel = OrdersModel.fromJson(

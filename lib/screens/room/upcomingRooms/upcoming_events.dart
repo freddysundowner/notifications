@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
@@ -326,7 +323,7 @@ class UpcomingEvents extends StatelessWidget {
                         style: TextStyle(fontSize: 20),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 0.01.sh,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -368,8 +365,11 @@ class UpcomingEvents extends StatelessWidget {
                         Text(
                           element.description!,
                         ),
-                      Divider(),
-                      Text("Product"),
+                      const Divider(),
+                      const Text("Product"),
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
                       InkWell(
                         onTap: () {
                           Get.to(() =>
@@ -386,8 +386,8 @@ class UpcomingEvents extends StatelessWidget {
                                   ? CachedNetworkImage(
                                       imageUrl:
                                           element.productIds![0].images!.first,
-                                      height: 70,
-                                      width: 70,
+                                      height: 0.1.sh,
+                                      width: 0.2.sw,
                                       fit: BoxFit.fill,
                                       placeholder: (context, url) =>
                                           const CircularProgressIndicator(),
@@ -401,7 +401,7 @@ class UpcomingEvents extends StatelessWidget {
                                       fit: BoxFit.fill,
                                     ),
                               SizedBox(
-                                width: 20,
+                                width: 0.03.sw,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,7 +409,7 @@ class UpcomingEvents extends StatelessWidget {
                                 children: [
                                   Text(
                                     element.productIds![0].name!,
-                                    style: TextStyle(fontSize: 13),
+                                    style: TextStyle(fontSize: 13.sp),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                   ),
@@ -417,7 +417,7 @@ class UpcomingEvents extends StatelessWidget {
                                     "GC " +
                                         element.productIds![0].price!
                                             .toString(),
-                                    style: TextStyle(fontSize: 13),
+                                    style: TextStyle(fontSize: 13.sp),
                                   ),
                                   if (element
                                       .productIds![0].description!.isNotEmpty)
@@ -425,7 +425,7 @@ class UpcomingEvents extends StatelessWidget {
                                       element.productIds![0].description!,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 13),
+                                      style: TextStyle(fontSize: 13.sp),
                                     ),
                                 ],
                               ),
@@ -434,7 +434,7 @@ class UpcomingEvents extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 0.01.sh,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -443,15 +443,15 @@ class UpcomingEvents extends StatelessWidget {
                             onTap: () {},
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   CupertinoIcons.share,
                                   size: 25,
                                   color: Colors.green,
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 0.01.sh,
                                 ),
-                                Text(
+                                const Text(
                                   "Share",
                                   style: TextStyle(color: primarycolor),
                                 )
@@ -462,15 +462,15 @@ class UpcomingEvents extends StatelessWidget {
                             onTap: () {},
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   CupertinoIcons.doc_on_clipboard,
                                   size: 25,
                                   color: Colors.green,
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 0.01.sh,
                                 ),
-                                Text(
+                                const Text(
                                   "Copy Link",
                                   style: TextStyle(color: primarycolor),
                                 )
@@ -480,7 +480,7 @@ class UpcomingEvents extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 0.02.sh,
                       ),
                       if (element.invitedhostIds!.indexWhere((element) =>
                               element.id ==

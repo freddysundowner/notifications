@@ -5,5 +5,6 @@ import 'package:get/state_manager.dart';
 
 class OrderController extends GetxController {
   var currentOrder = OrdersModel().obs;
+  var currentOrderLoading = false.obs;
 
 }

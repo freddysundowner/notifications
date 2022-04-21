@@ -34,88 +34,87 @@ class UpcomingEvents extends StatelessWidget {
         () => Row(
           children: [
             Expanded(
-              child: Container(
-                  child: InkWell(
+              child: InkWell(
                 onTap: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoActionSheet(
-                        title: Text('What would you like to see?'),
-                        actions: [
-                          CupertinoActionSheetAction(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: const Text('Upcoming For You',
-                                      style: TextStyle(fontSize: 16)),
-                                ),
-                                if (homeController.selectedEvents.value ==
-                                    "all")
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.blue,
-                                  )
-                              ],
+              showCupertinoModalPopup(
+                context: context,
+                builder: (BuildContext context) => CupertinoActionSheet(
+                    title: Text('What would you like to see?'),
+                    actions: [
+                      CupertinoActionSheetAction(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: const Text('Upcoming For You',
+                                  style: TextStyle(fontSize: 16)),
                             ),
-                            onPressed: () {
-                              homeController.selectedEvents.value = "all";
-                              homeController.fetchEvents();
-                              Navigator.pop(context);
-                            },
-                            isDefaultAction: true,
-                          ),
-                          CupertinoActionSheetAction(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: const Text('My Events',
-                                      style: TextStyle(fontSize: 16)),
-                                ),
-                                if (homeController.selectedEvents.value ==
-                                    "mine")
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.blue,
-                                  )
-                              ],
+                            if (homeController.selectedEvents.value ==
+                                "all")
+                              Icon(
+                                Icons.check,
+                                color: Colors.blue,
+                              )
+                          ],
+                        ),
+                        onPressed: () {
+                          homeController.selectedEvents.value = "all";
+                          homeController.fetchEvents();
+                          Navigator.pop(context);
+                        },
+                        isDefaultAction: true,
+                      ),
+                      CupertinoActionSheetAction(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: const Text('My Events',
+                                  style: TextStyle(fontSize: 16)),
                             ),
-                            onPressed: () {
-                              homeController.selectedEvents.value = "mine";
-                              homeController.fetchMyEvents();
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                        cancelButton: CupertinoActionSheetAction(
-                          child: Text(
-                            'Cancel',
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        )),
-                  );
+                            if (homeController.selectedEvents.value ==
+                                "mine")
+                              Icon(
+                                Icons.check,
+                                color: Colors.blue,
+                              )
+                          ],
+                        ),
+                        onPressed: () {
+                          homeController.selectedEvents.value = "mine";
+                          homeController.fetchMyEvents();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                    cancelButton: CupertinoActionSheetAction(
+                      child: Text(
+                        'Cancel',
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )),
+              );
                 },
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      homeController.selectedEvents.value == "mine"
-                          ? "MY EVENTS"
-                          : "UPCOMING FOR YOU",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      size: 20,
-                    )
-                  ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  homeController.selectedEvents.value == "mine"
+                      ? "MY EVENTS"
+                      : "UPCOMING FOR YOU",
+                  style: TextStyle(fontSize: 17),
                 ),
-              )),
+                Icon(
+                  Icons.arrow_drop_down,
+                  size: 20,
+                )
+              ],
+                ),
+              ),
             ),
             IconButton(
               padding: EdgeInsets.zero,
@@ -311,7 +310,7 @@ class UpcomingEvents extends StatelessWidget {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return DraggableScrollableSheet(
-              initialChildSize: 0.5,
+              initialChildSize: 0.6,
               expand: false,
               builder:
                   (BuildContext context, ScrollController scrollController) {

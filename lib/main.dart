@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/event_model.dart';
-import 'package:fluttergistshop/models/room_model.dart';
+import 'package:fluttergistshop/models/orders_model.dart';
 import 'package:fluttergistshop/screens/chats/all_chats_page.dart';
+import 'package:fluttergistshop/screens/orders/individual_order.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
 import 'package:fluttergistshop/services/dynamic_link_services.dart';
 import 'package:fluttergistshop/services/room_api.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -150,7 +152,12 @@ Future redirectToRooms(Map<String, dynamic> mess) async {
         EventModel.fromJson(await RoomAPI().getEventById(id));
     Get.to(() => UpcomingEvents(roomModel: roomModel));
   } else if (screen == "OrderScreen") {
-    Get.to(OrdersScreen());
+     var order = await UserAPI().getOrderById(id);
+
+    printOut("Getting order $id");
+    Get.to(() => OrdersScreen());
+    Get.to(() => IndividualOrderScreen(OrdersModel.fromJson(order), id: id,));
+
   }
 }
 

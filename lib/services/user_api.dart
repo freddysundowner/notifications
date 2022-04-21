@@ -78,6 +78,14 @@ class UserAPI {
     return jsonDecode(users);
   }
 
+  getOrderById(String orderId) async {
+    printOut("order");
+    var order = await DbBase()
+        .databaseRequest(oneOrder + orderId, DbBase().getRequestType);
+
+    printOut("order by id ${jsonDecode(order)}");
+    return jsonDecode(order);
+  }
   getUserOrders(String uid) async {
     var orders = await DbBase()
         .databaseRequest(userOrders + uid, DbBase().getRequestType);

@@ -214,11 +214,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   void scrollControllerListener() {
-
     usersScrollController.addListener(() {
       if (usersScrollController.position.atEdge) {
         bool isTop = usersScrollController.position.pixels == 0;
-        printOut('current position controller ' + usersScrollController.position.pixels.toString());
+        printOut('current position controller ' +
+            usersScrollController.position.pixels.toString());
         if (isTop) {
           printOut('At the top');
         } else {
@@ -265,6 +265,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   getRooms() async {
     await fetchRooms();
+    await fetchEvents();
     printOut(roomsList.length);
   }
 
@@ -953,34 +954,34 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> fetchAllUsers() async {
-      try {
-        allUsersLoading.value = true;
+    try {
+      allUsersLoading.value = true;
 
-        usersPageNumber.value = 0;
-        var users = await UserAPI().getAllUsers(0);
-        var list = [];
+      usersPageNumber.value = 0;
+      var users = await UserAPI().getAllUsers(0);
+      var list = [];
 
-        if (users != null) {
-          for (var i = 0; i < users.length; i++) {
-            if (users.elementAt(i)["_id"] !=
-                FirebaseAuth.instance.currentUser!.uid) {
-              list.add(users.elementAt(i));
-            }
+      if (users != null) {
+        for (var i = 0; i < users.length; i++) {
+          if (users.elementAt(i)["_id"] !=
+              FirebaseAuth.instance.currentUser!.uid) {
+            list.add(users.elementAt(i));
           }
-          allUsers.value = list;
-        } else {
-          allUsers.value = [];
         }
-        searchedUsers.value = allUsers;
-
-        allUsers.refresh();
-        allUsersLoading.value = false;
-
-        update();
-      } catch (e) {
-        printOut(e);
-        allUsersLoading.value = false;
+        allUsers.value = list;
+      } else {
+        allUsers.value = [];
       }
+      searchedUsers.value = allUsers;
+
+      allUsers.refresh();
+      allUsersLoading.value = false;
+
+      update();
+    } catch (e) {
+      printOut(e);
+      allUsersLoading.value = false;
+    }
   }
 
   Future<void> fetchMoreUsers() async {
@@ -1008,7 +1009,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         moreUsersLoading.value = false;
         searchedUsers = allUsers;
       }
-
     } catch (e) {
       printOut(e);
       moreUsersLoading.value = false;

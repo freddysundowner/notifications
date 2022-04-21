@@ -77,7 +77,7 @@ class SettingsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Renew upgrade monthly",
+                              "Auto renew upgrade",
                               style: TextStyle(
                                   color: Colors.black, fontSize: 16.sp),
                             ),

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
@@ -15,6 +16,10 @@ import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
+
+import '../../../services/dynamic_link_services.dart';
+import '../../../services/helper.dart';
 
 class UpcomingEvents extends StatelessWidget {
   EventModel? roomModel;
@@ -440,7 +445,12 @@ class UpcomingEvents extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              DynamicLinkService()
+                                  .createGroupJoinLink(element.id!, "event")
+                                  .then((value) async =>
+                                      await Share.share(value));
+                            },
                             child: Column(
                               children: [
                                 const Icon(
@@ -459,7 +469,15 @@ class UpcomingEvents extends StatelessWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              DynamicLinkService()
+                                  .createGroupJoinLink(element.id!, "event")
+                                  .then((value) async => Clipboard.setData(
+                                      ClipboardData(text: value)));
+                              Get.back();
+                              Helper.showSnackBack(context, "Link copied to clipboard");
+
+                            },
                             child: Column(
                               children: [
                                 const Icon(

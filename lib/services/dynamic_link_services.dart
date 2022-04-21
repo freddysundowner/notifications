@@ -1,5 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:fluttergistshop/main.dart';
+import 'package:fluttergistshop/models/event_model.dart';
+import 'package:fluttergistshop/screens/room/upcomingRooms/upcoming_events.dart';
+import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -7,7 +11,6 @@ import 'package:get/get.dart';
 import '../controllers/room_controller.dart';
 
 class DynamicLinkService {
-
   final RoomController _homeController = Get.put(RoomController());
 
   /*
@@ -40,7 +43,6 @@ class DynamicLinkService {
       or if its not installed its redirected to the website link attached to firebase dynamic links
    */
   Future handleDynamicLinks() async {
-
     final PendingDynamicLinkData? data =
         await FirebaseDynamicLinks.instance.getInitialLink();
 
@@ -48,14 +50,12 @@ class DynamicLinkService {
       _handleDeepLink(data);
     }
 
-
     FirebaseDynamicLinks.instance.onLink.listen(
-            (PendingDynamicLinkData dynamicLink) async {
-          _handleDeepLink(dynamicLink);
-        },
-        onError: (error) async {
-              printOut("Error FirebaseDynamicLinks.instance.onLink $error");
-        });
+        (PendingDynamicLinkData dynamicLink) async {
+      _handleDeepLink(dynamicLink);
+    }, onError: (error) async {
+      printOut("Error FirebaseDynamicLinks.instance.onLink $error");
+    });
   }
 
   /*
@@ -68,11 +68,20 @@ class DynamicLinkService {
       return;
     }
 
+    if (FirebaseAuth.instance.currentUser == null) {
+      return;
+    }
+
     printOut("" + deepLink.queryParameters.toString());
-    if (FirebaseAuth.instance.currentUser != null &&
-        deepLink.queryParameters['type'] == "room") {
+    if (deepLink.queryParameters['type'] == "room") {
       var groupId = deepLink.queryParameters['groupid'];
       _homeController.joinRoom(groupId!);
+    } else if (deepLink.queryParameters['type'] == "event") {
+      var groupId = deepLink.queryParameters['groupid'];
+      Get.to(UpcomingEvents());
+
+      var event = await RoomAPI().getEventById(groupId!);
+      UpcomingEvents().upcomingEventBoottomSheet(navigatorKey.currentContext!, EventModel.fromJson(await event));
 
     }
   }
@@ -80,7 +89,7 @@ class DynamicLinkService {
   _createLink(String groupId, String type) {
     String link;
 
-      link = '$deepLinkUriPrefix/?groupid=$groupId&type=$type';
+    link = '$deepLinkUriPrefix/?groupid=$groupId&type=$type';
 
     return link;
   }

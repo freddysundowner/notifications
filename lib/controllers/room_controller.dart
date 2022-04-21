@@ -358,6 +358,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   createRoomFromEvent(event.EventModel eventModel) async {
     try {
+      audioMuted.value = false;
       isCreatingRoom.value = true;
 
       Get.defaultDialog(
@@ -855,6 +856,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
+    audioMuted.value = false;
     if (Get.find<AuthController>().usermodel.value == null) {
       await UserAPI.getUserById();
       Get.find<AuthController>().usermodel.refresh();
@@ -1088,8 +1090,13 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       await leaveAgora();
       _initAgora();
+
       await engine.joinChannel(token, roomId, null, 0);
       await engine.enableAudioVolumeIndication(500, 3, true);
+      await engine.enableAudio();
+      await engine.enableLocalAudio(true);
+
+      await engine.muteLocalAudioStream(audioMuted.value);
       // recordAudio(token: token, channelname: roomId);
 
     } catch (e, s) {

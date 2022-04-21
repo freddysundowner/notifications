@@ -322,34 +322,13 @@ class UpcomingEvents extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        element.title!,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 0.01.sh,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Wrap(
-                            children: [
-                              Text(
-                                "W/",
-                                style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    color: primarycolor),
-                              ),
-                              ...element.invitedhostIds!
-                                  .map((e) => Text(
-                                        "${e.firstName} ${e.lastName}, ",
-                                        style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            color: primarycolor),
-                                      ))
-                                  .toList()
-                            ],
+                          Text(
+                            element.title!,
+                            style: TextStyle(fontSize: 20.sp),
                           ),
                           if (element.ownerId!.id ==
                               Get.find<AuthController>().usermodel.value!.id!)
@@ -357,12 +336,34 @@ class UpcomingEvents extends StatelessWidget {
                               onTap: () {
                                 roomController.deleteEvent(element.id!);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 CupertinoIcons.delete,
                                 size: 25,
                                 color: Colors.red,
                               ),
                             ),
+                        ],
+                      ),
+
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
+                      Wrap(
+                        children: [
+                          const Text(
+                            "W/",
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: primarycolor),
+                          ),
+                          ...element.invitedhostIds!
+                              .map((e) => Text(
+                            "${e.firstName} ${e.lastName}, ",
+                            style: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: primarycolor),
+                          ))
+                              .toList()
                         ],
                       ),
                       if (element.description!.isNotEmpty)

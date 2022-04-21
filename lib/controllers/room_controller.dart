@@ -362,7 +362,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       Get.defaultDialog(
           title: "Going live...",
-          contentPadding: EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.all(10),
           content: const CircularProgressIndicator(),
           barrierDismissible: false);
 
@@ -370,7 +370,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       printOut("room created $eventModel");
 
-      if (eventModel != null) {
+      if (eventModel.id != null) {
         var roomId = eventModel.id!;
         var token = await RoomAPI().generateAgoraToken(roomId, "0");
         printOut("room token $token");
@@ -382,6 +382,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
             "token": token,
             "roomType": eventModel.roomType,
             "event": false,
+            "hostIds": [Get.find<AuthController>().usermodel.value!.id],
             "activeTime": DateTime.now().microsecondsSinceEpoch
           }, roomId);
 
@@ -1356,7 +1357,30 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   updateEvent(String roomId, var data) async {
-    await RoomAPI().updateRoomByIdNew(data, roomId);
+    var hosts = [];
+    for (var element in roomHosts) {
+      hosts.add(element.id);
+    }
+    var roomData = {
+      "title": eventTitleController.text,
+      "roomType": newRoomType.value,
+      "productIds": [roomPickedProduct.value.id],
+      "hostIds": hosts,
+      "description": eventDescriptiion.text,
+      "userIds": [],
+      "raisedHands": [],
+      "speakerIds": [],
+      "event": true,
+      "invitedIds": [],
+      "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
+      "status": true,
+      "productPrice": roomPickedProduct.value.price,
+      "productImages": roomPickedProduct.value.images,
+      "activeTime": DateTime.now().microsecondsSinceEpoch,
+      "eventDate": eventDate.value!.millisecondsSinceEpoch
+    };
+
+    await RoomAPI().updateRoomByIdNew(roomData, roomId);
   }
 
   void deleteEvent(String roomId) async {

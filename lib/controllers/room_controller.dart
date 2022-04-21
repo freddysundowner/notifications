@@ -1388,6 +1388,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     };
 
     await RoomAPI().updateRoomByIdNew(roomData, roomId);
+
   }
 
   void deleteEvent(String roomId) async {

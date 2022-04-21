@@ -143,20 +143,18 @@ class UserController extends GetxController {
 
   getMoreShopOrders() async {
     try {
-      ordersLoading.value = true;
-      var orders = await UserAPI().getShopOrders(
-          Get.find<AuthController>().usermodel.value!.shopId!.id!);
+      loadingMoreShopOrders.value = true;
+      var orders = await UserAPI().getShopOrdersPaginated(
+          Get.find<AuthController>().usermodel.value!.shopId!.id!, shopOrdersPageNumber.value);
 
-      if (orders == null) {
-        shopOrders.value = [];
-      } else {
-        shopOrders.value = orders;
+      if (orders != null) {
+        shopOrders.addAll(orders);
       }
 
-      ordersLoading.value = false;
+      loadingMoreShopOrders.value = false;
     } catch (e, s) {
-      ordersLoading.value = false;
-      printOut("Error getting user orders $e $s");
+      loadingMoreShopOrders.value = false;
+      printOut("Error getting more shop orders $e $s");
     }
   }
 

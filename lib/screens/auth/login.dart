@@ -19,7 +19,6 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     _tryConnection();
     return Scaffold(
-      body: Scaffold(
           resizeToAvoidBottomInset: false,
         body: Center(
           child: Padding(
@@ -67,8 +66,7 @@ class Login extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Future<void> _tryConnection() async {

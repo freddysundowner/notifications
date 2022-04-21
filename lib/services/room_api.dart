@@ -65,7 +65,7 @@ class RoomAPI {
   getEventById(String roomId) async {
     var room = await DbBase()
         .databaseRequest(eventById + roomId, DbBase().getRequestType);
-    printOut("Getting room ${jsonDecode(room)}");
+    printOut("Getting room ${jsonDecode(room)} $roomId");
     return jsonDecode(room);
   }
 

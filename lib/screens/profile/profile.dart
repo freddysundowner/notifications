@@ -270,7 +270,8 @@ class Profile extends StatelessWidget {
                             style: TextStyle(fontSize: 15.sp),
                           ),
                         ),
-                        if (profile.memberShip == 1)
+                        if (profile.memberShip == 1 && FirebaseAuth
+                            .instance.currentUser!.uid != profile.id)
                           InkWell(
                             onTap: () {
                               sendGift(context, "send", gccurrency,

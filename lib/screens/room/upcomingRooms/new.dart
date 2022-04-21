@@ -310,12 +310,13 @@ class NewEventUpcoming extends StatelessWidget {
                                     ),
                                   ),
                                   if (homeController.roomHosts.indexWhere(
-                                          (e) => element.id! == e.id!) ==
-                                      1)
+                                          (e) => element.id! == e.id!) !=
+                                      0)
                                     InkWell(
                                       onTap: () {
                                         homeController.roomHosts.removeWhere(
                                             (e) => element.id! == e.id);
+
                                       },
                                       child: Icon(
                                         Icons.delete,

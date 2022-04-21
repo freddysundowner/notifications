@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
@@ -452,7 +451,7 @@ class CheckOut extends StatelessWidget {
               "New Order",
               "Your product ${checkOutController.product.value!.name} just got ordered",
               "OrderScreen",
-              FirebaseAuth.instance.currentUser!.uid);
+              orderedProductsUid["newOrder"]["_id"]);
 
           authController.currentuser!.wallet =
               authController.currentuser!.wallet! -

@@ -214,11 +214,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   void scrollControllerListener() {
-
     usersScrollController.addListener(() {
       if (usersScrollController.position.atEdge) {
         bool isTop = usersScrollController.position.pixels == 0;
-        printOut('current position controller ' + usersScrollController.position.pixels.toString());
+        printOut('current position controller ' +
+            usersScrollController.position.pixels.toString());
         if (isTop) {
           printOut('At the top');
         } else {
@@ -265,6 +265,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   getRooms() async {
     await fetchRooms();
+    await fetchEvents();
     printOut(roomsList.length);
   }
 
@@ -357,11 +358,12 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   createRoomFromEvent(event.EventModel eventModel) async {
     try {
+      audioMuted.value = false;
       isCreatingRoom.value = true;
 
       Get.defaultDialog(
           title: "Going live...",
-          contentPadding: EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.all(10),
           content: const CircularProgressIndicator(),
           barrierDismissible: false);
 
@@ -369,7 +371,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       printOut("room created $eventModel");
 
-      if (eventModel != null) {
+      if (eventModel.id != null) {
         var roomId = eventModel.id!;
         var token = await RoomAPI().generateAgoraToken(roomId, "0");
         printOut("room token $token");
@@ -381,6 +383,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
             "token": token,
             "roomType": eventModel.roomType,
             "event": false,
+            "hostIds": [Get.find<AuthController>().usermodel.value!.id],
             "activeTime": DateTime.now().microsecondsSinceEpoch
           }, roomId);
 
@@ -853,6 +856,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
+    audioMuted.value = false;
     if (Get.find<AuthController>().usermodel.value == null) {
       await UserAPI.getUserById();
       Get.find<AuthController>().usermodel.refresh();
@@ -953,34 +957,34 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> fetchAllUsers() async {
-      try {
-        allUsersLoading.value = true;
+    try {
+      allUsersLoading.value = true;
 
-        usersPageNumber.value = 0;
-        var users = await UserAPI().getAllUsers(0);
-        var list = [];
+      usersPageNumber.value = 0;
+      var users = await UserAPI().getAllUsers(0);
+      var list = [];
 
-        if (users != null) {
-          for (var i = 0; i < users.length; i++) {
-            if (users.elementAt(i)["_id"] !=
-                FirebaseAuth.instance.currentUser!.uid) {
-              list.add(users.elementAt(i));
-            }
+      if (users != null) {
+        for (var i = 0; i < users.length; i++) {
+          if (users.elementAt(i)["_id"] !=
+              FirebaseAuth.instance.currentUser!.uid) {
+            list.add(users.elementAt(i));
           }
-          allUsers.value = list;
-        } else {
-          allUsers.value = [];
         }
-        searchedUsers.value = allUsers;
-
-        allUsers.refresh();
-        allUsersLoading.value = false;
-
-        update();
-      } catch (e) {
-        printOut(e);
-        allUsersLoading.value = false;
+        allUsers.value = list;
+      } else {
+        allUsers.value = [];
       }
+      searchedUsers.value = allUsers;
+
+      allUsers.refresh();
+      allUsersLoading.value = false;
+
+      update();
+    } catch (e) {
+      printOut(e);
+      allUsersLoading.value = false;
+    }
   }
 
   Future<void> fetchMoreUsers() async {
@@ -1008,7 +1012,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         moreUsersLoading.value = false;
         searchedUsers = allUsers;
       }
-
     } catch (e) {
       printOut(e);
       moreUsersLoading.value = false;
@@ -1087,8 +1090,13 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       await leaveAgora();
       _initAgora();
+
       await engine.joinChannel(token, roomId, null, 0);
       await engine.enableAudioVolumeIndication(500, 3, true);
+      await engine.enableAudio();
+      await engine.enableLocalAudio(true);
+
+      await engine.muteLocalAudioStream(audioMuted.value);
       // recordAudio(token: token, channelname: roomId);
 
     } catch (e, s) {
@@ -1356,7 +1364,31 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   updateEvent(String roomId, var data) async {
-    await RoomAPI().updateRoomByIdNew(data, roomId);
+    var hosts = [];
+    for (var element in roomHosts) {
+      hosts.add(element.id);
+    }
+    var roomData = {
+      "title": eventTitleController.text,
+      "roomType": newRoomType.value,
+      "productIds": [roomPickedProduct.value.id],
+      "hostIds": hosts,
+      "description": eventDescriptiion.text,
+      "userIds": [],
+      "raisedHands": [],
+      "speakerIds": [],
+      "event": true,
+      "invitedIds": [],
+      "shopId": Get.find<AuthController>().usermodel.value!.shopId!.id,
+      "status": true,
+      "productPrice": roomPickedProduct.value.price,
+      "productImages": roomPickedProduct.value.images,
+      "activeTime": DateTime.now().microsecondsSinceEpoch,
+      "eventDate": eventDate.value!.millisecondsSinceEpoch
+    };
+
+    await RoomAPI().updateRoomByIdNew(roomData, roomId);
+
   }
 
   void deleteEvent(String roomId) async {

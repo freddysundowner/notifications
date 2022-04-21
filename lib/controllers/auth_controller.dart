@@ -212,36 +212,40 @@ class AuthController extends GetxController {
   }
 
   handleAuth() {
-    return FutureBuilder(
-      future: UserAPI.getUserById(),
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            backgroundColor: primarycolor,
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        if (snapshot.hasData == true) {
-          usermodel.value = snapshot.data as UserModel?;
-          usermodel.refresh();
-          return MainPage();
-        }
-
-        if (FirebaseAuth.instance.currentUser == null) {
-          return Login();
-        }
-        if (connectionstate.value == false) {
-          return Scaffold(
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Login();
+    }else {
+      return FutureBuilder(
+        future: UserAPI.getUserById(),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
               backgroundColor: primarycolor,
               body: Center(
                 child: CircularProgressIndicator(),
-              ));
-        }
-        return ConnectionFailed();
-      },
-    );
+              ),
+            );
+          }
+          if (snapshot.hasData == true) {
+            usermodel.value = snapshot.data as UserModel?;
+            usermodel.refresh();
+            return MainPage();
+          }
+
+          if (FirebaseAuth.instance.currentUser == null) {
+            return Login();
+          }
+          if (connectionstate.value == false) {
+            return Scaffold(
+                backgroundColor: primarycolor,
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ));
+          }
+          return ConnectionFailed();
+        },
+      );
+    }
   }
 
   sendGift(amount) {}

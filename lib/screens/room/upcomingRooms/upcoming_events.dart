@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +16,10 @@ import 'package:fluttergistshop/utils/styles.dart';
 import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
+
+import '../../../services/dynamic_link_services.dart';
+import '../../../services/helper.dart';
 
 class UpcomingEvents extends StatelessWidget {
   EventModel? roomModel;
@@ -32,88 +34,87 @@ class UpcomingEvents extends StatelessWidget {
         () => Row(
           children: [
             Expanded(
-              child: Container(
-                  child: InkWell(
+              child: InkWell(
                 onTap: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => CupertinoActionSheet(
-                        title: Text('What would you like to see?'),
-                        actions: [
-                          CupertinoActionSheetAction(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: const Text('Upcoming For You',
-                                      style: TextStyle(fontSize: 16)),
-                                ),
-                                if (homeController.selectedEvents.value ==
-                                    "all")
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.blue,
-                                  )
-                              ],
+              showCupertinoModalPopup(
+                context: context,
+                builder: (BuildContext context) => CupertinoActionSheet(
+                    title: Text('What would you like to see?'),
+                    actions: [
+                      CupertinoActionSheetAction(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: const Text('Upcoming For You',
+                                  style: TextStyle(fontSize: 16)),
                             ),
-                            onPressed: () {
-                              homeController.selectedEvents.value = "all";
-                              homeController.fetchEvents();
-                              Navigator.pop(context);
-                            },
-                            isDefaultAction: true,
-                          ),
-                          CupertinoActionSheetAction(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: const Text('My Events',
-                                      style: TextStyle(fontSize: 16)),
-                                ),
-                                if (homeController.selectedEvents.value ==
-                                    "mine")
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.blue,
-                                  )
-                              ],
+                            if (homeController.selectedEvents.value ==
+                                "all")
+                              Icon(
+                                Icons.check,
+                                color: Colors.blue,
+                              )
+                          ],
+                        ),
+                        onPressed: () {
+                          homeController.selectedEvents.value = "all";
+                          homeController.fetchEvents();
+                          Navigator.pop(context);
+                        },
+                        isDefaultAction: true,
+                      ),
+                      CupertinoActionSheetAction(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: const Text('My Events',
+                                  style: TextStyle(fontSize: 16)),
                             ),
-                            onPressed: () {
-                              homeController.selectedEvents.value = "mine";
-                              homeController.fetchMyEvents();
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                        cancelButton: CupertinoActionSheetAction(
-                          child: Text(
-                            'Cancel',
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        )),
-                  );
+                            if (homeController.selectedEvents.value ==
+                                "mine")
+                              Icon(
+                                Icons.check,
+                                color: Colors.blue,
+                              )
+                          ],
+                        ),
+                        onPressed: () {
+                          homeController.selectedEvents.value = "mine";
+                          homeController.fetchMyEvents();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                    cancelButton: CupertinoActionSheetAction(
+                      child: Text(
+                        'Cancel',
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    )),
+              );
                 },
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      homeController.selectedEvents.value == "mine"
-                          ? "MY EVENTS"
-                          : "UPCOMING FOR YOU",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                    Icon(
-                      Icons.arrow_drop_down,
-                      size: 20,
-                    )
-                  ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  homeController.selectedEvents.value == "mine"
+                      ? "MY EVENTS"
+                      : "UPCOMING FOR YOU",
+                  style: TextStyle(fontSize: 17),
                 ),
-              )),
+                Icon(
+                  Icons.arrow_drop_down,
+                  size: 20,
+                )
+              ],
+                ),
+              ),
             ),
             IconButton(
               padding: EdgeInsets.zero,
@@ -309,7 +310,7 @@ class UpcomingEvents extends StatelessWidget {
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return DraggableScrollableSheet(
-              initialChildSize: 0.5,
+              initialChildSize: 0.6,
               expand: false,
               builder:
                   (BuildContext context, ScrollController scrollController) {
@@ -321,34 +322,13 @@ class UpcomingEvents extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        element.title!,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Wrap(
-                            children: [
-                              Text(
-                                "W/",
-                                style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    color: primarycolor),
-                              ),
-                              ...element.invitedhostIds!
-                                  .map((e) => Text(
-                                        "${e.firstName} ${e.lastName}, ",
-                                        style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            color: primarycolor),
-                                      ))
-                                  .toList()
-                            ],
+                          Text(
+                            element.title!,
+                            style: TextStyle(fontSize: 20.sp),
                           ),
                           if (element.ownerId!.id ==
                               Get.find<AuthController>().usermodel.value!.id!)
@@ -356,7 +336,7 @@ class UpcomingEvents extends StatelessWidget {
                               onTap: () {
                                 roomController.deleteEvent(element.id!);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 CupertinoIcons.delete,
                                 size: 25,
                                 color: Colors.red,
@@ -364,12 +344,37 @@ class UpcomingEvents extends StatelessWidget {
                             ),
                         ],
                       ),
+
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
+                      Wrap(
+                        children: [
+                          const Text(
+                            "W/",
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: primarycolor),
+                          ),
+                          ...element.invitedhostIds!
+                              .map((e) => Text(
+                            "${e.firstName} ${e.lastName}, ",
+                            style: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: primarycolor),
+                          ))
+                              .toList()
+                        ],
+                      ),
                       if (element.description!.isNotEmpty)
                         Text(
                           element.description!,
                         ),
-                      Divider(),
-                      Text("Product"),
+                      const Divider(),
+                      const Text("Product"),
+                      SizedBox(
+                        height: 0.01.sh,
+                      ),
                       InkWell(
                         onTap: () {
                           Get.to(() =>
@@ -386,8 +391,8 @@ class UpcomingEvents extends StatelessWidget {
                                   ? CachedNetworkImage(
                                       imageUrl:
                                           element.productIds![0].images!.first,
-                                      height: 70,
-                                      width: 70,
+                                      height: 0.1.sh,
+                                      width: 0.2.sw,
                                       fit: BoxFit.fill,
                                       placeholder: (context, url) =>
                                           const CircularProgressIndicator(),
@@ -401,7 +406,7 @@ class UpcomingEvents extends StatelessWidget {
                                       fit: BoxFit.fill,
                                     ),
                               SizedBox(
-                                width: 20,
+                                width: 0.03.sw,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,7 +414,7 @@ class UpcomingEvents extends StatelessWidget {
                                 children: [
                                   Text(
                                     element.productIds![0].name!,
-                                    style: TextStyle(fontSize: 13),
+                                    style: TextStyle(fontSize: 13.sp),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
                                   ),
@@ -417,7 +422,7 @@ class UpcomingEvents extends StatelessWidget {
                                     "GC " +
                                         element.productIds![0].price!
                                             .toString(),
-                                    style: TextStyle(fontSize: 13),
+                                    style: TextStyle(fontSize: 13.sp),
                                   ),
                                   if (element
                                       .productIds![0].description!.isNotEmpty)
@@ -425,7 +430,7 @@ class UpcomingEvents extends StatelessWidget {
                                       element.productIds![0].description!,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 13),
+                                      style: TextStyle(fontSize: 13.sp),
                                     ),
                                 ],
                               ),
@@ -434,24 +439,29 @@ class UpcomingEvents extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 0.01.sh,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              DynamicLinkService()
+                                  .createGroupJoinLink(element.id!, "event")
+                                  .then((value) async =>
+                                      await Share.share(value));
+                            },
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   CupertinoIcons.share,
                                   size: 25,
                                   color: Colors.green,
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 0.01.sh,
                                 ),
-                                Text(
+                                const Text(
                                   "Share",
                                   style: TextStyle(color: primarycolor),
                                 )
@@ -459,18 +469,26 @@ class UpcomingEvents extends StatelessWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              DynamicLinkService()
+                                  .createGroupJoinLink(element.id!, "event")
+                                  .then((value) async => Clipboard.setData(
+                                      ClipboardData(text: value)));
+                              Get.back();
+                              Helper.showSnackBack(context, "Link copied to clipboard");
+
+                            },
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   CupertinoIcons.doc_on_clipboard,
                                   size: 25,
                                   color: Colors.green,
                                 ),
                                 SizedBox(
-                                  height: 10,
+                                  height: 0.01.sh,
                                 ),
-                                Text(
+                                const Text(
                                   "Copy Link",
                                   style: TextStyle(color: primarycolor),
                                 )
@@ -480,7 +498,7 @@ class UpcomingEvents extends StatelessWidget {
                         ],
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 0.02.sh,
                       ),
                       if (element.invitedhostIds!.indexWhere((element) =>
                               element.id ==

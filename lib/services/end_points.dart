@@ -69,6 +69,7 @@ const userActivities = activities + "/to/";
 const userTransactions = transactions + "/";
 const userTransactionsPaginated = transactions + "/paginated/";
 
+const oneOrder = orders + "/orders/";
 const userOrders = orders + "/";
 const userOrdersPaginated = orders + "/paginated/user/";
 const shopOrders = orders + "/all/shop/";

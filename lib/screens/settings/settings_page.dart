@@ -32,6 +32,8 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _homeController.onChatPage.value = false;
+    authController.renewUpgrade.value = authController
+        .usermodel.value!.renewUpgrade!;
     return WillPopScope(
       onWillPop: () async {
         _global.tabPosition.value = 0;
@@ -58,6 +60,45 @@ class SettingsPage extends StatelessWidget {
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               children: [
+                Container(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, top: 10, bottom: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _userController.getUserOrders();
+                          Get.to(OrdersScreen());
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Auto renew upgrade",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 16.sp),
+                            ),
+                            Obx(() {
+                                return Switch(
+                                    value: authController.renewUpgrade.value,
+                                    onChanged: (value) async {
+                                      authController.renewUpgrade.value = value;
+                                      await updateRenewUpgradeSetting(value);
+                                    });
+                              }
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 0.03.sh,
+                ),
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -289,6 +330,14 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> updateRenewUpgradeSetting(bool value) async {
+    await UserAPI().updateUser(
+        {"renewUpgrade": value},
+        FirebaseAuth.instance.currentUser!.uid);
+    authController.usermodel.value!.renewUpgrade =
+        value;
   }
 
   setSocialLink(String type, BuildContext context) {

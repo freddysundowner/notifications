@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:meta/meta.dart';
-
 import 'shop.dart';
 
 UserModel userFromJson(String str) => UserModel.fromJson(json.decode(str));
@@ -32,6 +30,7 @@ class UserModel {
   Shop? shopId;
   int? memberShip;
   int? upgradedDate;
+  bool? renewUpgrade;
   UserModel({
     this.followersCount,
     this.followingCount,
@@ -56,42 +55,44 @@ class UserModel {
     this.profilePhoto,
     this.memberShip,
     this.upgradedDate,
+    this.renewUpgrade,
   });
 
   UserModel.fromPlayer(this.id, this.firstName, this.lastName, this.bio,
       this.userName, this.phonenumber, this.profilePhoto);
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        followers: json["followers"] == null
-            ? []
-            : List<String>.from(json["followers"].map((x) => x)),
-        following: json["followers"] == null
-            ? []
-            : List<String>.from(json["following"].map((x) => x)),
-        wallet: json["wallet"],
-        roomuid: json["roomuid"] ?? "0",
-        currentRoom: json["currentRoom"] ?? "",
-        facebook: json["facebook"],
-        instagram: json["instagram"],
-        linkedIn: json["linkedIn"],
-        twitter: json["twitter"],
-        id: json["_id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        bio: json["bio"],
-        userName: json["userName"],
-        email: json["email"],
-        password: json["password"],
-        shopId: json["shopId"] != null && json["shopId"] != ""
-            ? Shop.fromJson(json["shopId"])
-            : null,
-        phonenumber: json["phonenumber"],
-        profilePhoto: json["profilePhoto"],
-        memberShip: json["memberShip"],
-        upgradedDate: json["upgradedDate"],
-        followersCount: json["followersCount"],
-        followingCount: json["followingCount"],
-      );
+      followers: json["followers"] == null
+          ? []
+          : List<String>.from(json["followers"].map((x) => x)),
+      following: json["followers"] == null
+          ? []
+          : List<String>.from(json["following"].map((x) => x)),
+      wallet: json["wallet"],
+      roomuid: json["roomuid"] ?? "0",
+      currentRoom: json["currentRoom"] ?? "",
+      facebook: json["facebook"],
+      instagram: json["instagram"],
+      linkedIn: json["linkedIn"],
+      twitter: json["twitter"],
+      id: json["_id"],
+      firstName: json["firstName"],
+      lastName: json["lastName"],
+      bio: json["bio"],
+      userName: json["userName"],
+      email: json["email"],
+      password: json["password"],
+      shopId: json["shopId"] != null && json["shopId"] != ""
+          ? Shop.fromJson(json["shopId"])
+          : null,
+      phonenumber: json["phonenumber"],
+      profilePhoto: json["profilePhoto"],
+      memberShip: json["memberShip"],
+      upgradedDate: json["upgradedDate"],
+      followersCount: json["followersCount"],
+      followingCount: json["followingCount"],
+      renewUpgrade: json["renewUpgrade"] ?? true
+  );
 
   Map<String, dynamic> toJson() => {
         // "followers": List<dynamic>.from(followers!.map((x) => x)),
@@ -118,6 +119,7 @@ class UserModel {
         "profilePhoto": profilePhoto,
         "memberShip": memberShip,
         "upgradedDate": upgradedDate,
+        "renewUpgrade": renewUpgrade
       };
 
   getCurrentShop() => this.shopId;

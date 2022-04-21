@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttergistshop/connection_error.dart';
 import 'package:fluttergistshop/controllers/activity_controller.dart';
 import 'package:fluttergistshop/controllers/chat_controller.dart';
 import 'package:fluttergistshop/controllers/checkout_controller.dart';
@@ -17,8 +18,6 @@ import 'package:fluttergistshop/models/authenticate.dart';
 import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/auth/login.dart';
-import 'package:fluttergistshop/connection_error.dart';
-import 'package:fluttergistshop/screens/home/home_page.dart';
 import 'package:fluttergistshop/screens/home/main_page.dart';
 import 'package:fluttergistshop/services/helper.dart';
 import 'package:fluttergistshop/services/socket_io.dart';
@@ -58,6 +57,7 @@ class AuthController extends GetxController {
   set setChosenImage(File img) {
     _chosenImage.value = img;
   }
+  var renewUpgrade = true.obs;
 
   final ConnectionStateChecker _connectivity = ConnectionStateChecker.instance;
 

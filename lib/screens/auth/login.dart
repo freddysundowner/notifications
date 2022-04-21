@@ -19,54 +19,54 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     _tryConnection();
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.sp),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                SizedBox(height: 20.h),
-                Text(
-                  "Welcome Back",
-                  style: headingStyle,
-                ),
-                Text(
-                  "Sign in with your email and password",
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20.h),
-                Form(
-                  key: _formLoginkey,
-                  child: Column(
-                    children: [
-                      buildEmailFormField(),
-                      SizedBox(height: 30.h),
-                      buildPasswordFormField(),
-                      SizedBox(height: 30.h),
-                      buildForgotPasswordWidget(context),
-                      SizedBox(height: 30.h),
-                      Obx(() => Text(
-                            authController.error.value,
-                            style: TextStyle(color: Colors.red),
-                          )),
-                      DefaultButton(
-                        text: "Sign in",
-                        press: () => signInButtonCallback(context),
-                      ),
-                    ],
+          resizeToAvoidBottomInset: false,
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.sp),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  Text(
+                    "Welcome Back",
+                    style: headingStyle,
                   ),
-                ),
-                SizedBox(height: 20.h),
-                NoAccountText(),
-                SizedBox(height: 20.h),
-              ],
+                  Text(
+                    "Sign in with your email and password",
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.h),
+                  Form(
+                    key: _formLoginkey,
+                    child: Column(
+                      children: [
+                        buildEmailFormField(),
+                        SizedBox(height: 30.h),
+                        buildPasswordFormField(),
+                        SizedBox(height: 30.h),
+                        buildForgotPasswordWidget(context),
+                        SizedBox(height: 30.h),
+                        Obx(() => Text(
+                              authController.error.value,
+                              style: TextStyle(color: Colors.red),
+                            )),
+                        DefaultButton(
+                          text: "Sign in",
+                          press: () => signInButtonCallback(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  NoAccountText(),
+                  SizedBox(height: 20.h),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Future<void> _tryConnection() async {

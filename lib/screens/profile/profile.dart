@@ -796,7 +796,9 @@ class Profile extends StatelessWidget {
                                     ),
                                     errorText: "",
                                   ),
-                                  keyboardType: TextInputType.text,
+                                  minLines: 1,
+                                  maxLines: 5,  // allow user to enter 5 line in textfield
+                                  keyboardType: TextInputType.multiline,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black,
@@ -829,7 +831,9 @@ class Profile extends StatelessWidget {
                                     ),
                                     errorText: "",
                                   ),
-                                  keyboardType: TextInputType.text,
+                                  minLines: 1,
+                                  maxLines: 5,  // allow user to enter 5 line in textfield
+                                  keyboardType: TextInputType.multiline,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black,

@@ -146,7 +146,7 @@ class UserAPI {
     return finalOrders;
   }
 
-  updateUser(Map<String, dynamic> body, String id) async {
+  Future updateUser(Map<String, dynamic> body, String id) async {
     try {
       printOut("updating user $body");
 
@@ -154,11 +154,13 @@ class UserAPI {
           editUser + id, DbBase().patchRequestType,
           body: body);
 
-      printOut("updated user ${updated}");
-      // UserModel userModel = UserModel.fromJson(jsonDecode(updated)["user"]);
-      // Get.find<AuthController>().usermodel.value = userModel;
+      printOut("updated user $updated");
+     // UserModel userModel = UserModel.fromJson(jsonDecode(updated)["user"]);
+      Get.find<AuthController>().usermodel.value?.roomuid = jsonDecode(updated)["user"]["roomuid"];
 
       printOut("updatedUser $updated");
+
+      return jsonDecode(updated)["user"];
     } catch (e, s) {
       printOut("Error updating user $e $s");
     }

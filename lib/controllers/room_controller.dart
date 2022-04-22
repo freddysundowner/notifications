@@ -64,6 +64,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var roomPickedProduct = Product().obs;
 
   var roomHosts = <UserModel>[].obs;
+  var roomOriginalHosts = [].obs;
   // var eventHosts = <OwnerId>[].obs;
   var roomShopId = "".obs;
   var roomProductImages = [].obs;
@@ -618,7 +619,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
               -1)) {
         currentRoom.refresh();
         leaveRoomWhenKilled();
-        emitRoom(currentUser: user.toJson(), action: "join");
+
         //Add user to room
 
         if (currentRoom.value.invitedhostIds!
@@ -683,6 +684,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> addUserToSpeaker(OwnerId user) async {
+    engine.muteRemoteAudioStream(int.tryParse(user.roomuid!)!, false);
     currentRoom.value.userIds!.removeWhere((element) => element.id == user.id);
     currentRoom.value.raisedHands!
         .removeWhere((element) => element.id == user.id);
@@ -737,6 +739,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> removeUserFromSpeaker(OwnerId user) async {
+    printOut("roomuid ${user.roomuid}");
+    engine.muteRemoteAudioStream(int.tryParse(user.roomuid!)!, true);
     currentRoom.value.speakerIds!.remove(user);
     currentRoom.value.userIds!.add(user);
 
@@ -873,6 +877,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         userName: Get.find<AuthController>().usermodel.value!.userName,
         followers: Get.find<AuthController>().usermodel.value!.followers,
         following: Get.find<AuthController>().usermodel.value!.following,
+        roomuid: Get.find<AuthController>().usermodel.value!.roomuid,
         profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
     Get.defaultDialog(
@@ -1241,7 +1246,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         printOut('joinChannelSuccess $channel $uid');
         // if (authController.usermodel.value!.roomuid == "") {
         UserAPI()
-            .updateUser({"roomuid": uid}, authController.usermodel.value!.id!);
+            .updateUser({"roomuid": uid}, authController.usermodel.value!.id!).then((value) =>
+            emitRoom(currentUser: Get.find<AuthController>().usermodel.value!.toJson(), action: "join")
+        );
+
+
         // }
 
         userJoinedRoom.value = true;
@@ -1380,6 +1389,28 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     for (var element in roomHosts) {
       hosts.add(element.id);
     }
+
+    if (hosts.length > roomOriginalHosts.length) {
+
+      var removedHosts = [];
+      
+      for(var i = 0; i < hosts.length; i++) {
+        if (!roomOriginalHosts.contains(hosts.elementAt(i))) {
+          removedHosts.add(hosts.elementAt(i));
+        }  
+      }
+
+    } else if (hosts.length < roomOriginalHosts.length) {
+
+      var removedHosts = [];
+
+      for(var i = 0; i < hosts.length; i++) {
+        if (!roomOriginalHosts.contains(hosts.elementAt(i))) {
+          removedHosts.add(hosts.elementAt(i));
+        }
+      }
+    }
+
     var roomData = {
       "title": eventTitleController.text,
       "roomType": newRoomType.value,

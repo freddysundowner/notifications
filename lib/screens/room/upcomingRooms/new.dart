@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +12,6 @@ import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_ex
 import 'package:fluttergistshop/models/event_model.dart';
 import 'package:fluttergistshop/models/product.dart';
 import 'package:fluttergistshop/models/room_images_model.dart';
-import 'package:fluttergistshop/models/room_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/end_points.dart';
@@ -24,9 +22,9 @@ import 'package:fluttergistshop/utils/functions.dart';
 import 'package:fluttergistshop/widgets/async_progress_dialog.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:intl/intl.dart';
 
 class NewEventUpcoming extends StatelessWidget {
   EventModel? roomModel;
@@ -174,7 +172,7 @@ class NewEventUpcoming extends StatelessWidget {
       homeController.eventDescriptiion.text = roomModel!.description!;
       homeController.roomPickedProduct.value = roomModel!.productIds![0];
       homeController.eventDate.value =
-          new DateTime.fromMillisecondsSinceEpoch(roomModel!.eventDate!);
+          DateTime.fromMillisecondsSinceEpoch(roomModel!.eventDate!);
       homeController.newRoomType.value = roomModel!.roomType!;
       homeController.roomHosts.value = roomModel!.invitedhostIds!
           .map((e) => UserModel(
@@ -186,9 +184,11 @@ class NewEventUpcoming extends StatelessWidget {
               userName: e.userName,
               email: e.email))
           .toList();
+      homeController.roomOriginalHosts.value = roomModel!.invitedhostIds!
+          .map((e) => e.id).toList();
     }
 
-    var formatter = new DateFormat('yyyy/MM/dd hh:mm');
+    var formatter = DateFormat('yyyy/MM/dd hh:mm');
 
     return Scaffold(
       appBar: AppBar(

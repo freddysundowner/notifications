@@ -202,6 +202,7 @@ class OwnerId {
     this.upgradedDate,
     this.followersCount,
     this.followingCount,
+    this.roomuid,
   });
 
   List<String>? followers = [];
@@ -210,6 +211,7 @@ class OwnerId {
   int? followingCount;
   int? wallet;
   String? currentRoom;
+  String? roomuid;
   String? facebook;
   String? instagram;
   String? linkedIn;
@@ -258,6 +260,7 @@ class OwnerId {
         upgradedDate: json["upgradedDate"],
         followersCount: json["followersCount"],
         followingCount: json["followingCount"],
+        roomuid: json["roomuid"],
       );
 
   Map<String, dynamic> toJson() => {

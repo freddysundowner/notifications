@@ -33,6 +33,7 @@ class HomePage extends StatelessWidget {
       firstName: Get.find<AuthController>().usermodel.value!.firstName,
       lastName: Get.find<AuthController>().usermodel.value!.lastName,
       userName: Get.find<AuthController>().usermodel.value!.userName,
+      roomuid: Get.find<AuthController>().usermodel.value!.roomuid,
       profilePhoto: Get.find<AuthController>().usermodel.value!.profilePhoto);
 
   HomePage({Key? key}) : super(key: key);

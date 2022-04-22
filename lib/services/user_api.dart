@@ -154,12 +154,13 @@ class UserAPI {
           editUser + id, DbBase().patchRequestType,
           body: body);
 
-      UserModel userModel = UserModel.fromJson(updated);
-      Get.find<AuthController>().usermodel.value = userModel;
+      printOut("updated user ${updated}");
+      // UserModel userModel = UserModel.fromJson(jsonDecode(updated)["user"]);
+      // Get.find<AuthController>().usermodel.value = userModel;
 
       printOut("updatedUser $updated");
-    } catch (e) {
-      printOut("Error updating user $e");
+    } catch (e, s) {
+      printOut("Error updating user $e $s");
     }
   }
 

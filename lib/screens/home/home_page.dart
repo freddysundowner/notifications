@@ -383,7 +383,8 @@ class HomePage extends StatelessWidget {
                                   return Padding(
                                       padding:
                                           EdgeInsets.only(left: (30.0 * index)),
-                                      child: e.profilePhoto == "" || e.profilePhoto == null
+                                      child: e.profilePhoto == "" ||
+                                              e.profilePhoto == null
                                           ? const CircleAvatar(
                                               radius: 22,
                                               backgroundImage: AssetImage(
@@ -534,7 +535,8 @@ class HomePage extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () async {
-                      await _homeController.leaveRoom(currentUser);
+                      await _homeController.leaveRoom(currentUser,
+                          idRoom: _homeController.currentRoom.value.id);
                     },
                     child: Image.asset(
                       "assets/icons/leave_room.png",

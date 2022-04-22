@@ -358,7 +358,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   createRoomFromEvent(event.EventModel eventModel) async {
     try {
-      audioMuted.value = false;
+      audioMuted.value = true;
       isCreatingRoom.value = true;
 
       Get.defaultDialog(
@@ -856,7 +856,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   }
 
   Future<void> joinRoom(String roomId) async {
-    audioMuted.value = false;
+    audioMuted.value = true;
     if (Get.find<AuthController>().usermodel.value == null) {
       await UserAPI.getUserById();
       Get.find<AuthController>().usermodel.refresh();
@@ -1169,21 +1169,31 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       String? uid,
       String? resourceid,
       String? sid}) async {
-    print("stopRecording ${{channelname, resourceid}}");
-    var body = {
-      "resourceid": resourceid,
-      "channelname": channelname,
-      "uid": uid,
-      "roomuid": [Get.find<AuthController>().usermodel.value!.roomuid]
-    };
-    print(body);
-    print(headers);
-    print(stoprecording + channelname!);
-    var response = await DbBase().databaseRequest(
-        stoprecording + sid!, DbBase().postRequestType,
-        body: body, headers: headers);
-    print("after stoping $response");
-    return jsonDecode(response);
+
+    try {
+      print("stopRecording ${{channelname, resourceid}}");
+      var body = {
+        "resourceid": resourceid,
+        "channelname": channelname,
+        "uid": uid,
+        "roomuid": [Get
+            .find<AuthController>()
+            .usermodel
+            .value!
+            .roomuid
+        ]
+      };
+      print(body);
+      print(headers);
+      print("$stoprecording $channelname");
+      var response = await DbBase().databaseRequest(
+          stoprecording + sid!, DbBase().postRequestType,
+          body: body, headers: headers);
+      print("after stoping $response");
+      return jsonDecode(response);
+    } catch(e, s) {
+      printOut("Error stoping recording $e $s");
+    }
   }
 
   // recordAudio({String? channelname, String? token}) async {

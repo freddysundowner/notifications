@@ -77,7 +77,7 @@ class Login extends StatelessWidget {
       if (response.isEmpty) {
         Get.snackbar(
           '',
-          "Check your rrrrryyyy connection",
+          "Check your connection",
             backgroundColor: sc_snackBar,
             colorText: Colors.white
         ).show();
@@ -87,12 +87,12 @@ class Login extends StatelessWidget {
 
       Get.snackbar(
         '',
-        "Check your rrrrr connection",
+        "Check your connection",
           backgroundColor: sc_snackBar,
           colorText: Colors.white
       ).show();
     } catch (e, s) {
-      printOut("error accenssing internet $e $s");
+      printOut("error accessing internet $e $s");
     }
   }
 

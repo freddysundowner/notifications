@@ -1176,19 +1176,13 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       String? uid,
       String? resourceid,
       String? sid}) async {
-
     try {
       print("stopRecording ${{channelname, resourceid}}");
       var body = {
         "resourceid": resourceid,
         "channelname": channelname,
         "uid": uid,
-        "roomuid": [Get
-            .find<AuthController>()
-            .usermodel
-            .value!
-            .roomuid
-        ]
+        "roomuid": [Get.find<AuthController>().usermodel.value!.roomuid]
       };
       print(body);
       print(headers);
@@ -1198,7 +1192,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
           body: body, headers: headers);
       print("after stoping $response");
       return jsonDecode(response);
-    } catch(e, s) {
+    } catch (e, s) {
       printOut("Error stoping recording $e $s");
     }
   }
@@ -1245,11 +1239,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       }, joinChannelSuccess: (String channel, int uid, int elapsed) {
         printOut('joinChannelSuccess $channel $uid');
         // if (authController.usermodel.value!.roomuid == "") {
-        UserAPI()
-            .updateUser({"roomuid": uid}, authController.usermodel.value!.id!).then((value) =>
-            emitRoom(currentUser: Get.find<AuthController>().usermodel.value!.toJson(), action: "join")
-        );
-
+        UserAPI().updateUser({
+          "roomuid": uid
+        }, authController.usermodel.value!.id!).then((value) => emitRoom(
+            currentUser: Get.find<AuthController>().usermodel.value!.toJson(),
+            action: "join"));
 
         // }
 
@@ -1386,36 +1380,34 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   updateEvent(String roomId, var data) async {
     var hosts = [];
+    var addedHosts = [];
+    var removedHosts = [];
+
     for (var element in roomHosts) {
       hosts.add(element.id);
     }
 
     if (hosts.length > roomOriginalHosts.length) {
-
-      var removedHosts = [];
-      
-      for(var i = 0; i < hosts.length; i++) {
+      for (var i = 0; i < hosts.length; i++) {
         if (!roomOriginalHosts.contains(hosts.elementAt(i))) {
-          removedHosts.add(hosts.elementAt(i));
-        }  
+          addedHosts.add(hosts.elementAt(i));
+        }
       }
-
     } else if (hosts.length < roomOriginalHosts.length) {
-
-      var removedHosts = [];
-
-      for(var i = 0; i < hosts.length; i++) {
-        if (!roomOriginalHosts.contains(hosts.elementAt(i))) {
-          removedHosts.add(hosts.elementAt(i));
+      for (var i = 0; i < roomOriginalHosts.length; i++) {
+        if (!hosts.contains(roomOriginalHosts.elementAt(i))) {
+          removedHosts.add(roomOriginalHosts.elementAt(i));
         }
       }
     }
+
+    printOut("addedHosts ${addedHosts.length} removedHosts ${removedHosts.length}");
 
     var roomData = {
       "title": eventTitleController.text,
       "roomType": newRoomType.value,
       "productIds": [roomPickedProduct.value.id],
-      "hostIds": hosts,
+      "invitedhostIds": hosts,
       "description": eventDescriptiion.text,
       "userIds": [],
       "raisedHands": [],
@@ -1429,6 +1421,20 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       "activeTime": DateTime.now().microsecondsSinceEpoch,
       "eventDate": eventDate.value!.millisecondsSinceEpoch
     };
+
+    if (addedHosts.isNotEmpty) {
+      await RoomAPI().updateRoomById(
+      {
+        "title": roomData["title"],
+        "token": currentRoom.value.token,
+        "hostIds": addedHosts
+      }, roomId);
+    } else if (removedHosts.isNotEmpty) {
+      await RoomAPI().removeUserFromHostInRoom(
+      {
+        "users": removedHosts
+      }, roomId);
+    }
 
     await RoomAPI().updateRoomByIdNew(roomData, roomId);
 

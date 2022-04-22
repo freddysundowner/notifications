@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/order_controller.dart';
 import 'package:fluttergistshop/models/orders_model.dart';
+import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/orders_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
@@ -934,5 +935,11 @@ class IndividualOrderScreen extends StatelessWidget {
     _orderController.currentOrder.refresh();
 
     await OrderApi().updateOrder({"status": status}, ordersModel.id!);
+
+    await NotificationApi().sendNotification([_orderController.currentOrder.value.customerId!.id],
+        "Order update",
+        "Your order status for "
+            "${_orderController.currentOrder.value.itemId!.productId!.name} "
+            "has been updated to $status", "OrderScreen", _orderController.currentOrder.value.id!);
   }
 }

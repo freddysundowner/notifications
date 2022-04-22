@@ -36,89 +36,89 @@ class UpcomingEvents extends StatelessWidget {
             Expanded(
               child: InkWell(
                 onTap: () {
-              showCupertinoModalPopup(
-                context: context,
-                builder: (BuildContext context) => CupertinoActionSheet(
-                    title: Text('What would you like to see?'),
-                    actions: [
-                      CupertinoActionSheetAction(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: const Text('Upcoming For You',
-                                  style: TextStyle(fontSize: 16)),
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (BuildContext context) => CupertinoActionSheet(
+                        title: const Text('What would you like to see?'),
+                        actions: [
+                          CupertinoActionSheetAction(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Text('Upcoming For You',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ),
+                                if (homeController.selectedEvents.value ==
+                                    "all")
+                                  const Icon(
+                                    Icons.check,
+                                    color: Colors.blue,
+                                  )
+                              ],
                             ),
-                            if (homeController.selectedEvents.value ==
-                                "all")
-                              Icon(
-                                Icons.check,
-                                color: Colors.blue,
-                              )
-                          ],
-                        ),
-                        onPressed: () {
-                          homeController.selectedEvents.value = "all";
-                          homeController.fetchEvents();
-                          Navigator.pop(context);
-                        },
-                        isDefaultAction: true,
-                      ),
-                      CupertinoActionSheetAction(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: const Text('My Events',
-                                  style: TextStyle(fontSize: 16)),
+                            onPressed: () {
+                              homeController.selectedEvents.value = "all";
+                              homeController.fetchEvents();
+                              Navigator.pop(context);
+                            },
+                            isDefaultAction: true,
+                          ),
+                          CupertinoActionSheetAction(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Text('My Events',
+                                      style: TextStyle(fontSize: 16.sp)),
+                                ),
+                                if (homeController.selectedEvents.value ==
+                                    "mine")
+                                  const Icon(
+                                    Icons.check,
+                                    color: Colors.blue,
+                                  )
+                              ],
                             ),
-                            if (homeController.selectedEvents.value ==
-                                "mine")
-                              Icon(
-                                Icons.check,
-                                color: Colors.blue,
-                              )
-                          ],
-                        ),
-                        onPressed: () {
-                          homeController.selectedEvents.value = "mine";
-                          homeController.fetchMyEvents();
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                    cancelButton: CupertinoActionSheetAction(
-                      child: Text(
-                        'Cancel',
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )),
-              );
+                            onPressed: () {
+                              homeController.selectedEvents.value = "mine";
+                              homeController.fetchMyEvents();
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                        cancelButton: CupertinoActionSheetAction(
+                          child: const Text(
+                            'Cancel',
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        )),
+                  );
                 },
                 child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  homeController.selectedEvents.value == "mine"
-                      ? "MY EVENTS"
-                      : "UPCOMING FOR YOU",
-                  style: TextStyle(fontSize: 17),
-                ),
-                Icon(
-                  Icons.arrow_drop_down,
-                  size: 20,
-                )
-              ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      homeController.selectedEvents.value == "mine"
+                          ? "MY EVENTS"
+                          : "UPCOMING FOR YOU",
+                      style: TextStyle(fontSize: 17.sp),
+                    ),
+                    const Icon(
+                      Icons.arrow_drop_down,
+                      size: 20,
+                    )
+                  ],
                 ),
               ),
             ),
             IconButton(
               padding: EdgeInsets.zero,
-              icon: Icon(
+              icon: const Icon(
                 CupertinoIcons.calendar_badge_plus,
                 size: 25,
                 color: primarycolor,
@@ -146,13 +146,11 @@ class UpcomingEvents extends StatelessWidget {
               .map((element) => EventModel.fromJson(element))
               .toList();
           if (homeController.isLoading.isTrue) {
-            return Center(
-              child: Container(
-                child: CircularProgressIndicator(),
-              ),
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
-          if (homeController.eventsList.value.length == 0) {
+          if (homeController.eventsList.isEmpty) {
             return Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -162,11 +160,11 @@ class UpcomingEvents extends StatelessWidget {
                   style: regularDarkText,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 0.01.sh,
                 ),
                 IconButton(
                   padding: EdgeInsets.zero,
-                  icon: Icon(
+                  icon: const Icon(
                     CupertinoIcons.calendar_badge_plus,
                     size: 80,
                     color: primarycolor,
@@ -182,16 +180,16 @@ class UpcomingEvents extends StatelessWidget {
             children: rooms
                 .map((element) => Container(
                       width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.grey[200],
                       ),
                       child: InkWell(
                         onTap: () {
-                          upcomingEventBoottomSheet(context, element);
+                          upcomingEventBottomSheet(context, element);
                         },
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -215,7 +213,7 @@ class UpcomingEvents extends StatelessWidget {
                                             roomModel: element,
                                           ));
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       "Edit",
                                       style: TextStyle(color: primarycolor),
                                     ),
@@ -227,7 +225,7 @@ class UpcomingEvents extends StatelessWidget {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 14.sp),
                             ),
-                            Divider(),
+                            const Divider(),
                             Wrap(
                               children: List.generate(
                                   element.invitedhostIds!.length,
@@ -238,7 +236,7 @@ class UpcomingEvents extends StatelessWidget {
                                                 .invitedhostIds![i].lastName! +
                                             ", ",
                                         style: TextStyle(
-                                            fontSize: 13, color: primarycolor),
+                                            fontSize: 13.sp, color: primarycolor),
                                         overflow: TextOverflow.ellipsis,
                                       )).toList(),
                             ),
@@ -295,7 +293,7 @@ class UpcomingEvents extends StatelessWidget {
     );
   }
 
-  Future<dynamic> upcomingEventBoottomSheet(
+  Future<dynamic> upcomingEventBottomSheet(
       BuildContext context, EventModel element) {
     return showModalBottomSheet(
       isScrollControlled: true,
@@ -344,7 +342,6 @@ class UpcomingEvents extends StatelessWidget {
                             ),
                         ],
                       ),
-
                       SizedBox(
                         height: 0.01.sh,
                       ),
@@ -358,11 +355,11 @@ class UpcomingEvents extends StatelessWidget {
                           ),
                           ...element.invitedhostIds!
                               .map((e) => Text(
-                            "${e.firstName} ${e.lastName}, ",
-                            style: const TextStyle(
-                                fontStyle: FontStyle.italic,
-                                color: primarycolor),
-                          ))
+                                    "${e.firstName} ${e.lastName}, ",
+                                    style: const TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        color: primarycolor),
+                                  ))
                               .toList()
                         ],
                       ),
@@ -382,7 +379,7 @@ class UpcomingEvents extends StatelessWidget {
                         },
                         child: ListTile(
                           minLeadingWidth: 0,
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                           title: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -446,45 +443,56 @@ class UpcomingEvents extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              roomController.shareSheetLoading.value = true;
                               DynamicLinkService()
                                   .createGroupJoinLink(element.id!, "event")
-                                  .then((value) async =>
-                                      await Share.share(value));
+                                  .then(
+                                      (value) async => await Share.share(value))
+                                  .then((value) => roomController
+                                      .shareSheetLoading.value = false);
                             },
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  CupertinoIcons.share,
-                                  size: 25,
-                                  color: Colors.green,
-                                ),
-                                SizedBox(
-                                  height: 0.01.sh,
-                                ),
-                                const Text(
-                                  "Share",
-                                  style: TextStyle(color: primarycolor),
-                                )
-                              ],
-                            ),
+                            child: Obx(() {
+                              return Column(
+                                children: [
+                                  roomController.shareSheetLoading.isFalse
+                                      ? const Icon(
+                                          CupertinoIcons.share,
+                                          size: 25,
+                                          color: Colors.green,
+                                        )
+                                      : const CircularProgressIndicator(),
+                                  SizedBox(
+                                    height: 0.01.sh,
+                                  ),
+                                  const Text(
+                                    "Share",
+                                    style: TextStyle(color: primarycolor),
+                                  )
+                                ],
+                              );
+                            }),
                           ),
                           GestureDetector(
                             onTap: () {
+                              roomController.shareLinkLoading.value = true;
                               DynamicLinkService()
                                   .createGroupJoinLink(element.id!, "event")
-                                  .then((value) async => Clipboard.setData(
-                                      ClipboardData(text: value)));
+                                  .then((value) async {
+                                Clipboard.setData(ClipboardData(text: value));
+                                roomController.shareLinkLoading.value = false;
+                              });
                               Get.back();
-                              Helper.showSnackBack(context, "Link copied to clipboard");
-
+                              Helper.showSnackBack(
+                                  context, "Link copied to clipboard");
                             },
                             child: Column(
                               children: [
-                                const Icon(
+                                roomController.shareLinkLoading.isFalse
+                                    ? const Icon(
                                   CupertinoIcons.doc_on_clipboard,
                                   size: 25,
                                   color: Colors.green,
-                                ),
+                                ) : const CircularProgressIndicator(),
                                 SizedBox(
                                   height: 0.01.sh,
                                 ),
@@ -549,14 +557,14 @@ class UpcomingEvents extends StatelessWidget {
         dateToCheck.hour, dateToCheck.minute);
     final aDatee =
         DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
-    var formatter = new DateFormat('hh:mm a');
+    var formatter = DateFormat('hh:mm a');
     String when = "";
     if (aDatee == today) {
       when = "Today, ${formatter.format(dateToCheck).toString()}";
     } else if (aDatee == tomorrow) {
       when = "Tomorrow, ${formatter.format(dateToCheck).toString()}";
     } else {
-      var formatter = new DateFormat('MMMM dd, yyyy, hh:mm a');
+      var formatter = DateFormat('MMMM dd, yyyy, hh:mm a');
 
       String checkInTimeIsoString = formatter.format(aDate).toString();
 

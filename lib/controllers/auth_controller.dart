@@ -231,18 +231,14 @@ class AuthController extends GetxController {
             usermodel.refresh();
             return MainPage();
           }
-
-          if (FirebaseAuth.instance.currentUser == null) {
-            return Login();
-          }
           if (connectionstate.value == false) {
-            return Scaffold(
+            return const Scaffold(
                 backgroundColor: primarycolor,
                 body: Center(
                   child: CircularProgressIndicator(),
                 ));
           }
-          return ConnectionFailed();
+          return const ConnectionFailed();
         },
       );
     }

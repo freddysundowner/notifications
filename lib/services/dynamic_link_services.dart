@@ -81,7 +81,7 @@ class DynamicLinkService {
       Get.to(UpcomingEvents());
 
       var event = await RoomAPI().getEventById(groupId!);
-      UpcomingEvents().upcomingEventBoottomSheet(navigatorKey.currentContext!, EventModel.fromJson(await event));
+      UpcomingEvents().upcomingEventBottomSheet(navigatorKey.currentContext!, EventModel.fromJson(await event));
 
     }
   }

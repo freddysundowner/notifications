@@ -392,11 +392,13 @@ class RoomPage extends StatelessWidget {
   }
 
   void _stopRecording() {
-    _homeController.stopRecording(
-        channelname: _homeController.currentRoom.value.id,
-        uid: _homeController.currentRoom.value.recordingUid,
-        resourceid: _homeController.currentRoom.value.resourceId,
-        sid: _homeController.currentRoom.value.recordingsid);
+    if (_homeController.currentRoom.value.recordingsid != null) {
+      _homeController.stopRecording(
+          channelname: _homeController.currentRoom.value.id,
+          uid: _homeController.currentRoom.value.recordingUid,
+          resourceid: _homeController.currentRoom.value.resourceId,
+          sid: _homeController.currentRoom.value.recordingsid);
+    }
   }
 
   void roomListener() {

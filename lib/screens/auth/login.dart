@@ -11,7 +11,7 @@ import 'package:ionicons/ionicons.dart';
 
 class Login extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
- // final _formLoginkey = GlobalKey<FormState>();
+  static final _formLoginkey = GlobalKey<FormState>();
 
   Login({Key? key}) : super(key: key);
 
@@ -38,7 +38,7 @@ class Login extends StatelessWidget {
                   ),
                   SizedBox(height: 20.h),
                   Form(
-                 //   key: _formLoginkey,
+                    key: _formLoginkey,
                     child: Column(
                       children: [
                         buildEmailFormField(),
@@ -77,7 +77,7 @@ class Login extends StatelessWidget {
       if (response.isEmpty) {
         Get.snackbar(
           '',
-          "Check your rrrrryyyy connection",
+          "Check your connection",
             backgroundColor: sc_snackBar,
             colorText: Colors.white
         ).show();
@@ -87,12 +87,12 @@ class Login extends StatelessWidget {
 
       Get.snackbar(
         '',
-        "Check your rrrrr connection",
+        "Check your connection",
           backgroundColor: sc_snackBar,
           colorText: Colors.white
       ).show();
     } catch (e, s) {
-      printOut("error accenssing internet $e $s");
+      printOut("error accessing internet $e $s");
     }
   }
 
@@ -174,7 +174,7 @@ class Login extends StatelessWidget {
   }
 
   Future<void> signInButtonCallback(BuildContext context) async {
-    if (1 == 1) {
+    if (_formLoginkey.currentState!.validate()) {
       String snackbarMessage = "Error login in, check email and password";
       try {
         var login = authController.authenticate();

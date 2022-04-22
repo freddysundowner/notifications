@@ -7,7 +7,7 @@ import 'package:fluttergistshop/screens/home/create_room.dart';
 import 'package:get/get.dart';
 
 printOut(data) {
-  if (kDebugMode) {
+  if (!kDebugMode) {
     print(data);
   }
 }
@@ -27,8 +27,6 @@ String convertTime(String time) {
     timeDifference = "${diff.inHours} hours ago";
   } else if (diff.inHours <= 47) {
     timeDifference = "${diff.inDays} day ago";
-  } else if (diff.inHours > 48) {
-    timeDifference = "${diff.inDays} days ago";
   }
 
   return timeDifference;

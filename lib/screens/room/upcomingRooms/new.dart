@@ -42,31 +42,31 @@ class NewEventUpcoming extends StatelessWidget {
   Future<void> _saveEvent(BuildContext context) async {
     if (homeController.eventTitleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("event title is required"),
+        const SnackBar(
+          content: const Text("event title is required"),
         ),
       );
       return;
     }
     if (homeController.roomPickedProduct.value.id == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("product is required"),
+        const SnackBar(
+          content: const Text("product is required"),
         ),
       );
       return;
     }
     if (homeController.roomHosts.length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("add atleast one host"),
+        const SnackBar(
+          content: const Text("add atleast one host"),
         ),
       );
       return;
     }
     if (homeController.eventDate.value?.millisecondsSinceEpoch == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Date is required"),
         ),
       );
@@ -76,7 +76,7 @@ class NewEventUpcoming extends StatelessWidget {
     if (homeController.eventDate.value!.difference(DateTime.now()).inMinutes <
         15) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Date must be greater than 15 minutes from now"),
         ),
       );
@@ -134,10 +134,10 @@ class NewEventUpcoming extends StatelessWidget {
       homeController.fetchEvents();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
+        const SnackBar(
+          content: const Text(
             "Error happened",
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
           ),
           backgroundColor: Colors.green,
         ),
@@ -147,7 +147,7 @@ class NewEventUpcoming extends StatelessWidget {
         SnackBar(
           content: Text(
             roomModel != null ? "Updated successfully" : "Saved succesfully",
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.green,
         ),
@@ -198,10 +198,10 @@ class NewEventUpcoming extends StatelessWidget {
               _saveEvent(context);
             },
             child: Container(
-                margin: EdgeInsets.only(right: 20, top: 15),
+                margin: const EdgeInsets.only(right: 20, top: 15),
                 child: Text(
                   roomModel != null ? "Update" : "Save",
-                  style: TextStyle(color: Colors.green),
+                  style: const TextStyle(color: Colors.green),
                 )),
           )
         ],
@@ -232,7 +232,7 @@ class NewEventUpcoming extends StatelessWidget {
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 InkWell(
@@ -241,9 +241,9 @@ class NewEventUpcoming extends StatelessWidget {
                     homeController.fetchAllUsers();
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 13, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 10),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(8)),
                         border: Border.all(color: Colors.grey, width: 1)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -252,7 +252,7 @@ class NewEventUpcoming extends StatelessWidget {
                           "Add Co-Hosts (${homeController.roomHosts.length})",
                           style: TextStyle(fontSize: 13.sm),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.arrow_forward_ios_rounded,
                           color: Colors.grey,
                           size: 20,
@@ -261,13 +261,13 @@ class NewEventUpcoming extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 if (homeController.roomHosts.value.length > 0)
                   ListView(
                     shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     children: homeController.roomHosts
                         .map((element) => InkWell(
                               onTap: () {
@@ -301,12 +301,12 @@ class NewEventUpcoming extends StatelessWidget {
                                     ),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(left: 10),
+                                    margin: const EdgeInsets.only(left: 10),
                                     child: Text(
                                       element.firstName! +
                                           " " +
                                           element.lastName!,
-                                      style: TextStyle(fontSize: 13),
+                                      style: const TextStyle(fontSize: 13),
                                     ),
                                   ),
                                   if (homeController.roomHosts.indexWhere(
@@ -318,7 +318,7 @@ class NewEventUpcoming extends StatelessWidget {
                                             (e) => element.id! == e.id);
 
                                       },
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.delete,
                                         color: Colors.red,
                                       ),
@@ -328,7 +328,7 @@ class NewEventUpcoming extends StatelessWidget {
                             ))
                         .toList(),
                   ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 InkWell(
@@ -337,9 +337,9 @@ class NewEventUpcoming extends StatelessWidget {
                     await homeController.fetchUserProducts();
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 13, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 10),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderRadius: const BorderRadius.all( Radius.circular(8)),
                         border: Border.all(color: Colors.grey, width: 1)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -352,7 +352,7 @@ class NewEventUpcoming extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(fontSize: 16.sm),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.arrow_forward_ios_rounded,
                           color: Colors.grey,
                           size: 20,
@@ -361,10 +361,13 @@ class NewEventUpcoming extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 0.01.sh,
+                ),
                 if (homeController.roomPickedProduct.value.id != null)
                   ListTile(
                     minLeadingWidth: 0,
-                    contentPadding: EdgeInsets.all(0),
+                    contentPadding: const EdgeInsets.all(0),
                     title: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -375,7 +378,7 @@ class NewEventUpcoming extends StatelessWidget {
                                 imageUrl: homeController
                                     .roomPickedProduct.value.images!.first,
                                 height: 0.1.sh,
-                                width: 0.1.sw,
+                                width: 0.2.sw,
                                 fit: BoxFit.fill,
                                 placeholder: (context, url) =>
                                     const CircularProgressIndicator(),
@@ -388,6 +391,9 @@ class NewEventUpcoming extends StatelessWidget {
                                 width: 0.2.sw,
                                 fit: BoxFit.fill,
                               ),
+                        SizedBox(
+                          width: 0.05.sw,
+                        ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -395,14 +401,14 @@ class NewEventUpcoming extends StatelessWidget {
                             children: [
                               Text(
                                 homeController.roomPickedProduct.value.name!,
-                                style: TextStyle(fontSize: 13),
+                                style: TextStyle(fontSize: 13.sp),
                               ),
                               Text(
                                 "GC " +
                                     homeController
                                         .roomPickedProduct.value.price!
                                         .toString(),
-                                style: TextStyle(fontSize: 13),
+                                style: const TextStyle(fontSize: 13),
                               ),
                               if (homeController.roomPickedProduct.value
                                   .description!.isNotEmpty)
@@ -411,7 +417,7 @@ class NewEventUpcoming extends StatelessWidget {
                                       .roomPickedProduct.value.description!,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 13),
+                                  style: const TextStyle(fontSize: 13),
                                 ),
                             ],
                           ),
@@ -420,7 +426,7 @@ class NewEventUpcoming extends StatelessWidget {
                           onTap: () {
                             homeController.roomPickedProduct.value = Product();
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.delete,
                             color: Colors.red,
                           ),
@@ -429,7 +435,7 @@ class NewEventUpcoming extends StatelessWidget {
                     ),
                   ),
                 SizedBox(
-                  height: 20,
+                  height: 0.01.sh,
                 ),
                 InkWell(
                   onTap: () {
@@ -444,9 +450,9 @@ class NewEventUpcoming extends StatelessWidget {
                     }, locale: LocaleType.en);
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 13, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 10),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
                         border: Border.all(color: Colors.grey, width: 1)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -459,7 +465,7 @@ class NewEventUpcoming extends StatelessWidget {
                               : "When?",
                           style: TextStyle(fontSize: 16.sm),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.arrow_forward_ios_rounded,
                           color: Colors.grey,
                           size: 20,
@@ -468,14 +474,14 @@ class NewEventUpcoming extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Private? ",
                       ),
                       CupertinoSwitch(
@@ -485,7 +491,7 @@ class NewEventUpcoming extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
@@ -873,7 +879,7 @@ class NewEventUpcoming extends StatelessWidget {
                                   await homeController.fetchUserProducts();
                                 }
                               },
-                              icon: Icon(Icons.done))
+                              icon: const Icon(Icons.done))
                         ],
                       ),
                       SizedBox(

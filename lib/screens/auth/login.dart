@@ -38,7 +38,7 @@ class Login extends StatelessWidget {
                   ),
                   SizedBox(height: 20.h),
                   Form(
-                 //   key: _formLoginkey,
+                    key: _formLoginkey,
                     child: Column(
                       children: [
                         buildEmailFormField(),

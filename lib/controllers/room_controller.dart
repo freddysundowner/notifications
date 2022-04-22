@@ -49,6 +49,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   var newRoom = RoomModel().obs;
   var toInviteUsers = [].obs;
   var audioMuted = true.obs;
+  var shareSheetLoading = false.obs;
+  var shareLinkLoading = false.obs;
 
   var newRoomTitle = " ".obs;
   Rxn<DateTime> eventDate = Rxn<DateTime>(null);

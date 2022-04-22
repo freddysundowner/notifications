@@ -20,7 +20,7 @@ class AddressDetailsForm extends StatelessWidget {
     this.addressToEdit,
   }) : super(key: key);
 
-  final _formKey = GlobalKey<FormState>();
+  static final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {}

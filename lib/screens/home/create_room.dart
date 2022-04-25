@@ -21,9 +21,6 @@ import 'package:transparent_image/transparent_image.dart';
 final RoomController homeController = Get.find<RoomController>();
 
 Future<dynamic> showRoomTypeBottomSheet(BuildContext context) {
-  homeController.roomPickedImages.value = [];
-  homeController.roomHosts.value = [];
-  homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
 
   return showModalBottomSheet(
     isScrollControlled: true,
@@ -724,7 +721,7 @@ pickImage(BuildContext context) async {
       homeController.roomPickedImages.indexWhere(
           (element) => element.isReal == false && element.isPath == false),
       RoomImagesModel(path, false, true));
-  if (path == null) {
+  if (path.isEmpty) {
     throw LocalImagePickingUnknownReasonFailureException();
   }
 }

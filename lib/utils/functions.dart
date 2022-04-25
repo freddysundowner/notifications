@@ -7,7 +7,7 @@ import 'package:fluttergistshop/screens/home/create_room.dart';
 import 'package:get/get.dart';
 
 printOut(data) {
-  if (!kDebugMode) {
+  if (kDebugMode) {
     print(data);
   }
 }

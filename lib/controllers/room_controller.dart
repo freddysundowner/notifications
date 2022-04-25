@@ -424,30 +424,33 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   Future<void> uploadImageToFireStorage(String roomId) async {
     String snackBarMessage = "";
+    List<String> uploadedImages = [];
+    printOut("errrrrrrr ${roomPickedImages.length}");
 
     try {
-      List<String> uploadedImages = [];
 
       for (var i = 0; i < roomPickedImages.length; i++) {
         RoomImagesModel roomImagesModel = roomPickedImages.elementAt(i);
+        printOut("roomPickedImages ${roomImagesModel.imageUrl}");
 
         if (roomImagesModel.isPath) {
-          final downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
+          var downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
               File(roomImagesModel.imageUrl), "rooms/$roomId");
 
-          printOut(downloadUrl);
+          printOut("kkkkkkk " + downloadUrl);
           uploadedImages.add(downloadUrl);
           currentRoom.value.productImages!.add(downloadUrl);
           currentRoom.refresh();
         }
+
       }
 
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
         "token": currentRoom.value.token,
-        "productImages": uploadedImages
-      }, roomId);
+        "productImages": currentRoom.value.productImages
 
+      }, roomId);
       roomPickedImages.value = [];
     } on FirebaseException catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";

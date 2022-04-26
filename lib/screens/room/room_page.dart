@@ -561,17 +561,18 @@ class RoomPage extends StatelessWidget {
                     return InkWell(
                       onTap: ()
                       {
+
                         for (int i= 0; i < _homeController
                             .currentRoom.value.productImages!.length; i++) {
                           _homeController
                               .currentRoom.value.productIds!
                               .elementAt(0).images?.add(_homeController
                               .currentRoom.value.productImages!.elementAt(i));
-                          Get.to(FullProduct(
-                              product: _homeController
-                                  .currentRoom.value.productIds!
-                                  .elementAt(0)));
                         }
+                        Get.to(FullProduct(
+                            product: _homeController
+                                .currentRoom.value.productIds!
+                                .elementAt(0)));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),

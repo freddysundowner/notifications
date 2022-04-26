@@ -50,10 +50,12 @@ class FullProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.find<ProductController>().getProductById(product.id!);
+    Get.find<ProductController>().getProductById(product);
     if (productController.currentProduct.value == null) {
       productController.currentProduct.value = product;
     }
+
+
 
     return Scaffold(
         body: Obx(

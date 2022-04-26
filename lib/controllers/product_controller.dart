@@ -8,7 +8,6 @@ import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/configs.dart' as config;
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/shop_api.dart';
-import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -116,10 +115,12 @@ class ProductController extends GetxController {
     }
   }
 
-  getProductById(String productId) async {
-    var response = await ProductPI().getProductById(productId);
+  getProductById(Product product) async {
+    var response = await ProductPI().getProductById(product.id!);
     print(response);
     currentProduct.value = Product.fromJson(response);
+    currentProduct.value!.images = product.images;
+    currentProduct.refresh();
   }
 
   static Future<List<Product>> getMyProductsByShop(String id) async {

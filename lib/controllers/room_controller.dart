@@ -425,32 +425,43 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   Future<void> uploadImageToFireStorage(String roomId) async {
     String snackBarMessage = "";
     List<String> uploadedImages = [];
+    printOut("errrrrrrr  before");
     printOut("errrrrrrr ${roomPickedImages.length}");
+    List<String> realImages = [];
+
+    for (var i = 0; i < roomPickedImages.length; i++) {
+      RoomImagesModel roomImagesModel = roomPickedImages.elementAt(i);
+      if (roomImagesModel.isPath) {
+        realImages.add(roomImagesModel.imageUrl);
+      }
+    }
+
+    printOut("realimages ${realImages.length}");
 
     try {
+      for (var i = 0; i < realImages.length; i++) {
+        var downloadUrl = await FirestoreFilesAccess()
+            .uploadFileToPath(File(realImages.elementAt(i)), "rooms/$roomId");
 
-      for (var i = 0; i < roomPickedImages.length; i++) {
-        RoomImagesModel roomImagesModel = roomPickedImages.elementAt(i);
-        printOut("roomPickedImages ${roomImagesModel.imageUrl}");
-
-        if (roomImagesModel.isPath) {
-          var downloadUrl = await FirestoreFilesAccess().uploadFileToPath(
-              File(roomImagesModel.imageUrl), "rooms/$roomId");
-
-          printOut("kkkkkkk " + downloadUrl);
-          uploadedImages.add(downloadUrl);
-          currentRoom.value.productImages!.add(downloadUrl);
-          currentRoom.refresh();
-        }
+        printOut("kkkkkkk path " + realImages.elementAt(i));
+        printOut("kkkkkkk " + downloadUrl);
+        await RoomAPI().updateRoomById({
+          "title": currentRoom.value.title ?? " ",
+          "token": currentRoom.value.token,
+          "productImages": [downloadUrl]
+        }, roomId);
+        uploadedImages.add(downloadUrl);
+        currentRoom.value.productImages!.add(downloadUrl);
+        currentRoom.refresh();
 
       }
 
-      await RoomAPI().updateRoomById({
-        "title": currentRoom.value.title ?? " ",
-        "token": currentRoom.value.token,
-        "productImages": currentRoom.value.productImages
-
-      }, roomId);
+      // await RoomAPI().updateRoomById({
+      //   "title": currentRoom.value.title ?? " ",
+      //   "token": currentRoom.value.token,
+      //   "productImages": currentRoom.value.productImages
+      // }, roomId);
+      //
       roomPickedImages.value = [];
     } on FirebaseException catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
@@ -1404,7 +1415,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       }
     }
 
-    printOut("addedHosts ${addedHosts.length} removedHosts ${removedHosts.length}");
+    printOut(
+        "addedHosts ${addedHosts.length} removedHosts ${removedHosts.length}");
 
     var roomData = {
       "title": eventTitleController.text,
@@ -1426,21 +1438,16 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     };
 
     if (addedHosts.isNotEmpty) {
-      await RoomAPI().updateRoomById(
-      {
+      await RoomAPI().updateRoomById({
         "title": roomData["title"],
         "token": currentRoom.value.token,
         "hostIds": addedHosts
       }, roomId);
     } else if (removedHosts.isNotEmpty) {
-      await RoomAPI().removeUserFromHostInRoom(
-      {
-        "users": removedHosts
-      }, roomId);
+      await RoomAPI().removeUserFromHostInRoom({"users": removedHosts}, roomId);
     }
 
     await RoomAPI().updateRoomByIdNew(roomData, roomId);
-
   }
 
   void deleteEvent(String roomId) async {

@@ -16,6 +16,7 @@ import 'package:fluttergistshop/screens/room/room_page.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
 import 'package:fluttergistshop/services/firestore_files_access_service.dart';
+import 'package:fluttergistshop/services/notification_api.dart';
 import 'package:fluttergistshop/services/product_api.dart';
 import 'package:fluttergistshop/services/room_api.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -1443,6 +1444,23 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         "token": currentRoom.value.token,
         "hostIds": addedHosts
       }, roomId);
+
+      List addedHostsToken = [];
+
+      for (var i = 0; i < hosts.length; i++) {
+        var index = roomHosts.indexWhere((element) => element.id == hosts.elementAt(i));
+
+        if (index != -1) {
+          addedHostsToken.add(roomHosts.elementAt(index));
+        }
+      }
+
+      NotificationApi().sendNotification(addedHostsToken,
+          "You've been invited", "${Get.find<AuthController>().usermodel.value!.firstName}"
+              " ${Get.find<AuthController>().usermodel.value!.lastName} "
+              "has invited you to be a co-host in their event.",
+          "EventScreen", roomId);
+
     } else if (removedHosts.isNotEmpty) {
       await RoomAPI().removeUserFromHostInRoom({"users": removedHosts}, roomId);
     }

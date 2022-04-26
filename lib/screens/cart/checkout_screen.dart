@@ -149,6 +149,15 @@ class CheckOut extends StatelessWidget {
   }
 
   Future<bool> editButtonCallback(BuildContext context, Address address) async {
+    checkOutController.addressReceiverFieldController.text =
+        address.name;
+    checkOutController.addressLine1FieldController.text =
+        address.addrress1;
+    checkOutController.addressLine2FieldController.text =
+        address.addrress2;
+    checkOutController.stateFieldController.text = address.state;
+    checkOutController.cityFieldController.text = address.city;
+    checkOutController.phoneFieldController.text = address.phone;
     await Navigator.push(
         context,
         MaterialPageRoute(

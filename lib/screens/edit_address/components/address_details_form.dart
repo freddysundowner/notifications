@@ -15,33 +15,19 @@ import '../../../widgets/async_progress_dialog.dart';
 class AddressDetailsForm extends StatelessWidget {
   final Address? addressToEdit;
   CheckOutController checkOutController = Get.find<CheckOutController>();
-  AddressDetailsForm({
-    Key? key,
-    this.addressToEdit,
-  }) : super(key: key);
 
-  static final _formKey = GlobalKey<FormState>();
+
+  AddressDetailsForm({this.addressToEdit, Key? key}) : super(key: key);
+
+  static var _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {}
 
-  final TextEditingController receiverFieldController = TextEditingController();
-
-  final TextEditingController addressLine1FieldController =
-      TextEditingController();
-
-  final TextEditingController addressLine2FieldController =
-      TextEditingController();
-
-  final TextEditingController cityFieldController = TextEditingController();
-
-  final TextEditingController stateFieldController = TextEditingController();
-
-  final TextEditingController phoneFieldController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    final form = Form(
+    print("AddressDetailsForm rebuilding");
+    return Form(
       key: _formKey,
       child: Column(
         children: [
@@ -67,20 +53,13 @@ class AddressDetailsForm extends StatelessWidget {
         ],
       ),
     );
-    if (addressToEdit != null) {
-      receiverFieldController.text = addressToEdit!.name;
-      addressLine1FieldController.text = addressToEdit!.addrress1;
-      addressLine2FieldController.text = addressToEdit!.addrress2;
-      stateFieldController.text = addressToEdit!.state;
-      cityFieldController.text = addressToEdit!.city;
-      phoneFieldController.text = addressToEdit!.phone;
-    }
-    return form;
+
+    //return form;
   }
 
   Widget buildReceiverField() {
     return TextFormField(
-      controller: receiverFieldController,
+      controller: checkOutController.addressReceiverFieldController,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
         hintText: "Enter Full Name of Receiver",
@@ -88,7 +67,7 @@ class AddressDetailsForm extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (receiverFieldController.text.isEmpty) {
+        if (checkOutController.addressReceiverFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -99,7 +78,7 @@ class AddressDetailsForm extends StatelessWidget {
 
   Widget buildAddressLine1Field() {
     return TextFormField(
-      controller: addressLine1FieldController,
+      controller: checkOutController.addressLine1FieldController,
       keyboardType: TextInputType.streetAddress,
       decoration: InputDecoration(
         hintText: "Enter Address Line No. 1",
@@ -107,7 +86,7 @@ class AddressDetailsForm extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (addressLine1FieldController.text.isEmpty) {
+        if (checkOutController.addressLine1FieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -118,7 +97,7 @@ class AddressDetailsForm extends StatelessWidget {
 
   Widget buildAddressLine2Field() {
     return TextFormField(
-      controller: addressLine2FieldController,
+      controller: checkOutController.addressLine2FieldController,
       keyboardType: TextInputType.streetAddress,
       decoration: InputDecoration(
         hintText: "Enter Address Line No. 2",
@@ -126,7 +105,7 @@ class AddressDetailsForm extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (addressLine2FieldController.text.isEmpty) {
+        if (checkOutController.addressLine2FieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -137,7 +116,7 @@ class AddressDetailsForm extends StatelessWidget {
 
   Widget buildCityField() {
     return TextFormField(
-      controller: cityFieldController,
+      controller: checkOutController.cityFieldController,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
         hintText: "Enter City",
@@ -145,7 +124,7 @@ class AddressDetailsForm extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (cityFieldController.text.isEmpty) {
+        if (checkOutController.cityFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -156,7 +135,7 @@ class AddressDetailsForm extends StatelessWidget {
 
   Widget buildStateField() {
     return TextFormField(
-      controller: stateFieldController,
+      controller: checkOutController.stateFieldController,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
         hintText: "Enter State",
@@ -164,7 +143,7 @@ class AddressDetailsForm extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (stateFieldController.text.isEmpty) {
+        if (checkOutController.stateFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
         }
         return null;
@@ -175,7 +154,7 @@ class AddressDetailsForm extends StatelessWidget {
 
   Widget buildPhoneField() {
     return TextFormField(
-      controller: phoneFieldController,
+      controller: checkOutController.phoneFieldController,
       keyboardType: TextInputType.phone,
       decoration: InputDecoration(
         hintText: "Enter Phone Number",
@@ -183,9 +162,9 @@ class AddressDetailsForm extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       validator: (value) {
-        if (phoneFieldController.text.isEmpty) {
+        if (checkOutController.phoneFieldController.text.isEmpty) {
           return FIELD_REQUIRED_MSG;
-        } else if (phoneFieldController.text.length != 10) {
+        } else if (checkOutController.phoneFieldController.text.length != 10) {
           return "Only 10 Digits";
         }
         return null;
@@ -289,12 +268,12 @@ class AddressDetailsForm extends StatelessWidget {
   Address generateAddressObject({String? id}) {
     return Address(
       id: id ?? "",
-      name: receiverFieldController.text,
-      addrress1: addressLine1FieldController.text,
-      addrress2: addressLine2FieldController.text,
-      city: cityFieldController.text,
-      state: stateFieldController.text,
-      phone: phoneFieldController.text,
+      name: checkOutController.addressReceiverFieldController.text,
+      addrress1: checkOutController.addressLine1FieldController.text,
+      addrress2: checkOutController.addressLine2FieldController.text,
+      city: checkOutController.cityFieldController.text,
+      state: checkOutController.stateFieldController.text,
+      phone: checkOutController.phoneFieldController.text,
       userId: FirebaseAuth.instance.currentUser!.uid,
     );
   }

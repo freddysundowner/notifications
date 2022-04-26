@@ -38,7 +38,7 @@ class GlobalController extends GetxController {
             searchShopController.text.trim(), searchOption,
             last: last);
         //searchresults.assignAll(results);
-       // searchresults.addAll(results);
+        //searchresults.addAll(results);
         //
 
         for (var i = 0; i < results.length; i++) {

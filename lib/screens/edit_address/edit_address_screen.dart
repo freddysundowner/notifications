@@ -3,13 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/models/address.dart';
 import 'package:fluttergistshop/screens/edit_address/components/address_details_form.dart';
 import 'package:fluttergistshop/utils/constants.dart';
+import 'package:get/get.dart';
+
+import '../../controllers/checkout_controller.dart';
 
 class EditAddressScreen extends StatelessWidget {
   final Address? address;
+  CheckOutController checkOutController = Get.find<CheckOutController>();
 
-  const EditAddressScreen({Key? key, this.address}) : super(key: key);
+  EditAddressScreen({Key? key, this.address}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    print("EditAddressScreen rebuilding");
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +12,9 @@ import 'package:fluttergistshop/screens/products/components/product_size.dart';
 import 'package:fluttergistshop/widgets/widgets.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/shop_controller.dart';
 import '../../utils/utils.dart';
+import '../shops/shop_view.dart';
 
 class FullProduct extends StatelessWidget {
   Product product;
@@ -50,7 +53,7 @@ class FullProduct extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.find<ProductController>().getProductById(product.id!);
+    Get.find<ProductController>().getProductById(product);
     if (productController.currentProduct.value == null) {
       productController.currentProduct.value = product;
     }
@@ -112,6 +115,84 @@ class FullProduct extends StatelessWidget {
                               checkOutController
                                   .selectetedvariationvalue.value = size;
                             },
+                          ),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          Text(
+                            "Product by:",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Get.find<ShopController>()
+                                  .currentShop
+                                  .value =
+                              productController.currentProduct.value!
+                                  .shopId!;
+                              Get.to(() => ShopView());
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  Center(
+                                    child: productController.currentProduct.value!
+                                                    .shopId!.image !=
+                                                null &&
+                                            productController.currentProduct
+                                                    .value!.shopId!.name !=
+                                                ""
+                                        ? CachedNetworkImage(
+                                            imageUrl: productController
+                                                .currentProduct
+                                                .value!
+                                                .shopId!
+                                                .image!,
+                                            height: 0.08.sh,
+                                            width: 0.15.sw,
+                                            fit: BoxFit.fill,
+                                            placeholder: (context, url) =>
+                                                const CircularProgressIndicator(),
+                                            errorWidget: (context, url, error) =>
+                                                const Icon(Icons.error),
+                                          )
+                                        : Image.asset(
+                                            "assets/icons/no_image.png",
+                                            height: 0.08.sh,
+                                            width: 0.15.sw,
+                                            fit: BoxFit.fill,
+                                          ),
+                                  ),
+                                  SizedBox(
+                                    width: 0.03.sw,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          productController.currentProduct.value!.shopId!.name!,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 16.sp, color: Colors.black),
+                                        ),
+                                        Text(
+                                          productController.currentProduct.value!
+                                              .shopId!.description!,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                           SizedBox(
                             height: 20.h,

@@ -164,6 +164,10 @@ class MainPage extends StatelessWidget {
                                     _homeController.newRoomTitle.value = " ";
                                     _homeController.newRoomType.value =
                                         "public";
+                                    homeController.roomPickedImages.value = [];
+                                    homeController.roomHosts.value = [];
+                                    homeController.roomHosts.add(Get.find<AuthController>().usermodel.value!);
+
                                     showRoomTypeBottomSheet(context);
                                   } else {
                                     await showDialog(

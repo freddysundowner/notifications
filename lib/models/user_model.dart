@@ -31,6 +31,7 @@ class UserModel {
   int? memberShip;
   int? upgradedDate;
   bool? renewUpgrade;
+  bool? muted;
   UserModel({
     this.followersCount,
     this.followingCount,
@@ -56,6 +57,7 @@ class UserModel {
     this.memberShip,
     this.upgradedDate,
     this.renewUpgrade,
+    this.muted,
   });
 
   UserModel.fromPlayer(this.id, this.firstName, this.lastName, this.bio,
@@ -91,8 +93,8 @@ class UserModel {
       upgradedDate: json["upgradedDate"],
       followersCount: json["followersCount"],
       followingCount: json["followingCount"],
-      renewUpgrade: json["renewUpgrade"] ?? true
-  );
+      renewUpgrade: json["renewUpgrade"] ?? true,
+      muted: json["muted"] ?? true);
 
   Map<String, dynamic> toJson() => {
         // "followers": List<dynamic>.from(followers!.map((x) => x)),
@@ -119,7 +121,8 @@ class UserModel {
         "profilePhoto": profilePhoto,
         "memberShip": memberShip,
         "upgradedDate": upgradedDate,
-        "renewUpgrade": renewUpgrade
+        "renewUpgrade": renewUpgrade,
+        "muted": muted ??  true
       };
 
   getCurrentShop() => this.shopId;

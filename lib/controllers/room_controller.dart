@@ -454,7 +454,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
         uploadedImages.add(downloadUrl);
         currentRoom.value.productImages!.add(downloadUrl);
         currentRoom.refresh();
-
       }
 
       // await RoomAPI().updateRoomById({
@@ -954,8 +953,34 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }
   }
 
+  Future<void> muteUnMute(OwnerId currentUser) async {
+    if (audioMuted.isFalse) {
+      audioMuted.value = true;
+      engine.muteLocalAudioStream(true);
+      emitRoom(
+          action: "muted",
+          currentUser: currentUser.toJson(),
+          roomId: currentRoom.value.id!,
+          extra: "true");
+      await UserAPI().updateUser({"muted": true}, currentUser.id!);
+    } else {
+      audioMuted.value = false;
+      engine.muteLocalAudioStream(false);
+      sendRoomNotification(currentRoom.value);
+      emitRoom(
+          action: "muted",
+          currentUser: currentUser.toJson(),
+          roomId: currentRoom.value.id!,
+          extra: "false");
+      await UserAPI().updateUser({"muted": false}, currentUser.id!);
+    }
+  }
+
   void emitRoom(
-      {Map? currentUser, required String action, String roomId = ""}) {
+      {Map? currentUser,
+      required String action,
+      String roomId = "",
+      String? extra}) {
     print("action $action ${currentRoom.value.id} prev $roomId");
     if (action == "leave") {
       customSocketIO.socketIO.off(currentRoom.value.id ?? roomId);
@@ -964,7 +989,8 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     customSocketIO.socketIO.emit("room_changes", {
       "action": action,
       "userData": currentUser ?? {},
-      "roomId": currentRoom.value.id ?? roomId
+      "roomId": currentRoom.value.id ?? roomId,
+      "extra": extra ?? ""
     });
   }
 
@@ -1448,19 +1474,22 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       List addedHostsToken = [];
 
       for (var i = 0; i < hosts.length; i++) {
-        var index = roomHosts.indexWhere((element) => element.id == hosts.elementAt(i));
+        var index =
+            roomHosts.indexWhere((element) => element.id == hosts.elementAt(i));
 
         if (index != -1) {
           addedHostsToken.add(roomHosts.elementAt(index));
         }
       }
 
-      NotificationApi().sendNotification(addedHostsToken,
-          "You've been invited", "${Get.find<AuthController>().usermodel.value!.firstName}"
+      NotificationApi().sendNotification(
+          addedHostsToken,
+          "You've been invited",
+          "${Get.find<AuthController>().usermodel.value!.firstName}"
               " ${Get.find<AuthController>().usermodel.value!.lastName} "
               "has invited you to be a co-host in their event.",
-          "EventScreen", roomId);
-
+          "EventScreen",
+          roomId);
     } else if (removedHosts.isNotEmpty) {
       await RoomAPI().removeUserFromHostInRoom({"users": removedHosts}, roomId);
     }

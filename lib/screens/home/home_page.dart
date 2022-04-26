@@ -656,16 +656,7 @@ class HomePage extends StatelessWidget {
                                 ? IconButton(
                                     onPressed: () {
                                       //If user is muted, unmute and enbale their audio vice versa
-                                      if (_homeController.audioMuted.isFalse) {
-                                        _homeController.audioMuted.value = true;
-                                        _homeController.engine
-                                            .muteLocalAudioStream(true);
-                                      } else {
-                                        _homeController.audioMuted.value =
-                                            false;
-                                        _homeController.engine
-                                            .muteLocalAudioStream(false);
-                                      }
+                                      _homeController.muteUnMute(currentUser);
                                     },
                                     icon: Icon(
                                       //If audio is not muted, show mic icon, if not show mic off

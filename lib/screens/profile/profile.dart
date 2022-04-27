@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/product_controller.dart';
@@ -93,34 +94,40 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         InkWell(
-                            onTap: () {
+                            onTap: () async {
                               if (profile.id ==
                                   FirebaseAuth.instance.currentUser!.uid) {
                                 Get.to(() => ChageProfileImage());
+                                await UserAPI.getUserById();
+                                DefaultCacheManager manager =  DefaultCacheManager();
+                                manager.emptyCache(); //clears all data in cache.
                               }
                             },
                             child: profile.profilePhoto != null
-                                ? CachedNetworkImage(
-                                    imageUrl: profile.profilePhoto!,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      width: 0.25.sw,
-                                      height: 0.14.sh,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover),
-                                      ),
-                                    ),
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset(
-                                            "assets/icons/profile_placeholder.png",
-                                            width: 0.25.sw,
-                                            height: 0.14.sh),
-                                  )
+                                ? Obx(() {
+                                    return CachedNetworkImage(
+                                        imageUrl: _userController.currentProfile.value.profilePhoto!,
+                                        imageBuilder: (context, imageProvider) =>
+                                            Container(
+                                          width: 0.25.sw,
+                                          height: 0.14.sh,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) =>
+                                            const CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                                "assets/icons/profile_placeholder.png",
+                                                width: 0.25.sw,
+                                                height: 0.14.sh),
+                                      );
+                                  }
+                                )
                                 : CircleAvatar(
                                     radius: 50,
                                     child: Image.asset(

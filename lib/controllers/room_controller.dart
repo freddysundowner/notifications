@@ -261,7 +261,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
     await engine.enableAudioVolumeIndication(500, 3, true);
     await engine.enableAudio();
-    await engine.muteLocalAudioStream(audioMuted.value);
+    await engine.muteLocalAudioStream(true);
     await engine.setDefaultAudioRouteToSpeakerphone(true);
 
     await engine.setClientRole(ClientRole.Broadcaster);
@@ -446,15 +446,18 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
         printOut("kkkkkkk path " + realImages.elementAt(i));
         printOut("kkkkkkk " + downloadUrl);
-        await RoomAPI().updateRoomById({
-          "title": currentRoom.value.title ?? " ",
-          "token": currentRoom.value.token,
-          "productImages": [downloadUrl]
-        }, roomId);
+
         uploadedImages.add(downloadUrl);
-        currentRoom.value.productImages!.add(downloadUrl);
-        currentRoom.refresh();
+
       }
+      await RoomAPI().updateRoomById({
+        "title": currentRoom.value.title ?? " ",
+        "token": currentRoom.value.token,
+        "productImages": uploadedImages
+      }, roomId);
+
+      currentRoom.value.productImages!.addAll(uploadedImages);
+      currentRoom.refresh();
 
       // await RoomAPI().updateRoomById({
       //   "title": currentRoom.value.title ?? " ",
@@ -924,9 +927,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
             -1) {
           try {
             await engine.enableAudio();
-            await engine.enableLocalAudio(true);
+            await engine.enableLocalAudio(false);
 
-            await engine.muteLocalAudioStream(audioMuted.value);
+            await engine.muteLocalAudioStream(true);
             currentRoom.refresh();
           } catch (e, s) {
             printOut("Error disabling audio $e $s");
@@ -1142,9 +1145,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       await engine.joinChannel(token, roomId, null, 0);
       await engine.enableAudioVolumeIndication(500, 3, true);
       await engine.enableAudio();
-      await engine.enableLocalAudio(true);
+      await engine.enableLocalAudio(false);
 
-      await engine.muteLocalAudioStream(audioMuted.value);
+      await engine.muteLocalAudioStream(true);
       // recordAudio(token: token, channelname: roomId);
 
     } catch (e, s) {

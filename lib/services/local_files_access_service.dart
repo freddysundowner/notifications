@@ -23,16 +23,16 @@ Future<String> choseImageFromLocalFiles(BuildContext context,
   final imgSource = await showDialog(
     builder: (context) {
       return AlertDialog(
-        title: Text("Chose image source"),
+        title: const Text("Chose image source"),
         actions: [
           FlatButton(
-            child: Text("Camera"),
+            child: const Text("Camera"),
             onPressed: () {
               Navigator.pop(context, ImageSource.camera);
             },
           ),
           FlatButton(
-            child: Text("Gallery"),
+            child: const Text("Gallery"),
             onPressed: () {
               Navigator.pop(context, ImageSource.gallery);
             },
@@ -43,9 +43,10 @@ Future<String> choseImageFromLocalFiles(BuildContext context,
     context: context,
   );
   var imgPicker = ImagePicker();
-  if (imgSource == null)
+  if (imgSource == null) {
     throw LocalImagePickingInvalidImageException(
         message: "No image source selected");
+  }
   XFile? imagePicked =
       await imgPicker.pickImage(source: imgSource, imageQuality: 40);
 
@@ -53,9 +54,11 @@ Future<String> choseImageFromLocalFiles(BuildContext context,
 
   PickedFile newimagePicked = PickedFile((await ImageCropper().cropImage(
           sourcePath: imagePicked!.path,
-          aspectRatio: CropAspectRatio(ratioX: 3, ratioY: 2),
+          aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
           cropStyle: CropStyle.circle))!
       .path);
+
+  print("newimagePicked ${newimagePicked.toString()}");
 
   if (newimagePicked == null) {
     throw LocalImagePickingInvalidImageException();

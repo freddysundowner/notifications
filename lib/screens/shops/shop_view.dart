@@ -217,8 +217,12 @@ class ShopView extends StatelessWidget {
                 hoverColor: Colors.green,
                 splashColor: Colors.green,
                 onPressed: () {
-                  printOut("EditProductScreen");
-                  Get.to(() => EditProductScreen());
+                  if (authController.currentuser!.shopId!.open == true) {
+                    Get.to(() => EditProductScreen());
+                  }  else {
+                    Get.defaultDialog(title: "Shop is closed", middleText: "You can't add a product while your shop is closed");
+                  }
+
                 },
                 backgroundColor: Colors.pink,
               )

@@ -177,33 +177,33 @@ class RoomModel {
 }
 
 class OwnerId {
-  OwnerId({
-    this.followers,
-    this.following,
-    this.wallet,
-    this.currentRoom,
-    this.facebook,
-    this.instagram,
-    this.linkedIn,
-    this.twitter,
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.bio,
-    this.userName,
-    this.email,
-    this.password,
-    this.phonenumber,
-    this.createdAt,
-    this.shopId,
-    this.updatedAt,
-    this.profilePhoto,
-    this.memberShip,
-    this.upgradedDate,
-    this.followersCount,
-    this.followingCount,
-    this.roomuid,
-  });
+  OwnerId(
+      {this.followers,
+      this.following,
+      this.wallet,
+      this.currentRoom,
+      this.facebook,
+      this.instagram,
+      this.linkedIn,
+      this.twitter,
+      this.id,
+      this.firstName,
+      this.lastName,
+      this.bio,
+      this.userName,
+      this.email,
+      this.password,
+      this.phonenumber,
+      this.createdAt,
+      this.shopId,
+      this.updatedAt,
+      this.profilePhoto,
+      this.memberShip,
+      this.upgradedDate,
+      this.followersCount,
+      this.followingCount,
+      this.roomuid,
+      this.muted});
 
   List<String>? followers = [];
   List<String>? following = [];
@@ -230,6 +230,7 @@ class OwnerId {
   String? shopId;
   int? memberShip;
   int? upgradedDate;
+  bool? muted;
 
   factory OwnerId.fromJson(Map<String, dynamic> json) => OwnerId(
         followers: json["followers"] != null
@@ -261,6 +262,7 @@ class OwnerId {
         followersCount: json["followersCount"],
         followingCount: json["followingCount"],
         roomuid: json["roomuid"],
+        muted: json["muted"] ?? true,
       );
 
   Map<String, dynamic> toJson() => {
@@ -288,5 +290,6 @@ class OwnerId {
         "profilePhoto": profilePhoto,
         "memberShip": memberShip,
         "upgradedDate": upgradedDate,
+        "muted": muted ?? true
       };
 }

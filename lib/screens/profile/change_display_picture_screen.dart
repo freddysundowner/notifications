@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,24 +13,26 @@ import 'package:fluttergistshop/widgets/default_button.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 
+import '../../controllers/user_controller.dart';
 import '../../utils/utils.dart';
 
 class ChageProfileImage extends StatelessWidget {
   AuthController authController = Get.find<AuthController>();
+  final UserController _userController = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SizedBox(
               width: double.infinity,
               child: Obx(() => Column(
                     children: [
-                      Text(
+                      const Text(
                         "Change Profile Image",
                         style: TextStyle(fontSize: 17),
                       ),
@@ -86,7 +87,7 @@ class ChageProfileImage extends StatelessWidget {
       String path;
       String snackbarMessage = "Image picked";
       path = await choseImageFromLocalFiles(context,
-          aspectration: CropAspectRatio(ratioX: 3, ratioY: 2));
+          aspectration: const CropAspectRatio(ratioX: 3, ratioY: 2));
       if (path == null) {
         throw LocalImagePickingUnknownReasonFailureException();
       }
@@ -109,7 +110,7 @@ class ChageProfileImage extends StatelessWidget {
 
   Widget buildChosePictureButton(BuildContext context) {
     return DefaultButton(
-      text: "Choose Picture",
+      text: "Pick a Picture",
       press: () {
         getImageFromUser(context);
       },
@@ -118,7 +119,7 @@ class ChageProfileImage extends StatelessWidget {
 
   Widget buildUploadPictureButton(BuildContext context) {
     return DefaultButton(
-      text: "Upload Picture",
+      text: "Save Picture",
       press: () {
         final Future uploadFuture = uploadImageToFirestorage(context);
         showDialog(
@@ -126,12 +127,12 @@ class ChageProfileImage extends StatelessWidget {
           builder: (context) {
             return AsyncProgressDialog(
               uploadFuture,
-              message: Text("Updating Display Picture"),
+              message: const Text("Updating Display Picture"),
             );
           },
         );
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Display Picture updated", style: const TextStyle(color: Colors.white),),
+            .showSnackBar(SnackBar(content: const Text("Display Picture updated", style: TextStyle(color: Colors.white),),
             backgroundColor: sc_snackBar,));
       },
     );
@@ -149,6 +150,10 @@ class ChageProfileImage extends StatelessWidget {
           await UserAPI.uploadDisplayPictureForCurrentUser(downloadUrl);
       if (uploadDisplayPictureStatus == true) {
         authController.currentuser!.profilePhoto = downloadUrl;
+        authController.usermodel.value!.profilePhoto = downloadUrl;
+        authController.usermodel.refresh();
+        _userController.currentProfile.value.profilePhoto = downloadUrl;
+        _userController.currentProfile.refresh();
         snackbarMessage = "Display Picture updated successfully";
       } else {
         throw "Coulnd't update display picture due to unknown reason";
@@ -161,7 +166,7 @@ class ChageProfileImage extends StatelessWidget {
       authController.usermodel.value = await UserAPI.getUserById();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(snackbarMessage, style: TextStyle(color: Colors.white),),
+          content: Text(snackbarMessage, style: const TextStyle(color: Colors.white),),
             backgroundColor: sc_snackBar,
         ),
       );

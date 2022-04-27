@@ -104,7 +104,7 @@ Future<void> handleNotificationOneSignal(OSNotification osNotification) async {
           priority: Priority.high,
           // TODO add a proper drawable resource to android, for now using
           //      one that already exists in example app.
-          icon: '@mipmap/ic_launcher',
+          icon: '@mipmap/ic_stat_onesignal_default',
         ),
       ),
       payload: " ${osNotification.additionalData!['screen']}  "

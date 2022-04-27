@@ -92,27 +92,30 @@ class HomePage extends StatelessWidget {
                 _userController.getUserProfile(authController.currentuser!.id!);
                 Get.to(Profile());
               },
-              child: CachedNetworkImage(
-                imageUrl: authController.usermodel.value!.profilePhoto!,
-                imageBuilder: (context, imageProvider) => Container(
-                  width: 0.08.sw,
-                  height: 0.05.sh,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
-                ),
-                placeholder: (context, url) => Transform.scale(
-                    scale: 0.3,
-                    child: const CircularProgressIndicator(
-                      color: Colors.black,
-                    )),
-                errorWidget: (context, url, error) => Image.asset(
-                  "assets/icons/profile_placeholder.png",
-                  width: 0.08.sw,
-                  height: 0.05.sh,
-                ),
+              child: Obx(() {
+                  return CachedNetworkImage(
+                    imageUrl: authController.usermodel.value!.profilePhoto!,
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 0.08.sw,
+                      height: 0.05.sh,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover),
+                      ),
+                    ),
+                    placeholder: (context, url) => Transform.scale(
+                        scale: 0.3,
+                        child: const CircularProgressIndicator(
+                          color: Colors.black,
+                        )),
+                    errorWidget: (context, url, error) => Image.asset(
+                      "assets/icons/profile_placeholder.png",
+                      width: 0.08.sw,
+                      height: 0.05.sh,
+                    ),
+                  );
+                }
               ),
             ),
             SizedBox(
@@ -656,16 +659,7 @@ class HomePage extends StatelessWidget {
                                 ? IconButton(
                                     onPressed: () {
                                       //If user is muted, unmute and enbale their audio vice versa
-                                      if (_homeController.audioMuted.isFalse) {
-                                        _homeController.audioMuted.value = true;
-                                        _homeController.engine
-                                            .muteLocalAudioStream(true);
-                                      } else {
-                                        _homeController.audioMuted.value =
-                                            false;
-                                        _homeController.engine
-                                            .muteLocalAudioStream(false);
-                                      }
+                                      _homeController.muteUnMute(currentUser);
                                     },
                                     icon: Icon(
                                       //If audio is not muted, show mic icon, if not show mic off

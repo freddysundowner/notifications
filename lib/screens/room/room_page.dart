@@ -71,13 +71,13 @@ class RoomPage extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text(
+                        title: const Text(
                             "Are you sure you want to stop the recording?"),
-                        content: Text(
+                        content: const Text(
                             "once you stop the recording you cannot record again for this room"),
                         actions: [
                           FlatButton(
-                            child: Text("Yes"),
+                            child: const Text("Yes"),
                             onPressed: () {
                               Navigator.pop(context, true);
                               _stopRecording();
@@ -88,7 +88,7 @@ class RoomPage extends StatelessWidget {
                             },
                           ),
                           FlatButton(
-                            child: Text("No"),
+                            child: const Text("No"),
                             onPressed: () {
                               Navigator.pop(context, false);
                             },
@@ -102,13 +102,13 @@ class RoomPage extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text(
+                        title: const Text(
                             "Are you sure you want to start recording this room?"),
-                        content: Text(
+                        content: const Text(
                             "The recorded audio wil be saved for 30 days only, for you to extend the time to have the audio, you have to upgrade your account to premium membership by going to your profile page and click upgrade account."),
                         actions: [
                           FlatButton(
-                            child: Text("Yes"),
+                            child: const Text("Yes"),
                             onPressed: () {
                               Navigator.pop(context, true);
                               _homeController.startrecordingAudio(
@@ -118,7 +118,7 @@ class RoomPage extends StatelessWidget {
                             },
                           ),
                           FlatButton(
-                            child: Text("No"),
+                            child: const Text("No"),
                             onPressed: () {
                               Navigator.pop(context, false);
                             },
@@ -286,24 +286,8 @@ class RoomPage extends StatelessWidget {
                                         ? IconButton(
                                             onPressed: () {
                                               //If user is muted, unmute and enbale their audio vice versa
-                                              if (_homeController
-                                                  .audioMuted.isFalse) {
-                                                _homeController
-                                                    .audioMuted.value = true;
-                                                _homeController.engine
-                                                    .muteLocalAudioStream(true);
-                                              } else {
-                                                _homeController
-                                                    .audioMuted.value = false;
-                                                _homeController.engine
-                                                    .muteLocalAudioStream(
-                                                        false);
-
-                                                _homeController
-                                                    .sendRoomNotification(
-                                                        _homeController
-                                                            .currentRoom.value);
-                                              }
+                                              _homeController
+                                                  .muteUnMute(currentUser);
                                             },
                                             icon: Icon(
                                               //If audio is not muted, show mic icon, if not show mic off
@@ -525,6 +509,29 @@ class RoomPage extends StatelessWidget {
             _homeController.currentRoom.value.raisedHands!.add(user);
             _homeController.currentRoom.refresh();
           }
+        } else if (decodedData["action"] == "muted") {
+          printOut("muting ${decodedData["extra"]}");
+
+          var extra = decodedData["extra"] == "true" ? true : false;
+
+          if (_homeController.currentRoom.value.hostIds!
+                  .indexWhere((element) => element.id == user.id) !=
+              -1) {
+            _homeController.currentRoom.value.hostIds!
+                .elementAt(_homeController.currentRoom.value.hostIds!
+                    .indexWhere((element) => element.id == user.id))
+                .muted = extra;
+            _homeController.currentRoom.refresh();
+          }
+          if (_homeController.currentRoom.value.speakerIds!
+                  .indexWhere((element) => element.id == user.id) !=
+              -1) {
+            _homeController.currentRoom.value.speakerIds!
+                .elementAt(_homeController.currentRoom.value.speakerIds!
+                    .indexWhere((element) => element.id == user.id))
+                .muted = extra;
+            _homeController.currentRoom.refresh();
+          }
         }
       }
     });
@@ -559,15 +566,18 @@ class RoomPage extends StatelessWidget {
                       : 1,
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: ()
-                      {
-
-                        for (int i= 0; i < _homeController
-                            .currentRoom.value.productImages!.length; i++) {
-                          _homeController
-                              .currentRoom.value.productIds!
-                              .elementAt(0).images?.add(_homeController
-                              .currentRoom.value.productImages!.elementAt(i));
+                      onTap: () {
+                        for (int i = 0;
+                            i <
+                                _homeController
+                                    .currentRoom.value.productImages!.length;
+                            i++) {
+                          _homeController.currentRoom.value.productIds!
+                              .elementAt(0)
+                              .images
+                              ?.add(_homeController
+                                  .currentRoom.value.productImages!
+                                  .elementAt(i));
                         }
                         Get.to(FullProduct(
                             product: _homeController
@@ -644,12 +654,12 @@ class RoomUser extends StatelessWidget {
         SizedBox(
           height: 0.02.sh,
         ),
-        GetBuilder<RoomController>(builder: (_dx) {
+        Obx(() {
           List<OwnerId> user = title == "Hosts"
-              ? _dx.currentRoom.value.hostIds!
+              ? _homeController.currentRoom.value.hostIds!
               : title == "Speakers"
-                  ? _dx.currentRoom.value.speakerIds!
-                  : _dx.currentRoom.value.userIds!;
+                  ? _homeController.currentRoom.value.speakerIds!
+                  : _homeController.currentRoom.value.userIds!;
           return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -666,53 +676,73 @@ class RoomUser extends StatelessWidget {
                   },
                   child: Column(
                     children: [
-                      title == "Hosts"
-                          ? Stack(children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: user.elementAt(index).profilePhoto ==
-                                              "" ||
-                                          user.elementAt(index).profilePhoto ==
-                                              null
-                                      ? const CircleAvatar(
-                                          radius: 30,
-                                          backgroundImage: AssetImage(
-                                              "assets/icons/profile_placeholder.png"))
-                                      : CircleAvatar(
-                                          radius: 30,
-                                          backgroundImage: NetworkImage(
-                                              imageUrl +
-                                                  user
-                                                      .elementAt(index)
-                                                      .profilePhoto!),
-                                        )),
-                              Container(
-                                margin: const EdgeInsets.only(right: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: const Icon(
-                                  Ionicons.star,
-                                  color: Colors.redAccent,
-                                  size: 12,
-                                ),
-                                padding: const EdgeInsets.all(1),
-                              )
-                            ])
-                          : Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: user.elementAt(index).profilePhoto == "" ||
-                                      user.elementAt(index).profilePhoto == null
-                                  ? const CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: AssetImage(
-                                          "assets/icons/profile_placeholder.png"))
-                                  : CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: NetworkImage(imageUrl +
-                                          user.elementAt(index).profilePhoto!),
-                                    )),
+                      Stack(children: [
+                        Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: user.elementAt(index).profilePhoto == "" ||
+                                    user.elementAt(index).profilePhoto == null
+                                ? const CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: AssetImage(
+                                        "assets/icons/profile_placeholder.png"))
+                                : CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(imageUrl +
+                                        user.elementAt(index).profilePhoto!),
+                                  )),
+                        if (title == "Hosts")
+                          Container(
+                            margin: const EdgeInsets.only(right: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Icon(
+                              Ionicons.star,
+                              color: Colors.redAccent,
+                              size: 12,
+                            ),
+                            padding: const EdgeInsets.all(1),
+                          ),
+                        if (title == "Hosts" || title == "Speakers")
+                          Padding(
+                            padding: const EdgeInsets.only(left: 40.0, top: 50),
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Obx(() {
+                                  return Icon(
+                                    title == "Hosts"
+                                        ? _homeController.currentRoom.value
+                                                        .hostIds!
+                                                        .elementAt(index)
+                                                        .muted ==
+                                                    null ||
+                                                _homeController
+                                                    .currentRoom.value.hostIds!
+                                                    .elementAt(index)
+                                                    .muted!
+                                            ? Icons.mic_off
+                                            : Icons.mic
+                                        : title == "Speakers"
+                                            ? _homeController.currentRoom.value
+                                                    .speakerIds!
+                                                    .elementAt(index)
+                                                    .muted!
+                                                ? Icons.mic_off
+                                                : Icons.mic
+                                            : Icons.ac_unit,
+                                    color: Colors.black,
+                                    size: 20,
+                                  );
+                                }),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(30)),
+                            ),
+                          )
+                      ]),
                       SizedBox(
                         height: 0.002.sh,
                       ),

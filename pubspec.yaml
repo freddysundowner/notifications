@@ -36,6 +36,7 @@ dependencies:
   share: ^2.0.4
   flutter_datetime_picker: ^1.5.1
   firebase_messaging: ^11.2.13
+  flutter_cache_manager: ^3.3.0
 
 dependency_overrides:
   firebase_messaging_platform_interface: 3.1.6

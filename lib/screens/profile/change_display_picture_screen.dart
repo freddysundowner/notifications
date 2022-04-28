@@ -87,7 +87,7 @@ class ChageProfileImage extends StatelessWidget {
       String path;
       String snackbarMessage = "Image picked";
       path = await choseImageFromLocalFiles(context,
-          aspectration: const CropAspectRatio(ratioX: 3, ratioY: 2));
+          aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2));
       if (path == null) {
         throw LocalImagePickingUnknownReasonFailureException();
       }
@@ -190,6 +190,7 @@ class ChageProfileImage extends StatelessWidget {
         throw "Coulnd't removed due to unknown reason";
       }
     } on FirebaseException catch (e) {
+      printOut("Error removing image from fire store $e");
       snackbarMessage = "Something went wrong";
     } catch (e) {
       snackbarMessage = "Something went wrong";

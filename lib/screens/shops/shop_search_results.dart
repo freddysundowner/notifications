@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/global.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
@@ -12,7 +11,6 @@ import 'package:fluttergistshop/models/user_model.dart';
 import 'package:fluttergistshop/screens/products/full_product.dart';
 import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/screens/shops/shop_view.dart';
-import 'package:fluttergistshop/utils/constants.dart';
 import 'package:get/get.dart';
 
 class ShopSearchResults extends StatelessWidget {
@@ -62,9 +60,13 @@ class ShopSearchResults extends StatelessWidget {
                                   horizontal: 20.sm, vertical: 9.sm),
                             ),
                             onChanged: (c) {
+                              _globalController.searchPageNumber.value = 0;
                               if (c.isNotEmpty) {
                                 // _globalController.searchShopController.text = c;
+                                _globalController.searchPageNumber.value = 0;
+                                _globalController.searchPageNumber.refresh();
                                 _globalController.searchresults.value = [];
+
                                 _search(
                                     _globalController.currentsearchtab.value);
                               } else {
@@ -105,13 +107,13 @@ class ShopSearchResults extends StatelessWidget {
               Expanded(
                 child: Obx(() {
                   if (_globalController.searchresults.isEmpty &&
-                      _globalController.searchShopController.text.isNotEmpty) {
+                      _globalController.searchShopController.text.isNotEmpty
+                  && _globalController.isSearching.isFalse) {
                     return Container(
                         margin: const EdgeInsets.only(top: 20),
                         child: const Text("No results"));
                   }
-                  if (_globalController.searchresults.isNotEmpty &&
-                      _globalController.isSearching.isFalse) {
+                  if (_globalController.searchresults.isNotEmpty) {
                     return ListView.builder(
                       controller: _globalController.scrollcontroller,
                       itemBuilder: (_, i) {
@@ -121,12 +123,68 @@ class ShopSearchResults extends StatelessWidget {
                           return _singleItemShop(Shop.fromJson(e));
                         }
                         if (_globalController.currentsearchtab.value == 1) {
+                          if (e["shopId"] is List) {
+                            e["shopId"] =
+                            e["shopId"] == null || e["shopId"].isEmpty
+                                ? null
+                                : e["shopId"].elementAt(0);
+                          }
                           return _singleItemUser(UserModel.fromJson(e));
                         }
                         if (_globalController.currentsearchtab.value == 2) {
+                          if (e["ownerId"] is List) {
+                            e["ownerId"] =
+                                e["ownerId"] == null || e["ownerId"].isEmpty
+                                    ? null
+                                    : e["ownerId"].elementAt(0);
+                            if (e["ownerId"]["shopId"] is List) {
+                              e["ownerId"]["shopId"] =
+                              e["ownerId"]["shopId"] == null || e["ownerId"]["shopId"].isEmpty
+                                  ? null
+                                  : e["shopId"].elementAt(0);
+                            }
+                          }
+                          if (e["shopId"] is List) {
+                            e["shopId"] =
+                                e["shopId"] == null || e["shopId"].isEmpty
+                                    ? null
+                                    : e["shopId"].elementAt(0);
+                          }
+
                           return _singleItemProduct(Product.fromJson(e));
                         }
                         if (_globalController.currentsearchtab.value == 3) {
+                          if (e["ownerId"] is List) {
+                            e["ownerId"] =
+                            e["ownerId"] == null || e["ownerId"].isEmpty
+                                ? null
+                                : e["ownerId"].elementAt(0);
+                            if (e["ownerId"]["shopId"] is List) {
+                              e["ownerId"]["shopId"] =
+                              e["ownerId"]["shopId"] == null || e["ownerId"]["shopId"].isEmpty
+                                  ? null
+                                  : e["shopId"].elementAt(0);
+                            }
+                          }
+                          if (e["productIds"][0]["ownerId"] is List) {
+                            e["productIds"][0]["ownerId"] =
+                            e["productIds"][0]["ownerId"] == null || e["productIds"][0]["ownerId"].isEmpty
+                                ? null
+                                : e["productIds"][0]["ownerId"].elementAt(0);
+                            if (e["productIds"][0]["ownerId"]["shopId"] is List) {
+                              e["productIds"][0]["ownerId"]["shopId"] =
+                              e["productIds"][0]["ownerId"]["shopId"] == null
+                                  || e["productIds"][0]["ownerId"]["shopId"].isEmpty
+                                  ? null
+                                  : e["productIds"][0]["ownerId"]["shopId"].elementAt(0);
+                            }
+                          }
+                          if (e["shopId"] is List) {
+                            e["shopId"] =
+                            e["shopId"] == null || e["shopId"].isEmpty
+                                ? null
+                                : e["shopId"].elementAt(0);
+                          }
                           return _singleItemRoom(RoomModel.fromJson(e));
                         }
                         return Container();
@@ -155,10 +213,15 @@ class ShopSearchResults extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(e.image!),
-            ),
+            e.image != null || e.image == ""
+                ? CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(e.image!),
+                  )
+                : const CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage("assets/icons/no_image.png"),
+                  ),
             SizedBox(
               width: 0.04.sw,
             ),
@@ -193,10 +256,16 @@ class ShopSearchResults extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(e.profilePhoto!),
-            ),
+            e.profilePhoto != null || e.profilePhoto == ""
+                ? CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(e.profilePhoto!),
+                  )
+                : const CircleAvatar(
+                    radius: 25,
+                    backgroundImage:
+                        AssetImage("assets/icons/profile_placeholder.png"),
+                  ),
             SizedBox(
               width: 0.04.sw,
             ),
@@ -232,10 +301,15 @@ class ShopSearchResults extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            CircleAvatar(
+
+            e.images!.isNotEmpty
+                ? CircleAvatar(
               radius: 25,
-              backgroundImage: NetworkImage(
-                  e.images!.isNotEmpty ? e.images![0] : imageplaceholder),
+              backgroundImage: NetworkImage( e.images!.elementAt(0)),
+            )
+                : const CircleAvatar(
+              radius: 25,
+              backgroundImage: AssetImage("assets/icons/no_image.png",),
             ),
             SizedBox(
               width: 0.04.sw,
@@ -277,8 +351,9 @@ class ShopSearchResults extends StatelessWidget {
                 : const CircleAvatar(
                     radius: 25,
                     backgroundImage:
-                        AssetImage("assets/icons/productavatar.jpeg"),
+                        AssetImage("assets/icons/no_image.png"),
                   ),
+
             SizedBox(
               width: 0.04.sw,
             ),

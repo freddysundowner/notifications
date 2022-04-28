@@ -12,6 +12,7 @@ class GlobalController extends GetxController {
 
   var searchresults = [].obs;
   var searchoption = "".obs;
+  var searchPageNumber = 0.obs;
 
   final scrollcontroller = ScrollController();
   @override
@@ -23,6 +24,7 @@ class GlobalController extends GetxController {
         if (isTop) {
           printOut('At the top');
         } else {
+          searchPageNumber = searchPageNumber + 1;
           search(searchoption.value,
               last: searchresults[searchresults.length - 1]["_id"]);
         }
@@ -33,13 +35,16 @@ class GlobalController extends GetxController {
   Future<void> search(String searchOption, {last}) async {
     if (searchShopController.text.trim().isNotEmpty) {
       try {
+        if (searchresults.isEmpty) {
+          searchPageNumber.value = 0;
+        }
+
         isSearching.value = true;
         var results = await ShopApi().searchItems(
-            searchShopController.text.trim(), searchOption,
+            searchShopController.text.trim(), searchOption, searchPageNumber.value,
             last: last);
-        //searchresults.assignAll(results);
-        //searchresults.addAll(results);
-        //
+
+        printOut("Search results $results");
 
         for (var i = 0; i < results.length; i++) {
           if (searchresults.indexWhere(
@@ -50,8 +55,8 @@ class GlobalController extends GetxController {
         }
 
         isSearching.value = false;
-      } catch (e) {
-        printOut(e.toString());
+      } catch (e, s) {
+        printOut("$e $s");
         isSearching.value = false;
       }
     }

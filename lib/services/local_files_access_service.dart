@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<String> choseImageFromLocalFiles(BuildContext context,
-    {CropAspectRatio aspectration = const CropAspectRatio(ratioX: 1, ratioY: 1),
+    {CropAspectRatio aspectRatio = const CropAspectRatio(ratioX: 1, ratioY: 1),
     int maxSizeInKB = 1024,
     int minSizeInKB = 5}) async {
   final PermissionStatus photoPermissionStatus =
@@ -42,6 +42,8 @@ Future<String> choseImageFromLocalFiles(BuildContext context,
     },
     context: context,
   );
+
+
   var imgPicker = ImagePicker();
   if (imgSource == null) {
     throw LocalImagePickingInvalidImageException(
@@ -57,8 +59,6 @@ Future<String> choseImageFromLocalFiles(BuildContext context,
           aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
           cropStyle: CropStyle.circle))!
       .path);
-
-  print("newimagePicked ${newimagePicked.toString()}");
 
   if (newimagePicked == null) {
     throw LocalImagePickingInvalidImageException();

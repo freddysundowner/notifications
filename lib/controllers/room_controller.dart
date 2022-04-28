@@ -279,7 +279,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
       Get.defaultDialog(
           title: "Going live...",
-          contentPadding: EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.all(10),
           content: const CircularProgressIndicator(),
           barrierDismissible: false);
 
@@ -425,7 +425,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
   Future<void> uploadImageToFireStorage(String roomId) async {
     String snackBarMessage = "";
-    List<String> uploadedImages = [];
     printOut("errrrrrrr  before");
     printOut("errrrrrrr ${roomPickedImages.length}");
     List<String> realImages = [];
@@ -433,44 +432,38 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     for (var i = 0; i < roomPickedImages.length; i++) {
       RoomImagesModel roomImagesModel = roomPickedImages.elementAt(i);
       if (roomImagesModel.isPath) {
-        realImages.add(roomImagesModel.imageUrl);
+        if (realImages.indexWhere((element) => element == roomImagesModel.imageUrl) == -1) {
+          realImages.add(roomImagesModel.imageUrl);
+        }
+
       }
     }
-
     printOut("realimages ${realImages.length}");
 
     try {
       for (var i = 0; i < realImages.length; i++) {
-        var downloadUrl = await FirestoreFilesAccess()
-            .uploadFileToPath(File(realImages.elementAt(i)), "rooms/$roomId");
+        await FirestoreFilesAccess()
+            .uploadFileToPath(File(realImages.elementAt(i)), "rooms/$roomId/${DateTime.now().microsecondsSinceEpoch}").then((downloadUrl) async {
 
-        printOut("kkkkkkk path " + realImages.elementAt(i));
-        printOut("kkkkkkk " + downloadUrl);
+          currentRoom.value.productImages!.add(downloadUrl);
+          currentRoom.refresh();
+          downloadUrl = "";
+        });
 
-        uploadedImages.add(downloadUrl);
+        }
 
-      }
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
         "token": currentRoom.value.token,
-        "productImages": uploadedImages
+        "productImages": currentRoom.value.productImages
       }, roomId);
 
-      currentRoom.value.productImages!.addAll(uploadedImages);
-      currentRoom.refresh();
-
-      // await RoomAPI().updateRoomById({
-      //   "title": currentRoom.value.title ?? " ",
-      //   "token": currentRoom.value.token,
-      //   "productImages": currentRoom.value.productImages
-      // }, roomId);
-      //
-      roomPickedImages.value = [];
     } on FirebaseException catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } finally {
+      roomPickedImages.value = [];
       GetSnackBar(
         title: "",
         backgroundColor: sc_snackBar,
@@ -532,14 +525,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       eventsList.value = events;
       isLoading.value = false;
       return events;
-      if (events != null) {
-        eventsList.value = events;
-      } else {
-        eventsList.value = [];
-      }
-      print("eventsList ${eventsList.length}");
-      isLoading.value = false;
-      return eventsList;
+
     } catch (e) {
       isLoading.value = false;
     }
@@ -553,16 +539,9 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       var events = await RoomAPI().getAllMyEvents();
       eventsList.value = events;
       isLoading.value = false;
-      print("events ${events.length}");
+      printOut("events ${events.length}");
       return events;
-      if (events != null) {
-        eventsList.value = events;
-      } else {
-        eventsList.value = [];
-      }
-      print("eventsList ${eventsList.length}");
-      isLoading.value = false;
-      return eventsList;
+
     } catch (e) {
       isLoading.value = false;
     }
@@ -1503,7 +1482,7 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
   void deleteEvent(String roomId) async {
     Get.defaultDialog(
         title: "Deleting event",
-        contentPadding: EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.all(10),
         content: const CircularProgressIndicator(),
         barrierDismissible: false);
     await RoomAPI().deleteARoom(roomId);

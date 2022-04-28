@@ -5,7 +5,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/shop_controller.dart';
-import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/services/local_files_access_service.dart';
 import 'package:fluttergistshop/services/user_api.dart';
@@ -76,7 +75,7 @@ class NewShop extends StatelessWidget {
     String snackbarMessage = "Image picked";
     try {
       path = await choseImageFromLocalFiles(context,
-          aspectration: CropAspectRatio(ratioX: 3, ratioY: 2));
+          aspectRatio: CropAspectRatio(ratioX: 3, ratioY: 2));
       if (path == null) {
         throw LocalImagePickingUnknownReasonFailureException();
       }

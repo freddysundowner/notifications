@@ -1104,7 +1104,7 @@ class NewEventUpcoming extends StatelessWidget {
 
   pickImage(BuildContext context) async {
     String path = await choseImageFromLocalFiles(context,
-        aspectration: const CropAspectRatio(ratioX: 3, ratioY: 2));
+        aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2));
 
     printOut("Path to picked image $path");
 
@@ -1112,7 +1112,7 @@ class NewEventUpcoming extends StatelessWidget {
         homeController.roomPickedImages.indexWhere(
             (element) => element.isReal == false && element.isPath == false),
         RoomImagesModel(path, false, true));
-    if (path == null) {
+    if (path.isEmpty) {
       throw LocalImagePickingUnknownReasonFailureException();
     }
   }

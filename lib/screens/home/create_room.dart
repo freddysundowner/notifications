@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttergistshop/controllers/auth_controller.dart';
 import 'package:fluttergistshop/controllers/room_controller.dart';
 import 'package:fluttergistshop/exceptions/local_files_handling/image_picking_exceptions.dart';
 import 'package:fluttergistshop/models/product.dart';
@@ -713,14 +712,14 @@ generateProductImages(Product product) {
 
 pickImage(BuildContext context) async {
   String path = await choseImageFromLocalFiles(context,
-      aspectration: const CropAspectRatio(ratioX: 3, ratioY: 2));
+      aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2));
 
   printOut("Path to picked image $path");
 
-  homeController.roomPickedImages.insert(
-      homeController.roomPickedImages.indexWhere(
-          (element) => element.isReal == false && element.isPath == false),
-      RoomImagesModel(path, false, true));
+  homeController.roomPickedImages[homeController.roomPickedImages.indexOf(
+      homeController.roomPickedImages.firstWhere(
+          (element) => element.isReal == false && element.isPath == false))] =
+      RoomImagesModel(path, false, true);
   if (path.isEmpty) {
     throw LocalImagePickingUnknownReasonFailureException();
   }

@@ -219,8 +219,8 @@ class UpcomingEvents extends StatelessWidget {
                                     ),
                                   ),
 
-                                // if (element.ownerId!.id !=
-                                //     Get.find<AuthController>().usermodel.value!.id!)
+                                if (event.ownerId!.id !=
+                                    Get.find<AuthController>().usermodel.value!.id!)
                                   Obx(() {
                                       return InkWell(
                                         onTap: () {

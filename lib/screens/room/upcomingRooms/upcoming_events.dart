@@ -178,18 +178,18 @@ class UpcomingEvents extends StatelessWidget {
           }
           return ListView(
             children: rooms
-                .map((element) => Container(
+                .map((event) => Container(
                       width: MediaQuery.of(context).size.width,
                       padding: const EdgeInsets.all(10),
-                      margin:
-                          const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.grey[200],
                       ),
                       child: InkWell(
                         onTap: () {
-                          upcomingEventBottomSheet(context, element);
+                          upcomingEventBottomSheet(context, event);
                         },
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -199,10 +199,10 @@ class UpcomingEvents extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(_date(element.eventDate),
+                                Text(_date(event.eventDate),
                                     style: TextStyle(
                                         fontSize: 12.sp, color: primarycolor)),
-                                if (element.ownerId!.id ==
+                                if (event.ownerId!.id ==
                                     Get.find<AuthController>()
                                         .usermodel
                                         .value!
@@ -210,48 +210,77 @@ class UpcomingEvents extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       Get.to(() => NewEventUpcoming(
-                                            roomModel: element,
+                                            roomModel: event,
                                           ));
                                     },
                                     child: const Text(
                                       "Edit",
                                       style: TextStyle(color: primarycolor),
                                     ),
-                                  )
+                                  ),
+
+                                // if (element.ownerId!.id !=
+                                //     Get.find<AuthController>().usermodel.value!.id!)
+                                  Obx(() {
+                                      return InkWell(
+                                        onTap: () {
+                                          roomController.addRemoveToBeNotified(event);
+                                         // Get.back();
+
+                                         // roomController.fetchEvents();
+                                        },
+                                        child: Icon(
+                                          CupertinoIcons.bell,
+                                          size: 25,
+                                          color: EventModel.fromJson(roomController.eventsList.elementAt(roomController.eventsList.indexWhere(
+                                                  (element) =>
+                                              EventModel.fromJson(element).id == event.id)))
+                                              .toBeNotified!.contains(
+                                              Get.find<AuthController>()
+                                                  .usermodel
+                                                  .value!
+                                                  .id!)
+                                              ? Colors.red
+                                              : Colors.grey,
+                                        ),
+                                      );
+                                    }
+                                  ),
                               ],
                             ),
                             Text(
-                              element.title!,
+                              event.title!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 14.sp),
                             ),
                             const Divider(),
                             Wrap(
                               children: List.generate(
-                                  element.invitedhostIds!.length,
+                                  event.invitedhostIds!.length,
                                   (i) => Text(
-                                        element.invitedhostIds![i].firstName! +
+                                        event.invitedhostIds![i].firstName! +
                                             " " +
-                                            element
+                                            event
                                                 .invitedhostIds![i].lastName! +
                                             ", ",
                                         style: TextStyle(
-                                            fontSize: 13.sp, color: primarycolor),
+                                            fontSize: 13.sp,
+                                            color: primarycolor),
                                         overflow: TextOverflow.ellipsis,
                                       )).toList(),
                             ),
                             Wrap(
                               children: List.generate(
-                                  element.invitedhostIds!.length,
+                                  event.invitedhostIds!.length,
                                   (i) => InkWell(
                                         onTap: () {
                                           Get.find<UserController>()
-                                              .getUserProfile(element
+                                              .getUserProfile(event
                                                   .invitedhostIds![i].id!);
                                           Get.to(() => Profile());
                                         },
                                         child: CachedNetworkImage(
-                                          imageUrl: element
+                                          imageUrl: event
                                               .invitedhostIds![i].profilePhoto!,
                                           imageBuilder:
                                               (context, imageProvider) =>
@@ -279,7 +308,7 @@ class UpcomingEvents extends StatelessWidget {
                                       )).toList(),
                             ),
                             Text(
-                              element.description!,
+                              event.description!,
                               style: TextStyle(fontSize: 14.sp),
                             ),
                           ],
@@ -305,6 +334,7 @@ class UpcomingEvents extends StatelessWidget {
         topRight: Radius.circular(15),
       )),
       builder: (context) {
+
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return DraggableScrollableSheet(
@@ -340,6 +370,27 @@ class UpcomingEvents extends StatelessWidget {
                                 color: Colors.red,
                               ),
                             ),
+
+                          if (element.ownerId!.id !=
+                              Get.find<AuthController>().usermodel.value!.id!)
+                          InkWell(
+                            onTap: () {
+                              roomController.addRemoveToBeNotified(element);
+                              Get.back();
+                              roomController.fetchEvents();
+                            },
+                            child: Icon(
+                              CupertinoIcons.bell,
+                              size: 25,
+                              color: element.toBeNotified!.contains(
+                                      Get.find<AuthController>()
+                                          .usermodel
+                                          .value!
+                                          .id!)
+                                  ? Colors.red
+                                  : Colors.grey,
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -489,10 +540,11 @@ class UpcomingEvents extends StatelessWidget {
                               children: [
                                 roomController.shareLinkLoading.isFalse
                                     ? const Icon(
-                                  CupertinoIcons.doc_on_clipboard,
-                                  size: 25,
-                                  color: Colors.green,
-                                ) : const CircularProgressIndicator(),
+                                        CupertinoIcons.doc_on_clipboard,
+                                        size: 25,
+                                        color: Colors.green,
+                                      )
+                                    : const CircularProgressIndicator(),
                                 SizedBox(
                                   height: 0.01.sh,
                                 ),

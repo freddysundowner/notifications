@@ -15,32 +15,32 @@ EventModel roomModelFromJson(String str) =>
 String roomModelToJson(EventModel data) => json.encode(data.toJson());
 
 class EventModel {
-  EventModel({
-    this.productIds,
-    this.hostIds,
-    this.userIds,
-    this.raisedHands,
-    this.eventDate,
-    this.speakerIds,
-    this.invitedIds,
-    this.status,
-    this.event,
-    this.productImages,
-    this.id,
-    this.ownerId,
-    this.title,
-    this.shopId,
-    this.productPrice,
-    this.v,
-    this.token,
-    this.roomType,
-    this.invitedhostIds,
-    this.activeTime,
-    this.resourceId,
-    this.recordingsid,
-    this.description,
-    this.recordingUid,
-  });
+  EventModel(
+      {this.productIds,
+      this.hostIds,
+      this.userIds,
+      this.raisedHands,
+      this.eventDate,
+      this.speakerIds,
+      this.invitedIds,
+      this.status,
+      this.event,
+      this.productImages,
+      this.id,
+      this.ownerId,
+      this.title,
+      this.shopId,
+      this.productPrice,
+      this.v,
+      this.token,
+      this.roomType,
+      this.invitedhostIds,
+      this.activeTime,
+      this.resourceId,
+      this.recordingsid,
+      this.description,
+      this.recordingUid,
+      this.toBeNotified});
 
   List<Product>? productIds;
   List<OwnerId>? hostIds = [];
@@ -49,6 +49,7 @@ class EventModel {
   List<OwnerId>? raisedHands = [];
   List<OwnerId>? speakerIds = [];
   List<OwnerId>? invitedIds = [];
+  List<String>? toBeNotified = [];
   bool? event;
   bool? status;
   List<dynamic>? productImages = [];
@@ -96,6 +97,9 @@ class EventModel {
         productImages: json["productImages"] == null
             ? []
             : List<dynamic>.from(json["productImages"].map((x) => x)),
+        toBeNotified: json["toBeNotified"] == null
+            ? []
+            : List<String>.from(json["toBeNotified"].map((x) => x)),
         id: json["_id"] ?? "",
         ownerId: json["ownerId"] == null
             ? null
@@ -144,6 +148,9 @@ class EventModel {
         "productImages": productImages == []
             ? []
             : List<dynamic>.from(productImages!.map((x) => x)),
+        "toBeNotified": toBeNotified == []
+            ? []
+            : List<dynamic>.from(toBeNotified!.map((x) => x)),
         "_id": id,
         "ownerId": ownerId == null ? null : ownerId!.toJson(),
         "title": title,

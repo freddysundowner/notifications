@@ -103,7 +103,7 @@ class Profile extends StatelessWidget {
                                 manager.emptyCache(); //clears all data in cache.
                               }
                             },
-                            child: profile.profilePhoto != null
+                            child: profile.profilePhoto != null || profile.profilePhoto == ""
                                 ? Obx(() {
                                     return CachedNetworkImage(
                                         imageUrl: _userController.currentProfile.value.profilePhoto!,

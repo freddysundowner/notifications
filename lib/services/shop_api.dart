@@ -42,12 +42,12 @@ class ShopApi {
     return response;
   }
 
-  searchItems(String text, String searchOption, {last = ""}) async {
+  searchItems(String text, String searchOption, int pageNumber, {last = ""}) async {
     var shops = await DbBase().databaseRequest(
-        baseUrl + "/" + searchOption + "/search/" + text,
-        DbBase().getRequestType,
-        body: {"lastid": last});
-    return jsonDecode(shops);
+        baseUrl + "/" + searchOption + "/search/" + text + "/" + pageNumber.toString(),
+        DbBase().getRequestType);
+
+    return await jsonDecode(shops)[0]["data"];
   }
 
   getAllShops() async {

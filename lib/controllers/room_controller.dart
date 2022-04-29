@@ -393,6 +393,18 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
 
           await fetchRoom(roomId);
 
+          await NotificationApi().sendNotification(
+              currentRoom.value.toBeNotified!,
+              "${eventModel.title} event has started",
+              Get.find<AuthController>().usermodel.value!.firstName! +
+                  " " +
+                  Get.find<AuthController>().usermodel.value!.lastName! +
+                  " started the event " +
+                  eventModel.title! +
+                  ". Join?.",
+              "RoomScreen",
+              eventModel.id!);
+
           initAgora(token, roomId);
           uploadImageToFireStorage(roomId);
 
@@ -432,10 +444,11 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     for (var i = 0; i < roomPickedImages.length; i++) {
       RoomImagesModel roomImagesModel = roomPickedImages.elementAt(i);
       if (roomImagesModel.isPath) {
-        if (realImages.indexWhere((element) => element == roomImagesModel.imageUrl) == -1) {
+        if (realImages
+                .indexWhere((element) => element == roomImagesModel.imageUrl) ==
+            -1) {
           realImages.add(roomImagesModel.imageUrl);
         }
-
       }
     }
     printOut("realimages ${realImages.length}");
@@ -443,21 +456,20 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     try {
       for (var i = 0; i < realImages.length; i++) {
         await FirestoreFilesAccess()
-            .uploadFileToPath(File(realImages.elementAt(i)), "rooms/$roomId/${DateTime.now().microsecondsSinceEpoch}").then((downloadUrl) async {
-
+            .uploadFileToPath(File(realImages.elementAt(i)),
+                "rooms/$roomId/${DateTime.now().microsecondsSinceEpoch}")
+            .then((downloadUrl) async {
           currentRoom.value.productImages!.add(downloadUrl);
           currentRoom.refresh();
           downloadUrl = "";
         });
-
-        }
+      }
 
       await RoomAPI().updateRoomById({
         "title": currentRoom.value.title ?? " ",
         "token": currentRoom.value.token,
         "productImages": currentRoom.value.productImages
       }, roomId);
-
     } on FirebaseException catch (e) {
       snackBarMessage = "Something went wrong ${e.toString()}";
     } catch (e) {
@@ -525,7 +537,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       eventsList.value = events;
       isLoading.value = false;
       return events;
-
     } catch (e) {
       isLoading.value = false;
     }
@@ -541,7 +552,6 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
       isLoading.value = false;
       printOut("events ${events.length}");
       return events;
-
     } catch (e) {
       isLoading.value = false;
     }
@@ -1477,6 +1487,27 @@ class RoomController extends FullLifeCycleController with FullLifeCycleMixin {
     }
 
     await RoomAPI().updateRoomByIdNew(roomData, roomId);
+  }
+
+  Future<void> addRemoveToBeNotified(event.EventModel eventModel) async {
+    if (eventModel.toBeNotified!.indexWhere((element) =>
+            element.toString() ==
+            Get.find<AuthController>().usermodel.value!.id) ==
+        -1) {
+      eventModel.toBeNotified!
+          .add(Get.find<AuthController>().usermodel.value!.id!);
+    } else {
+      eventModel.toBeNotified!
+          .remove(Get.find<AuthController>().usermodel.value!.id);
+    }
+
+    eventsList[eventsList.indexWhere(
+            (element) =>
+                event.EventModel.fromJson(element).id == eventModel.id)]["toBeNotified"]
+         = eventModel.toBeNotified;
+    eventsList.refresh();
+    await RoomAPI().updateRoomByIdNew(
+        {"toBeNotified": eventModel.toBeNotified}, eventModel.id!);
   }
 
   void deleteEvent(String roomId) async {

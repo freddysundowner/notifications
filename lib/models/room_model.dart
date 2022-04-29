@@ -42,6 +42,7 @@ class RoomModel {
     this.recordingsid,
     this.description,
     this.recordingUid,
+    this.toBeNotified,
   });
 
   List<Product>? productIds;
@@ -51,6 +52,7 @@ class RoomModel {
   List<OwnerId>? raisedHands = [];
   List<OwnerId>? speakerIds = [];
   List<OwnerId>? invitedIds = [];
+  List<String>? toBeNotified = [];
   bool? event;
   bool? status;
   List<dynamic>? productImages = [];
@@ -122,6 +124,9 @@ class RoomModel {
         allUsers: json["allUsers"] == null
             ? []
             : List<String>.from(json["allUsers"].map((x) => x)),
+        toBeNotified: json["toBeNotified"] == null
+            ? []
+            : List<String>.from(json["toBeNotified"].map((x) => x)),
         productPrice: json["productPrice"],
         v: json["__v"],
         token: json["token"],
@@ -160,6 +165,9 @@ class RoomModel {
         "productImages": productImages == []
             ? []
             : List<dynamic>.from(productImages!.map((x) => x)),
+        "toBeNotified": toBeNotified == []
+            ? []
+            : List<dynamic>.from(toBeNotified!.map((x) => x)),
         "_id": id,
         "ownerId": ownerId == null ? null : ownerId!.toJson(),
         "title": title,

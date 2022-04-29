@@ -23,6 +23,8 @@ class TransactionModel {
     required this.type,
     required this.deducting,
     required this.shopId,
+    required this.orderId,
+
   });
 
   int date;
@@ -34,18 +36,23 @@ class TransactionModel {
   String type;
   bool deducting;
   String shopId;
+  String orderId;
+ 
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) =>
       TransactionModel(
-          date: json["date"],
-          id: json["_id"],
-          from: OwnerId.fromJson(json["from"] ?? {}),
-          to: OwnerId.fromJson(json["to"]),
-          reason: json["reason"],
-          amount: json["amount"],
-          type: json["type"],
-          deducting: json["deducting"],
-          shopId: json["shopId"] ?? "");
+        date: json["date"],
+        id: json["_id"],
+        from: OwnerId.fromJson(json["from"] ?? {}),
+        to: OwnerId.fromJson(json["to"]),
+        reason: json["reason"],
+        amount: json["amount"],
+        type: json["type"],
+        deducting: json["deducting"],
+        shopId: json["shopId"] ?? "",
+        orderId: json["orderId"]?? "" ,
+        
+      );
 
   Map<String, dynamic> toJson() => {
         "date": date,
@@ -57,5 +64,7 @@ class TransactionModel {
         "type": type,
         "deducting": deducting,
         "shopId": shopId,
+        "orderId": orderId 
+        
       };
 }

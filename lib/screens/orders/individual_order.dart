@@ -35,6 +35,7 @@ class IndividualOrderScreen extends StatelessWidget {
     if (id != null) {
       _orderController.currentOrderLoading.value = true;
       var order = await UserAPI().getOrderById(id);
+      print(order);
       ordersModel = OrdersModel.fromJson(order);
       _orderController.currentOrder.value = ordersModel;
       _orderController.currentOrder.refresh();

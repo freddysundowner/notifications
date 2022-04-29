@@ -246,7 +246,7 @@ class FullProduct extends StatelessWidget {
                                               1 ||
                                           productController.currentProduct
                                                   .value!.shopId!.open ==
-                                              false
+                                              false||productController.currentProduct.value!.deleted==true
                                       ? null
                                       : () {
                                           checkOutController.product.value =
@@ -284,7 +284,7 @@ class FullProduct extends StatelessWidget {
                                           ? "Out of Stock"
                                           : productController.currentProduct
                                                       .value!.shopId!.open ==
-                                                  true
+                                                  true&&productController.currentProduct.value!.deleted==false
                                               ? "Buy Now"
                                               : "Not Available",
                                       style: TextStyle(

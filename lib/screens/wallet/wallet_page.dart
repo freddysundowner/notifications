@@ -156,14 +156,14 @@ class WalletPage extends StatelessWidget {
                                                       .getUserProfile(uid!);
                                                   Get.to(() => Profile());
                                                 } else if (transaction.type ==
-                                                    "sending") {
+                                                    "sending"){
                                                   var uid =
                                                       transaction.from!.id;
                                                   Get.find<UserController>()
                                                       .getUserProfile(uid!);
                                                   Get.to(() => Profile());
                                                 } else if (transaction.type ==
-                                                    "order") {
+                                                    "order"){
                                                   if (transaction.orderId !=
                                                       "") {
                                                     Get.put(OrderController());

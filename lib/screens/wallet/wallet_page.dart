@@ -5,11 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttergistshop/controllers/auth_controller.dart';
+import 'package:fluttergistshop/controllers/order_controller.dart';
+import 'package:fluttergistshop/controllers/user_controller.dart';
 import 'package:fluttergistshop/controllers/wallet_controller.dart';
+import 'package:fluttergistshop/models/orders_model.dart';
 import 'package:fluttergistshop/models/transaction_model.dart';
 import 'package:fluttergistshop/models/user_model.dart';
+import 'package:fluttergistshop/screens/orders/individual_order.dart';
+import 'package:fluttergistshop/screens/orders/orders_sceen.dart';
+import 'package:fluttergistshop/screens/orders/shop_orders.dart';
+import 'package:fluttergistshop/screens/orders/user_orders.dart';
+import 'package:fluttergistshop/screens/profile/profile.dart';
 import 'package:fluttergistshop/services/client.dart';
 import 'package:fluttergistshop/services/end_points.dart';
+import 'package:fluttergistshop/services/user_api.dart';
 import 'package:fluttergistshop/utils/constants.dart';
 import 'package:fluttergistshop/utils/functions.dart';
 import 'package:get/get.dart';
@@ -122,8 +131,8 @@ class WalletPage extends StatelessWidget {
                       return _walletController.transactionsLoading.isFalse
                           ? _walletController.userTransaction.isNotEmpty
                               ? Stack(
-                                children: [
-                                  SizedBox(
+                                  children: [
+                                    SizedBox(
                                       height: 0.6.sh,
                                       child: ListView.builder(
                                           shrinkWrap: true,
@@ -137,62 +146,110 @@ class WalletPage extends StatelessWidget {
                                                     _walletController
                                                         .userTransaction
                                                         .elementAt(index));
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  convertTime(
-                                                      transaction.date.toString()),
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      fontSize: 12.sp),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        "${transaction.type == "gift" ? transaction.reason + " -- ${transaction.from!.firstName!}" : transaction.reason}",
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 13.sp),
-                                                        maxLines: 2,
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
+                                            return GestureDetector(
+                                              onTap: (){
+                                                if (transaction.type ==
+                                                    "gift") {
+                                                  var uid =
+                                                      transaction.from!.id;
+                                                  Get.find<UserController>()
+                                                      .getUserProfile(uid!);
+                                                  Get.to(() => Profile());
+                                                } else if (transaction.type ==
+                                                    "sending") {
+                                                  var uid =
+                                                      transaction.from!.id;
+                                                  Get.find<UserController>()
+                                                      .getUserProfile(uid!);
+                                                  Get.to(() => Profile());
+                                                } else if (transaction.type ==
+                                                    "order") {
+                                                  if (transaction.orderId !=
+                                                      "") {
+                                                    Get.put(OrderController());
+
+                                                    Get.to(
+                                                      () =>
+                                                          IndividualOrderScreen(
+                                                        new OrdersModel(),
+                                                        id: transaction.orderId,
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      "$gccurrency ${transaction.deducting == true ? "-" : "+"}${transaction.amount}",
-                                                      style: TextStyle(
-                                                          color: transaction
-                                                                      .deducting ==
-                                                                  true
-                                                              ? Colors.red
-                                                              : Colors.green,
-                                                          fontSize: 13.sp),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 0.02.sh,
-                                                ),
-                                                Divider()
-                                              ],
+                                                    );
+                                                  }
+                                                } else if (transaction.type ==
+                                                    "purchase") {
+                                                  if (transaction.orderId !=
+                                                      "") {
+                                                    Get.put(OrderController());
+                                                    Get.to(
+                                                      () =>
+                                                          IndividualOrderScreen(
+                                                        new OrdersModel(),
+                                                        id: transaction.orderId,
+                                                      ),
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    convertTime(transaction.date
+                                                        .toString()),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontSize: 12.sp),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          "${transaction.type == "gift" ? transaction.reason + " -- ${transaction.from!.firstName!}" : transaction.reason}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize: 13.sp),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "$gccurrency ${transaction.deducting == true ? "-" : "+"}${transaction.amount}",
+                                                        style: TextStyle(
+                                                            color: transaction
+                                                                        .deducting ==
+                                                                    true
+                                                                ? Colors.red
+                                                                : Colors.green,
+                                                            fontSize: 13.sp),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 0.02.sh,
+                                                  ),
+                                                  Divider()
+                                                ],
+                                              ),
                                             );
                                           }),
                                     ),
-                                  _walletController.moreTransactionsLoading.isTrue
-                                      ? const Center(
-                                      child: CircularProgressIndicator(
-                                        color: Colors.black,
-                                      ))
-                                      : Container()
-                                ],
-                              )
+                                    _walletController
+                                            .moreTransactionsLoading.isTrue
+                                        ? const Center(
+                                            child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          ))
+                                        : Container()
+                                  ],
+                                )
                               : Center(
                                   child: Text(
                                     "You have no transactions yet",

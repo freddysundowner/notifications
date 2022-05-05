@@ -1,5 +1,5 @@
-name: fluttergistshop
-description: Gistshop.
+name: notifications
+description: Notificaions.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+3
@@ -10,59 +10,19 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  get: ^4.6.1
-  flutter_screenutil: ^5.3.1
-  ionicons: ^0.1.2
   http: ^0.13.4
-  firebase_auth: ^2.0.0
-  cloud_firestore: 3.1.5
-  cached_network_image: ^3.2.0
-  image_picker:
-  image_cropper: ^1.0.2
-  shared_preferences: ^2.0.13
-  agora_rtc_engine: ^5.0.1
   permission_handler: ^9.2.0
-  connectivity_plus: ^2.2.1
-  firebase_storage:
-  future_progress_dialog: ^0.1.1
-  swipedetector: ^1.2.0
-  firebase_core:
   onesignal_flutter: ^3.3.0
   flutter_local_notifications: ^9.4.0
-#  socket_io_client: ^1.0.0
-  socket_io_client: ^1.0.2
-  transparent_image: ^2.0.0
-  firebase_dynamic_links: ^4.1.2
-  share: ^2.0.4
-  flutter_datetime_picker: ^1.5.1
-  firebase_messaging: ^11.2.13
-  flutter_cache_manager: ^3.3.0
-
-dependency_overrides:
-  firebase_messaging_platform_interface: 3.1.6
-  firebase_storage_platform_interface: 4.0.14
-  cloud_functions_platform_interface: 5.0.21
-  cloud_firestore_platform_interface: 5.4.13
-  firebase_auth_platform_interface: 6.1.11
-  firebase_database_platform_interface: 0.2.0+5
+  future_progress_dialog: ^0.1.1
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
 
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
 
 flutter:
   uses-material-design: true
-  fonts:
-    - family: Muli
-      fonts:
-        - asset: assets/fonts/muli/Muli.ttf
-        - asset: assets/fonts/muli/Muli-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/muli/Muli-Light.ttf
-          weight: 300
 
-  assets:
-    - assets/images/
-    - assets/icons/
+#  assets:
